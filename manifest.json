@@ -1,6 +1,6 @@
 {
   "name": "Disconnect",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description":
       "Stop major third parties and search engines from tracking the webpages you go to and searches you do.",
   "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
