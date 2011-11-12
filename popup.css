@@ -1,0 +1,62 @@
+/*
+  The style sheet for a popup that displays and drives the blocking of requests.
+
+  Copyright 2010, 2011 Brian Kennish
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+
+  Brian Kennish <byoogle@gmail.com>
+*/
+body, #services td { text-align: center }
+
+body, #search { font-size: x-small }
+
+body {
+  margin: 0;
+  width: 140px;
+  font-family: Arial, sans-serif
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse
+}
+
+input { margin-left: 0 }
+
+:link, :visited { color: #003ea8 }
+
+.deactivated { color: graytext }
+
+.mouseover { background: #f4f6fc }
+
+#services {
+  color: #333;
+  font-size: small
+}
+
+#services tr {
+  border: solid #edeff5;
+  border-width: thin 0;
+  cursor: pointer
+}
+
+#services tr:first-child { display: none }
+
+#services td { padding: 3px 0 3px 6px }
+
+#services td:last-child {
+  padding-right: 6px;
+  width: 100%
+}

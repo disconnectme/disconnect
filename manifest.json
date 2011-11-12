@@ -1,0 +1,33 @@
+{
+  "name": "Disconnect",
+  "version": "2.7.0",
+  "description":
+      "Stop major third parties and search engines from tracking the webpages you go to and searches you do.",
+  "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
+  "permissions": [
+    "chrome://favicon/",
+    "contextMenus",
+    "cookies",
+    "history",
+    "idle",
+    "notifications",
+    "tabs",
+    "unlimitedStorage",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background_page": "background.html",
+  "options_page": "options.html",
+  "browser_action": {
+    "default_icon": "activated.png",
+    "default_title": "View and manage requests",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "css": ["content.css"],
+    "js": ["content.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }]
+}
