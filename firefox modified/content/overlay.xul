@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css"  href="chrome://disconnect/content/overlay.css"?>
+
+<overlay id="disconnect-overlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/jquery.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/overlay.js" />
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controller.js" />
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/sandbox.js" />	
+	
+
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="disconnect-toolbarbutton"
+		    label="Disconnect"
+		    tooltiptext="Disconnect"
+		    oncommand='hello()'>
+				<image id="disconnect-image" src="chrome://disconnect/content/resources/activated.png" />
+		</toolbarbutton>
+	</toolbarpalette>
+
+</overlay>

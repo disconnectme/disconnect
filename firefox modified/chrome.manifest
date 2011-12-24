@@ -1,0 +1,3 @@
+content disconnect content/
+skin disconnect classic/1.0	skin/
+overlay	chrome://browser/content/browser.xul	chrome://disconnect/content/overlay.xul

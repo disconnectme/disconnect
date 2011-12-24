@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Feedback for Disconnect?</title>
+	</head>
+	<body style="width:500px;height250px;text-align:center;margin:0;padding:0;" onload="document.getElementById('feedback').focus()">
+		<div style="font-family:Helvetica, Arial, sans-serif;font-size:16px;border:solid 1px black;margin:10px;border-radius:5px;-moz-border-radius:5px;">
+			<div style="margin-bottom:10px;background-color:6d7174;color:white;padding:10px 7px 10px 7px;">
+				Thanks for your patience with Disconnect, we are sorry to lose you!
+			</div>
+			<form>
+				<label style="display:none;" id="thanks">Thank you for your feedback</label>
+				<label id="feedbacklabel" name="feedback">Please tell us what we did wrong so we can make things right:</label>
+				<textarea style="width:400px;height:100px;line-height:20px;font-size:16px;margin:10px 0px 10px 0px;" id="feedback" name="feedback"></textarea>
+				<br />
+				<button id="submit" onclick='var req=new XMLHttpRequest();req.open("GET","http://www.webmynd.com/uninstall_report?user_id=&message=Message: "+document.getElementById("feedback").value);req.send();document.getElementById("feedbacklabel").style.display="none";document.getElementById("feedback").style.display="none";document.getElementById("submit").style.display="none";document.getElementById("thanks").style.display="";document.getElementById("close").style.display="";return false;' style="font-size:20px;">&rarr; Submit</button>
+				<button style="display:none;font-size:20px;margin-top:10px;" id="close" onclick='window.close();'
+						>Close</button>
+			<form>
+		<div>
+	</body>
+</html>

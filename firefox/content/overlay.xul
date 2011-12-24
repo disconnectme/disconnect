@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<overlay id="2b74ff14-7256-42e0-9bf1-0806eec78788-overlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+ 	<script type="application/x-javascript" src="chrome://2b74ff14-7256-42e0-9bf1-0806eec78788/content/overlay.js" />
+
+
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="2b74ff14-7256-42e0-9bf1-0806eec78788-toolbarbutton"
+		    label="Disconnect"
+		    tooltiptext="Disconnect"
+		    oncommand='window.webmynd["2b74ff14-7256-42e0-9bf1-0806eec78788"].services.button.click();'>
+				<image id="2b74ff14-7256-42e0-9bf1-0806eec78788-image" src="chrome://2b74ff14-7256-42e0-9bf1-0806eec78788/content/2b74ff14-7256-42e0-9bf1-0806eec78788/activated.png" />
+		</toolbarbutton>
+	</toolbarpalette>
+
+</overlay>
