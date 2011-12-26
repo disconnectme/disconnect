@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/css"  href="chrome://disconnect/content/overlay.css"?>
+<?xml-stylesheet type="text/css"  href="chrome://disconnect/content/styles/overlay.css"?>
 
 <overlay id="disconnect-overlay"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -12,12 +12,51 @@
 	
 
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="disconnect-toolbarbutton"
-		    label="Disconnect"
-		    tooltiptext="Disconnect"
-		    oncommand='hello()'>
-				<image id="disconnect-image" src="chrome://disconnect/content/resources/activated.png" />
-		</toolbarbutton>
+	    <vbox id="disconnect-appcontent">	
+		
+			<toolbarbutton id="disconnect-toolbarbutton"
+			    label="Disconnect"
+			    tooltiptext="Disconnect"
+		    	popup="statusBarPanelMenu"
+		    	oncommand='hello()'				 
+				 >
+					<image id="disconnect-image" src="chrome://disconnect/content/resources/activated.png" />
+			</toolbarbutton>			
+
+			<menupopup id="statusBarPanelMenu" position="after_start">  
+				<menuitem >
+					<image class="channelIcon" src="chrome://disconnect/content/resources/digg-activated.png" />				
+					<label value="Digg" />  
+					<label value="1" />  					
+			  	</menuitem>			
+			
+				<menuitem >
+					<image class="channelIcon" src="chrome://disconnect/content/resources/facebook-activated.png" />				
+					<label value="Facebook" />  
+					<label value="10" />  					
+			  	</menuitem>
+							
+				<menuitem >
+					<image class="channelIcon" src="chrome://disconnect/content/resources/google-activated.png" />				
+					<label value="Google" />  
+					<label value="2" />  										
+			  	</menuitem>
+
+				<menuitem >
+					<image class="channelIcon" src="chrome://disconnect/content/resources/twitter-activated.png" />				
+					<label value="Twitter" />  
+					<label value="1" />
+			  	</menuitem>
+				
+				<menuitem >
+					<image class="channelIcon" src="chrome://disconnect/content/resources/yahoo-activated.png" />				
+					<label value="Yahoo" />  
+					<label value="5" />
+			  	</menuitem>				
+				
+			</menupopup>  
+			
+	    </vbox>
 	</toolbarpalette>
 
 </overlay>

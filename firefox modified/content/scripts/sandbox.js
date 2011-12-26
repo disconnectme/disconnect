@@ -7,9 +7,49 @@
 	This is the function called when our test button in the tool bars panel is clicked
 */
 function hello(){
-
-	countPageElement();
+	showMenuPopup();
 }
+
+/*
+	This function adds a new image element when the Tool bar button by the ID of disconnect-toolbarbutton is clicked
+*/
+
+function showMenuPopup(){
+	var menuPopup = document.getElementById("clipmenu");
+	alert(menuPopup.state);
+	menu.Popup.openPopup();
+
+}
+
+/*
+	This function adds a new image element when the Tool bar button by the ID of disconnect-toolbarbutton is clicked
+*/
+function toolbarAddNew(){
+	var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "image"); 
+	$mb(item).attr("src", "chrome://disconnect/content/resources/64.png");
+	$mb("#disconnect-toolbarbutton").append(item);
+	
+}
+
+/*
+	This function tries to access the DOM element in the Tool bar by the ID disconnect-image 
+	and shows the src
+*/
+function accessToolbarElement(){
+	alert($mb("image").length);	
+	alert($mb("#disconnect-image").length);		
+	alert($mb("#disconnect-image").attr("src"));			
+}
+
+/*
+	This function tries to access the DOM element in the Tool bar by the ID disconnect-image 
+	and dynamically changes it
+*/
+function changeToolbarElement(){
+	alert($mb("#disconnect-image").attr("src"));
+	$mb("#disconnect-image").attr("class", "hating");	
+}
+
 
 /*
 	This function demonstrates that so long as another script is loaded 
@@ -26,7 +66,7 @@ function somewhere(){
 /*
 	This function shows you how to get the title of the page
 */
-function getCurrDocTitle(){
+function getCurrPageTitle(){
 	//This object becomes available once the page is loaded
 	var doc = window.content.document;
 	alert(doc.title);	
