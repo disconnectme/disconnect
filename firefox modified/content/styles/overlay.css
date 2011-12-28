@@ -3,12 +3,12 @@
 */
 
 #disconnect-toolbarbutton{
-border:1px solid #ff0000;
+border:1px solid #CCCCCC;
 background-color:#FFFFFF;
 }
 
 #disconnect-toolbarbutton:hover{
-border:1px solid #000000;
+border:1px solid #CCCCCC;
 background-color:#99FFFF;
 }
 
