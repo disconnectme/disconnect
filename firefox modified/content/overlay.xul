@@ -10,6 +10,8 @@
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/facebook.js" />	
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/google.js" />	
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/twitter.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/digg.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/yahoo.js" />			
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controller.js" />	
 
 	
