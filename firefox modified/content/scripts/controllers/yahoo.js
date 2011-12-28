@@ -46,7 +46,7 @@ if (typeof DcYahoo == "undefined") {
 		if(typeof window.content.document.DcYahooCount == "undefined"){
 			window.content.document.DcYahooCount = 0;
 		}				
-		DcController.jQuery("#FacebookBlockCount").attr("value",window.content.document.DcYahooCount);		
+		DcController.jQuery("#YahooBlockCount").attr("value",window.content.document.DcYahooCount);		
 	},	
 
 	/* Lifts international trade embargo on Facebook */

@@ -46,7 +46,7 @@ if (typeof DcDigg == "undefined") {
 		if(typeof window.content.document.DcDiggCount == "undefined"){
 			window.content.document.DcDiggCount = 0;
 		}				
-		DcController.jQuery("#FacebookBlockCount").attr("value",window.content.document.DcDiggCount);		
+		DcController.jQuery("#DiggBlockCount").attr("value",window.content.document.DcDiggCount);		
 	},	
 
 	/* Lifts international trade embargo on Facebook */
