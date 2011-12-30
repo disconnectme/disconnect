@@ -31,32 +31,32 @@
 			<menupopup id="statusBarPanelMenu" position="after_start">  
 				<menuitem >
 					<image class="channelIcon" src="chrome://disconnect/content/resources/digg-activated.png" />				
-					<label value="Digg" />  
 					<label value="0" id="DiggBlockCount" />  					
+					<label value="Blocked" />  					
 			  	</menuitem>			
 			
 				<menuitem >
 					<image class="channelIcon" src="chrome://disconnect/content/resources/facebook-activated.png" />				
-					<label value="Facebook" />  
-					<label value="0" id="FacebookBlockCount"  />  					
+					<label value="0" id="FacebookBlockCount"  />
+					<label value="Blocked" />  										  					
 			  	</menuitem>
 							
 				<menuitem >
 					<image class="channelIcon" src="chrome://disconnect/content/resources/google-activated.png" />				
-					<label value="Google" />  
 					<label value="0" id="GoogleBlockCount"  />  										
+					<label value="Blocked" />  					
 			  	</menuitem>
 
 				<menuitem >
 					<image class="channelIcon" src="chrome://disconnect/content/resources/twitter-activated.png" />				
-					<label value="Twitter" />  
 					<label value="0" id="TwitterBlockCount" />
+					<label value="Blocked" />  										
 			  	</menuitem>
 				
 				<menuitem >
 					<image class="channelIcon" src="chrome://disconnect/content/resources/yahoo-activated.png" />				
-					<label value="Yahoo" />  
 					<label value="0" id="YahooBlockCount" />
+					<label value="Blocked" />  										
 			  	</menuitem>				
 				
 			</menupopup>  
