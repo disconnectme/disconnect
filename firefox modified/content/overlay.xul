@@ -7,11 +7,11 @@
 	xmlns:html="http://www.w3.org/1999/xhtml">
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/jquery.js" />	
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/sandbox.js" />		
- 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/facebook.js" />	
- 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/google.js" />	
- 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/twitter.js" />	
- 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/digg.js" />	
- 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/yahoo.js" />			
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/digg.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/facebook.js" />
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/google.js" />	
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/twitter.js" />		
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/yahoo.js" />			
  	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controller.js" />	
 
 	
@@ -29,34 +29,64 @@
 			</toolbarbutton>			
 
 			<menupopup id="statusBarPanelMenu" position="after_start">  
-				<menuitem >
-					<image class="channelIcon" src="chrome://disconnect/content/resources/digg-activated.png" />				
+				<menuitem 
+			    	oncommand='DcDigg.switchBlock()'				
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/digg-activated.png" 
+						id="DiggBlockIcon"  
+					/>				
 					<label value="0" id="DiggBlockCount" />  					
-					<label value="Blocked" />  					
+					<label value="Blocked" id="DiggBlockStatus" />  					
 			  	</menuitem>			
 			
-				<menuitem >
-					<image class="channelIcon" src="chrome://disconnect/content/resources/facebook-activated.png" />				
+				<menuitem 
+			    	oncommand='DcFbdc.switchBlock()'								
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/facebook-activated.png" 
+						id="FacebookBlockIcon"  						
+					/>				
 					<label value="0" id="FacebookBlockCount"  />
-					<label value="Blocked" />  										  					
+					<label value="Blocked" id="FacebookBlockStatus" />  										  					
 			  	</menuitem>
 							
-				<menuitem >
-					<image class="channelIcon" src="chrome://disconnect/content/resources/google-activated.png" />				
+				<menuitem 
+			    	oncommand='DcGgdc.switchBlock()'								
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/google-activated.png" 
+						id="GoogleBlockIcon"  												
+					/>				
 					<label value="0" id="GoogleBlockCount"  />  										
-					<label value="Blocked" />  					
+					<label value="Blocked" id="GoogleBlockStatus" />  					
 			  	</menuitem>
 
-				<menuitem >
-					<image class="channelIcon" src="chrome://disconnect/content/resources/twitter-activated.png" />				
+				<menuitem 
+			    	oncommand='DcTwdc.switchBlock()'												
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/twitter-activated.png" 
+						id="TwitterBlockIcon"  																		
+					/>				
 					<label value="0" id="TwitterBlockCount" />
-					<label value="Blocked" />  										
+					<label value="Blocked" id="TwitterBlockStatus" />  										
 			  	</menuitem>
 				
-				<menuitem >
-					<image class="channelIcon" src="chrome://disconnect/content/resources/yahoo-activated.png" />				
+				<menuitem 
+			    	oncommand='DcYahoo.switchBlock()'																
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/yahoo-activated.png" 
+						id="YahooBlockIcon"  																								
+					/>				
 					<label value="0" id="YahooBlockCount" />
-					<label value="Blocked" />  										
+					<label value="Blocked" id="YahooBlockStatus" />  										
 			  	</menuitem>				
 				
 			</menupopup>  

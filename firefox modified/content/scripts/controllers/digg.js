@@ -25,12 +25,6 @@ if (typeof DcDigg == "undefined") {
 
   var DcDigg = {
 	  
-	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : ['digg.com'],
-		
-	/* The XPCOM interfaces. */
-	INTERFACES : Components.interfaces,
-	  
 	/*
 	  Determines whether any of a bucket of domains is part of a URL, regex free.
 	*/
@@ -41,58 +35,70 @@ if (typeof DcDigg == "undefined") {
 			  // A valid URL has at least two characters ("//"), then the domain.
 	},
 
-	/* Updates the number of facebook blocks in the popup menu */
+	/* Updates the number of digg blocks in the popup menu */
 	updateCount : function(){
+		
 		if(typeof window.content.document.DcDiggCount == "undefined"){
 			window.content.document.DcDiggCount = 0;
 		}				
 		DcController.jQuery("#DiggBlockCount").attr("value",window.content.document.DcDiggCount);		
 	},	
 
-	/* Lifts international trade embargo on Facebook */
+	
+	/* determine whether to block or unblock */
+	switchBlock : function(){
+		if(window.content.localStorage.getItem('DcDiggStatus')!="unblock"){
+			DcDigg.unblock();
+		}
+		else{
+			DcDigg.block();
+		}
+	},
+
+	/* Lifts international trade embargo on Digg */
 	unblock: function(){
-		alert("I am unblocking facebook");
+		//alert("I am unblocking digg");
+		DcController.jQuery("#DiggBlockIcon").attr("src","chrome://disconnect/content/resources/digg-deactivated.png");		
+		DcController.jQuery("#DiggBlockStatus").attr("value","Unblocked");				
+		window.content.localStorage.setItem('DcDiggStatus', "unblock");	
+		window.content.location.reload();		
 	
 	},
 	
-	/* Enforce international trade embargo on Facebook */
+	/* Enforce international trade embargo on Digg */
 	block: function(){
-		alert("I am blocking facebook");
+		DcController.jQuery("#DiggBlockIcon").attr("src","chrome://disconnect/content/resources/digg-activated.png");		
+		DcController.jQuery("#DiggBlockStatus").attr("value","Blocked");				
+		window.content.localStorage.setItem('DcDiggStatus', "block");	
+		window.content.location.reload();				
+
 	},
-	  
+	
+	setDisplayIcons: function(){
+		if(window.content.localStorage.getItem('DcDiggStatus')!="unblock"){
+
+			DcController.jQuery("#DiggBlockIcon").attr("src","chrome://disconnect/content/resources/digg-activated.png");		
+			DcController.jQuery("#DiggBlockStatus").attr("value","Blocked");				
+		}
+		else{
+
+			DcController.jQuery("#DiggBlockIcon").attr("src","chrome://disconnect/content/resources/digg-deactivated.png");		
+			DcController.jQuery("#DiggBlockStatus").attr("value","Unblocked");				
+		}		
+	},
+	
 	/* Initialization */	  
     init : function() {  
 
 		/* registers this controller in the main controller */
 		DcController.controllers.push(DcDigg);
 
-		/* Traps and selectively cancels a request. */
-        DcDigg.obsService =  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);  
-		DcDigg.obsService.addObserver({observe: function(subject) {
-			DcDigg.NOTIFICATION_CALLBACKS =
-				subject.QueryInterface(DcDigg.INTERFACES.nsIHttpChannel).notificationCallbacks
-					|| subject.loadGroup.notificationCallbacks;
-			DcDigg.BROWSER =
-				DcDigg.NOTIFICATION_CALLBACKS &&
-					gBrowser.getBrowserForDocument(
-					  DcDigg.NOTIFICATION_CALLBACKS
-						.getInterface(DcDigg.INTERFACES.nsIDOMWindow).top.document
-					);
-			subject.referrer.ref;
-				// HACK: The URL read otherwise outraces the window unload.
-			if(DcDigg.BROWSER && !DcDigg.isMatching(DcDigg.BROWSER.currentURI.spec, DcDigg.DOMAINS) &&
-				DcDigg.isMatching(subject.URI.spec, DcDigg.DOMAINS)){
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcDigg.setDisplayIcons, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcDigg.setDisplayIcons, false);  		
+		}
 
-					if(typeof DcDigg.NOTIFICATION_CALLBACKS.getInterface(DcDigg.INTERFACES.nsIDOMWindow).top.document.DcDiggCount == "undefined"){
-						DcDigg.NOTIFICATION_CALLBACKS.getInterface(DcDigg.INTERFACES.nsIDOMWindow).top.document.DcDiggCount = 1;
-					}
-					else{
-						DcDigg.NOTIFICATION_CALLBACKS.getInterface(DcDigg.INTERFACES.nsIDOMWindow).top.document.DcDiggCount += 1;						
-					}
 
-					subject.cancel(Components.results.NS_ERROR_ABORT);
-			}
-		  }}, 'http-on-modify-request', false);
 	}
   }
 }

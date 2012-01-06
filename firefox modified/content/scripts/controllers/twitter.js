@@ -25,15 +25,6 @@
 if (typeof DcTwdc == "undefined") {  
 
   var DcTwdc = {
-	  
-	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : ['twimg.com', 'twitter.com'],
-
-	/* The number of urls blocked on this page. */
-	BlockCount : 0,
-
-	/* The XPCOM interfaces. */
-	INTERFACES : Components.interfaces,
 	
 	/* Updates the number of twitter blocks in the popup menu */
 	updateCount : function(){
@@ -43,17 +34,48 @@ if (typeof DcTwdc == "undefined") {
 		DcController.jQuery("#TwitterBlockCount").attr("value",window.content.document.DcTwdcCount);	
 	},	
 	
-	/* Lifts international trade embargo on Facebook */
+	
+	/* determine whether to block or unblock */
+	switchBlock : function(){
+		if(window.content.localStorage.getItem('DcTwdcStatus')!="unblock"){
+			DcTwdc.unblock();
+		}
+		else{
+			DcTwdc.block();
+		}
+	},
+
+	/* Lifts international trade embargo on Twitter */
 	unblock: function(){
-		alert("I am unblocking Twitter");
+		//alert("I am unblocking twitter");
+		DcController.jQuery("#TwitterBlockIcon").attr("src","chrome://disconnect/content/resources/twitter-deactivated.png");		
+		DcController.jQuery("#TwitterBlockStatus").attr("value","Unblocked");				
+		window.content.localStorage.setItem('DcTwdcStatus', "unblock");	
+		window.content.location.reload();		
 	
 	},
 	
-	/* Enforce international trade embargo on Facebook */
+	/* Enforce international trade embargo on Twitter */
 	block: function(){
-		alert("I am blocking Twitter");
-	},	
+		DcController.jQuery("#TwitterBlockIcon").attr("src","chrome://disconnect/content/resources/twitter-activated.png");		
+		DcController.jQuery("#TwitterBlockStatus").attr("value","Blocked");				
+		window.content.localStorage.setItem('DcTwdcStatus', "block");	
+		window.content.location.reload();				
+
+	},
 	
+	setDisplayIcons: function(){
+		if(window.content.localStorage.getItem('DcTwdcStatus')!="unblock"){
+
+			DcController.jQuery("#TwitterBlockIcon").attr("src","chrome://disconnect/content/resources/twitter-activated.png");		
+			DcController.jQuery("#TwitterBlockStatus").attr("value","Blocked");				
+		}
+		else{
+
+			DcController.jQuery("#TwitterBlockIcon").attr("src","chrome://disconnect/content/resources/twitter-deactivated.png");		
+			DcController.jQuery("#TwitterBlockStatus").attr("value","Unblocked");				
+		}		
+	},
 	/*
 	  Determines whether any of a bucket of domains is part of a URL, regex free.
 	*/
@@ -70,43 +92,11 @@ if (typeof DcTwdc == "undefined") {
 		/* registers this controller in the main controller */
 		DcController.controllers.push(DcTwdc);
 		
-		/* Traps and selectively cancels a request. */
-        DcTwdc.obsService =  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);  
-		DcTwdc.obsService.addObserver({observe: function(subject) {
-
-
-			DcTwdc.NOTIFICATION_CALLBACKS =
-				subject.QueryInterface(DcTwdc.INTERFACES.nsIHttpChannel).notificationCallbacks
-					|| subject.loadGroup.notificationCallbacks;
-
-			DcTwdc.BROWSER =
-				DcTwdc.NOTIFICATION_CALLBACKS &&
-					gBrowser.getBrowserForDocument(
-					  DcTwdc.NOTIFICATION_CALLBACKS
-						.getInterface(DcTwdc.INTERFACES.nsIDOMWindow).top.document
-					);
-
-			subject.referrer.ref;
-
-
-			// HACK: The URL read otherwise outraces the window unload.
-			if(DcTwdc.BROWSER && !DcTwdc.isMatching(DcTwdc.BROWSER.currentURI.spec, DcTwdc.DOMAINS) &&
-				DcTwdc.isMatching(subject.URI.spec, DcTwdc.DOMAINS)){
-					
-					if(typeof DcTwdc.NOTIFICATION_CALLBACKS.getInterface(DcTwdc.INTERFACES.nsIDOMWindow).top.document.DcTwdcCount == "undefined"){
-						DcTwdc.NOTIFICATION_CALLBACKS.getInterface(DcTwdc.INTERFACES.nsIDOMWindow).top.document.DcTwdcCount = 1;
-					}
-					else{
-						DcTwdc.NOTIFICATION_CALLBACKS.getInterface(DcTwdc.INTERFACES.nsIDOMWindow).top.document.DcTwdcCount += 1;						
-					}
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcTwdc.setDisplayIcons, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcTwdc.setDisplayIcons, false);  		
+		}
 				
-					subject.cancel(Components.results.NS_ERROR_ABORT);				
-			}
-
-
-
-		  }}, 'http-on-modify-request', false);
-
 	}
   }
 }

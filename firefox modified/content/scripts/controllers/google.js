@@ -25,76 +25,6 @@ if (typeof DcGgdc == "undefined") {
 
   var DcGgdc = {
 	  
-	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : [
-				  '2mdn.net',
-				  'accounts.google.com',
-				  'blogger.com',
-				  'books.google.com',
-				  'code.google.com',
-				  'docs.google.com',
-				  'doubleclick.net',
-				  'earth.google.com',
-				  'feedburner.com',
-				  'gmodules.com',
-				  'google-analytics.com',
-				  'google.com/alerts',
-				  'google.com/blogsearch',
-				  'google.com/bookmarks',
-				  'google.com/calendar',
-				  'google.com/chrome',
-				  'google.com/coop',
-				  'google.com/cse',
-				  'google.com/finance',
-				  'google.com/fusiontables',
-				  'google.com/health',
-				  'google.com/ig',
-				  'google.com/imghp',
-				  'google.com/intl',
-				  'google.com/latitude',
-				  'google.com/mobile',
-				  'google.com/offers',
-				  'google.com/patents',
-				  'google.com/prdhp',
-				  'google.com/products',
-				  'google.com/reader',
-				  'google.com/schhp',
-				  'google.com/shopping',
-				  'google.com/talk',
-				  'google.com/trends',
-				  'google.com/videohp',
-				  'google.com/voice',
-				  'google.com/wallet',
-				  'google.com/webhp',
-				  'googleadservices.com',
-				  'googlesyndication.com',
-				  'groups.google.com',
-				  'health.google.com',
-				  'images.google.com',
-				  'knol.google.com',
-				  'latitude.google.com',
-				  'mail.google.com',
-				  'music.google.com',
-				  'news.google.com',
-				  'orkut.com',
-				  'panoramio.com',
-				  'picasa.google.com',
-				  'picasaweb.google.com',
-				  'picnik.com',
-				  'plus.google.com',
-				  'scholar.google.com',
-				  'sites.google.com',
-				  'sketchup.google.com',
-				  'toolbar.google.com',
-				  'translate.google.com',
-				  'video.google.com',
-				  'voice.google.com',
-				  'youtube.com'			   
-			   ],
-			
-	/* The XPCOM interfaces. */
-	INTERFACES : Components.interfaces,
-	
 	/*
 	  Determines whether any of a bucket of domains is part of a URL, regex free.
 	*/
@@ -113,55 +43,66 @@ if (typeof DcGgdc == "undefined") {
 		DcController.jQuery("#GoogleBlockCount").attr("value",window.content.document.DcGgdcCount);	
 	},		
 	
-	/* Lifts international trade embargo on Facebook */
+	/* determine whether to block or unblock */
+	switchBlock : function(){
+		if(window.content.localStorage.getItem('DcGgdcStatus')!="unblock"){
+			DcGgdc.unblock();
+		}
+		else{
+			DcGgdc.block();
+		}
+	},
+
+	/* Lifts international trade embargo on Google */
 	unblock: function(){
-		alert("I am unblocking Google");
+		//alert("I am unblocking google");
+		DcController.jQuery("#GoogleBlockIcon").attr("src","chrome://disconnect/content/resources/google-deactivated.png");		
+		DcController.jQuery("#GoogleBlockStatus").attr("value","Unblocked");				
+		window.content.localStorage.setItem('DcGgdcStatus', "unblock");	
+		window.content.location.reload();		
 	
 	},
 	
-	/* Enforce international trade embargo on Facebook */
+	/* Enforce international trade embargo on Google */
 	block: function(){
-		alert("I am blocking Google");
-	},	
+		DcController.jQuery("#GoogleBlockIcon").attr("src","chrome://disconnect/content/resources/google-activated.png");		
+		DcController.jQuery("#GoogleBlockStatus").attr("value","Blocked");				
+		window.content.localStorage.setItem('DcGgdcStatus', "block");	
+		window.content.location.reload();				
+
+	},
+	
+	setDisplayIcons: function(){
+		if(window.content.localStorage.getItem('DcGgdcStatus')!="unblock"){
+
+			DcController.jQuery("#GoogleBlockIcon").attr("src","chrome://disconnect/content/resources/google-activated.png");		
+			DcController.jQuery("#GoogleBlockStatus").attr("value","Blocked");				
+		}
+		else{
+
+			DcController.jQuery("#GoogleBlockIcon").attr("src","chrome://disconnect/content/resources/google-deactivated.png");		
+			DcController.jQuery("#GoogleBlockStatus").attr("value","Unblocked");				
+		}		
+	},
 	
 	/* Initialization */	  
     init : function() {  
 		
 		/* registers this controller in the main controller */
 		DcController.controllers.push(DcGgdc);
+		
+		
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcGgdc.setDisplayIcons, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcGgdc.setDisplayIcons, false);  		
+		}
+		
 
-		/* Traps and selectively cancels a request. */
-        DcGgdc.obsService =  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);  
-		DcGgdc.obsService.addObserver({observe: function(subject) {
-			DcGgdc.NOTIFICATION_CALLBACKS =
-				subject.QueryInterface(DcGgdc.INTERFACES.nsIHttpChannel).notificationCallbacks
-					|| subject.loadGroup.notificationCallbacks;
-			DcGgdc.BROWSER =
-				DcGgdc.NOTIFICATION_CALLBACKS &&
-					gBrowser.getBrowserForDocument(
-					  DcGgdc.NOTIFICATION_CALLBACKS
-						.getInterface(DcGgdc.INTERFACES.nsIDOMWindow).top.document
-					);
-			subject.referrer.ref;
-				// HACK: The URL read otherwise outraces the window unload.
-			if(DcGgdc.BROWSER && !DcGgdc.isMatching(DcGgdc.BROWSER.currentURI.spec, DcGgdc.DOMAINS) &&
-				DcGgdc.isMatching(subject.URI.spec, DcGgdc.DOMAINS)){
-
-					if(typeof DcGgdc.NOTIFICATION_CALLBACKS.getInterface(DcGgdc.INTERFACES.nsIDOMWindow).top.document.DcGgdcCount == "undefined"){
-						DcGgdc.NOTIFICATION_CALLBACKS.getInterface(DcGgdc.INTERFACES.nsIDOMWindow).top.document.DcGgdcCount = 1;
-					}
-					else{
-						DcGgdc.NOTIFICATION_CALLBACKS.getInterface(DcGgdc.INTERFACES.nsIDOMWindow).top.document.DcGgdcCount += 1;						
-					}					
-				
-					subject.cancel(Components.results.NS_ERROR_ABORT);
-			}
-		  }}, 'http-on-modify-request', false);
 	}
   }
 }
 
-/* Initialization of Fbdc object on load */
+/* Initialization of Ggdc object on load */
 window.addEventListener("load", function() { DcGgdc.init(); }, false);  
 
 

@@ -1,5 +1,5 @@
 /*
-  A controller script that stops Facebook from tracking the webpages you go to.
+  A controller script that stops Yahoo from tracking the webpages you go to.
 
   Copyright 2010, 2011 Disconnect, Inc.
 
@@ -25,12 +25,6 @@ if (typeof DcYahoo == "undefined") {
 
   var DcYahoo = {
 	  
-	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : ['yahoo.com'],
-		
-	/* The XPCOM interfaces. */
-	INTERFACES : Components.interfaces,
-	  
 	/*
 	  Determines whether any of a bucket of domains is part of a URL, regex free.
 	*/
@@ -49,50 +43,60 @@ if (typeof DcYahoo == "undefined") {
 		DcController.jQuery("#YahooBlockCount").attr("value",window.content.document.DcYahooCount);		
 	},	
 
-	/* Lifts international trade embargo on Facebook */
+	
+	/* determine whether to block or unblock */
+	switchBlock : function(){
+		if(window.content.localStorage.getItem('DcYahooStatus')!="unblock"){
+			DcYahoo.unblock();
+		}
+		else{
+			DcYahoo.block();
+		}
+	},
+
+	/* Lifts international trade embargo on Yahoo */
 	unblock: function(){
-		alert("I am unblocking facebook");
+		//alert("I am unblocking yahoo");
+		DcController.jQuery("#YahooBlockIcon").attr("src","chrome://disconnect/content/resources/yahoo-deactivated.png");		
+		DcController.jQuery("#YahooBlockStatus").attr("value","Unblocked");				
+		window.content.localStorage.setItem('DcYahooStatus', "unblock");	
+		window.content.location.reload();		
 	
 	},
 	
-	/* Enforce international trade embargo on Facebook */
+	/* Enforce international trade embargo on Yahoo */
 	block: function(){
-		alert("I am blocking facebook");
+		DcController.jQuery("#YahooBlockIcon").attr("src","chrome://disconnect/content/resources/yahoo-activated.png");		
+		DcController.jQuery("#YahooBlockStatus").attr("value","Blocked");				
+		window.content.localStorage.setItem('DcYahooStatus', "block");	
+		window.content.location.reload();				
+
 	},
-	  
+	
+	setDisplayIcons: function(){
+		if(window.content.localStorage.getItem('DcYahooStatus')!="unblock"){
+
+			DcController.jQuery("#YahooBlockIcon").attr("src","chrome://disconnect/content/resources/yahoo-activated.png");		
+			DcController.jQuery("#YahooBlockStatus").attr("value","Blocked");				
+		}
+		else{
+
+			DcController.jQuery("#YahooBlockIcon").attr("src","chrome://disconnect/content/resources/yahoo-deactivated.png");		
+			DcController.jQuery("#YahooBlockStatus").attr("value","Unblocked");				
+		}		
+	},	  
+	
 	/* Initialization */	  
     init : function() {  
 
 		/* registers this controller in the main controller */
 		DcController.controllers.push(DcYahoo);
+		
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcYahoo.setDisplayIcons, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcYahoo.setDisplayIcons, false);  		
+		}		
 
-		/* Traps and selectively cancels a request. */
-        DcYahoo.obsService =  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);  
-		DcYahoo.obsService.addObserver({observe: function(subject) {
-			DcYahoo.NOTIFICATION_CALLBACKS =
-				subject.QueryInterface(DcYahoo.INTERFACES.nsIHttpChannel).notificationCallbacks
-					|| subject.loadGroup.notificationCallbacks;
-			DcYahoo.BROWSER =
-				DcYahoo.NOTIFICATION_CALLBACKS &&
-					gBrowser.getBrowserForDocument(
-					  DcYahoo.NOTIFICATION_CALLBACKS
-						.getInterface(DcYahoo.INTERFACES.nsIDOMWindow).top.document
-					);
-			subject.referrer.ref;
-				// HACK: The URL read otherwise outraces the window unload.
-			if(DcYahoo.BROWSER && !DcYahoo.isMatching(DcYahoo.BROWSER.currentURI.spec, DcYahoo.DOMAINS) &&
-				DcYahoo.isMatching(subject.URI.spec, DcYahoo.DOMAINS)){
-
-					if(typeof DcYahoo.NOTIFICATION_CALLBACKS.getInterface(DcYahoo.INTERFACES.nsIDOMWindow).top.document.DcYahooCount == "undefined"){
-						DcYahoo.NOTIFICATION_CALLBACKS.getInterface(DcYahoo.INTERFACES.nsIDOMWindow).top.document.DcYahooCount = 1;
-					}
-					else{
-						DcYahoo.NOTIFICATION_CALLBACKS.getInterface(DcYahoo.INTERFACES.nsIDOMWindow).top.document.DcYahooCount += 1;						
-					}
-
-					subject.cancel(Components.results.NS_ERROR_ABORT);
-			}
-		  }}, 'http-on-modify-request', false);
 	}
   }
 }

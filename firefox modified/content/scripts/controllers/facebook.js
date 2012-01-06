@@ -25,12 +25,6 @@ if (typeof DcFbdc == "undefined") {
 
   var DcFbdc = {
 	  
-	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : ['facebook.com', 'facebook.net', 'fbcdn.net'],
-		
-	/* The XPCOM interfaces. */
-	INTERFACES : Components.interfaces,
-	  
 	/*
 	  Determines whether any of a bucket of domains is part of a URL, regex free.
 	*/
@@ -48,16 +42,47 @@ if (typeof DcFbdc == "undefined") {
 		}				
 		DcController.jQuery("#FacebookBlockCount").attr("value",window.content.document.DcFbdcCount);		
 	},	
+	
+	/* determine whether to block or unblock */
+	switchBlock : function(){
+		if(window.content.localStorage.getItem('DcFbdcStatus')!="unblock"){
+			DcFbdc.unblock();
+		}
+		else{
+			DcFbdc.block();
+		}
+	},
 
 	/* Lifts international trade embargo on Facebook */
 	unblock: function(){
-		alert("I am unblocking facebook");
+		//alert("I am unblocking facebook");
+		DcController.jQuery("#FacebookBlockIcon").attr("src","chrome://disconnect/content/resources/facebook-deactivated.png");		
+		DcController.jQuery("#FacebookBlockStatus").attr("value","Unblocked");				
+		window.content.localStorage.setItem('DcFbdcStatus', "unblock");	
+		window.content.location.reload();		
 	
 	},
 	
 	/* Enforce international trade embargo on Facebook */
 	block: function(){
-		alert("I am blocking facebook");
+		DcController.jQuery("#FacebookBlockIcon").attr("src","chrome://disconnect/content/resources/facebook-activated.png");		
+		DcController.jQuery("#FacebookBlockStatus").attr("value","Blocked");				
+		window.content.localStorage.setItem('DcFbdcStatus', "block");	
+		window.content.location.reload();				
+
+	},
+	
+	setDisplayIcons: function(){
+		if(window.content.localStorage.getItem('DcFbdcStatus')!="unblock"){
+
+			DcController.jQuery("#FacebookBlockIcon").attr("src","chrome://disconnect/content/resources/facebook-activated.png");		
+			DcController.jQuery("#FacebookBlockStatus").attr("value","Blocked");				
+		}
+		else{
+
+			DcController.jQuery("#FacebookBlockIcon").attr("src","chrome://disconnect/content/resources/facebook-deactivated.png");		
+			DcController.jQuery("#FacebookBlockStatus").attr("value","Unblocked");				
+		}		
 	},
 	  
 	/* Initialization */	  
@@ -65,34 +90,13 @@ if (typeof DcFbdc == "undefined") {
 
 		/* registers this controller in the main controller */
 		DcController.controllers.push(DcFbdc);
+		
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcFbdc.setDisplayIcons, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcFbdc.setDisplayIcons, false);  		
+		}
 
-		/* Traps and selectively cancels a request. */
-        DcFbdc.obsService =  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);  
-		DcFbdc.obsService.addObserver({observe: function(subject) {
-			DcFbdc.NOTIFICATION_CALLBACKS =
-				subject.QueryInterface(DcFbdc.INTERFACES.nsIHttpChannel).notificationCallbacks
-					|| subject.loadGroup.notificationCallbacks;
-			DcFbdc.BROWSER =
-				DcFbdc.NOTIFICATION_CALLBACKS &&
-					gBrowser.getBrowserForDocument(
-					  DcFbdc.NOTIFICATION_CALLBACKS
-						.getInterface(DcFbdc.INTERFACES.nsIDOMWindow).top.document
-					);
-			subject.referrer.ref;
-				// HACK: The URL read otherwise outraces the window unload.
-			if(DcFbdc.BROWSER && !DcFbdc.isMatching(DcFbdc.BROWSER.currentURI.spec, DcFbdc.DOMAINS) &&
-				DcFbdc.isMatching(subject.URI.spec, DcFbdc.DOMAINS)){
 
-					if(typeof DcFbdc.NOTIFICATION_CALLBACKS.getInterface(DcFbdc.INTERFACES.nsIDOMWindow).top.document.DcFbdcCount == "undefined"){
-						DcFbdc.NOTIFICATION_CALLBACKS.getInterface(DcFbdc.INTERFACES.nsIDOMWindow).top.document.DcFbdcCount = 1;
-					}
-					else{
-						DcFbdc.NOTIFICATION_CALLBACKS.getInterface(DcFbdc.INTERFACES.nsIDOMWindow).top.document.DcFbdcCount += 1;						
-					}
-
-					subject.cancel(Components.results.NS_ERROR_ABORT);
-			}
-		  }}, 'http-on-modify-request', false);
 	}
   }
 }
