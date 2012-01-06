@@ -25,15 +25,21 @@ if (typeof DcDigg == "undefined") {
 
   var DcDigg = {
 	  
-	/*
-	  Determines whether any of a bucket of domains is part of a URL, regex free.
-	*/
+	/* Determines whether any of a bucket of domains is part of a URL, regex free.	*/
 	isMatching: function(url, domains) {
 	  const DOMAIN_COUNT = domains.length;
 	  for (var i = 0; i < DOMAIN_COUNT; i++)
 		  if (url.toLowerCase().indexOf(domains[i], 2) >= 2) return true;
 			  // A valid URL has at least two characters ("//"), then the domain.
 	},
+	
+	/* Get the number of digg blocks */
+	getCount : function(){
+		if(typeof window.content.document.DcDiggCount == "undefined"){
+			window.content.document.DcDiggCount = 0;
+		}				
+		return window.content.document.DcDiggCount;
+	},		
 
 	/* Updates the number of digg blocks in the popup menu */
 	updateCount : function(){
@@ -74,6 +80,7 @@ if (typeof DcDigg == "undefined") {
 
 	},
 	
+	/* sets the icon to use in the popup menu */	
 	setDisplayIcons: function(){
 		if(window.content.localStorage.getItem('DcDiggStatus')!="unblock"){
 

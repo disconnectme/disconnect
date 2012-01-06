@@ -23,10 +23,12 @@
 			    label="Disconnect"
 			    tooltiptext="Disconnect"
 		    	popup="statusBarPanelMenu"
-		    	oncommand='DcController.updateCount()'				 
+			    oncommand='DcController.manualUpdateCount()'	
 				 >
 					<image id="disconnect-image" src="chrome://disconnect/content/resources/activated.png" />
+					<label value="0" id="ControllerCount"  />								
 			</toolbarbutton>			
+
 
 			<menupopup id="statusBarPanelMenu" position="after_start">  
 				<menuitem 

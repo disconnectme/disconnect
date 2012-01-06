@@ -44,20 +44,74 @@ if (typeof DcController == "undefined") {
 			DcController.jQuery(ele).html(valueAdd);			
 			DcController.jQuery("body", doc).append(ele );
 		}
-
 	},
 
 	/* Updates the number of blocks in the popup menu for all registered controllers */	
-	updateCount : function(){
+	manualUpdateCount : function(){
+		totalCount = 0;
 		DcController.jQuery.each(DcController.controllers, function(index, currController){
 			currController.updateCount();
+			totalCount += currController.getCount();
 		})
-		
+		if(totalCount >0){
+			jQuery("#ControllerCount").attr("value",totalCount );
+			jQuery("#ControllerCount").show();			
+		}
+		else{
+			jQuery("#ControllerCount").attr("value","");			
+			jQuery("#ControllerCount").hide();						
+		}
 	},
+	
+	/* Updates the number of blocks in the popup menu for all registered controllers */	
+	dynamicUpdateCount : function(){
+		window.setTimeout(function() {				
+			totalCount = 0;
+			DcController.jQuery.each(DcController.controllers, function(index, currController){
+				currController.updateCount();
+				totalCount += currController.getCount();
+			})
+			if(totalCount >0){
+				jQuery("#ControllerCount").attr("value",totalCount );
+				jQuery("#ControllerCount").show();			
+			}
+			else{
+				jQuery("#ControllerCount").attr("value","");			
+				jQuery("#ControllerCount").hide();						
+			}
+		}, 500);			
+	},
+		
 	
 	/* Initialization */	  
     init : function() {  
 		DcController.jQuery("#TwitterBlockCount").attr("value", DcTwdc.BlockCount)		
+		
+		var dcDiggComponent = Cc['@disconnect.me/dcdigg/contentpolicy;1'].getService().wrappedJSObject;
+		var dcFbdcComponent = Cc['@disconnect.me/dcfbdc/contentpolicy;1'].getService().wrappedJSObject;
+		var dcGgdcComponent = Cc['@disconnect.me/dcggdc/contentpolicy;1'].getService().wrappedJSObject;
+		var dcTwdcComponent = Cc['@disconnect.me/dctwdc/contentpolicy;1'].getService().wrappedJSObject;
+		var dcYahooComponent = Cc['@disconnect.me/dcyahoo/contentpolicy;1'].getService().wrappedJSObject;		
+
+		try{
+			dcDiggComponent.setDisplayer(DcController.dynamicUpdateCount);		
+			dcFbdcComponent.setDisplayer(DcController.dynamicUpdateCount);		
+			dcGgdcComponent.setDisplayer(DcController.dynamicUpdateCount);		
+			dcTwdcComponent.setDisplayer(DcController.dynamicUpdateCount);		
+			dcYahooComponent.setDisplayer(DcController.dynamicUpdateCount);					
+		}
+		catch(aError){
+			alert(aError);
+		}
+		
+		if(gBrowser){
+			gBrowser.addEventListener("DOMContentLoaded", DcController.manualUpdateCount, false);  
+			gBrowser.tabContainer.addEventListener("TabAttrModified", DcController.manualUpdateCount, false);  		
+		}
+		
 	}
   }
 }	  
+
+/* Initialization of DcFbdc object on load */
+window.addEventListener("load", function() { DcController.init(); }, false);  

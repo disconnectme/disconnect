@@ -51,6 +51,13 @@ DcFbdcContentPolicy.prototype =
 	
 	rejectedLoc : "",
 	
+	displayer : false,
+	
+	/* sets the display function */
+	setDisplayer : function(aFunc){
+		this.displayer = aFunc;
+	},		
+	
 	// define the function we want to expose in our interface  
 	showStatus: function() {  
 		//return "Hello World!";  
@@ -68,11 +75,14 @@ DcFbdcContentPolicy.prototype =
 	
 	/* A function of the nsIContentPolicy interface : called when an element is to be loaded from the internet */
 	shouldLoad: function (contType, contLoc, reqOrig, aContext, typeGuess, extra) {
-		if(reqOrig != null && contLoc.host!="browser" && contLoc.host!="global"){
+		if(reqOrig != null && reqOrig.host!="browser" && contLoc.host!="browser" && contLoc.host!="global"){
 			this.MyLoc += contLoc.host+" : "+reqOrig.host+"\r\n";
-			if( reqOrig.host !=contLoc.host && this.isMatching(contLoc.host, this.DOMAINS) && typeof aContext.ownerDocument != null){
+			if( reqOrig.host !=contLoc.host && !this.isMatching(reqOrig.host, this.DOMAINS) && this.isMatching(contLoc.host, this.DOMAINS) && typeof aContext.ownerDocument != null){
 				
 				try{
+					if(this.displayer){
+						this.displayer(1);
+					}					
 					
 					if(typeof aContext.ownerDocument.DcFbdcCount == "undefined"){
 						aContext.ownerDocument.DcFbdcCount = 1;

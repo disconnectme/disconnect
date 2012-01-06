@@ -26,6 +26,14 @@ if (typeof DcTwdc == "undefined") {
 
   var DcTwdc = {
 	
+	/* Get the number of twitter blocks */
+	getCount : function(){
+		if(typeof window.content.document.DcTwdcCount == "undefined"){
+			window.content.document.DcTwdcCount = 0;
+		}				
+		return window.content.document.DcTwdcCount;
+	},			
+	
 	/* Updates the number of twitter blocks in the popup menu */
 	updateCount : function(){
 		if(typeof window.content.document.DcTwdcCount == "undefined"){
@@ -33,7 +41,6 @@ if (typeof DcTwdc == "undefined") {
 		}						
 		DcController.jQuery("#TwitterBlockCount").attr("value",window.content.document.DcTwdcCount);	
 	},	
-	
 	
 	/* determine whether to block or unblock */
 	switchBlock : function(){
@@ -64,6 +71,7 @@ if (typeof DcTwdc == "undefined") {
 
 	},
 	
+	/* sets the icon to use in the popup menu */	
 	setDisplayIcons: function(){
 		if(window.content.localStorage.getItem('DcTwdcStatus')!="unblock"){
 

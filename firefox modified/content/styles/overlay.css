@@ -26,3 +26,11 @@ background-color:#FFFFFF;
 border:1px solid #CCCCCC;
 padding:5px;
 }
+
+#ControllerCount{
+background-color:#FF0000;
+color:#FFFFFF;
+font-weight:bold;
+padding:3px;
+border:1px solid #000000;
+}

@@ -25,15 +25,21 @@ if (typeof DcGgdc == "undefined") {
 
   var DcGgdc = {
 	  
-	/*
-	  Determines whether any of a bucket of domains is part of a URL, regex free.
-	*/
+	/* Determines whether any of a bucket of domains is part of a URL, regex free. */
 	isMatching: function(url, domains) {
 	  const DOMAIN_COUNT = domains.length;
 	  for (var i = 0; i < DOMAIN_COUNT; i++)
 		  if (url.toLowerCase().indexOf(domains[i], 2) >= 2) return true;
 			  // A valid URL has at least two characters ("//"), then the domain.
 	},
+	
+	/* Get the number of google blocks */
+	getCount : function(){
+		if(typeof window.content.document.DcGgdcCount == "undefined"){
+			window.content.document.DcGgdcCount = 0;
+		}				
+		return window.content.document.DcGgdcCount;
+	},			
 	
 	/* Updates the number of google blocks in the popup menu */	
 	updateCount : function(){
@@ -72,6 +78,7 @@ if (typeof DcGgdc == "undefined") {
 
 	},
 	
+	/* sets the icon to use in the popup menu */	
 	setDisplayIcons: function(){
 		if(window.content.localStorage.getItem('DcGgdcStatus')!="unblock"){
 
