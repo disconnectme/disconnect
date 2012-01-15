@@ -47,7 +47,7 @@ DcFbdcContentPolicy.prototype =
 	QueryInterface:     XPCOMUtils.generateQI([Ci.nsIContentPolicy]),
 
 	/* The domain names Facebook phones home with, lowercased. */
-	DOMAINS : ['facebook.com', 'facebook.net', 'fbcdn.net'],
+	DOMAINS : ['facebook.com', 'facebook.net', 'fbcdn.net','apps.facebook.com','connect.facebook.net'],
 	
 	rejectedLoc : "",
 	
@@ -76,8 +76,18 @@ DcFbdcContentPolicy.prototype =
 	/* A function of the nsIContentPolicy interface : called when an element is to be loaded from the internet */
 	shouldLoad: function (contType, contLoc, reqOrig, aContext, typeGuess, extra) {
 		if(reqOrig != null && reqOrig.host!="browser" && contLoc.host!="browser" && contLoc.host!="global" && contType!=6){
-			this.MyLoc += contLoc.host+" : "+reqOrig.host+"\r\n";
-			if( reqOrig.host !=contLoc.host && !this.isMatching(reqOrig.host, this.DOMAINS) && this.isMatching(contLoc.host, this.DOMAINS) && typeof aContext.ownerDocument != null){
+			
+			var topWindowLoc = "";
+			try{
+				if(aContext.ownerDocument != null){
+					topWindowLoc = aContext.ownerDocument.defaultView.content.top.location.href;
+				}
+			}
+			catch(anError){
+				this.rejectedLoc += anError+"\r\n";				
+			}
+
+			if( reqOrig.host !=contLoc.host && !this.isMatching(reqOrig.host, this.DOMAINS) && !this.isMatching(topWindowLoc, this.DOMAINS) &&  this.isMatching(contLoc.host, this.DOMAINS) && typeof aContext.ownerDocument != null){
 				
 				try{
 					if(this.displayer){
@@ -101,6 +111,8 @@ DcFbdcContentPolicy.prototype =
 					this.rejectedLoc += anError+"\r\n";
 					
 				}
+				
+				this.rejectedLoc += contLoc.host+" : "+reqOrig.host+"\r\n";				
 				return Ci.nsIContentPolicy.REJECT;				
 			}
 		}
