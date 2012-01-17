@@ -75,6 +75,26 @@ DcFbdcContentPolicy.prototype =
 	
 	/* A function of the nsIContentPolicy interface : called when an element is to be loaded from the internet */
 	shouldLoad: function (contType, contLoc, reqOrig, aContext, typeGuess, extra) {
+		
+		try{
+			if(reqOrig != null ){
+				reqOrig.host;
+			}
+		}
+		catch(anError){
+			return Ci.nsIContentPolicy.ACCEPT;			
+		}
+
+		try{
+			if(contLoc != null ){
+				contLoc.host;
+			}
+		}
+		catch(anError){
+			return Ci.nsIContentPolicy.ACCEPT;			
+		}
+		
+		
 		if(reqOrig != null && reqOrig.host!="browser" && contLoc.host!="browser" && contLoc.host!="global" && contType!=6){
 			
 			var topWindowLoc = "";
