@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+	
+		<em:id>disconnect@disconnect.me</em:id>
+		<em:name>Disconnect</em:name>
+		<em:version>1.0.1</em:version>
+		<em:description>Stop major third parties from tracking the webpages you go to.</em:description>
+		<em:creator>Brian Kennish</em:creator>
+		<em:homepageURL>http://disconnect.me/</em:homepageURL>
+		
+		<em:iconURL>chrome://disconnect/content/resources/48.png</em:iconURL>
+		<!-- optional items -->
+		<em:unpack>true</em:unpack> <!-- we reference in-page javascript that's packaged in the .xpi -->
+		<em:type>2</em:type> <!-- type=extension --> 
+
+                <!-- Firefox -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>3.0</em:minVersion>
+				<em:maxVersion>10.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		<!-- Flock -->
+		<em:targetApplication>
+		  <Description>
+		    <em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+		    <em:minVersion>0.8</em:minVersion>
+		    <em:maxVersion>10.0.*</em:maxVersion>
+		  </Description>
+		</em:targetApplication>
+	</Description>
+</RDF>
+		

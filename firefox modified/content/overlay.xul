@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css"  href="chrome://disconnect/content/styles/overlay.css"?>
+
+<overlay id="disconnect-overlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/jquery.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/sandbox.js" />		
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/digg.js" />	
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/facebook.js" />
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/google.js" />	
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/twitter.js" />		
+	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controllers/yahoo.js" />			
+ 	<script type="application/x-javascript" src="chrome://disconnect/content/scripts/controller.js" />	
+
+	
+
+	<toolbarpalette id="BrowserToolbarPalette">
+	    <vbox id="disconnect-appcontent">	
+		
+			<toolbarbutton id="disconnect-toolbarbutton"
+			    label="Disconnect"
+			    tooltiptext="Disconnect"
+		    	popup="statusBarPanelMenu"
+			    oncommand='DcController.manualUpdateCount()'	
+				 >
+					<image id="disconnect-image" src="chrome://disconnect/content/resources/activated.png" />
+					<label value="0" id="ControllerCount"  />								
+			</toolbarbutton>			
+
+
+			<menupopup id="statusBarPanelMenu" position="after_start">  
+				<menuitem 
+			    	oncommand='DcDigg.switchBlock()'				
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/digg-activated.png" 
+						id="DiggBlockIcon"  
+					/>				
+					<label value="0" id="DiggBlockCount" />  					
+					<label value="Blocked" id="DiggBlockStatus" />  					
+			  	</menuitem>			
+			
+				<menuitem 
+			    	oncommand='DcFbdc.switchBlock()'								
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/facebook-activated.png" 
+						id="FacebookBlockIcon"  						
+					/>				
+					<label value="0" id="FacebookBlockCount"  />
+					<label value="Blocked" id="FacebookBlockStatus" />  										  					
+			  	</menuitem>
+							
+				<menuitem 
+			    	oncommand='DcGgdc.switchBlock()'								
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/google-activated.png" 
+						id="GoogleBlockIcon"  												
+					/>				
+					<label value="0" id="GoogleBlockCount"  />  										
+					<label value="Blocked" id="GoogleBlockStatus" />  					
+			  	</menuitem>
+
+				<menuitem 
+			    	oncommand='DcTwdc.switchBlock()'												
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/twitter-activated.png" 
+						id="TwitterBlockIcon"  																		
+					/>				
+					<label value="0" id="TwitterBlockCount" />
+					<label value="Blocked" id="TwitterBlockStatus" />  										
+			  	</menuitem>
+				
+				<menuitem 
+			    	oncommand='DcYahoo.switchBlock()'																
+				>
+					<image 
+						class="channelIcon" 
+						src="chrome://disconnect/content/resources/yahoo-activated.png" 
+						id="YahooBlockIcon"  																								
+					/>				
+					<label value="0" id="YahooBlockCount" />
+					<label value="Blocked" id="YahooBlockStatus" />  										
+			  	</menuitem>				
+				
+			</menupopup>  
+			
+	    </vbox>
+	</toolbarpalette>
+
+</overlay>

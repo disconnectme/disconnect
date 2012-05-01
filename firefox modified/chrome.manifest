@@ -1,0 +1,23 @@
+content disconnect content/
+skin disconnect content/styles/
+overlay	chrome://browser/content/browser.xul	chrome://disconnect/content/overlay.xul
+
+component {d32a3c00-4ed3-11de-8a39-0800200c9a71} components/DcFbdcContentPolicy.js
+contract @disconnect.me/dcfbdc/contentpolicy;1 {d32a3c00-4ed3-11de-8a39-0800200c9a71}
+category content-policy @disconnect.me/dcfbdc/contentpolicy;1 @disconnect.me/dcfbdc/contentpolicy;1
+
+component {d32a3c00-4ed3-11de-8a39-0800200c9a75} components/DcGgdcContentPolicy.js
+contract @disconnect.me/dcggdc/contentpolicy;1 {d32a3c00-4ed3-11de-8a39-0800200c9a75}
+category content-policy @disconnect.me/dcggdc/contentpolicy;1 @disconnect.me/dcggdc/contentpolicy;1
+
+component {d32a3c00-4ed3-11de-8a39-0800200c9a74} components/DcTwdcContentPolicy.js
+contract @disconnect.me/dctwdc/contentpolicy;1 {d32a3c00-4ed3-11de-8a39-0800200c9a74}
+category content-policy @disconnect.me/dctwdc/contentpolicy;1 @disconnect.me/dctwdc/contentpolicy;1
+
+component {d32a3c00-4ed3-11de-8a39-0800200c9a76} components/DcYahooContentPolicy.js
+contract @disconnect.me/dcyahoo/contentpolicy;1 {d32a3c00-4ed3-11de-8a39-0800200c9a76}
+category content-policy @disconnect.me/dcyahoo/contentpolicy;1 @disconnect.me/dcyahoo/contentpolicy;1
+
+component {d32a3c00-4ed3-11de-8a39-0800200c9a77} components/DcDiggContentPolicy.js
+contract @disconnect.me/dcdigg/contentpolicy;1 {d32a3c00-4ed3-11de-8a39-0800200c9a77}
+category content-policy @disconnect.me/dcdigg/contentpolicy;1 @disconnect.me/dcdigg/contentpolicy;1

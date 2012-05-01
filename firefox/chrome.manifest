@@ -1,0 +1,5 @@
+content	2b74ff14-7256-42e0-9bf1-0806eec78788	content/
+skin	2b74ff14-7256-42e0-9bf1-0806eec78788	classic/1.0	skin/
+resource 2b74ff14-7256-42e0-9bf1-0806eec78788 content/
+resource 2b74ff14-7256-42e0-9bf1-0806eec78788-common content/common/
+overlay	chrome://browser/content/browser.xul	chrome://2b74ff14-7256-42e0-9bf1-0806eec78788/content/overlay.xul

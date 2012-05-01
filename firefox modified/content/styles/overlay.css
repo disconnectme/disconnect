@@ -1,0 +1,36 @@
+/* 
+	This CSS document is used for styling the toolbar icons
+*/
+
+#disconnect-toolbarbutton{
+border:1px solid #CCCCCC;
+background-color:#FFFFFF;
+}
+
+#disconnect-toolbarbutton:hover{
+border:1px solid #CCCCCC;
+background-color:#99FFFF;
+}
+
+.hating{
+border:6px solid #ff0000;
+}
+
+.channelIcon{
+padding:5px;
+}
+
+
+#statusBarPanelMenu{
+background-color:#FFFFFF;
+border:1px solid #CCCCCC;
+padding:5px;
+}
+
+#ControllerCount{
+background-color:#FF0000;
+color:#FFFFFF;
+font-weight:bold;
+padding:3px;
+border:1px solid #000000;
+}
