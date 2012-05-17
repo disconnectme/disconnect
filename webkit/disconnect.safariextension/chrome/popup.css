@@ -37,14 +37,13 @@ input { margin-left: 0 }
 
 :link, :visited { color: #003ea8 }
 
+.activated { color: #7f7f7f }
+
 .deactivated { color: graytext }
 
 .mouseover { background: #f4f6fc }
 
-#services {
-  color: #333;
-  font-size: small
-}
+#services { font-size: small }
 
 #services tr {
   border: solid #edeff5;
