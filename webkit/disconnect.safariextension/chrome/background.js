@@ -298,7 +298,12 @@ for (i = 0; i < SERVICE_COUNT; i++) {
   }
 }
 
-BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+if (!deserialize(localStorage.fbmeOpened))
+    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+else {
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+  BROWSER_ACTION.setPopup({popup: 'popup.html'});
+}
 
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
@@ -362,4 +367,13 @@ COOKIES.onChanged.addListener(function(changeInfo) {
       }
     }
   }
+});
+
+/* Loads the FBME promo. */
+BROWSER_ACTION.onClicked.addListener(function() {
+  TABS.create({url: 'https://fbme.disconnect.me/'});
+  BROWSER_ACTION.setBadgeText({text: ''});
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+  BROWSER_ACTION.setPopup({popup: 'popup.html'});
+  localStorage.fbmeOpened = true;
 });

@@ -19,8 +19,7 @@
   "background_page": "background.html",
   "browser_action": {
     "default_icon": "activated.png",
-    "default_title": "View and manage blocked requests",
-    "default_popup": "popup.html"
+    "default_title": "View and manage blocked requests"
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
