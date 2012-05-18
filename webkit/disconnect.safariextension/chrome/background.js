@@ -146,6 +146,12 @@ function reduceCookies(url, service, name) {
   });
 }
 
+/* Preps the browser action. */
+function initializeToolbar() {
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+  BROWSER_ACTION.setPopup({popup: 'popup.html'});
+}
+
 /* Tallies and indicates the number of blocked requests. */
 function incrementCounter(tabId, serviceIndex) {
   const TAB_BLOCKED_COUNTS =
@@ -165,8 +171,14 @@ function incrementCounter(tabId, serviceIndex) {
 */
 const SERVICES = [
   ['Digg', ['digg.com']],
-  ['Facebook', ['facebook.com', 'facebook.net', 'fbcdn.net', 'disconnect.me']],
-      // "disconnect.me" whitelisting is temporary, for FBME.
+  ['Facebook', [
+    'facebook.com',
+    'facebook.net',
+    'fbcdn.net',
+    'disconnect.me',
+    'localhost'
+        // "disconnect.me" and "localhost" whitelisting is temporary, for FBME.
+  ]],
   ['Google', [
     'google.com',
     '2mdn.net',
@@ -300,10 +312,7 @@ for (i = 0; i < SERVICE_COUNT; i++) {
 
 if (!deserialize(localStorage.fbmeOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-else {
-  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
-  BROWSER_ACTION.setPopup({popup: 'popup.html'});
-}
+else initializeToolbar();
 
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
@@ -371,9 +380,8 @@ COOKIES.onChanged.addListener(function(changeInfo) {
 
 /* Loads the FBME promo. */
 BROWSER_ACTION.onClicked.addListener(function() {
-  TABS.create({url: 'https://fbme.disconnect.me/'});
+  TABS.create({url: 'https://fbme.disconnect.me/extension'});
   BROWSER_ACTION.setBadgeText({text: ''});
-  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
-  BROWSER_ACTION.setPopup({popup: 'popup.html'});
+  initializeToolbar();
   localStorage.fbmeOpened = true;
 });
