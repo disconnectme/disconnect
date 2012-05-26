@@ -146,43 +146,23 @@ function reduceCookies(url, service, name) {
   });
 }
 
-/* Tallies and indicates the number of tracking requests. */
-function incrementCounter(tabId, serviceIndex, cookie) {
-  const TAB_REQUEST_COUNTS = REQUEST_COUNTS[tabId];
-  const TAB_REQUEST_COUNT = ++TAB_REQUEST_COUNTS[0];
-  const TAB_BLACKLIST = BLACKLIST[tabId];
-  const UNBLOCKED = !TAB_BLACKLIST[serviceIndex][3];
-  const INDICATED = deserialize(localStorage.requestsIndicated);
-
-  if (
-    (!cookie ? UNBLOCKED : !TAB_BLACKLIST[SERVICE_COUNT] || UNBLOCKED) &&
-        TAB_REQUEST_COUNTS[3][serviceIndex]
-  ) {
-    if (TAB_REQUEST_COUNTS[1] && INDICATED) {
-      delete TAB_REQUEST_COUNTS[1];
-      BROWSER_ACTION.setBadgeBackgroundColor(
-        {color: [218, 0, 24, 255], tabId: tabId}
-      );
-    }
-
-    delete TAB_REQUEST_COUNTS[3][serviceIndex];
-  }
-
-  TAB_REQUEST_COUNTS[2][serviceIndex]++;
-  if (TAB_REQUEST_COUNT == 1)
-      BROWSER_ACTION.setIcon({path: 'blocked.png', tabId: tabId});
-  if (INDICATED)
-      BROWSER_ACTION.setBadgeText({text: TAB_REQUEST_COUNT + '', tabId: tabId});
+/* Preps the browser action. */
+function initializeToolbar() {
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+  BROWSER_ACTION.setPopup({popup: 'popup.html'});
 }
 
-/* The timestamping method. */
-const TIMESTAMP = Date.now;
-
-/* The build number of the current install. */
-const CURRENT_BUILD = 16;
-
-/* The build number of the previous install. */
-const PREVIOUS_BUILD = deserialize(localStorage.build);
+/* Tallies and indicates the number of blocked requests. */
+function incrementCounter(tabId, serviceIndex) {
+  const TAB_BLOCKED_COUNTS =
+      BLOCKED_COUNTS[tabId] ||
+          (BLOCKED_COUNTS[tabId] = [0, initializeArray(SERVICE_COUNT, 0)]);
+  const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
+  TAB_BLOCKED_COUNTS[1][serviceIndex]++;
+  BROWSER_ACTION.setIcon({tabId: tabId, path: 'blocked.png'});
+  if (deserialize(localStorage.blockingIndicated))
+      BROWSER_ACTION.setBadgeText({tabId: tabId, text: TAB_BLOCKED_COUNT + ''});
+}
 
 /*
   The third parties and search engines, titlecased, and domain, subdomain, and
@@ -191,7 +171,14 @@ const PREVIOUS_BUILD = deserialize(localStorage.build);
 */
 const SERVICES = [
   ['Digg', ['digg.com']],
-  ['Facebook', ['facebook.com', 'facebook.net', 'fbcdn.net']],
+  ['Facebook', [
+    'facebook.com',
+    'facebook.net',
+    'fbcdn.net',
+    'disconnect.me',
+    'localhost'
+        // "disconnect.me" and "localhost" whitelisting is temporary, for FBME.
+  ]],
   ['Google', [
     'google.com',
     '2mdn.net',
@@ -212,9 +199,12 @@ const SERVICES = [
     'health',
     'knol',
     'mail',
+    'music',
     'picasaweb',
+    'plus',
     'sites',
     'sketchup',
+    'talkgadget',
     'wave'
   ], [
     'accounts',
@@ -273,23 +263,14 @@ const SERVICES = [
   ], [], 'https://search.yahoo.com/']
 ];
 
-/* The number of third parties and search engines. */
+/* The number of third parties. */
 const SERVICE_COUNT = SERVICES.length;
 
 /* The suffix of the blocking key. */
 const BLOCKED_NAME = 'Blocked';
 
-/*
-  The blocked names and domains and search and blocking state, by service, and
-  depersonalization state per tab.
-*/
-const BLACKLIST = {};
-
-/*
-  The number of tracking requests and blocking state per tab, overall and by
-  service.
-*/
-const REQUEST_COUNTS = {};
+/* The number of blocked requests per tab, overall and by third party. */
+const BLOCKED_COUNTS = {};
 
 /* The "tabs" API. */
 const TABS = chrome.tabs;
@@ -300,6 +281,9 @@ const COOKIES = chrome.cookies;
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
 
+/* The timestamping method. */
+const TIMESTAMP = Date.now;
+
 /* The start time of this script. */
 const START_TIME = TIMESTAMP();
 
@@ -309,18 +293,8 @@ var i;
 if (!deserialize(localStorage.initialized)) {
   for (i = 0; i < SERVICE_COUNT; i++)
       localStorage[SERVICES[i][0].toLowerCase() + BLOCKED_NAME] = true;
-  localStorage.requestsIndicated = true;
+  localStorage.blockingIndicated = true;
   localStorage.initialized = true;
-}
-
-if (deserialize(localStorage.blockingIndicated)) {
-  delete localStorage.blockingIndicated;
-  localStorage.requestsIndicated = true;
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  localStorage.boxDecoration = 0;
-  localStorage.build = CURRENT_BUILD;
 }
 
 for (i = 0; i < SERVICE_COUNT; i++) {
@@ -336,98 +310,78 @@ for (i = 0; i < SERVICE_COUNT; i++) {
   }
 }
 
-BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+if (!deserialize(localStorage.fbmeOpened))
+    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+else initializeToolbar();
 
-/* Resets the block list and number of tracking requests for a tab. */
+/* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
-  if (changeInfo.status == 'loading') {
-    delete BLACKLIST[tabId];
-    delete REQUEST_COUNTS[tabId];
-  }
+  if (changeInfo.status == 'loading') delete BLOCKED_COUNTS[tabId];
 });
 
-/*
-  Builds a block list and request counter or adds to the number of tracking
-  requests.
-*/
+/* Builds a block list or adds to the number of blocked requests. */
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  const TAB_ID = sender.tab.id;
-  var blacklist = BLACKLIST[TAB_ID];
-
   if (request.initialized) {
-    if (!blacklist) {
-      blacklist = BLACKLIST[TAB_ID] = [];
+    const BLACKLIST = [];
 
-      for (var i = 0; i < SERVICE_COUNT; i++) {
-        var service = SERVICES[i];
-        blacklist[i] = [
-          service[0],
-          service[1],
-          !!service[2],
-          deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-        ];
-      }
-
-      blacklist.push(
-        deserialize(localStorage.searchDepersonalized),
-        deserialize(localStorage.boxDecoration)
-      );
-      REQUEST_COUNTS[TAB_ID] = [
-        0,
-        true,
-        initializeArray(SERVICE_COUNT, 0),
-        initializeArray(SERVICE_COUNT, true)
-      ];
+    for (var i = 0; i < SERVICE_COUNT; i++) {
+      var service = SERVICES[i];
+      BLACKLIST[i] =
+          deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME]) ?
+              [service[1], !!service[2]] : [[]];
     }
 
-    sendResponse({blacklist: blacklist});
+    sendResponse({blacklist: BLACKLIST});
   } else {
-    const SERVICE_INDEX = request.serviceIndex;
-
-    if (!request.unblocked) incrementCounter(TAB_ID, SERVICE_INDEX);
-    else {
-      delete
-          localStorage[SERVICES[SERVICE_INDEX][0].toLowerCase() + BLOCKED_NAME];
-      delete blacklist[SERVICE_INDEX][3];
-    }
-
+    incrementCounter(sender.tab.id, request.serviceIndex);
     sendResponse({});
   }
 });
 
 /*
-  Optionally rewrites a generic cookie and adds to the number of tracking
+  Optionally rewrites a search cookie and adds to the number of blocked
   requests.
 */
 COOKIES.onChanged.addListener(function(changeInfo) {
-  if (!changeInfo.removed) {
+  if (deserialize(localStorage.searchDepersonalized) && !changeInfo.removed) {
     const COOKIE = changeInfo.cookie;
     const DOMAIN = COOKIE.domain;
     const PATH = COOKIE.path;
-    const DEPERSONALIZED = deserialize(localStorage.searchDepersonalized);
+    const NAME = COOKIE.name;
     const EXPIRATION = COOKIE.expirationDate;
 
     for (var i = 0; i < SERVICE_COUNT; i++) {
       var service = SERVICES[i];
       var url = service[4];
+      var domain = '.' + service[1][0];
 
-      if (DOMAIN == '.' + service[1][0] && url && PATH == '/') {
-        if (
-          DEPERSONALIZED &&
-              deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-        ) !EXPIRATION || EXPIRATION > TIMESTAMP() / 1000 ?
+      if (
+        url &&
+            deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
+                && DOMAIN == domain && PATH == '/' && NAME != 'AO'
+      ) {
+        // The cookie API doesn't properly expire cookies.
+        if (!EXPIRATION || EXPIRATION > TIMESTAMP() / 1000)
             mapCookie(
-              COOKIE, COOKIE.storeId, url, DOMAIN, service[2], service[3]
-            ) : reduceCookies(url, service, COOKIE.name);
-                // The cookie API doesn't properly expire cookies.
+              COOKIE, COOKIE.storeId, url, domain, service[2], service[3]
+            );
+        else reduceCookies(url, service, NAME);
         if (START_TIME <= TIMESTAMP() - 3000)
             setTimeout(function(serviceIndex) {
               TABS.getSelected(null, function(tab) {
-                incrementCounter(tab.id, serviceIndex, true);
+                incrementCounter(tab.id, serviceIndex);
               }); // The cookie might not be getting set from the selected tab.
             }.bind(null, i), 2000);
                 // This call would otherwise race that of the tab listener.
       }
     }
   }
+});
+
+/* Loads the FBME promo. */
+BROWSER_ACTION.onClicked.addListener(function() {
+  TABS.create({url: 'https://fbme.disconnect.me/extension'});
+  BROWSER_ACTION.setBadgeText({text: ''});
+  initializeToolbar();
+  localStorage.fbmeOpened = true;
 });
