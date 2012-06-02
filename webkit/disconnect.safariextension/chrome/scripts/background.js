@@ -392,8 +392,12 @@ COOKIES.onChanged.addListener(function(changeInfo) {
 
 /* Loads the FBME promo. */
 BROWSER_ACTION.onClicked.addListener(function() {
-  TABS.create({url: 'https://fbme.disconnect.me/extension'});
-  BROWSER_ACTION.setBadgeText({text: ''});
-  initializeToolbar();
-  localStorage.fbmeOpened = true;
+  BROWSER_ACTION.getPopup({}, function(result) {
+    if (!result) {
+      TABS.create({url: 'https://fbme.disconnect.me/extension'});
+      BROWSER_ACTION.setBadgeText({text: ''});
+      initializeToolbar();
+      localStorage.fbmeOpened = true;
+    }
+  });
 });

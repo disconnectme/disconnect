@@ -284,6 +284,16 @@ if (SAFARI) {
     },
 
     tabs: {
+      create: function(createProperties, callback) {
+        var tab = safari.application.activeBrowserWindow.openTab(
+          createProperties.visibility || 'foreground',
+          createProperties.index ||
+              safari.application.activeBrowserWindow.tabs.length
+        );
+        tab.url = createProperties.url;
+        callback && callback(tab);
+      },
+
       onUpdated: {
         addListener: function(listener) {
           safari.application.addEventListener(
@@ -345,6 +355,12 @@ if (SAFARI) {
 
     // Compatible with one toolbar button.
     browserAction: {
+      getPopup: function(details, callback) {
+        callback(
+          safari.extension.toolbarItems[0].popover.contentWindow.location.href
+        );
+      },
+
       onClicked: {
         addListener: function(listener) {
           safari.application.addEventListener('popover', listener, true);
@@ -355,8 +371,8 @@ if (SAFARI) {
         // No-op.
       },
 
-      setBadgeText: function() {
-        // No-op.
+      setBadgeText: function(details) {
+        safari.extension.toolbarItems[0].badge = details.text;
       },
 
       setIcon: function(details) {
