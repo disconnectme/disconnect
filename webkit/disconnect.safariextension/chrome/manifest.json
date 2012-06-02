@@ -1,9 +1,9 @@
 {
   "name": "Disconnect",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description":
-      "Stop major third parties and search engines from tracking the webpages you go to and searches you do.",
-  "icons": {"48": "48.png", "128": "128.png"},
+      "Stop third parties and search engines from tracking the webpages you go to and searches you do.",
+  "icons": {"48": "images/48.png", "128": "images/128.png"},
   "permissions": [
     "chrome://favicon/",
     "contextMenus",
@@ -16,14 +16,14 @@
     "http://*/*",
     "https://*/*"
   ],
-  "background_page": "background.html",
+  "background_page": "markup/background.html",
   "browser_action": {
-    "default_icon": "activated.png",
+    "default_icon": "images/activated.png",
     "default_title": "View and manage blocked requests"
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["content.js"],
+    "js": ["scripts/vendor/port.js", "scripts/content.js"],
     "run_at": "document_start",
     "all_frames": true
   }]
