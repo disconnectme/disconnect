@@ -395,8 +395,8 @@ if (SAFARI) {
 
         for (var i = 0; i < buttonCount; i++) {
           var button = safari.extension.toolbarItems[i];
-          button.command = null;
           button.popover = popup;
+          button.command = null;
         }
 
         safari.application.addEventListener('open', function() {

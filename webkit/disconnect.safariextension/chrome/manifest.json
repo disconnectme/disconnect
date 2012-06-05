@@ -18,7 +18,7 @@
   ],
   "background_page": "markup/background.html",
   "browser_action": {
-    "default_icon": "images/activated.png",
+    "default_icon": "images/19.png",
     "default_title": "View and manage blocked requests"
   },
   "content_scripts": [{

@@ -168,9 +168,6 @@ function incrementCounter(tabId, serviceIndex) {
           (BLOCKED_COUNTS[tabId] = [0, initializeArray(SERVICE_COUNT, 0)]);
   const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
   TAB_BLOCKED_COUNTS[1][serviceIndex]++;
-  BROWSER_ACTION.setIcon({
-    tabId: tabId, path: (SAFARI ? 'chrome' : '') + '/images/blocked.png'
-  });
   if (deserialize(localStorage.blockingIndicated))
       BROWSER_ACTION.setBadgeText({tabId: tabId, text: TAB_BLOCKED_COUNT + ''});
 }
