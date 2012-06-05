@@ -28,6 +28,7 @@ LEGACY_SAFARI = SAFARI && (navigator.appVersion.match(/\sSafari\/(\d+)\./) || [n
 if (SAFARI) {
 
   var isOnGlobalPage = !!safari.extension.bars;
+  var popup;
 
   // Return the object on which you can add/remove event listeners.
   // If there isn't one, don't explode.
@@ -381,14 +382,26 @@ if (SAFARI) {
       },
 
       setPopup: function(details) {
-        safari.extension.toolbarItems[0].popover =
-            safari.extension.createPopover(
-              'popup',
-              chrome.extension.getURL(details.popup),
-              details.width || 400,
-              details.height || 300
+        var buttonCount = safari.extension.toolbarItems.length;
+        popup ||
+            (popup =
+                safari.extension.createPopover(
+                  'popup',
+                  chrome.extension.getURL(details.popup),
+                  details.width || 400,
+                  details.height || 300
+                )
             );
-        safari.extension.toolbarItems[0].command = null;
+
+        for (var i = 0; i < buttonCount; i++) {
+          var button = safari.extension.toolbarItems[i];
+          button.command = null;
+          button.popover = popup;
+        }
+
+        safari.application.addEventListener('open', function() {
+          chrome.browserAction.setPopup(details);
+        }, true);
       }
     },
 
