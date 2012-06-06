@@ -25,14 +25,8 @@ function renderService(
   name, lowercaseName, blocked, blockedCount, control, badge, text
 ) {
   if (blocked) {
-    if (blockedCount) {
-      badge.src = IMAGES + lowercaseName + '-blocked.png';
-      text.removeAttribute('class');
-    } else {
-      badge.src = IMAGES + lowercaseName + '-activated.png';
-      text.className = 'activated';
-    }
-
+    badge.src = IMAGES + lowercaseName + '-activated.png';
+    text.removeAttribute('class');
     control.title = 'Unblock ' + name;
   } else {
     badge.src = IMAGES + lowercaseName + '-deactivated.png';

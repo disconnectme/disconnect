@@ -178,7 +178,6 @@ function incrementCounter(tabId, serviceIndex) {
   lowercased.
 */
 const SERVICES = [
-  ['Digg', ['digg.com']],
   ['Facebook', [
     'facebook.com',
     'facebook.net',
@@ -235,6 +234,7 @@ const SERVICES = [
     'notebook',
     'support'
   ], 'https://www.google.com/'],
+  ['LinkedIn', ['linkedin.com']],
   ['Twitter', ['twitter.com', 'twimg.com']],
   ['Yahoo', ['yahoo.com'], [
     'address',
