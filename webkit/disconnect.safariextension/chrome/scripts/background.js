@@ -326,6 +326,8 @@ else initializeToolbar();
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
   if (changeInfo.status == 'loading') delete BLOCKED_COUNTS[tabId];
+  if (SAFARI && deserialize(localStorage.blockingIndicated))
+      BROWSER_ACTION.setBadgeText({tabId: tabId, text: ''});
 });
 
 /* Builds a block list or adds to the number of blocked requests. */

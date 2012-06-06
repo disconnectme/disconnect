@@ -320,28 +320,6 @@ if (SAFARI) {
               });
             }, true
           );
-
-          safari.application.addEventListener('navigate', function(event) {
-            listener(event.target.id, {
-              status: 'complete',
-              url: event.target.url,
-              pinned: null
-            }, {
-              id: event.target.id,
-              index: null, // TODO: Traverse the "event.target.tabs" array.
-              windowId: null,
-              openerTabId: null,
-              highlighted: null,
-              active:
-                  event.target.id == event.target.browserWindow.activeTab.id,
-              pinned: null,
-              url: event.target.url,
-              title: event.target.title,
-              favIconUrl: null,
-              status: 'complete',
-              incognito: null
-            });
-          }, true);
         }
       },
 
@@ -375,7 +353,18 @@ if (SAFARI) {
       },
 
       setBadgeText: function(details) {
-        safari.extension.toolbarItems[0].badge = details.text;
+        var tabId = details.tabId;
+        if (
+          !tabId ||
+              tabId ==
+                  getTabId(safari.application.activeBrowserWindow.activeTab)
+        ) safari.extension.toolbarItems[0].badge = details.text;
+
+        details.handled ||
+            safari.application.addEventListener('activate', function() {
+              details.handled = true;
+              chrome.browserAction.setBadgeText(details);
+            }, true);
       },
 
       setIcon: function(details) {
