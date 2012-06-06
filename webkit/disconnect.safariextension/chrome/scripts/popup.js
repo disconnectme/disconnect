@@ -62,8 +62,8 @@ const IMAGES = '../images/';
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
-    chrome.tabs.query({active: true}, function(tab) {
-      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[tab.id];
+    chrome.tabs.query({active: true}, function(tabs) {
+      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[tabs[0].id];
       const SERVICE_BLOCKED_COUNTS =
           TAB_BLOCKED_COUNTS ? TAB_BLOCKED_COUNTS[1] :
               BACKGROUND.initializeArray(SERVICE_COUNT, 0);

@@ -349,7 +349,7 @@ if (SAFARI) {
         if (queryInfo.active) {
           var tab = safari.application.activeBrowserWindow.activeTab;
           tab.id = getTabId(tab);
-          callback(tab);
+          callback([tab]);
         } else {
           // No-op.
         }
