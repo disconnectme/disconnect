@@ -21,12 +21,10 @@
 */
 body, #services td { text-align: center }
 
-body, #search { font-size: x-small }
-
 body {
   margin: 0;
   width: 140px;
-  font-family: Arial, sans-serif
+  font: x-small Arial, sans-serif
 }
 
 table {
@@ -34,8 +32,6 @@ table {
   margin-right: auto;
   border-collapse: collapse
 }
-
-input { margin-left: 0 }
 
 :link, :visited { color: #003ea8 }
 

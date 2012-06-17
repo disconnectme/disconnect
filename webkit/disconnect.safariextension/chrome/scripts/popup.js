@@ -102,15 +102,9 @@ const IMAGES = '../images/';
           badge,
           text
         ) {
-          const URL = service[4];
           const BLOCKED =
-              localStorage[blockedName] = !DESERIALIZE(localStorage[blockedName]);
-
-          if (DESERIALIZE(localStorage.searchDepersonalized) && URL) {
-            if (BLOCKED) BACKGROUND.mapCookies(URL, service);
-            else BACKGROUND.reduceCookies(URL, service);
-          }
-
+              localStorage[blockedName] =
+                  !DESERIALIZE(localStorage[blockedName]);
           renderService(
             name, lowercaseName, BLOCKED, blockedCount, control, badge, text
           );
@@ -126,26 +120,6 @@ const IMAGES = '../images/';
           text
         );
       }
-
-      const CHECKBOX = document.getElementsByTagName('input')[0];
-      CHECKBOX.checked = DESERIALIZE(localStorage.searchDepersonalized);
-
-      CHECKBOX.onchange = function() {
-        const DEPERSONALIZED = localStorage.searchDepersonalized = this.checked;
-
-        for (var i = 0; i < SERVICE_COUNT; i++) {
-          var service = SERVICES[i];
-          var url = service[4];
-
-          if (
-            url &&
-                DESERIALIZE(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-          ) {
-            if (DEPERSONALIZED) BACKGROUND.mapCookies(url, service);
-            else BACKGROUND.reduceCookies(url, service);
-          }
-        }
-      };
     });
   }, true
 );

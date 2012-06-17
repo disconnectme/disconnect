@@ -33,121 +33,6 @@ function deserialize(object) {
   return typeof object == 'string' ? JSON.parse(object) : object;
 }
 
-/* Rewrites a generic cookie with specific domains and paths. */
-function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
-  const MINIMIZE = Math.min;
-  const SUBDOMAIN_COUNT = MINIMIZE(subdomains.length, 20);
-      // Chrome won't persist more than 22 domains because of cookie limits.
-  delete cookie.hostOnly;
-  delete cookie.session;
-  const DOMAIN = cookie.domain;
-
-  for (var i = 0; i < SUBDOMAIN_COUNT; i++) {
-    var subdomain = subdomains[i];
-    cookie.url = url.replace('www', subdomain).replace('search', subdomain);
-    cookie.domain = subdomain + domain;
-    COOKIES.set(cookie);
-  }
-
-  const PATH_COUNT = MINIMIZE(paths.length, 10);
-      // Chrome won't persist more than 11 paths.
-  cookie.domain = DOMAIN;
-
-  for (i = 0; i < PATH_COUNT; i++) {
-    var path = paths[i];
-    cookie.url = url + path;
-    cookie.path = '/' + path;
-    COOKIES.set(cookie);
-  }
-
-  COOKIES.remove({url: url, name: cookie.name, storeId: storeId});
-}
-
-/* Rewrites a batch of generic cookies with specific domains and paths. */
-function mapCookies(url, service) {
-  COOKIES.getAllCookieStores(function(cookieStores) {
-    const STORE_COUNT = cookieStores.length;
-    const DOMAIN = '.' + service[1][0];
-    const SUBDOMAINS = service[2];
-    const PATHS = service[3];
-
-    for (var i = 0; i < STORE_COUNT; i++) {
-      var storeId = cookieStores[i].id;
-
-      COOKIES.getAll({url: url, storeId: storeId}, function(cookies) {
-        const COOKIE_COUNT = cookies.length;
-        for (var j = 0; j < COOKIE_COUNT; j++)
-            mapCookie(cookies[j], storeId, url, DOMAIN, SUBDOMAINS, PATHS);
-      });
-    }
-  });
-}
-
-/* Erases a batch of cookies. */
-function deleteCookies(url, domain, path, storeId, name) {
-  const DETAILS = {url: url, storeId: storeId};
-  if (name) DETAILS.name = name;
-
-  COOKIES.getAll(DETAILS, function(cookies) {
-    const COOKIE_COUNT = cookies.length;
-
-    for (var i = 0; i < COOKIE_COUNT; i++) {
-      var cookie = cookies[i];
-      if (cookie.domain == domain && cookie.path == path)
-          COOKIES.remove(
-            {url: url, name: name || cookie.name, storeId: storeId}
-          );
-    }
-  });
-}
-
-/* Rewrites a batch of specific cookies with a generic domain and path. */
-function reduceCookies(url, service, name) {
-  COOKIES.getAllCookieStores(function(cookieStores) {
-    const STORE_COUNT = cookieStores.length;
-    const SUBDOMAINS = service[2];
-    const SUBDOMAIN_COUNT = SUBDOMAINS.length;
-    const DOMAIN = '.' + service[1][0];
-    const PATHS = service[3];
-    const PATH_COUNT = PATHS.length;
-
-    for (var i = 0; i < STORE_COUNT; i++) {
-      var storeId = cookieStores[i].id;
-
-      for (var j = 0; j < SUBDOMAIN_COUNT; j++) {
-        var subdomain = SUBDOMAINS[j];
-        var mappedUrl =
-            url.replace('www', subdomain).replace('search', subdomain);
-
-        if (!name && !j) {
-          COOKIES.getAll({url: mappedUrl, storeId: storeId}, function(cookies) {
-            const COOKIE_COUNT = cookies.length;
-
-            for (var i = 0; i < COOKIE_COUNT; i++) {
-              var details = cookies[i];
-              details.url = url;
-              details.domain = DOMAIN;
-              delete details.hostOnly;
-              delete details.session;
-
-              setTimeout(function(details) {
-                COOKIES.set(details);
-              }.bind(null, details), 1000);
-            }
-          });
-        }
-
-        deleteCookies(mappedUrl, '.' + subdomain + DOMAIN, '/', storeId, name);
-      }
-
-      for (j = 0; j < PATH_COUNT; j++) {
-        var path = PATHS[j];
-        deleteCookies(url + path, DOMAIN, '/' + path, storeId, name);
-      }
-    }
-  });
-}
-
 /* Preps the browser action. */
 function initializeToolbar() {
   BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
@@ -283,17 +168,8 @@ const BLOCKED_COUNTS = {};
 /* The "tabs" API. */
 const TABS = chrome.tabs;
 
-/* The "cookies" API. */
-const COOKIES = chrome.cookies;
-
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
-
-/* The timestamping method. */
-const TIMESTAMP = Date.now;
-
-/* The start time of this script. */
-const START_TIME = TIMESTAMP();
 
 /* A throwaway index. */
 var i;
@@ -303,19 +179,6 @@ if (!deserialize(localStorage.initialized)) {
       localStorage[SERVICES[i][0].toLowerCase() + BLOCKED_NAME] = true;
   localStorage.blockingIndicated = true;
   localStorage.initialized = true;
-}
-
-for (i = 0; i < SERVICE_COUNT; i++) {
-  var service = SERVICES[i];
-  var url = service[4];
-
-  if (
-    url && deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-  ) {
-    reduceCookies(url, service);
-    if (deserialize(localStorage.searchDepersonalized))
-        mapCookies(url, service);
-  }
 }
 
 localStorage.fbmeOpened = true;
@@ -346,46 +209,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   } else {
     incrementCounter(sender.tab.id, request.serviceIndex);
     sendResponse({});
-  }
-});
-
-/*
-  Optionally rewrites a search cookie and adds to the number of blocked
-  requests.
-*/
-COOKIES.onChanged.addListener(function(changeInfo) {
-  if (deserialize(localStorage.searchDepersonalized) && !changeInfo.removed) {
-    const COOKIE = changeInfo.cookie;
-    const DOMAIN = COOKIE.domain;
-    const PATH = COOKIE.path;
-    const NAME = COOKIE.name;
-    const EXPIRATION = COOKIE.expirationDate;
-
-    for (var i = 0; i < SERVICE_COUNT; i++) {
-      var service = SERVICES[i];
-      var url = service[4];
-      var domain = '.' + service[1][0];
-
-      if (
-        url &&
-            deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-                && DOMAIN == domain && PATH == '/' && NAME != 'AO'
-      ) {
-        // The cookie API doesn't properly expire cookies.
-        if (!EXPIRATION || EXPIRATION > TIMESTAMP() / 1000)
-            mapCookie(
-              COOKIE, COOKIE.storeId, url, domain, service[2], service[3]
-            );
-        else reduceCookies(url, service, NAME);
-        if (START_TIME <= TIMESTAMP() - 3000)
-            setTimeout(function(serviceIndex) {
-              TABS.getSelected(null, function(tab) {
-                incrementCounter(tab.id, serviceIndex);
-              }); // The cookie might not be getting set from the selected tab.
-            }.bind(null, i), 2000);
-                // This call would otherwise race that of the tab listener.
-      }
-    }
   }
 });
 
