@@ -33,13 +33,19 @@ table {
   border-collapse: collapse
 }
 
-:link, :visited { color: #003ea8 }
+:link, :visited {
+  outline: none;
+  color: #003ea8
+}
 
 .deactivated { color: #7f7f7f }
 
 .mouseover { background: #f4f6fc }
 
-#services { font-size: small }
+#services {
+  margin-bottom: 3px;
+  font-size: small
+}
 
 #services tr {
   border: solid #edeff5;

@@ -102,11 +102,14 @@ const IMAGES = '../images/';
           badge,
           text
         ) {
-          const BLOCKED =
-              localStorage[blockedName] =
-                  !DESERIALIZE(localStorage[blockedName]);
           renderService(
-            name, lowercaseName, BLOCKED, blockedCount, control, badge, text
+            name,
+            lowercaseName,
+            localStorage[blockedName] = !DESERIALIZE(localStorage[blockedName]),
+            blockedCount,
+            control,
+            badge,
+            text
           );
         }.bind(
           null,
