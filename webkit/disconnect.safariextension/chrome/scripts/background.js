@@ -155,7 +155,7 @@ function initializeToolbar() {
 
   if (SAFARI) {
     DETAILS.width = 140;
-    DETAILS.height = 228;
+    DETAILS.height = 210;
   }
 
   BROWSER_ACTION.setPopup(DETAILS);
