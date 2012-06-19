@@ -289,12 +289,6 @@ const COOKIES = chrome.cookies;
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
 
-/* The timestamping method. */
-const TIMESTAMP = Date.now;
-
-/* The start time of this script. */
-const START_TIME = TIMESTAMP();
-
 /* A throwaway index. */
 var i;
 
@@ -305,16 +299,16 @@ if (!deserialize(localStorage.initialized)) {
   localStorage.initialized = true;
 }
 
-for (i = 0; i < SERVICE_COUNT; i++) {
-  var service = SERVICES[i];
-  var url = service[4];
-
-  if (
-    url && deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-  ) {
-    reduceCookies(url, service);
-    if (deserialize(localStorage.searchDepersonalized))
-        mapCookies(url, service);
+if (
+  !deserialize(localStorage.searchRemoved) &&
+      deserialize(localStorage.searchDepersonalized)
+) {
+  for (i = 0; i < SERVICE_COUNT; i++) {
+    var service = SERVICES[i];
+    var url = service[4];
+    url && deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME]) &&
+        reduceCookies(url, service);
+    localStorage.searchRemoved = true;
   }
 }
 
@@ -346,46 +340,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   } else {
     incrementCounter(sender.tab.id, request.serviceIndex);
     sendResponse({});
-  }
-});
-
-/*
-  Optionally rewrites a search cookie and adds to the number of blocked
-  requests.
-*/
-COOKIES.onChanged.addListener(function(changeInfo) {
-  if (deserialize(localStorage.searchDepersonalized) && !changeInfo.removed) {
-    const COOKIE = changeInfo.cookie;
-    const DOMAIN = COOKIE.domain;
-    const PATH = COOKIE.path;
-    const NAME = COOKIE.name;
-    const EXPIRATION = COOKIE.expirationDate;
-
-    for (var i = 0; i < SERVICE_COUNT; i++) {
-      var service = SERVICES[i];
-      var url = service[4];
-      var domain = '.' + service[1][0];
-
-      if (
-        url &&
-            deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME])
-                && DOMAIN == domain && PATH == '/' && NAME != 'AO'
-      ) {
-        // The cookie API doesn't properly expire cookies.
-        if (!EXPIRATION || EXPIRATION > TIMESTAMP() / 1000)
-            mapCookie(
-              COOKIE, COOKIE.storeId, url, domain, service[2], service[3]
-            );
-        else reduceCookies(url, service, NAME);
-        if (START_TIME <= TIMESTAMP() - 3000)
-            setTimeout(function(serviceIndex) {
-              TABS.getSelected(null, function(tab) {
-                incrementCounter(tab.id, serviceIndex);
-              }); // The cookie might not be getting set from the selected tab.
-            }.bind(null, i), 2000);
-                // This call would otherwise race that of the tab listener.
-      }
-    }
   }
 });
 
