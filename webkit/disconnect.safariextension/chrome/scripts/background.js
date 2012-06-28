@@ -289,6 +289,9 @@ const COOKIES = chrome.cookies;
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
 
+/* The domain object. */
+const SITENAME = new Sitename;
+
 /* A throwaway index. */
 var i;
 
@@ -326,19 +329,24 @@ TABS.onUpdated.addListener(function(tabId, changeInfo) {
 
 /* Builds a block list or adds to the number of blocked requests. */
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+  const TAB = sender.tab;
+
   if (request.initialized) {
-    const BLACKLIST = [];
+    SITENAME.get(TAB.url, function(domain) {
+      const BLACKLIST = [];
+      const SITE_WHITELIST =
+          (deserialize(localStorage.whitelist) || {})[domain] || {};
 
-    for (var i = 0; i < SERVICE_COUNT; i++) {
-      var service = SERVICES[i];
-      BLACKLIST[i] =
-          deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME]) ?
-              [service[1], !!service[2]] : [[]];
-    }
+      for (var i = 0; i < SERVICE_COUNT; i++) {
+        var service = SERVICES[i];
+        BLACKLIST[i] =
+            !SITE_WHITELIST[service[0]] ? [service[1], !!service[2]] : [[]];
+      }
 
-    sendResponse({blacklist: BLACKLIST});
+      sendResponse({blacklist: BLACKLIST});
+    });
   } else {
-    incrementCounter(sender.tab.id, request.serviceIndex);
+    incrementCounter(TAB.id, request.serviceIndex);
     sendResponse({});
   }
 });

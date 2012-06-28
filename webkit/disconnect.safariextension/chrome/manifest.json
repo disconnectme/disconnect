@@ -23,7 +23,7 @@
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["scripts/vendor/port.js", "scripts/content.js"],
+    "js": ["scripts/vendor/port/port.js", "scripts/content.js"],
     "run_at": "document_start",
     "all_frames": true
   }]
