@@ -332,7 +332,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
 
   if (request.initialized) {
-    SITENAME.get(TAB.url, function(domain) {
+    const URL = TAB.url;
+
+    SITENAME.get(URL, function(domain) {
       const BLACKLIST = [];
       const SITE_WHITELIST =
           (deserialize(localStorage.whitelist) || {})[domain] || {};
@@ -343,7 +345,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
             !SITE_WHITELIST[service[0]] ? [service[1], !!service[2]] : [[]];
       }
 
-      sendResponse({blacklist: BLACKLIST});
+      sendResponse({url: URL, blacklist: BLACKLIST});
     });
   } else {
     incrementCounter(TAB.id, request.serviceIndex);

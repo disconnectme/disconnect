@@ -43,7 +43,7 @@ const EXTENSION = chrome.extension;
 EXTENSION.sendRequest({initialized: true}, function(response) {
   const BLACKLIST = response.blacklist;
   var serviceIndex;
-  if ((serviceIndex = index(location.href, BLACKLIST)) >= 0)
+  if ((serviceIndex = index(response.url, BLACKLIST)) >= 0)
       BLACKLIST.splice(serviceIndex, 1);
   const SERVICE_COUNT = BLACKLIST.length;
 
