@@ -56,6 +56,8 @@ const IMAGES = '../images/';
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
+    if (SAFARI) document.getElementsByTagName('body')[0].className = 'safari';
+
     chrome.tabs.query({active: true}, function(tabs) {
       const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[tabs[0].id];
       const SERVICE_BLOCKED_COUNTS =

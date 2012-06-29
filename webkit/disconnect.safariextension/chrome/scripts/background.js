@@ -154,7 +154,7 @@ function initializeToolbar() {
   const DETAILS = {popup: (SAFARI ? 'chrome' : '') + '/markup/popup.html'};
 
   if (SAFARI) {
-    DETAILS.width = 140;
+    DETAILS.width = 148;
     DETAILS.height = 210;
   }
 

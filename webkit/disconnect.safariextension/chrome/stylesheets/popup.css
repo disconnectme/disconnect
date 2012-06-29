@@ -22,10 +22,12 @@
 body, #services td { text-align: center }
 
 body {
-  margin: 0;
+  margin: 3px;
   width: 140px;
   font: x-small Arial, sans-serif
 }
+
+.safari { margin: 0 4px }
 
 table {
   margin-left: auto;
