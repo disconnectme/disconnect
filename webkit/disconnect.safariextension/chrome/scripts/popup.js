@@ -38,7 +38,10 @@ function renderService(
 /* The background window. */
 const BACKGROUND = chrome.extension.getBackgroundPage();
 
-/* The deserialization function. */
+/* The domain getter. */
+const GET = BACKGROUND.SITENAME.get;
+
+/* The object deserializer. */
 const DESERIALIZE = BACKGROUND.deserialize;
 
 /* The third parties. */
@@ -46,9 +49,6 @@ const SERVICES = BACKGROUND.SERVICES;
 
 /* The number of third parties. */
 const SERVICE_COUNT = BACKGROUND.SERVICE_COUNT;
-
-/* The suffix of the blocking key. */
-const BLOCKED_NAME = BACKGROUND.BLOCKED_NAME;
 
 /* The image directory. */
 const IMAGES = '../images/';
@@ -59,7 +59,8 @@ const IMAGES = '../images/';
     if (SAFARI) document.getElementsByTagName('body')[0].className = 'safari';
 
     chrome.tabs.query({active: true}, function(tabs) {
-      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[tabs[0].id];
+      const TAB = tabs[0];
+      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[TAB.id];
       const SERVICE_BLOCKED_COUNTS =
           TAB_BLOCKED_COUNTS ? TAB_BLOCKED_COUNTS[1] :
               BACKGROUND.initializeArray(SERVICE_COUNT, 0);
@@ -69,62 +70,50 @@ const IMAGES = '../images/';
       while (expiredControl = TEMPLATE.nextSibling)
           SURFACE.removeChild(expiredControl);
 
-      for (var i = 0; i < SERVICE_COUNT; i++) {
-        var service = SERVICES[i];
-        var name = service[0];
-        var lowercaseName = name.toLowerCase();
-        var blockedName = lowercaseName + BLOCKED_NAME;
-        var blockedCount = SERVICE_BLOCKED_COUNTS[i];
-        var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
-        var badge = control.getElementsByTagName('img')[0];
-        var text = control.getElementsByTagName('td')[1];
-        renderService(
-          name,
-          lowercaseName,
-          DESERIALIZE(localStorage[blockedName]),
-          blockedCount,
-          control,
-          badge,
-          text
-        );
-        badge.alt = name;
-        text.textContent = blockedCount + text.textContent;
-
-        control.onmouseover = function() { this.className = 'mouseover'; };
-
-        control.onmouseout = function() { this.removeAttribute('class'); };
-
-        control.onclick = function(
-          service,
-          name,
-          lowercaseName,
-          blockedName,
-          blockedCount,
-          control,
-          badge,
-          text
-        ) {
+      GET(TAB.url, function(domain) {
+        for (var i = 0; i < SERVICE_COUNT; i++) {
+          var service = SERVICES[i];
+          var name = service[0];
+          var lowercaseName = name.toLowerCase();
+          var blockedCount = SERVICE_BLOCKED_COUNTS[i];
+          var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
+          var badge = control.getElementsByTagName('img')[0];
+          var text = control.getElementsByTagName('td')[1];
           renderService(
             name,
             lowercaseName,
-            localStorage[blockedName] = !DESERIALIZE(localStorage[blockedName]),
+            !((DESERIALIZE(localStorage.whitelist) || {})[domain] || {})[name],
             blockedCount,
             control,
             badge,
             text
           );
-        }.bind(
-          null,
-          service,
-          name,
-          lowercaseName,
-          blockedName,
-          blockedCount,
-          control,
-          badge,
-          text
-        );
-      }
+          badge.alt = name;
+          text.textContent = blockedCount + text.textContent;
+
+          control.onmouseover = function() { this.className = 'mouseover'; };
+
+          control.onmouseout = function() { this.removeAttribute('class'); };
+
+          control.onclick = function(
+            name, lowercaseName, blockedCount, control, badge, text
+          ) {
+            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const SITE_WHITELIST =
+                WHITELIST[domain] || (WHITELIST[domain] = {});
+            renderService(
+              name,
+              lowercaseName,
+              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
+              blockedCount,
+              control,
+              badge,
+              text
+            );
+            localStorage.whitelist = JSON.stringify(WHITELIST);
+          }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
+        }
+      });
     });
   }, true
 );
