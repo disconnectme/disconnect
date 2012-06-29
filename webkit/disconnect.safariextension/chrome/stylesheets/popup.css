@@ -27,8 +27,6 @@ body {
   font: x-small Arial, sans-serif
 }
 
-.safari { margin: 0 4px }
-
 table {
   margin-left: auto;
   margin-right: auto;
@@ -37,8 +35,13 @@ table {
 
 :link, :visited {
   outline: none;
+  text-decoration: none;
   color: #003ea8
 }
+
+:hover { text-decoration: underline }
+
+.safari { margin: 0 4px }
 
 .deactivated { color: #7f7f7f }
 
