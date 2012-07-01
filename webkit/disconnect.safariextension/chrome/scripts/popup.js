@@ -50,6 +50,9 @@ const SERVICES = BACKGROUND.SERVICES;
 /* The number of third parties. */
 const SERVICE_COUNT = BACKGROUND.SERVICE_COUNT;
 
+/* The "tabs" API. */
+const TABS = BACKGROUND.TABS;
+
 /* The image directory. */
 const IMAGES = '../images/';
 
@@ -58,9 +61,10 @@ const IMAGES = '../images/';
   SAFARI ? 'popover' : 'load', function() {
     if (SAFARI) document.getElementsByTagName('body')[0].className = 'safari';
 
-    chrome.tabs.query({active: true}, function(tabs) {
+    TABS.query({active: true}, function(tabs) {
       const TAB = tabs[0];
-      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[TAB.id];
+      const ID = TAB.id;
+      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[ID];
       const SERVICE_BLOCKED_COUNTS =
           TAB_BLOCKED_COUNTS ? TAB_BLOCKED_COUNTS[1] :
               BACKGROUND.initializeArray(SERVICE_COUNT, 0);
@@ -101,16 +105,18 @@ const IMAGES = '../images/';
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[domain] || (WHITELIST[domain] = {});
+            const BLOCKED = !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]);
             renderService(
               name,
               lowercaseName,
-              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
+              BLOCKED,
               blockedCount,
               control,
               badge,
               text
             );
             localStorage.whitelist = JSON.stringify(WHITELIST);
+            BLOCKED || TABS.reload(ID);
           }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
         }
       });

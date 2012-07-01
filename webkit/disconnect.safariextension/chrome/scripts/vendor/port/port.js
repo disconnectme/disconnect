@@ -331,6 +331,10 @@ if (SAFARI) {
         } else {
           // No-op.
         }
+      },
+
+      reload: function() {
+        // No-op.
       }
     },
 
