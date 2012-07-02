@@ -197,6 +197,7 @@ const SERVICES = [
     'googlesyndication.com'
   ], [
     'adwords',
+    'apis',
     'checkout',
     'chrome',
     'code',
@@ -209,6 +210,7 @@ const SERVICES = [
     'music',
     'picasaweb',
     'plus',
+    'plusone',
     'sites',
     'sketchup',
     'talkgadget',
@@ -292,8 +294,21 @@ const BROWSER_ACTION = chrome.browserAction;
 /* The domain object. */
 const SITENAME = new Sitename;
 
-/* A throwaway index. */
-var i;
+for (var i = 0; i < SERVICE_COUNT; i++) {
+  var service = SERVICES[i];
+  var subdomains = service[2];
+
+  if (subdomains) {
+    var subdomainCount = subdomains.length;
+    var domains = service[1];
+    var domain = domains[0];
+    for (var j = 0; j < subdomainCount; j++)
+        domains.push(subdomains[j] + '.' + domain);
+    var paths = service[3];
+    var pathCount = paths.length;
+    for (j = 0; j < pathCount; j++) domains.push(domain + '/' + paths[j]);
+  }
+}
 
 if (!deserialize(localStorage.initialized)) {
   for (i = 0; i < SERVICE_COUNT; i++)
