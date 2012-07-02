@@ -121,5 +121,12 @@ const IMAGES = '../images/';
         }
       });
     });
+
+    const LINKS = document.getElementsByTagName('a');
+    const LINK_COUNT = LINKS.length;
+    for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
+      TABS.create({url: this.getAttribute('href')});
+      return false;
+    };
   }, true
 );
