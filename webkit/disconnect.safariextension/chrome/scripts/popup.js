@@ -105,18 +105,17 @@ const IMAGES = '../images/';
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[domain] || (WHITELIST[domain] = {});
-            const BLOCKED = !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]);
             renderService(
               name,
               lowercaseName,
-              BLOCKED,
+              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
               blockedCount,
               control,
               badge,
               text
             );
             localStorage.whitelist = JSON.stringify(WHITELIST);
-            BLOCKED || TABS.reload(ID);
+            TABS.reload(ID);
           }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
         }
       });
