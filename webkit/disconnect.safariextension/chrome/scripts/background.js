@@ -150,7 +150,7 @@ function reduceCookies(url, service, name) {
 
 /* Preps the browser action. */
 function initializeToolbar() {
-  BROWSER_ACTION.setBadgeBackgroundColor({color: [60, 92, 153, 255]});
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [85, 144, 210, 255]});
   const DETAILS = {popup: (SAFARI ? 'chrome' : '') + '/markup/popup.html'};
 
   if (SAFARI) {
