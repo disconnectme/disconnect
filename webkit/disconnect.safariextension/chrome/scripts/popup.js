@@ -79,6 +79,9 @@ const IMAGES = '../images/';
           var service = SERVICES[i];
           var name = service[0];
           var lowercaseName = name.toLowerCase();
+          var blocked = !(
+            (DESERIALIZE(localStorage.whitelist) || {})[domain] || {}
+          )[name];
           var blockedCount = SERVICE_BLOCKED_COUNTS[i];
           var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
           var badge = control.getElementsByTagName('img')[0];
@@ -86,14 +89,15 @@ const IMAGES = '../images/';
           renderService(
             name,
             lowercaseName,
-            !((DESERIALIZE(localStorage.whitelist) || {})[domain] || {})[name],
+            blocked,
             blockedCount,
             control,
             badge,
             text
           );
           badge.alt = name;
-          text.textContent = blockedCount + text.textContent;
+          text.textContent =
+              blockedCount + (blocked ? ' blocked' : ' unblocked');
 
           control.onmouseover = function() { this.className = 'mouseover'; };
 
