@@ -162,14 +162,25 @@ function initializeToolbar() {
 }
 
 /* Tallies and indicates the number of blocked requests. */
-function incrementCounter(tabId, serviceIndex) {
+function incrementCounter(tabId, serviceIndex, blocked) {
   const TAB_BLOCKED_COUNTS =
       BLOCKED_COUNTS[tabId] ||
-          (BLOCKED_COUNTS[tabId] = [0, initializeArray(SERVICE_COUNT, 0)]);
+          (BLOCKED_COUNTS[tabId] = [
+            0,
+            initializeArray(SERVICE_COUNT, 0),
+            initializeArray(SERVICE_COUNT, null)
+          ]);
   const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
   TAB_BLOCKED_COUNTS[1][serviceIndex]++;
-  if (deserialize(localStorage.blockingIndicated))
-      BROWSER_ACTION.setBadgeText({tabId: tabId, text: TAB_BLOCKED_COUNT + ''});
+  TAB_BLOCKED_COUNTS[2][serviceIndex] = blocked;
+
+  if (deserialize(localStorage.blockingIndicated)) {
+    !blocked && BROWSER_ACTION.setBadgeBackgroundColor({
+      tabId: tabId,
+      color: [136, 136, 136, 255]
+    });
+    BROWSER_ACTION.setBadgeText({tabId: tabId, text: TAB_BLOCKED_COUNT + ''});
+  }
 }
 
 /*
@@ -356,14 +367,13 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
       for (var i = 0; i < SERVICE_COUNT; i++) {
         var service = SERVICES[i];
-        BLACKLIST[i] =
-            !SITE_WHITELIST[service[0]] ? [service[1], !!service[2]] : [[]];
+        BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
       }
 
       sendResponse({url: URL, blacklist: BLACKLIST});
     });
   } else {
-    incrementCounter(TAB.id, request.serviceIndex);
+    incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
   }
 });

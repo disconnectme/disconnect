@@ -54,8 +54,9 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
 
   document.addEventListener('beforeload', function(event) {
     if ((serviceIndex = index(event.url, BLACKLIST)) >= 0) {
-      event.preventDefault();
-      EXTENSION.sendRequest({serviceIndex: serviceIndex});
+      const BLOCKED = BLACKLIST[serviceIndex][2];
+      BLOCKED && event.preventDefault();
+      EXTENSION.sendRequest({serviceIndex: serviceIndex, blocked: BLOCKED});
     }
   }, true);
 });
