@@ -18,5 +18,5 @@ go to and searches you do.
 * Swaps LinkedIn for Digg on the list of services.
 * Color-codes the tracking counter (gray indicates unblocked requests).
 * Labels blocked and unblocked services more clearly.
-* Removes search depersonalization (may be readded depending on demand).
+* Removes search depersonalization (may be readded later depending on demand).
 * Reloads the active tab whenever a service is blocked or unblocked (in Chrome).
