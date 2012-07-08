@@ -9,7 +9,7 @@ go to and searches you do.
                                   v3.5 (Chrome)
                                   v2.0 (Safari)
 
-* Reimplements the code without a third-party framework (for Safari).
+* Reimplements the code without a third-party framework for Safari.
 * Adds a per-site whitelist (your filtering options are remembered by site).
 * Updates the look and feel.
 * Links to new and improved support resources.
@@ -19,4 +19,4 @@ go to and searches you do.
 * Color-codes the tracking counter (gray indicates unblocked requests).
 * Labels blocked and unblocked services more clearly.
 * Removes search depersonalization (may be readded later depending on demand).
-* Reloads the active tab whenever a service is blocked or unblocked (in Chrome).
+* Reloads the active tab whenever a service is blocked or unblocked in Chrome.
