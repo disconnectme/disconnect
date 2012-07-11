@@ -341,8 +341,9 @@ if (
   }
 }
 
-localStorage.fbmeOpened = true;
-if (!deserialize(localStorage.fbmeOpened))
+delete localStorage.fbmeOpened;
+if (SAFARI) localStorage.blogOpened = true;
+if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 
@@ -373,19 +374,22 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       sendResponse({url: URL, blacklist: BLACKLIST});
     });
   } else {
-    incrementCounter(TAB.id, request.serviceIndex, request.blocked);
+    deserialize(localStorage.blogOpened) &&
+        incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
   }
 });
 
-/* Loads the FBME promo. */
-BROWSER_ACTION.onClicked.addListener(function() {
+/* Loads the blog promo. */
+!SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   BROWSER_ACTION.getPopup({}, function(result) {
     if (!result) {
-      TABS.create({url: 'https://fbme.disconnect.me/extension'});
+      TABS.create({
+        url: 'https://blog.disconnect.me/new-versions-of-disconnect'
+      });
       BROWSER_ACTION.setBadgeText({text: ''});
       initializeToolbar();
-      localStorage.fbmeOpened = true;
+      localStorage.blogOpened = true;
     }
   });
 });
