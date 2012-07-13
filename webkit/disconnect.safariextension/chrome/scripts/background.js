@@ -370,8 +370,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
       sendResponse({url: URL, blacklist: BLACKLIST});
     });
   } else {
-    deserialize(localStorage.blogOpened) &&
-        incrementCounter(TAB.id, request.serviceIndex, request.blocked);
+    incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
   }
 });
