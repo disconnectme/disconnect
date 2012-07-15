@@ -397,6 +397,7 @@ if (SAFARI) {
 
         safari.application.addEventListener('open', function() {
           chrome.browserAction.setPopup(details);
+          return false;
         }, true);
       }
     },
