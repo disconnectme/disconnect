@@ -328,6 +328,8 @@ if (!deserialize(localStorage.initialized)) {
   localStorage.initialized = true;
 }
 
+if (SAFARI) localStorage.blockingIndicated = true;
+
 if (
   !deserialize(localStorage.searchRemoved) &&
       deserialize(localStorage.searchDepersonalized)
