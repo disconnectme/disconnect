@@ -371,7 +371,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
         BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
       }
 
-      sendResponse({url: URL, blacklist: BLACKLIST});
+      try { sendResponse({url: URL, blacklist: BLACKLIST}); } finally {}
     });
   } else {
     deserialize(localStorage.blogOpened) &&
