@@ -368,6 +368,7 @@ if (SAFARI) {
             safari.application.addEventListener('activate', function() {
               details.handled = true;
               chrome.browserAction.setBadgeText(details);
+              return false;
             }, true);
       },
 
