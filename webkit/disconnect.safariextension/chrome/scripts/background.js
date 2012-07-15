@@ -382,14 +382,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-  BROWSER_ACTION.getPopup({}, function(result) {
-    if (!result) {
-      TABS.create({
-        url: 'https://blog.disconnect.me/new-versions-of-disconnect'
-      });
-      BROWSER_ACTION.setBadgeText({text: ''});
-      initializeToolbar();
-      localStorage.blogOpened = true;
-    }
-  });
+  if (!deserialize(localStorage.blogOpened)) {
+    TABS.create({url: 'https://blog.disconnect.me/new-versions-of-disconnect'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    localStorage.blogOpened = true;
+  }
 });
