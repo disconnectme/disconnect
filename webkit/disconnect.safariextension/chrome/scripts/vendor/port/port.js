@@ -368,7 +368,6 @@ if (SAFARI) {
             safari.application.addEventListener('activate', function() {
               details.handled = true;
               chrome.browserAction.setBadgeText(details);
-              return false;
             }, true);
       },
 
@@ -395,10 +394,11 @@ if (SAFARI) {
           button.command = null;
         }
 
-        safari.application.addEventListener('open', function() {
-          chrome.browserAction.setPopup(details);
-          return false;
-        }, true);
+        details.handled ||
+            safari.application.addEventListener('open', function() {
+              details.handled = true;
+              chrome.browserAction.setPopup(details);
+            }, true);
       }
     },
 

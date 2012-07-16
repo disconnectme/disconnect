@@ -58,7 +58,9 @@ table {
   cursor: pointer
 }
 
-#services tr:first-child { display: none }
+#services tr:first-child, .safari a:last-of-type, .safari .separator {
+  display: none
+}
 
 #services td { padding: 3px 0 3px 6px }
 
