@@ -183,6 +183,12 @@ function incrementCounter(tabId, serviceIndex, blocked) {
   }
 }
 
+/* The current build number. */
+const CURRENT_BUILD = 27;
+
+/* The previous build number. */
+const PREVIOUS_BUILD = localStorage.build;
+
 /*
   The third parties and search engines, titlecased, and domain, subdomain, and
   path names they phone home with and secure URL of their query page,
@@ -329,6 +335,12 @@ if (!deserialize(localStorage.initialized)) {
 }
 
 if (SAFARI) localStorage.blockingIndicated = true;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
+  // TODO: Send "localStorage.searchDepersonalized".
+  localStorage.build = CURRENT_BUILD;
+}
 
 if (
   !deserialize(localStorage.searchRemoved) &&
