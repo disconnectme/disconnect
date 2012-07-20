@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+  Overlay markup that stops third parties and search engines from tracking the
+  webpages you go to and searches you do.
+
+  Copyright 2010-2012 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+    Gary Teh <garyjob@gmail.com>
+-->
+<?xml-stylesheet href="overlay.css"?>
+<overlay
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  id="disconnect"
+>
+  <script src="overlay.js"/>
+  <box id="urlbar-icons">
+    <image
+      id="disconnect-icon"
+      tooltiptext="View and manage Facebook requests"
+      popup="disconnect-popup"
+    />
+    <menupopup id="disconnect-popup" position="after_end">
+      <menuitem id="disconnect-blocking"/>
+      <menuseparator/>
+      <menuitem
+        id="disconnect-help"
+        label="Ask Disconnect a question"
+        accesskey="A"
+        value="https://disconnect.me/help"
+      />
+      <menuitem
+        id="disconnect-feedback"
+        label="Give Disconnect props"
+        accesskey="G"
+        value="https://addons.mozilla.org/en-US/firefox/addon/fbdc/"
+      />
+    </menupopup>
+  </box>
+</overlay>
