@@ -338,6 +338,18 @@ if (SAFARI) localStorage.blockingIndicated = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
+
+  var sessionTimeStamp = new Date().getTime(); 
+  console.log("depersonalized-search-"+localStorage.searchDepersonalized+"/"+sessionTimeStamp);
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://artariteenageriot.disconnect.me:9080/"+"depersonalized-search-"+localStorage.searchDepersonalized+"/"+sessionTimeStamp, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      // JSON.parse does not evaluate the attacker's scripts.
+      console.log("sent");
+    }
+  }
+  xhr.send();
   // TODO: Send "localStorage.searchDepersonalized".
   localStorage.build = CURRENT_BUILD;
 }
