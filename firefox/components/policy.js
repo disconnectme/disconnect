@@ -82,14 +82,14 @@ Disconnect.prototype = {
     var domains = this.domains;
     var result = accept;
 
-    if (context) {
+    if (context && context.ownerDocument) {
       var html = context.ownerDocument;
       var content = html.defaultView.content;
 
       if (
         contentType != contentPolicy.TYPE_DOCUMENT && // The MIME type.
             requestOrigin && requestOrigin.asciiHost &&
-                !isMatching(requestOrigin.host, domains) &&
+                !isMatching(requestOrigin.host, domains) && content &&
                     !isMatching(content.top.location.hostname, domains) &&
                         // The whitelist.
                             contentLocation.asciiHost &&
