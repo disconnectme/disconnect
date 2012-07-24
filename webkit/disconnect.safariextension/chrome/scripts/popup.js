@@ -63,7 +63,7 @@ const IMAGES = '../images/';
   SAFARI ? 'popover' : 'load', function() {
     if (SAFARI) document.getElementsByTagName('body')[0].className = 'safari';
 
-    TABS.query({active: true}, function(tabs) {
+    TABS.query({currentWindow: true, active: true}, function(tabs) {
       const TAB = tabs[0];
       const ID = TAB.id;
       const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[ID];
