@@ -1,6 +1,6 @@
 {
   "name": "Disconnect",
-  "version": "3.5.9",
+  "version": "3.7.0",
   "description":
       "Stop third parties and search engines from tracking the webpages you go to and searches you do.",
   "icons": {"48": "images/48.png", "128": "images/128.png"},
@@ -13,16 +13,19 @@
     "notifications",
     "tabs",
     "unlimitedStorage",
+    "webRequest",
+    "webRequestBlocking",
     "http://*/*",
     "https://*/*"
   ],
   "background_page": "markup/background.html",
   "browser_action": {
     "default_icon": "images/19.png",
-    "default_title": "View and manage blocked requests"
+    "default_title": "View and manage requests"
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
+    "css": ["stylesheets/content.css"],
     "js": ["scripts/vendor/port/port.js", "scripts/content.js"],
     "run_at": "document_start",
     "all_frames": true

@@ -293,6 +293,9 @@ const SERVICES = [
 /* The number of third parties. */
 const SERVICE_COUNT = SERVICES.length;
 
+/* The domain name of the tabs. */
+const DOMAINS = {};
+
 /* The suffix of the blocking key. */
 const BLOCKED_NAME = 'Blocked';
 
@@ -310,6 +313,9 @@ const BROWSER_ACTION = chrome.browserAction;
 
 /* The domain object. */
 const SITENAME = new Sitename;
+
+/* The domain getter. */
+const GET = SITENAME.get;
 
 for (var i = 0; i < SERVICE_COUNT; i++) {
   var service = SERVICES[i];
@@ -338,17 +344,6 @@ if (SAFARI) localStorage.blockingIndicated = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
-
-  var sessionTimeStamp = new Date().getTime(); 
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://artariteenageriot.disconnect.me:9080/"+"depersonalized-search-"+localStorage.searchDepersonalized+"/"+sessionTimeStamp, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      // JSON.parse does not evaluate the attacker's scripts.
-    }
-  }
-  xhr.send();
-  // TODO: Send "localStorage.searchDepersonalized".
   localStorage.build = CURRENT_BUILD;
 }
 
@@ -366,10 +361,31 @@ if (
 }
 
 delete localStorage.fbmeOpened;
-if (SAFARI) localStorage.blogOpened = true;
+localStorage.blogOpened = true;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
+
+/* Traps and selectively cancels or redirects a request. */
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+  const TAB_ID = details.tabId;
+  const PARENT = details.type == 'main_frame';
+
+  TAB_ID + 1 && TABS.get(TAB_ID, function(tab) {
+    if (PARENT) DOMAINS[TAB_ID] = GET(tab.url);
+  });
+
+  const REQUESTED_URL = details.url;
+  const CHILD_DOMAIN = GET(REQUESTED_URL);
+  const PARENT_DOMAIN = DOMAINS[TAB_ID];
+  var service;
+  if (!PARENT && CHILD_DOMAIN != PARENT_DOMAIN)
+      service = getService(CHILD_DOMAIN);
+  var hardenedUrl = {};
+  if (!service) hardenedUrl = harden(REQUESTED_URL);
+  return hardenedUrl.hardened ? {redirectUrl: hardenedUrl.url} :
+      {cancel: service && true};
+}, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
@@ -384,19 +400,16 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
   if (request.initialized) {
     const URL = TAB.url;
+    const BLACKLIST = [];
+    const SITE_WHITELIST =
+        (deserialize(localStorage.whitelist) || {})[GET(URL)] || {};
 
-    SITENAME.get(URL, function(domain) {
-      const BLACKLIST = [];
-      const SITE_WHITELIST =
-          (deserialize(localStorage.whitelist) || {})[domain] || {};
+    for (var i = 0; i < SERVICE_COUNT; i++) {
+      var service = SERVICES[i];
+      BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
+    }
 
-      for (var i = 0; i < SERVICE_COUNT; i++) {
-        var service = SERVICES[i];
-        BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
-      }
-
-      try { sendResponse({url: URL, blacklist: BLACKLIST}); } finally {}
-    });
+    sendResponse({url: URL, blacklist: BLACKLIST});
   } else {
     deserialize(localStorage.blogOpened) &&
         incrementCounter(TAB.id, request.serviceIndex, request.blocked);

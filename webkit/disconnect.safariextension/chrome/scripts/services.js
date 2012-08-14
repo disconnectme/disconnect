@@ -1,0 +1,23 @@
+/*
+  A script that determines whether a domain name belongs to a third party. TODO:
+  Document the API so other third-party lists can be plugged in.
+
+  Copyright 2012 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+*/
+eval((function(k7){for(var F7="",t7=0,A7=function(k7,J7){for(var n7=0,x7=0;x7<J7;x7++){n7*=96;var f7=k7.charCodeAt(x7);if(f7>=32&&f7<=127){n7+=f7-32}}return n7};t7<k7.length;){if(k7.charAt(t7)!="`")F7+=k7.charAt(t7++);else{if(k7.charAt(t7+1)!="`"){var p7=A7(k7.charAt(t7+3),1)+5;F7+=F7.substr(F7.length-A7(k7.substr(t7+1,2),2)-p7,p7);t7+=4}else{F7+="`";t7+=2}}}return F7})("var u={\'w\':{},\'L6\':742465798,\'K7\':2055867441,\'x\':2,\'p\':1,\'H7\':4654,\'F\':\"m\",\'Z6\':\"e\",\'U6\':\"S\",\'V7\':\"i\",\'Q6\':\"c\",\'u7\':\"es\",\'G\':0,\'c6\':\"r\",\'x6\':\"ule\",\'f6\':\"C\",\'Q7\':\"n\",\'y\':\"t\",\'t6\':\"h\",\'k\':\"a\",\'j6\':\"d\",\'v7\':\"g\",\'f\':\"R\",\'m\':\"u\",\'a\':\"l\",\'d6\':\"ar\",\'L7\':\"o\",\'R6\':\"ha\",\'R7\':\"v\",\'C6\':\"ice\",\'u6\':\"s\",\'h6\':\"rd\",\'O7\':\"eni\",\'j7\':\"Ru\",\'v6\':\"les\",\'w7\':\"ul\",\'a` % nt\",\'E\':\"de\",\'y7\':\"ning\",\'M7\':\"ge\",\'C7\':\'h\',\'g7\':\'t\',\'s6\':\'p\',\'M6\':\'s\',\'k6\':\':\/\/\',\'q6\':\'d\',\'y6\':\'i\',\'w` A co\',\'m7\':\'nne\',\'c7\':\'ct\',\'W6\':\'.\',\'L\':\'m\',\'d\':\'e\',\'S6\':\'\/\',\'S\':\'r\',\'K6\':\'vi\',\'T6\':\'c\',\'A\':\'es\',\'X7\':\'j\',\'I7\':\'on\'};function getService(j){var X=\"erv\",e=\"or\";var r=-u.L6,U=u.K7,P=u.x;for (var Y=u.p;B.M(Y.toString(),Y` \"&.length,u.H7)!=r;Y++){P+=u.x;}if (B.M(P` S\'P` E5U){return ;}` \"\"$[(u.F+e+u.Z6+u.U6+X+u.V7+u.Q6+u.u7)][j];}function harden(j){var X=true,e=\"lac\",r=\"p\",U=\"nin\",P=\"ou\";var Y=-u.L6,Q=u.K7,l=u.x;for (var o=u.p;B.M(o.toString(),o` \"&.length,u.H7)!=Y;o++){l+=u.x;}if (B.M(l` S\'l` E5Q){return ;}var b=j,V;for (i=u.G;i<$[(u.c6+u.x6+u.f6+P+u.Q7+u.y)];i++){var h=` E t6+u.k+` L\"j6+u.Z6+U+u.v7+u.f+u.m+u.a+u.u7)][i];b=j[(` J\"Z6+r+e` P )](RegExp(h[u.G]),h[u.p]);if (b!=j){V=X;break ;}}return {url:b,hardened:V};}var B={H:function (j,X){var e=X&0xffff,r=X-e;return ((r*j|u.G)+(e` #\")|u.G;},M:function (j,X,e){var r=\"har\",U=\"eA\",P=\"arC\",Y=5,Q=19,l=13,o=17,b=15,V=\"H\",h=24,D=3,N=\"Co\",T=16,g=\"A\",q=\"Cod\",C=8,t=\"charCodeAt\",I=\"` # z=4,c=0xcc9e2d51,v=0x1b873593,K=e,Z=X&~0x3;for (var s=u.G;s<Z;s+=z){var O=(j[(u.Q6+u.t6+u.d6+u.f6+u.L7+u.j6+I)](s)&0xff)|((j[t](s+u.p` -\"<<C` 2!(u.Q6+u.t6+u.d6+q+u.Z6+g+u.y)` N!x` K$T` A.k+u.c6+N+u.j6` M+D` R$h);O=this[V](O,c);O=((O&0x1ff` = b)|(O>>>o` <)v);K^=O;K=((K&0x7` H\"l)|(K>>>Q);K=(K*Y+0xe6546b64)|u.G;}O=u.G;switch (X%z){case D:O=(j[(u.Q6+u.t6+P+u.L7+u.j6+U+u.y)](Z+u.x)&0xff)<<T;` V u.x:O|` T%r+q+I` F\"p` D$C` E#p` @(u.R6+u.c6+N+u.j6+u.Z6+g+u.y)](Z` X\";O=this[V](O,c);O=((O&0x1ffff)<<b)|(O>>>o` <)v);K^=O;}K^=X;K^=K>>>T;K` :$K,0x85ebca6b` G K>>>l` 2*c2b2ae35` 8$T;return K;}};$[(u.F+u.L7+u.c6+u.Z6+u.U6` \"#` \/ R7+u.C6+u.u6)]={` R\"t6+u.k+u.h6+u.O7+u.Q7+u.v7+u.j` % 6)]=[]` I!c6+u.w7+u.Z6+u.f6+u.L7+u.a7)]=` > t6+u.d6+u.E+u.y7+u.f` H(u6)].length;` M M7+u.y)]((u.C7+u.g7+u.g7+u.s6+u.M6+u.k6+u.q6+u.y6+u.w6+u.m7+u.c7+u.W6+u.L+u.d+u.S` L$` ) +u.K6+u.T6+u.A` E#X7` =#I7),function (j){var X=\"gR\",e=\"ni\",r=\"leC\",U=\"hardeningRules\",P=\"` + \",Y=\"moreServices\",Q=\"categories\",l=\"y\",o=\"f\",b=\'c1\',V=\'49a\',h=\'8\',D=\'60\',N=\'6\',T=\'7\',g=\'c4\',q=\'a\',C=\'1\',t=\'5b\',I=\'4\',z=\'d4\',c=\'-\',v=\'3\',K=\'0b\',Z=\'1ba\',s=\'be\',O=\"decrypt\";j=deserialize(sjcl[O]((s+Z+K+v+c+u.T6+u.T6+z+c+I+t+C+c+q+g+T+c+N+T+D+h+V+b+u.q6+I),JSON[(u.u6+u.y+u.c6+u.V7+u.Q7+u.v7` )!o+l)](j)));var H6=j[Q]` \' Y6=-u.L6,l6=u.K7,J=u.x;for (var n=u.p;B.M(n.toString(),n` \"&.length,u.H7)!=Y6;n++){J+=u.x;}if (B.M(J` T\'J` F5l6){return ;}for (var i6 in H6){var O6=H6[i6],o6=O6.length;` E$W=0;W<o6;W++` L!r6=O6[W]` :%e6 in r6` :!V6=r6[e6` 6&X` < V` :\"B6=V6[X6],P6=B6.length` D%R=0;R<P6;R++)$[Y][B6[R]]={category:i6,name:e6,url:X6};}}}}$[(u.R6+u.c6+P+u.v7+u.f+u.m+u.a+u.Z6+u.u6)]=j[U];` L c6` < r+u.L7` E\"Q7+u.y)]=` = t6+u.k+` D\"E+e` <!X+u.x6+u.u6)].length;});"));

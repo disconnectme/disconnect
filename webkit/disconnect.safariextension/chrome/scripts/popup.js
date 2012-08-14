@@ -41,7 +41,7 @@ function renderService(
 const BACKGROUND = chrome.extension.getBackgroundPage();
 
 /* The domain getter. */
-const GET = BACKGROUND.SITENAME.get;
+const GET = BACKGROUND.GET;
 
 /* The object deserializer. */
 const DESERIALIZE = BACKGROUND.deserialize;

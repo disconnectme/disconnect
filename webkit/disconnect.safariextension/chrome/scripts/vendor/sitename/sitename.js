@@ -24,38 +24,34 @@
  */
 function Sitename() {
   /**
-   * Determines a canonical domain name.
-   * @param  {string}           url      A website’s absolute URL.
-   * @param  {function(string)} callback A continuation, to execute when the
-   *                                     method completes, that takes a
-   *                                     canonical domain name.
-   * @return {Sitename}                  The domain object.
+   * Indicates whether the reference TLDs are loaded.
+   * @return {boolean} True if the reference TLDs are loaded or false if not.
    */
-  this.get = function(url, callback) {
-    var id = setInterval(function() {
-      if (initialized) {
-        clearInterval(id);
-        anchor.href = url;
-        var domain = anchor.hostname;
-        var labels = domain.split('.');
-        var labelCount = labels.length - 1;
+  this.isInitialized = function() { return initialized; };
 
-        // IP addresses shouldn’t be munged.
-        if (isNaN(parseFloat(labels[labelCount]))) {
-          domain = labels.slice(-2).join('.');
-          for (var i = labelCount; i > 1; i--)
-              if (tlds[labels.slice(-i).join('.')])
-                  domain = labels.slice(-i - 1).join('.');
-        }
+  /**
+   * Determines a canonical domain name.
+   * @param  {string} url A website’s absolute URL.
+   * @return {string}     A domain name or IP address.
+   */
+  this.get = function(url) {
+    anchor.href = url;
+    var domain = anchor.hostname;
+    var labels = domain.split('.');
+    var labelCount = labels.length - 1;
 
-        callback(domain);
-      }
-    }, 100);
+    // IP addresses shouldn’t be munged.
+    if (isNaN(parseFloat(labels[labelCount]))) {
+      domain = labels.slice(-2).join('.');
+      for (var i = labelCount; i > 1; i--)
+          if (tlds[labels.slice(-i).join('.')])
+              domain = labels.slice(-i - 1).join('.');
+    }
 
-    return this;
+    return domain;
   };
 
-  var version = '1.1.0';
+  var version = '1.2.0';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
   var altTldList = '../scripts/vendor/sitename/data/effective_tld_names.dat';
@@ -95,7 +91,7 @@ function Sitename() {
   if (typeof jQuery == undeclared) {
     var script = document.createElement('script');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', '../scripts/vendor/jquery/jquery-1.7.2.min.js');
+    script.setAttribute('src', '../scripts/vendor/jquery-1.7.2.min.js');
     script.onload = function() { jQuery.noConflict(); };
     document.head.appendChild(script);
   }
