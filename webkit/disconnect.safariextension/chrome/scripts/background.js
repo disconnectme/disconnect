@@ -184,7 +184,7 @@ function incrementCounter(tabId, serviceIndex, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 27;
+const CURRENT_BUILD = 30;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -341,9 +341,11 @@ if (!deserialize(localStorage.initialized)) {
 }
 
 if (SAFARI) localStorage.blockingIndicated = true;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 27)
+    localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
+  localStorage.browsingHardened = true;
   localStorage.build = CURRENT_BUILD;
 }
 
@@ -382,7 +384,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   if (!PARENT && CHILD_DOMAIN != PARENT_DOMAIN)
       service = getService(CHILD_DOMAIN);
   var hardenedUrl = {};
-  if (!service) hardenedUrl = harden(REQUESTED_URL);
+
+  if (service) {
+    if (service.category == 'Content') service = false;
+    deserialize(localStorage.blogOpened) && incrementCounter(TAB_ID, 5, true);
+  } else hardenedUrl = harden(REQUESTED_URL);
+
   return hardenedUrl.hardened ? {redirectUrl: hardenedUrl.url} :
       {cancel: service && true};
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);

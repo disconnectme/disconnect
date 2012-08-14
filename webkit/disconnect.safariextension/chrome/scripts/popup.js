@@ -75,55 +75,54 @@ const IMAGES = '../images/';
       var expiredControl;
       while (expiredControl = TEMPLATE.nextSibling)
           SURFACE.removeChild(expiredControl);
+      const DOMAIN = GET(TAB.url);
 
-      GET(TAB.url, function(domain) {
-        for (var i = 0; i < SERVICE_COUNT; i++) {
-          var service = SERVICES[i];
-          var name = service[0];
-          var lowercaseName = name.toLowerCase();
-          var blockedCount = SERVICE_BLOCKED_COUNTS[i];
-          var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
-          var badge = control.getElementsByTagName('img')[0];
-          var text = control.getElementsByTagName('td')[1];
+      for (var i = 0; i < SERVICE_COUNT; i++) {
+        var service = SERVICES[i];
+        var name = service[0];
+        var lowercaseName = name.toLowerCase();
+        var blockedCount = SERVICE_BLOCKED_COUNTS[i];
+        var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
+        var badge = control.getElementsByTagName('img')[0];
+        var text = control.getElementsByTagName('td')[1];
+        renderService(
+          name,
+          lowercaseName,
+          !((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {})[name],
+          blockedCount,
+          control,
+          badge,
+          text
+        );
+        badge.alt = name;
+
+        control.onmouseover = function() { this.className = 'mouseover'; };
+
+        control.onmouseout = function() { this.removeAttribute('class'); };
+
+        control.onclick = function(
+          name, lowercaseName, blockedCount, control, badge, text
+        ) {
+          const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+          const SITE_WHITELIST = WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
           renderService(
             name,
             lowercaseName,
-            !((DESERIALIZE(localStorage.whitelist) || {})[domain] || {})[name],
+            !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
             blockedCount,
             control,
             badge,
             text
           );
-          badge.alt = name;
-
-          control.onmouseover = function() { this.className = 'mouseover'; };
-
-          control.onmouseout = function() { this.removeAttribute('class'); };
-
-          control.onclick = function(
-            name, lowercaseName, blockedCount, control, badge, text
-          ) {
-            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
-            const SITE_WHITELIST =
-                WHITELIST[domain] || (WHITELIST[domain] = {});
-            renderService(
-              name,
-              lowercaseName,
-              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
-              blockedCount,
-              control,
-              badge,
-              text
-            );
-            localStorage.whitelist = JSON.stringify(WHITELIST);
-            TABS.reload(ID);
-          }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
-        }
-      });
+          localStorage.whitelist = JSON.stringify(WHITELIST);
+          TABS.reload(ID);
+        }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
+      }
     });
 
     const LINKS = document.getElementsByTagName('a');
     const LINK_COUNT = LINKS.length;
+
     for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
       TABS.create({url: this.getAttribute('href')});
       return false;
