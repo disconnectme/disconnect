@@ -167,7 +167,7 @@ function incrementCounter(tabId, serviceIndex, blocked) {
       BLOCKED_COUNTS[tabId] ||
           (BLOCKED_COUNTS[tabId] = [
             0,
-            initializeArray(SERVICE_COUNT, 0),
+            initializeArray(++SERVICE_COUNT, 0),
             initializeArray(SERVICE_COUNT, null)
           ]);
   const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
@@ -374,7 +374,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const PARENT = details.type == 'main_frame';
 
   TAB_ID + 1 && TABS.get(TAB_ID, function(tab) {
-    if (PARENT) DOMAINS[TAB_ID] = GET(tab.url);
+    if (PARENT) {
+      DOMAINS[TAB_ID] = GET(tab.url);
+      delete BLOCKED_COUNTS[TAB_ID];
+    }
   });
 
   const REQUESTED_URL = details.url;
@@ -396,7 +399,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
-  if (changeInfo.status == 'loading') delete BLOCKED_COUNTS[tabId];
   if (SAFARI && deserialize(localStorage.blockingIndicated))
       BROWSER_ACTION.setBadgeText({tabId: tabId, text: ''});
 });
