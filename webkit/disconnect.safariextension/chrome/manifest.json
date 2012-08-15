@@ -1,5 +1,4 @@
 {
-  "manifest_version": 2,
   "name": "Disconnect",
   "version": "3.7.0",
   "description":
@@ -20,7 +19,7 @@
     "http://*/*",
     "https://*/*"
   ],
-  "background": {"page": "markup/background.html"},
+  "background_page": "markup/background.html",
   "browser_action": {
     "default_icon": "images/19.png",
     "default_title": "View and manage requests"
