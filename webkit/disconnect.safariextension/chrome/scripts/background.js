@@ -165,11 +165,8 @@ function initializeToolbar() {
 function incrementCounter(tabId, serviceIndex, blocked) {
   const TAB_BLOCKED_COUNTS =
       BLOCKED_COUNTS[tabId] ||
-          (BLOCKED_COUNTS[tabId] = [
-            0,
-            initializeArray(++SERVICE_COUNT, 0),
-            initializeArray(SERVICE_COUNT, null)
-          ]);
+          (BLOCKED_COUNTS[tabId] =
+              [0, initializeArray(0, 0), initializeArray(0, null)]);
   const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
   TAB_BLOCKED_COUNTS[1][serviceIndex]++;
   TAB_BLOCKED_COUNTS[2][serviceIndex] = blocked;
@@ -184,120 +181,13 @@ function incrementCounter(tabId, serviceIndex, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 30;
+const CURRENT_BUILD = 31;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
 
-/*
-  The third parties and search engines, titlecased, and domain, subdomain, and
-  path names they phone home with and secure URL of their query page,
-  lowercased.
-*/
-const SERVICES = [
-  ['Facebook', [
-    'facebook.com',
-    'facebook.net',
-    'fbcdn.net',
-    'disconnect.me',
-    'localhost'
-        // "disconnect.me" and "localhost" whitelisting is temporary, for FBME.
-  ]],
-  ['Google', [
-    'google.com',
-    '2mdn.net',
-    'doubleclick.net',
-    'feedburner.com',
-    'gmodules.com',
-    'google-analytics.com',
-    'googleadservices.com',
-    'googlesyndication.com'
-  ], [
-    'adwords',
-    'apis',
-    'checkout',
-    'chrome',
-    'code',
-    'docs',
-    'feedburner',
-    'groups',
-    'health',
-    'knol',
-    'mail',
-    'music',
-    'picasaweb',
-    'plus',
-    'plusone',
-    'sites',
-    'sketchup',
-    'talkgadget',
-    'wave'
-  ], [
-    'accounts',
-    'analytics',
-    'bookmarks',
-    'calendar',
-    'finance',
-    'ig',
-    'latitude',
-    'reader',
-    'voice',
-    'webmasters',
-    'adsense',
-    'alerts',
-    'cse',
-    'dfp',
-    'friendconnect',
-    'local',
-    'merchants',
-    'notebook',
-    'support'
-  ], 'https://www.google.com/'],
-  ['LinkedIn', ['linkedin.com']],
-  ['Twitter', ['twitter.com', 'twimg.com']],
-  ['Yahoo', ['yahoo.com'], [
-    'address',
-    'answers',
-    'apps',
-    'buzz',
-    'calendar',
-    'edit',
-    'finance',
-    'games',
-    'groups',
-    'hotjobs',
-    'local',
-    'mail',
-    'my',
-    'notepad',
-    'pulse',
-    'shine',
-    'sports',
-    'upcoming',
-    'webmessenger',
-    'www',
-    'alerts',
-    'autos',
-    'avatars',
-    'help',
-    'login', // "login" is required for OpenID access but conflicts with "edit".
-    'messages',
-    'pipes',
-    'realestate',
-    'smallbusiness',
-    'travel',
-    'widgets'
-  ], [], 'https://search.yahoo.com/']
-];
-
-/* The number of third parties. */
-const SERVICE_COUNT = SERVICES.length;
-
 /* The domain name of the tabs. */
 const DOMAINS = {};
-
-/* The suffix of the blocking key. */
-const BLOCKED_NAME = 'Blocked';
 
 /* The number of blocked requests per tab, overall and by third party. */
 const BLOCKED_COUNTS = {};
@@ -317,90 +207,54 @@ const SITENAME = new Sitename;
 /* The domain getter. */
 const GET = SITENAME.get;
 
-for (var i = 0; i < SERVICE_COUNT; i++) {
-  var service = SERVICES[i];
-  var subdomains = service[2];
-
-  if (subdomains) {
-    var subdomainCount = subdomains.length;
-    var domains = service[1];
-    var domain = domains[0];
-    for (var j = 0; j < subdomainCount; j++)
-        domains.push(subdomains[j] + '.' + domain);
-    var paths = service[3];
-    var pathCount = paths.length;
-    for (j = 0; j < pathCount; j++) domains.push(domain + '/' + paths[j]);
-  }
-}
-
-if (!deserialize(localStorage.initialized)) {
-  for (i = 0; i < SERVICE_COUNT; i++)
-      localStorage[SERVICES[i][0].toLowerCase() + BLOCKED_NAME] = true;
-  localStorage.blockingIndicated = true;
-  localStorage.initialized = true;
-}
-
-if (SAFARI) localStorage.blockingIndicated = true;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 27)
-    localStorage[SERVICES[2][0].toLowerCase() + BLOCKED_NAME] = true;
+if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage.browsingHardened = true;
   localStorage.build = CURRENT_BUILD;
 }
 
-if (
-  !deserialize(localStorage.searchRemoved) &&
-      deserialize(localStorage.searchDepersonalized)
-) {
-  for (i = 0; i < SERVICE_COUNT; i++) {
-    var service = SERVICES[i];
-    var url = service[4];
-    url && deserialize(localStorage[service[0].toLowerCase() + BLOCKED_NAME]) &&
-        reduceCookies(url, service);
-    localStorage.searchRemoved = true;
-  }
-}
-
-delete localStorage.fbmeOpened;
-localStorage.blogOpened = true;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-  const TAB_ID = details.tabId;
   const PARENT = details.type == 'main_frame';
-
-  TAB_ID + 1 && TABS.get(TAB_ID, function(tab) {
-    if (PARENT) {
-      DOMAINS[TAB_ID] = GET(tab.url);
-      delete BLOCKED_COUNTS[TAB_ID];
-    }
-  });
-
+  const TAB_ID = details.tabId;
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
+  if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
   const PARENT_DOMAIN = DOMAINS[TAB_ID];
-  var service;
+  var childService;
   if (!PARENT && CHILD_DOMAIN != PARENT_DOMAIN)
-      service = getService(CHILD_DOMAIN);
+      childService = getService(CHILD_DOMAIN);
   var hardenedUrl = {};
 
-  if (service) {
-    if (service.category == 'Content') service = false;
-    deserialize(localStorage.blogOpened) && incrementCounter(TAB_ID, 5, true);
+  indication: if (childService) {
+    const PARENT_SERVICE = getService(PARENT_DOMAIN);
+
+    if (PARENT_SERVICE && childService.name == PARENT_SERVICE.name) {
+      childService = false;
+      break indication;
+    }
+
+    if (childService.category == 'Content') childService = false;
+    incrementCounter(TAB_ID, 5, true);
   } else hardenedUrl = harden(REQUESTED_URL);
 
   return hardenedUrl.hardened ? {redirectUrl: hardenedUrl.url} :
-      {cancel: service && true};
+      {cancel: childService && true};
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of blocked requests for a tab. */
 TABS.onUpdated.addListener(function(tabId, changeInfo) {
-  if (SAFARI && deserialize(localStorage.blockingIndicated))
-      BROWSER_ACTION.setBadgeText({tabId: tabId, text: ''});
+  if (changeInfo.status == 'loading') {
+    delete BLOCKED_COUNTS[tabId];
+    deserialize(localStorage.blockingIndicated) &&
+        BROWSER_ACTION.setBadgeText({tabId: tabId, text: ''});
+  }
 });
 
 /* Builds a block list or adds to the number of blocked requests. */
@@ -413,8 +267,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     const SITE_WHITELIST =
         (deserialize(localStorage.whitelist) || {})[GET(URL)] || {};
 
-    for (var i = 0; i < SERVICE_COUNT; i++) {
-      var service = SERVICES[i];
+    for (var i = 0; i < 0; i++) {
+      var service = [];
       BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
     }
 
