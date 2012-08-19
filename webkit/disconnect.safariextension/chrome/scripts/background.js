@@ -192,9 +192,6 @@ const DOMAINS = {};
 /* The number of blocked requests per tab, overall and by third party. */
 const BLOCKED_COUNTS = {};
 
-/* The "tabs" API. */
-const TABS = chrome.tabs;
-
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
 
@@ -241,19 +238,24 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     }
 
     if (childService.category == 'Content') childService = false;
-    incrementCounter(TAB_ID, 5, true);
+    deserialize(localStorage.blockingIndicated) &&
+        deserialize(localStorage.blogOpened) &&
+            incrementCounter(TAB_ID, 5, true);
   } else hardenedUrl = harden(REQUESTED_URL);
 
   return hardenedUrl.hardened ? {redirectUrl: hardenedUrl.url} :
       {cancel: childService && true};
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
-/* Resets the number of blocked requests for a tab. */
-TABS.onUpdated.addListener(function(tabId, changeInfo) {
-  if (changeInfo.status == 'loading') {
-    delete BLOCKED_COUNTS[tabId];
+/* Resets the number of tracking requests for a tab. */
+chrome.webNavigation.onCommitted.addListener(function(details) {
+  const TAB_ID = details.tabId;
+
+  if (!details.frameId) {
+    delete BLOCKED_COUNTS[TAB_ID];
     deserialize(localStorage.blockingIndicated) &&
-        BROWSER_ACTION.setBadgeText({tabId: tabId, text: ''});
+        deserialize(localStorage.blogOpened) &&
+            BROWSER_ACTION.setBadgeText({tabId: TAB_ID, text: ''});
   }
 });
 
@@ -274,7 +276,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
     sendResponse({url: URL, blacklist: BLACKLIST});
   } else {
-    deserialize(localStorage.blogOpened) &&
+    SAFARI && deserialize(localStorage.blockingIndicated) &&
         incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
   }
@@ -283,7 +285,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   if (!deserialize(localStorage.blogOpened)) {
-    TABS.create({url: 'https://blog.disconnect.me/new-versions-of-disconnect'});
+    chrome.tabs.create({
+      url: 'https://blog.disconnect.me/new-versions-of-disconnect'
+    });
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;

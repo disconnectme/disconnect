@@ -14,6 +14,7 @@
     "privacy",
     "tabs",
     "unlimitedStorage",
+    "webNavigation",
     "webRequest",
     "webRequestBlocking",
     "http://*/*",
