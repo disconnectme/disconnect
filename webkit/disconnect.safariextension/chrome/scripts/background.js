@@ -189,6 +189,9 @@ const PREVIOUS_BUILD = localStorage.build;
 /* The domain name of the tabs. */
 const DOMAINS = {};
 
+/* The ID of redirected requests. */
+const REDIRECTS = {};
+
 /* The number of blocked requests per tab, overall and by third party. */
 const BLOCKED_COUNTS = {};
 
@@ -257,8 +260,16 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
             incrementCounter(TAB_ID, 5, true);
   } else hardenedUrl = harden(REQUESTED_URL);
 
-  return hardenedUrl.hardened ? {redirectUrl: hardenedUrl.url} :
-      {cancel: childService && true};
+  const REQUEST_ID = details.requestId;
+  const HARDENED = hardenedUrl.hardened && !REDIRECTS[REQUEST_ID];
+  var blockingResponse = {cancel: childService && true};
+
+  if (HARDENED) {
+    REDIRECTS[REQUEST_ID] = true;
+    blockingResponse = {redirectUrl: hardenedUrl.url};
+  }
+
+  return blockingResponse;
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of tracking requests for a tab. */
