@@ -251,6 +251,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     }
 
     if (childService.category == 'Content') childService = false;
+    else hardenedUrl = {url: 'about:blank', hardened: true};
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened) &&
             incrementCounter(TAB_ID, 5, true);
