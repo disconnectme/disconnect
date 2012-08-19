@@ -192,6 +192,9 @@ const DOMAINS = {};
 /* The number of blocked requests per tab, overall and by third party. */
 const BLOCKED_COUNTS = {};
 
+/* The "tabs" API. */
+const TABS = chrome.tabs;
+
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
 
@@ -215,6 +218,16 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
+
+/* Prepopulates the store of tab domain names. */
+TABS.query({}, function(tabs) {
+  const TAB_COUNT = tabs.length;
+
+  for (var i = 0; i < TAB_COUNT; i++) {
+    var tab = tabs[i];
+    DOMAINS[tab.id] = GET(tab.url);
+  }
+});
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
@@ -285,9 +298,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   if (!deserialize(localStorage.blogOpened)) {
-    chrome.tabs.create({
-      url: 'https://blog.disconnect.me/new-versions-of-disconnect'
-    });
+    TABS.create({url: 'https://blog.disconnect.me/new-versions-of-disconnect'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;
