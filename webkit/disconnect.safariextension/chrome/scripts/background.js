@@ -33,6 +33,13 @@ function deserialize(object) {
   return typeof object == 'string' ? JSON.parse(object) : object;
 }
 
+/* Toggles the search preferences. */
+function editSettings(state) {
+  state = !!state;
+  INSTANT_ENABLED.set({value: state});
+  SUGGEST_ENABLED.set({value: state});
+}
+
 /* Rewrites a generic cookie with specific domains and paths. */
 function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
   const MINIMIZE = Math.min;
@@ -198,11 +205,23 @@ const BLOCKED_COUNTS = {};
 /* The "tabs" API. */
 const TABS = chrome.tabs;
 
+/* The "privacy" API. */
+const PRIVACY = chrome.privacy.services;
+
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
 
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
+
+/* The "instantEnabled" property. */
+const INSTANT_ENABLED = PRIVACY.instantEnabled;
+
+/* The "searchSuggestEnabled" property. */
+const SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
+
+/* The experimental value of the "levelOfControl" property. */
+const EDITABLE = 'controllable_by_this_extension';
 
 /* The domain object. */
 const SITENAME = new Sitename;
@@ -214,10 +233,21 @@ if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  INSTANT_ENABLED.get({}, function(details) {
+    details.levelOfControl == EDITABLE &&
+        SUGGEST_ENABLED.get({}, function(details) {
+          if (details.levelOfControl == EDITABLE)
+              localStorage.settingsEditable = true;
+        });
+  });
+
   localStorage.browsingHardened = true;
+  localStorage.searchHardened = true;
   localStorage.build = CURRENT_BUILD;
 }
 
+deserialize(localStorage.settingsEditable) &&
+    deserialize(localStorage.searchHardened) && editSettings();
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
@@ -262,7 +292,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
   const REQUEST_ID = details.requestId;
   const HARDENED = hardenedUrl.hardened && !REDIRECTS[REQUEST_ID];
-  var blockingResponse = {cancel: childService && true};
+  var blockingResponse = {cancel: !!childService};
 
   if (HARDENED) {
     REDIRECTS[REQUEST_ID] = true;
