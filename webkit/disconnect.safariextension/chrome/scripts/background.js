@@ -266,7 +266,8 @@ TABS.query({}, function(tabs) {
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-  const PARENT = details.type == 'main_frame';
+  const TYPE = details.type;
+  const PARENT = TYPE == 'main_frame';
   const TAB_ID = details.tabId;
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
@@ -286,6 +287,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     }
 
     if (childService.category == 'Content') childService = false;
+    else if (TYPE == 'image') hardenedUrl = {
+      url:
+          'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==',
+      hardened: true
+    };
     else hardenedUrl = {url: 'about:blank', hardened: true};
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened) &&
