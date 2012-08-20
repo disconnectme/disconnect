@@ -233,18 +233,20 @@ if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  INSTANT_ENABLED.get({}, function(details) {
-    details.levelOfControl == EDITABLE &&
-        SUGGEST_ENABLED.get({}, function(details) {
-          if (details.levelOfControl == EDITABLE)
-              localStorage.settingsEditable = true;
-        });
-  });
-
   localStorage.browsingHardened = true;
   localStorage.searchHardened = true;
   localStorage.build = CURRENT_BUILD;
 }
+
+delete localStorage.settingsEditable;
+
+INSTANT_ENABLED.get({}, function(details) {
+  details.levelOfControl == EDITABLE &&
+      SUGGEST_ENABLED.get({}, function(details) {
+        if (details.levelOfControl == EDITABLE)
+            localStorage.settingsEditable = true;
+      });
+});
 
 deserialize(localStorage.settingsEditable) &&
     deserialize(localStorage.searchHardened) && editSettings();
