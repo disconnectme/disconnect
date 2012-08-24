@@ -196,7 +196,10 @@ const PREVIOUS_BUILD = localStorage.build;
 /* The domain name of the tabs. */
 const DOMAINS = {};
 
-/* The ID of redirected requests. */
+/* The previous requested URL of the tabs. */
+const REQUESTS = {};
+
+/* The previous redirected URL of the tabs. */
 const REDIRECTS = {};
 
 /* The number of blocked requests per tab, overall and by third party. */
@@ -239,17 +242,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 }
 
 delete localStorage.settingsEditable;
-
-INSTANT_ENABLED.get({}, function(details) {
-  details.levelOfControl == EDITABLE &&
-      SUGGEST_ENABLED.get({}, function(details) {
-        if (details.levelOfControl == EDITABLE)
-            localStorage.settingsEditable = true;
-      });
-});
-
-deserialize(localStorage.settingsEditable) &&
-    deserialize(localStorage.searchHardened) && editSettings();
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
@@ -262,6 +254,17 @@ TABS.query({}, function(tabs) {
     var tab = tabs[i];
     DOMAINS[tab.id] = GET(tab.url);
   }
+});
+
+/* Tests the writability of the search preferences. */
+INSTANT_ENABLED.get({}, function(details) {
+  details.levelOfControl == EDITABLE &&
+      SUGGEST_ENABLED.get({}, function(details) {
+        if (details.levelOfControl == EDITABLE)
+            localStorage.settingsEditable = true;
+        deserialize(localStorage.settingsEditable) &&
+            deserialize(localStorage.searchHardened) && editSettings();
+      });
 });
 
 /* Traps and selectively cancels or redirects a request. */
@@ -296,15 +299,17 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened) &&
             incrementCounter(TAB_ID, 5, true);
-  } else hardenedUrl = harden(REQUESTED_URL);
+  } else if (REQUESTED_URL != REQUESTS[TAB_ID])
+      hardenedUrl = harden(REQUESTED_URL);
 
-  const REQUEST_ID = details.requestId;
-  const HARDENED = hardenedUrl.hardened && !REDIRECTS[REQUEST_ID];
+  REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
+  delete REDIRECTS[TAB_ID];
   var blockingResponse = {cancel: !!childService};
 
-  if (HARDENED) {
-    REDIRECTS[REQUEST_ID] = true;
-    blockingResponse = {redirectUrl: hardenedUrl.url};
+  if (hardenedUrl.hardened) {
+    REQUESTS[TAB_ID] = REQUESTED_URL;
+    const HARDENED_URL = REDIRECTS[TAB_ID] = hardenedUrl.url;
+    blockingResponse = {redirectUrl: HARDENED_URL};
   }
 
   return blockingResponse;
