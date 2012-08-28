@@ -240,6 +240,9 @@ const EDITABLE = 'controllable_by_this_extension';
 /* The domain object. */
 const SITENAME = new Sitename;
 
+/* The domain initialization. */
+const IS_INITIALIZED = SITENAME.isInitialized;
+
 /* The domain getter. */
 const GET = SITENAME.get;
 
@@ -258,14 +261,20 @@ if (!deserialize(localStorage.blogOpened))
 else initializeToolbar();
 
 /* Prepopulates the store of tab domain names. */
-TABS.query({}, function(tabs) {
-  const TAB_COUNT = tabs.length;
+const ID = setInterval(function() {
+  if (IS_INITIALIZED()) {
+    clearInterval(ID);
 
-  for (var i = 0; i < TAB_COUNT; i++) {
-    var tab = tabs[i];
-    DOMAINS[tab.id] = GET(tab.url);
+    TABS.query({}, function(tabs) {
+      const TAB_COUNT = tabs.length;
+
+      for (var i = 0; i < TAB_COUNT; i++) {
+        var tab = tabs[i];
+        DOMAINS[tab.id] = GET(tab.url);
+      }
+    });
   }
-});
+}, 100);
 
 /* Tests the writability of the search preferences. */
 INSTANT_ENABLED.get({}, function(details) {
