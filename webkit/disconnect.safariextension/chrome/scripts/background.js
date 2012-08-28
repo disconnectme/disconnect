@@ -168,22 +168,33 @@ function initializeToolbar() {
   BROWSER_ACTION.setPopup(DETAILS);
 }
 
-/* Tallies and indicates the number of blocked requests. */
-function incrementCounter(tabId, serviceIndex, blocked) {
-  const TAB_BLOCKED_COUNTS =
-      BLOCKED_COUNTS[tabId] ||
-          (BLOCKED_COUNTS[tabId] =
-              [0, initializeArray(0, 0), initializeArray(0, null)]);
-  const TAB_BLOCKED_COUNT = ++TAB_BLOCKED_COUNTS[0];
-  TAB_BLOCKED_COUNTS[1][serviceIndex]++;
-  TAB_BLOCKED_COUNTS[2][serviceIndex] = blocked;
+/* Tallies and indicates the number of tracking requests. */
+function incrementCounter(tabId, service, blocked) {
+  const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
+  const CATEGORY = service.category;
+  const CATEGORY_REQUESTS =
+      TAB_REQUESTS[CATEGORY] || (TAB_REQUESTS[CATEGORY] = {});
+  const NAME = service.name;
+  const NAME_REQUESTS =
+      CATEGORY_REQUESTS[NAME] ||
+          (CATEGORY_REQUESTS[NAME] = {url: service.url, count: 0});
+  NAME_REQUESTS.count++;
+  NAME_REQUESTS.blocked = blocked;
+  var count = 0;
 
-  if (deserialize(localStorage.blockingIndicated)) {
+  for (var categoryName in TAB_REQUESTS) {
+    var category = TAB_REQUESTS[categoryName];
+    for (var serviceName in category) count += category[serviceName].count;
+  }
+
+  if (
+    deserialize(localStorage.blockingIndicated) &&
+        deserialize(localStorage.blogOpened)
+  ) {
     !blocked && BROWSER_ACTION.setBadgeBackgroundColor({
-      tabId: tabId,
-      color: [136, 136, 136, 255]
+      tabId: tabId, color: [136, 136, 136, 255]
     });
-    BROWSER_ACTION.setBadgeText({tabId: tabId, text: TAB_BLOCKED_COUNT + ''});
+    BROWSER_ACTION.setBadgeText({tabId: tabId, text: count + ''});
   }
 }
 
@@ -202,8 +213,8 @@ const REQUESTS = {};
 /* The previous redirected URL of the tabs. */
 const REDIRECTS = {};
 
-/* The number of blocked requests per tab, overall and by third party. */
-const BLOCKED_COUNTS = {};
+/* The number of tracking requests per tab, overall and by third party. */
+const REQUEST_COUNTS = {};
 
 /* The "tabs" API. */
 const TABS = chrome.tabs;
@@ -275,38 +286,43 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
   if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
-  const PARENT_DOMAIN = DOMAINS[TAB_ID];
-  var childService;
-  if (!PARENT && CHILD_DOMAIN != PARENT_DOMAIN)
-      childService = getService(CHILD_DOMAIN);
+  var childService = getService(CHILD_DOMAIN);
   var hardenedUrl = {};
+  var hardened;
 
-  indication: if (childService) {
+  if (childService) {
+    const PARENT_DOMAIN = DOMAINS[TAB_ID];
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
+    const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
 
-    if (PARENT_SERVICE && childService.name == PARENT_SERVICE.name) {
-      childService = false;
-      break indication;
+    if (
+      PARENT || CHILD_DOMAIN == PARENT_DOMAIN ||
+          PARENT_SERVICE && childService.name == PARENT_SERVICE.name
+    ) {
+      if (REDIRECT_SAFE) {
+        hardenedUrl = harden(REQUESTED_URL);
+        hardened = hardenedUrl.hardened;
+      }
+    } else {
+      if (childService.category == 'Content')
+          REDIRECT_SAFE && (hardenedUrl = harden(REQUESTED_URL));
+      else if (TYPE == 'image') hardenedUrl = {
+        url:
+            'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==',
+        hardened: true
+      };
+      else hardenedUrl = {url: 'about:blank', hardened: true};
+      hardened = hardenedUrl.hardened;
     }
 
-    if (childService.category == 'Content') childService = false;
-    else if (TYPE == 'image') hardenedUrl = {
-      url:
-          'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==',
-      hardened: true
-    };
-    else hardenedUrl = {url: 'about:blank', hardened: true};
-    deserialize(localStorage.blockingIndicated) &&
-        deserialize(localStorage.blogOpened) &&
-            incrementCounter(TAB_ID, 5, true);
-  } else if (REQUESTED_URL != REQUESTS[TAB_ID])
-      hardenedUrl = harden(REQUESTED_URL);
+    hardened && incrementCounter(TAB_ID, childService, true);
+  }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
   delete REDIRECTS[TAB_ID];
-  var blockingResponse = {cancel: !!childService};
+  var blockingResponse = {cancel: false};
 
-  if (hardenedUrl.hardened) {
+  if (hardened) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     const HARDENED_URL = REDIRECTS[TAB_ID] = hardenedUrl.url;
     blockingResponse = {redirectUrl: HARDENED_URL};
@@ -320,7 +336,7 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
   const TAB_ID = details.tabId;
 
   if (!details.frameId) {
-    delete BLOCKED_COUNTS[TAB_ID];
+    delete REQUEST_COUNTS[TAB_ID];
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened) &&
             BROWSER_ACTION.setBadgeText({tabId: TAB_ID, text: ''});
