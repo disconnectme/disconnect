@@ -191,10 +191,18 @@ function incrementCounter(tabId, service, blocked) {
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened)
   ) {
-    !blocked && BROWSER_ACTION.setBadgeBackgroundColor({
-      tabId: tabId, color: [136, 136, 136, 255]
+    TABS.query({}, function(tabs) {
+      const TAB_COUNT = tabs.length;
+
+      for (var i = 0; i < TAB_COUNT; i++) {
+        if (tabId == tabs[i].id) {
+          !blocked && BROWSER_ACTION.setBadgeBackgroundColor({
+            tabId: tabId, color: [136, 136, 136, 255]
+          });
+          BROWSER_ACTION.setBadgeText({tabId: tabId, text: count + ''});
+        }
+      }
     });
-    BROWSER_ACTION.setBadgeText({tabId: tabId, text: count + ''});
   }
 }
 
@@ -312,10 +320,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         hardenedUrl = harden(REQUESTED_URL);
         hardened = hardenedUrl.hardened;
       }
-    } else {
-      if (childService.category == 'Content')
-          REDIRECT_SAFE && (hardenedUrl = harden(REQUESTED_URL));
-      else if (TYPE == 'image') hardenedUrl = {
+    } else if (childService.category == 'Content')
+        REDIRECT_SAFE && (hardenedUrl = harden(REQUESTED_URL));
+    else {
+      if (TYPE == 'image') hardenedUrl = {
         url:
             'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==',
         hardened: true
