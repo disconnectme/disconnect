@@ -168,6 +168,40 @@ function initializeToolbar() {
   BROWSER_ACTION.setPopup(DETAILS);
 }
 
+/* Tallies the number of tracking requests. */
+function getCount(tabRequests) {
+  var count = 0;
+
+  for (var categoryName in tabRequests) {
+    var category = tabRequests[categoryName];
+    for (var serviceName in category) count += category[serviceName].count;
+  }
+
+  return count;
+}
+
+/* Indicates the number of tracking requests. */
+function updateCounter(tabId, count, deactivated) {
+  if (
+    deserialize(localStorage.blockingIndicated) &&
+        deserialize(localStorage.blogOpened)
+  ) {
+    deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
+      tabId: tabId, color: [136, 136, 136, 255]
+    });
+    BROWSER_ACTION.setBadgeText({tabId: tabId, text: (count || '') + ''});
+  }
+}
+
+/* Indicates the number of tracking requests, if the tab is rendered. */
+function safelyUpdateCounter(tabId, count, deactivated) {
+  TABS.query({}, function(tabs) {
+    const TAB_COUNT = tabs.length;
+    for (var i = 0; i < TAB_COUNT; i++)
+        tabId == tabs[i].id && updateCounter(tabId, count, deactivated);
+  });
+}
+
 /* Tallies and indicates the number of tracking requests. */
 function incrementCounter(tabId, service, blocked) {
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
@@ -180,30 +214,7 @@ function incrementCounter(tabId, service, blocked) {
           (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
   SERVICE_REQUESTS.count++;
   SERVICE_REQUESTS.blocked = blocked;
-  var count = 0;
-
-  for (var categoryName in TAB_REQUESTS) {
-    var category = TAB_REQUESTS[categoryName];
-    for (var serviceName in category) count += category[serviceName].count;
-  }
-
-  if (
-    deserialize(localStorage.blockingIndicated) &&
-        deserialize(localStorage.blogOpened)
-  ) {
-    TABS.query({}, function(tabs) {
-      const TAB_COUNT = tabs.length;
-
-      for (var i = 0; i < TAB_COUNT; i++) {
-        if (tabId == tabs[i].id) {
-          !blocked && BROWSER_ACTION.setBadgeBackgroundColor({
-            tabId: tabId, color: [136, 136, 136, 255]
-          });
-          BROWSER_ACTION.setBadgeText({tabId: tabId, text: count + ''});
-        }
-      }
-    });
-  }
+  safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
 }
 
 /* The current build number. */
@@ -354,9 +365,7 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
 
   if (!details.frameId) {
     delete REQUEST_COUNTS[TAB_ID];
-    deserialize(localStorage.blockingIndicated) &&
-        deserialize(localStorage.blogOpened) &&
-            BROWSER_ACTION.setBadgeText({tabId: TAB_ID, text: ''});
+    safelyUpdateCounter(TAB_ID, 0);
   }
 });
 
