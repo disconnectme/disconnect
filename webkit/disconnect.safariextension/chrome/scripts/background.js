@@ -174,12 +174,12 @@ function incrementCounter(tabId, service, blocked) {
   const CATEGORY = service.category;
   const CATEGORY_REQUESTS =
       TAB_REQUESTS[CATEGORY] || (TAB_REQUESTS[CATEGORY] = {});
-  const NAME = service.name;
-  const NAME_REQUESTS =
-      CATEGORY_REQUESTS[NAME] ||
-          (CATEGORY_REQUESTS[NAME] = {url: service.url, count: 0});
-  NAME_REQUESTS.count++;
-  NAME_REQUESTS.blocked = blocked;
+  const SERVICE = service.name;
+  const SERVICE_REQUESTS =
+      CATEGORY_REQUESTS[SERVICE] ||
+          (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
+  SERVICE_REQUESTS.count++;
+  SERVICE_REQUESTS.blocked = blocked;
   var count = 0;
 
   for (var categoryName in TAB_REQUESTS) {
@@ -369,8 +369,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
     sendResponse({url: URL, blacklist: BLACKLIST});
   } else {
-    SAFARI && deserialize(localStorage.blockingIndicated) &&
-        incrementCounter(TAB.id, request.serviceIndex, request.blocked);
+    SAFARI && incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
   }
 });

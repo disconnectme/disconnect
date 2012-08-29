@@ -22,18 +22,18 @@
 
 /* Outputs third-party details as per the blocking state. */
 function renderService(
-  name, lowercaseName, blocked, blockedCount, control, badge, text
+  name, lowercaseName, blocked, requestCount, control, badge, text
 ) {
   if (blocked) {
     control.title = 'Unblock ' + name;
     badge.src = IMAGES + lowercaseName + '-activated.png';
     text.removeAttribute('class');
-    text.textContent = blockedCount + ' blocked';
+    text.textContent = requestCount + ' blocked';
   } else {
     control.title = 'Block ' + name;
     badge.src = IMAGES + lowercaseName + '-deactivated.png';
     text.className = 'deactivated';
-    text.textContent = blockedCount + ' unblocked';
+    text.textContent = requestCount + ' unblocked';
   }
 }
 
@@ -47,10 +47,10 @@ const GET = BACKGROUND.GET;
 const DESERIALIZE = BACKGROUND.deserialize;
 
 /* The third parties. */
-const SERVICES = BACKGROUND.SERVICES;
+const SERVICES = ['Facebook', 'Google', 'LinkedIn', 'Twitter', 'Yahoo'];
 
 /* The number of third parties. */
-const SERVICE_COUNT = BACKGROUND.SERVICE_COUNT;
+const SERVICE_COUNT = SERVICES.length;
 
 /* The "tabs" API. */
 const TABS = BACKGROUND.TABS;
@@ -66,10 +66,8 @@ const IMAGES = '../images/';
     TABS.query({currentWindow: true, active: true}, function(tabs) {
       const TAB = tabs[0];
       const ID = TAB.id;
-      const TAB_BLOCKED_COUNTS = BACKGROUND.BLOCKED_COUNTS[ID];
-      const SERVICE_BLOCKED_COUNTS =
-          TAB_BLOCKED_COUNTS ? TAB_BLOCKED_COUNTS[1] :
-              BACKGROUND.initializeArray(SERVICE_COUNT, 0);
+      const CATEGORY_REQUESTS =
+          (BACKGROUND.REQUEST_COUNTS[ID] || {}).Disconnect || {};
       const SURFACE = document.getElementsByTagName('tbody')[0];
       const TEMPLATE = SURFACE.getElementsByTagName('tr')[0];
       var expiredControl;
@@ -78,10 +76,10 @@ const IMAGES = '../images/';
       const DOMAIN = GET(TAB.url);
 
       for (var i = 0; i < SERVICE_COUNT; i++) {
-        var service = SERVICES[i];
-        var name = service[0];
+        var name = SERVICES[i];
         var lowercaseName = name.toLowerCase();
-        var blockedCount = SERVICE_BLOCKED_COUNTS[i];
+        var serviceRequests = CATEGORY_REQUESTS[name];
+        var requestCount = serviceRequests ? serviceRequests.count : 0;
         var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
         var badge = control.getElementsByTagName('img')[0];
         var text = control.getElementsByTagName('td')[1];
@@ -89,7 +87,7 @@ const IMAGES = '../images/';
           name,
           lowercaseName,
           !((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {})[name],
-          blockedCount,
+          requestCount,
           control,
           badge,
           text
@@ -101,7 +99,7 @@ const IMAGES = '../images/';
         control.onmouseout = function() { this.removeAttribute('class'); };
 
         control.onclick = function(
-          name, lowercaseName, blockedCount, control, badge, text
+          name, lowercaseName, requestCount, control, badge, text
         ) {
           const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
           const SITE_WHITELIST = WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
@@ -109,14 +107,14 @@ const IMAGES = '../images/';
             name,
             lowercaseName,
             !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
-            blockedCount,
+            requestCount,
             control,
             badge,
             text
           );
           localStorage.whitelist = JSON.stringify(WHITELIST);
           TABS.reload(ID);
-        }.bind(null, name, lowercaseName, blockedCount, control, badge, text);
+        }.bind(null, name, lowercaseName, requestCount, control, badge, text);
       }
     });
 
