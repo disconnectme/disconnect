@@ -197,8 +197,13 @@ function updateCounter(tabId, count, deactivated) {
 function safelyUpdateCounter(tabId, count, deactivated) {
   TABS.query({}, function(tabs) {
     const TAB_COUNT = tabs.length;
-    for (var i = 0; i < TAB_COUNT; i++)
-        tabId == tabs[i].id && updateCounter(tabId, count, deactivated);
+
+    for (var i = 0; i < TAB_COUNT; i++) {
+      if (tabId == tabs[i].id) {
+        updateCounter(tabId, count, deactivated);
+        break;
+      }
+    }
   });
 }
 
