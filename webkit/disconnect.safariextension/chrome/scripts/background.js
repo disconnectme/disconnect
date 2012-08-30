@@ -420,3 +420,21 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     localStorage.blogOpened = true;
   }
 });
+
+/* The interface is English only for now. */
+if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.searchHardenable)) {
+	chrome.cookies.getAll({url:'https://google.com', name:'PREF'}, function() {
+		if (arguments[0] && arguments[0][0] && arguments[0][0].value && /LD=en/.test(arguments[0][0].value)) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "https://disconnect.me/test/sample", true);
+			xhr.onreadystatechange = function() {
+			  if (xhr.readyState == 4) {
+					if (xhr.responseText != 'skip') {
+						localStorage.searchHardenable = true;
+					}
+			  }
+			}
+			xhr.send();
+		}
+	});
+}
