@@ -173,6 +173,7 @@ function getCount(tabRequests) {
   var count = 0;
 
   for (var categoryName in tabRequests) {
+    if (categoryName == 'Content') continue;
     var category = tabRequests[categoryName];
     for (var serviceName in category) count += category[serviceName].count;
   }
