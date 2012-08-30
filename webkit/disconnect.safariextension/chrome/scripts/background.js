@@ -173,7 +173,7 @@ function getCount(tabRequests) {
   var count = 0;
 
   for (var categoryName in tabRequests) {
-    if (categoryName == 'Content') continue;
+    if (categoryName == CONTENT_NAME) continue;
     var category = tabRequests[categoryName];
     for (var serviceName in category) count += category[serviceName].count;
   }
@@ -241,6 +241,9 @@ const REDIRECTS = {};
 
 /* The number of tracking requests per tab, overall and by third party. */
 const REQUEST_COUNTS = {};
+
+/* The content key. */
+const CONTENT_NAME = 'Content';
 
 /* The "tabs" API. */
 const TABS = chrome.tabs;
@@ -322,9 +325,9 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const CHILD_DOMAIN = GET(REQUESTED_URL);
   if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
   var childService = getService(CHILD_DOMAIN);
-  var hardenedUrl = {};
+  var hardenedUrl;
   var hardened;
-  var redirected;
+  var blockingResponse = {cancel: false};
   var whitelisted;
 
   if (childService) {
@@ -336,43 +339,44 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (
       PARENT || CHILD_DOMAIN == PARENT_DOMAIN ||
           PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name ||
-              childService.category == 'Content'
-    ) {
+              childService.category == CONTENT_NAME
+    ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
-        redirected = hardened = hardenedUrl.hardened;
+        hardened = hardenedUrl.hardened;
+        hardenedUrl = hardenedUrl.url;
+        if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
     } else if ((
       (deserialize(localStorage.whitelist) || {})[PARENT_DOMAIN] || {}
-    )[CHILD_NAME]) {
+    )[CHILD_NAME]) { // The request is allowed: the service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
-        redirected = hardened = hardenedUrl.hardened;
-      } else whitelisted = true;
-    } else {
-      if (TYPE == 'image') hardenedUrl = {
-        url:
-            'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==',
-        hardened: true
-      };
-      else hardenedUrl = {url: 'about:blank', hardened: true};
-      hardened = hardenedUrl.hardened;
-    }
+        hardened = hardenedUrl.hardened;
+        hardenedUrl = hardenedUrl.url;
+        if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
+        else whitelisted = true;
+      }
+    } else blockingResponse = {
+      redirectUrl:
+          TYPE == 'image' ?
+              'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=='
+                  : 'about:blank'
+    }; // The request is denied.
 
-    if (hardened || whitelisted)
+    if (blockingResponse.redirectUrl || whitelisted)
         incrementCounter(TAB_ID, childService, !whitelisted);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
   delete REDIRECTS[TAB_ID];
-  const HARDENED_URL = hardenedUrl.url;
 
-  if (redirected) {
+  if (hardened) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
-    REDIRECTS[TAB_ID] = HARDENED_URL;
+    REDIRECTS[TAB_ID] = hardenedUrl;
   }
 
-  return hardened ? {redirectUrl: HARDENED_URL} : {cancel: false};
+  return blockingResponse;
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of tracking requests for a tab. */
