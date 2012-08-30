@@ -280,7 +280,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage.browsingHardened = true;
-  localStorage.searchHardened = true;
   localStorage.build = CURRENT_BUILD;
 }
 
@@ -431,6 +430,7 @@ if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.
 			  if (xhr.readyState == 4) {
 					if (xhr.responseText != 'skip') {
 						localStorage.searchHardenable = true;
+            localStorage.searchHardened = true;
 					}
 			  }
 			}
