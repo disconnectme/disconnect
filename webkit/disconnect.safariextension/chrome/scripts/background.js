@@ -243,6 +243,9 @@ const REQUEST_COUNTS = {};
 /* The "tabs" API. */
 const TABS = chrome.tabs;
 
+/* The "webNavigation" API. */
+const WEB_NAVIGATION = chrome.webNavigation;
+
 /* The "privacy" API. */
 const PRIVACY = chrome.privacy.services;
 
@@ -365,13 +368,19 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of tracking requests for a tab. */
-chrome.webNavigation.onCommitted.addListener(function(details) {
+WEB_NAVIGATION.onCommitted.addListener(function(details) {
   const TAB_ID = details.tabId;
 
   if (!details.frameId) {
     delete REQUEST_COUNTS[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
   }
+});
+
+/* Annotates a prerendered tab. */
+WEB_NAVIGATION.onTabReplaced.addListener(function(details) {
+  const TAB_ID = details.tabId;
+  updateCounter(TAB_ID, getCount(REQUEST_COUNTS[TAB_ID] || {}));
 });
 
 /* Builds a block list or adds to the number of blocked requests. */
