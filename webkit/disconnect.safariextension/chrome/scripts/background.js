@@ -225,7 +225,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 31;
+const CURRENT_BUILD = 32;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -292,6 +292,10 @@ else initializeToolbar();
 const ID = setInterval(function() {
   if (IS_INITIALIZED()) {
     clearInterval(ID);
+    const TLDS = deserialize(localStorage.tlds);
+    TLDS['google.com'] = true;
+    TLDS['yahoo.com'] = true;
+    localStorage.tlds = JSON.stringify(TLDS);
 
     TABS.query({}, function(tabs) {
       const TAB_COUNT = tabs.length;
