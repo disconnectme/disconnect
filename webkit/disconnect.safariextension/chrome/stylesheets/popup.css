@@ -21,10 +21,12 @@
 */
 body, #services td { text-align: center }
 
+body, #search { font-size: x-small }
+
 body {
   margin: 3px;
   width: 140px;
-  font: x-small Arial, sans-serif
+  font-family: Arial, sans-serif
 }
 
 table {
@@ -33,8 +35,9 @@ table {
   border-collapse: collapse
 }
 
+input, :link, :visited { outline: none }
+
 :link, :visited {
-  outline: none;
   text-decoration: none;
   color: #003ea8
 }
@@ -58,7 +61,7 @@ table {
   cursor: pointer
 }
 
-#services tr:first-child { display: none }
+#services tr:first-child, #search { display: none }
 
 #services td { padding: 3px 0 3px 6px }
 
@@ -66,3 +69,5 @@ table {
   padding-right: 6px;
   width: 100%
 }
+
+.shown#search { display: table }

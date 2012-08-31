@@ -118,6 +118,18 @@ const IMAGES = '../images/';
       }
     });
 
+    if (DESERIALIZE(localStorage.searchHardenable)) {
+      document.getElementById('search').className = 'shown';
+      const CHECKBOX = document.getElementsByTagName('input')[0];
+      CHECKBOX.checked = DESERIALIZE(localStorage.searchHardened);
+
+      CHECKBOX.onclick = function() {
+        CHECKBOX.checked =
+            localStorage.searchHardened =
+                !DESERIALIZE(localStorage.searchHardened);
+      };
+    }
+
     const LINKS = document.getElementsByTagName('a');
     const LINK_COUNT = LINKS.length;
 
