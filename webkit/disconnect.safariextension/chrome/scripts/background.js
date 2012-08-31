@@ -249,7 +249,7 @@ const CONTENT_NAME = 'Content';
 const TABS = chrome.tabs;
 
 /* The "privacy" API. */
-const PRIVACY = chrome.privacy.services;
+if (false) const PRIVACY = chrome.privacy.services;
 
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
@@ -258,10 +258,10 @@ const COOKIES = chrome.cookies;
 const BROWSER_ACTION = chrome.browserAction;
 
 /* The "instantEnabled" property. */
-const INSTANT_ENABLED = PRIVACY.instantEnabled;
+if (false) const INSTANT_ENABLED = PRIVACY.instantEnabled;
 
 /* The "searchSuggestEnabled" property. */
-const SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
+if (false) const SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
 
 /* The experimental value of the "levelOfControl" property. */
 const EDITABLE = 'controllable_by_this_extension';
@@ -305,7 +305,7 @@ const ID = setInterval(function() {
 }, 100);
 
 /* Tests the writability of the search preferences. */
-INSTANT_ENABLED.get({}, function(details) {
+false && INSTANT_ENABLED.get({}, function(details) {
   details.levelOfControl == EDITABLE &&
       SUGGEST_ENABLED.get({}, function(details) {
         if (details.levelOfControl == EDITABLE)
