@@ -225,7 +225,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 32;
+const CURRENT_BUILD = 33;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -340,7 +340,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
 
     if (
-      PARENT || CHILD_DOMAIN == PARENT_DOMAIN ||
+      PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
           PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name ||
               childService.category == CONTENT_NAME
     ) { // The request is allowed: the topmost frame has the same origin.
