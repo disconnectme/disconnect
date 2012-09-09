@@ -361,10 +361,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         else whitelisted = true;
       }
     } else blockingResponse = {
-      redirectUrl:
-          TYPE == 'image' ?
-              'data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=='
-                  : 'about:blank'
+      redirectUrl: 'data:' + (
+        TYPE == 'image' ?
+            'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
+                : 'text/html,'
+      )
     }; // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
