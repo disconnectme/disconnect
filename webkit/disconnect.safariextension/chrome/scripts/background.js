@@ -424,6 +424,13 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     localStorage.blogOpened = true;
   }
 });
+if (localStorage.searchHardenable) {
+  delete localStorage.searchHardenable;
+  delete localStorage.searchHardened;
+  var atr = new analytics();
+  atr.triggerEvent('blimp-configuration-error', {});
+}
+
 
 /* The interface is English only for now. */
 if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.searchHardenable)) {
@@ -433,7 +440,7 @@ if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.
 			xhr.open("GET", "https://disconnect.me/test/sample", true);
 			xhr.onreadystatechange = function() {
 			  if (xhr.readyState == 4) {
-					if (xhr.responseText != 'skip') {
+					if (xhr.responseText == 'activate') {
 						localStorage.searchHardenable = true;
             localStorage.searchHardened = true;
 					}
