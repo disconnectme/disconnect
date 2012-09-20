@@ -432,6 +432,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     localStorage.blogOpened = true;
   }
 });
+
 if (localStorage.searchHardenable) {
   delete localStorage.searchHardenable;
   delete localStorage.searchHardened;
