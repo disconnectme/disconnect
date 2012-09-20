@@ -433,11 +433,14 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
-if (localStorage.searchHardenable) {
-  delete localStorage.searchHardenable;
-  delete localStorage.searchHardened;
+if (deserialize(localStorage.searchHardenable)) {
   var atr = new analytics();
   atr.triggerEvent('blimp-configuration-error', {});
+  if (!deserialize(localStorage.searchHardened)) {
+    atr.triggerEvent('blimp-configuration-disabled', {});
+  }
+  delete localStorage.searchHardenable;
+  delete localStorage.searchHardened;
 }
 
 
