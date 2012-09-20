@@ -9,7 +9,7 @@ analytics.prototype.triggerEvent = function(event, attr) {
   var self = this;
   attr = attr || {};
   var url = 'http://artariteenageriot.disconnect.me:9080/' + event + '/' + self.sessionId;
-  var queryString = '';  
+  var queryString = '';
   if (Object.keys(attr).length > 0) {
     for(key in attr) {
       queryString += key + '=' + attr[key] + '&'
