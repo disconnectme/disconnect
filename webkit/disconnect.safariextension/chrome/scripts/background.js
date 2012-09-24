@@ -404,7 +404,17 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
 /* Builds a block list or adds to the number of blocked requests. */
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
-
+  
+  if (request.sendEvent) {
+    if (request.sendEvent == 'blimp-change-state' && request.data.hardenedState) {
+      atr.triggerEvent('blimp-enabled', {});
+    } else if (request.sendEvent == 'blimp-change-state' && !request.data.hardenedState) {
+      atr.triggerEvent('blimp-disabled', {});      
+    }
+    sendResponse({});
+    return;
+  }
+  
   if (request.initialized) {
     const URL = TAB.url;
     const BLACKLIST = [];
@@ -433,14 +443,15 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
+/* Test for legacy configuration complications */
 if (deserialize(localStorage.searchHardenable)) {
   var atr = new analytics();
   atr.triggerEvent('blimp-configuration-error', {});
   if (!deserialize(localStorage.searchHardened)) {
     atr.triggerEvent('blimp-configuration-disabled', {});
   }
-  delete localStorage.searchHardenable;
-  delete localStorage.searchHardened;
+  //delete localStorage.searchHardenable;
+  //delete localStorage.searchHardened;
 }
 
 

@@ -122,11 +122,18 @@ const IMAGES = '../images/';
       document.getElementById('search').className = 'shown';
       const CHECKBOX = document.getElementsByTagName('input')[0];
       CHECKBOX.checked = DESERIALIZE(localStorage.searchHardened);
-
+      
       CHECKBOX.onclick = function() {
         CHECKBOX.checked =
             localStorage.searchHardened =
                 !DESERIALIZE(localStorage.searchHardened);
+                
+        chrome.extension.sendRequest({
+            sendEvent: 'blimp-change-state',
+            data: {
+              hardenedState: DESERIALIZE(localStorage.searchHardened)
+            }
+          });
       };
     }
 
