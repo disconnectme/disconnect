@@ -225,7 +225,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 35;
+const CURRENT_BUILD = 36;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -280,7 +280,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31)
     localStorage.browsingHardened = true;
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
   const WHITELIST = deserialize(localStorage.whitelist) || {};
   const MEDIAFIRE_DOMAIN = 'mediafire.com';
   (WHITELIST[MEDIAFIRE_DOMAIN] || (WHITELIST[MEDIAFIRE_DOMAIN] = {})).Facebook =
@@ -288,9 +288,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const SALON_DOMAIN = 'salon.com';
   (WHITELIST[SALON_DOMAIN] || (WHITELIST[SALON_DOMAIN] = {})).Google = true;
   localStorage.whitelist = JSON.stringify(WHITELIST);
-  localStorage.build = CURRENT_BUILD;
 }
 
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    localStorage.build = CURRENT_BUILD;
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
