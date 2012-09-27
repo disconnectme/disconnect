@@ -225,7 +225,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 36;
+const CURRENT_BUILD = 37;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -370,11 +370,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         else whitelisted = true;
       }
     } else blockingResponse = {
-      redirectUrl: 'data:' + (
-        TYPE == 'image' ?
-            'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
-                : 'text/html,'
-      )
+      redirectUrl:
+          TYPE == 'image' ?
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
+                  : 'about:blank'
     }; // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
