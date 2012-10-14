@@ -225,13 +225,16 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 37;
+const CURRENT_BUILD = 38;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
 
 /* The domain name of the tabs. */
 const DOMAINS = {};
+
+/* The whitelisted services per domain name. */
+const WHITELIST = deserialize(localStorage.whitelist) || {};
 
 /* The previous requested URL of the tabs. */
 const REQUESTS = {};
@@ -281,7 +284,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31)
     localStorage.browsingHardened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
-  const WHITELIST = deserialize(localStorage.whitelist) || {};
   const MEDIAFIRE_DOMAIN = 'mediafire.com';
   (WHITELIST[MEDIAFIRE_DOMAIN] || (WHITELIST[MEDIAFIRE_DOMAIN] = {})).Facebook =
       true;
@@ -290,8 +292,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
   localStorage.whitelist = JSON.stringify(WHITELIST);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    localStorage.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const LATIMES_DOMAIN = 'latimes.com';
+  (WHITELIST[LATIMES_DOMAIN] || (WHITELIST[LATIMES_DOMAIN] = {})).Google = true;
+  localStorage.whitelist = JSON.stringify(WHITELIST);
+  localStorage.build = CURRENT_BUILD;
+}
+
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
