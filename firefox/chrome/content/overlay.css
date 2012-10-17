@@ -21,6 +21,8 @@
     Gary Teh <garyjob@gmail.com>
     Brian Kennish <byoogle@gmail.com>
 */
-#disconnect-icon { opacity: .8 }
+#disconnect-button { opacity: .7 }
 
-.highlighted#disconnect-icon { opacity: 1 }
+.highlighted#disconnect-button { opacity: 1 }
+
+#disconnect-button > .toolbarbutton-menu-dropmarker { list-style-image: none }

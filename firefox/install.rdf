@@ -27,7 +27,7 @@
 >
   <Description about="urn:mozilla:install-manifest">
     <em:type>2</em:type><!-- An extension. -->
-    <em:id>d2@disconnect.me</em:id>
+    <em:id>2.0@disconnect.me</em:id>
     <em:name>Disconnect</em:name>
     <em:version>2.0.0</em:version>
     <em:creator>Disconnect</em:creator>

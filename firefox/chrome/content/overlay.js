@@ -44,53 +44,73 @@ if (typeof Disconnect == 'undefined') {
     /**
      * Paints the UI.
      */
-    render: function(that, icon) {
+    render: function(that, button) {
       var sourceName = 'src';
       if (that.getRequestCount())
-          icon.setAttribute(
+          button.setAttribute(
             sourceName,
             'chrome://disconnect/content/' +
                 (that.isUnblocked() ? 'unblocked' : 'blocked') + '.png'
           );
-      else icon.removeAttribute(sourceName);
+      else button.removeAttribute(sourceName);
     },
 
     /**
      * Navigates to a URL.
      */
-    go: function(that) { open(that.getAttribute('value'), '_blank'); },
+    go: function(that) {
+      gBrowser.selectedTab = gBrowser.addTab(that.getAttribute('value'));
+    },
 
     /**
      * Registers event handlers.
      */
     initialize: function() {
+      var preferences =
+          Components.classes['@mozilla.org/preferences-service;1'].
+            getService(Components.interfaces.nsIPrefService).
+            getBranch('extensions.disconnect.');
+      var build = 'build';
+      var navbar = 'nav-bar';
+      var currentSet = 'currentset';
+
+      if (!preferences.getIntPref(build)) {
+        var toolbar = document.getElementById(navbar);
+        toolbar.insertItem('disconnect-button');
+        toolbar.setAttribute(currentSet, toolbar.currentSet);
+        document.persist(navbar, currentSet);
+        preferences.setIntPref(build, 1);
+      }
+
       var render = this.render;
       var that = this;
-      var icon = document.getElementById('disconnect-icon');
+      var button = document.getElementById('disconnect-button');
 
       gBrowser.tabContainer.addEventListener('TabAttrModified', function() {
-        render(that, icon);
+        render(that, button);
       }, false);
 
       gBrowser.addEventListener('error', function() {
-        render(that, icon);
+        render(that, button);
       }, false);
 
       gBrowser.addEventListener('DOMContentLoaded', function() {
-        render(that, icon);
+        render(that, button);
       }, false);
 
-      icon.addEventListener('mouseover', function() {
-        this.className = 'highlighted';
+      var toolbarButton = 'toolbarbutton-1';
+
+      button.addEventListener('mouseover', function() {
+        this.className = toolbarButton + ' highlighted';
       }, true);
 
-      icon.addEventListener('mouseout', function() {
-        this.removeAttribute('class');
+      button.addEventListener('mouseout', function() {
+        this.className = toolbarButton;
       }, false);
 
       var blocking = document.getElementById('disconnect-blocking');
 
-      icon.addEventListener('click', function() {
+      button.addEventListener('click', function() {
         var labelName = 'label';
         var requestCount = that.getRequestCount() || 0;
         var label = ' third-party request';

@@ -29,27 +29,32 @@
   id="disconnect"
 >
   <script src="overlay.js"/>
-  <box id="urlbar-icons">
-    <image
-      id="disconnect-icon"
-      tooltiptext="View and manage Facebook requests"
-      popup="disconnect-popup"
-    />
-    <menupopup id="disconnect-popup" position="after_end">
-      <menuitem id="disconnect-blocking"/>
-      <menuseparator/>
-      <menuitem
-        id="disconnect-help"
-        label="Ask Disconnect a question"
-        accesskey="A"
-        value="https://disconnect.me/help"
-      />
-      <menuitem
-        id="disconnect-feedback"
-        label="Give Disconnect props"
-        accesskey="G"
-        value="https://addons.mozilla.org/en-US/firefox/addon/fbdc/"
-      />
-    </menupopup>
-  </box>
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton
+      type="menu"
+      class="toolbarbutton-1"
+      id="disconnect-button"
+      image="chrome://disconnect/content/blocked.png"
+      label="Disconnect"
+      tooltiptext="View and manage requests"
+      accesskey="D"
+    >
+      <menupopup id="disconnect-popup">
+        <menuitem id="disconnect-blocking"/>
+        <menuseparator/>
+        <menuitem
+          id="disconnect-help"
+          label="Ask Disconnect a question"
+          accesskey="A"
+          value="https://disconnect.me/help"
+        />
+        <menuitem
+          id="disconnect-feedback"
+          label="Give Disconnect props"
+          accesskey="G"
+          value="https://addons.mozilla.org/en-US/firefox/addon/fbdc/"
+        />
+      </menupopup>
+    </toolbarbutton>
+  </toolbarpalette>
 </overlay>
