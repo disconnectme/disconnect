@@ -28,4 +28,4 @@ category content-policy @disconnect.me/d2;1 @disconnect.me/d2;1
 # The overlay.
 content disconnect chrome/content/
 skin disconnect default chrome/skin/
-overlay chrome://browser/content/browser.xul chrome://disconnect/content/overlay.xul
+overlay chrome://browser/content/browser.xul chrome://disconnect/content/disconnect.xul

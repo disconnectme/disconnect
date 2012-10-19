@@ -1,0 +1,125 @@
+/*
+  An overlay style sheet that stops Facebook from tracking the webpages you go
+  to.
+
+  Copyright 2010-2012 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Gary Teh <garyjob@gmail.com>
+    Brian Kennish <byoogle@gmail.com>
+*/
+#disconnect-icon { opacity: .8 }
+
+.highlighted#disconnect-icon { opacity: 1 }
+
+#disconnect-toolbar-button {
+  list-style-image: url("chrome://disconnect/content/images/blocked.png");
+}
+
+#disconnect-panel menupopup, #disconnect-panel panel {
+  -moz-appearance: none;
+  -moz-transition: none;
+  background-color: none;
+}
+
+#disconnect-panel .popup-internal-box {
+  padding: 0;
+}
+
+#disconnect-panel panel[titlebar] {
+  -moz-appearance: none;
+}
+
+#disconnect-panel panel[type="arrow"] {
+  -moz-appearance: none;
+  background: transparent;
+  -moz-transition: none;
+}
+
+#disconnect-panel panel[type="arrow"][side="top"],
+#disconnect-panel panel[type="arrow"][side="bottom"] {
+}
+
+#disconnect-panel .panel-arrowcontent {
+  -moz-appearance: none;
+  color: white;
+  background: none;
+  background-color: #ffffff;
+  background-image: none;
+  margin: 0;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 0;
+  text-shadow: none;
+  border: 1px solid #000000;
+}
+
+#disconnect-panel .panel-inner-arrowcontent {
+    background-color: transparent;
+    background-clip: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    -moz-border-top-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-bottom-colors: none;
+    -moz-border-right-colors: none;
+    padding: 0;
+}
+
+#disconnect-panel .panel-arrow {
+  opacity: 1;
+  margin: -1px 7px -1px 7px;
+}
+
+#disconnect-panel .panel-arrow[side="top"] {
+  list-style-image: url("chrome://disconnect/content/images/popup/panelarrow-up.png");
+}
+
+#disconnect-panel .panel-arrow[side="bottom"] {
+    -moz-transform: none;
+  list-style-image: url("chrome://disconnect/content/images/popup/panelarrow-down.png");
+}
+
+#disconnect-toolbar-button[condition="grey"] {
+  list-style-image: url("chrome://disconnect/content/images/unblocked.png");
+}
+
+.disconnect-toolbar-button {
+    border-radius: 4.5px !important;
+}
+
+#disconnect-status {
+    text-decoration:underline;
+    /* color:blue; */
+    margin-left:0px;
+    margin-right:0px !important;
+    padding-right:0px !important;
+    /*-moz-appearance: none; */
+}
+#disconnect-status[disabled="true"] {
+    display:none;
+}
+#disconnect-status:hover, .menu-bug-whatis:hover {
+    cursor:pointer;
+}
+
+.popup-internal-box#disconnect-popup {
+/*  -moz-appearance: none !important;
+    color: -moz-FieldText !important;*/
+    padding: 0px 0px 4px 0px !important;
+}
+
