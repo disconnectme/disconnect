@@ -21,13 +21,30 @@
     Brian Kennish <byoogle@gmail.com>
     Gary Teh <garyjob@gmail.com>
 */
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+var loader =
+    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader);
+loader.loadSubScript('chrome://disconnect/content/sjcl.js');
+loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
+loader.loadSubScript('chrome://disconnect/content/services-firefox.js');
+loader.loadSubScript('chrome://disconnect/content/debug.js');
 
 /**
  * Constants.
  */
+var preferences =
+    Components.classes['@mozilla.org/preferences-service;1'].
+      getService(Components.interfaces.nsIPrefService).
+      getBranch('extensions.disconnect.');
 var contentPolicy = Components.interfaces.nsIContentPolicy;
 var accept = contentPolicy.ACCEPT;
+var sitename = new Sitename;
+var get = sitename.get;
+var requests = {};
+var redirects = {};
+var requestCounts = {};
+var contentName = 'Content';
 
 /**
  * Creates the component.
@@ -55,57 +72,86 @@ Disconnect.prototype = {
   /**
    * Gets a component interface.
    */
-  QueryInterface:
-      XPCOMUtils.generateQI([Components.interfaces.nsIContentPolicy]),
-
-  /**
-   * The domain names Facebook phones home with, lowercased.
-   */
-  domains: ['facebook.com', 'facebook.net', 'fbcdn.net'],
-
-  /**
-   * Determines whether any of a bucket of domains is part of a host name, regex
-   * free.
-   */
-  isMatching: function(host, domains) {
-    var domainCount = domains.length;
-    host = host.toLowerCase();
-    for (var i = 0; i < domainCount; i++)
-        if (host.indexOf(domains[i]) + 1) return true;
-  },
+  QueryInterface: XPCOMUtils.generateQI([contentPolicy]),
 
   /**
    * Traps and selectively cancels a request.
    */
   shouldLoad: function(contentType, contentLocation, requestOrigin, context) {
-    var isMatching = this.isMatching;
-    var domains = this.domains;
     var result = accept;
 
-    if (context && context.ownerDocument) {
+    if (contentLocation.asciiHost && context) {
       var html = context.ownerDocument;
-      var content = html.defaultView.content;
 
-      if (
-        contentType != contentPolicy.TYPE_DOCUMENT && // The MIME type.
-            requestOrigin && requestOrigin.asciiHost &&
-                !isMatching(requestOrigin.host, domains) && content &&
-                    !isMatching(content.top.location.hostname, domains) &&
-                        // The whitelist.
-                            contentLocation.asciiHost &&
-                                isMatching(contentLocation.host, domains)
-                                    // The blacklist.
-      ) {
-        var thirdPartyRequestCount = html.thirdPartyRequestCount;
-        html.thirdPartyRequestCount =
-            typeof thirdPartyRequestCount == 'undefined' ? 1 :
-                ++thirdPartyRequestCount;
-        var thirdPartiesUnblocked = content.localStorage.thirdPartiesUnblocked;
-        if (typeof thirdPartiesUnblocked == 'undefined')
-            thirdPartiesUnblocked =
-                content.localStorage.thirdPartiesUnblocked = false;
-        if (!JSON.parse(thirdPartiesUnblocked))
-            result = contentPolicy.REJECT_SERVER; // The blocking state.
+      if (html) {
+        var content = html.defaultView.content;
+
+        if (content) {
+          var childUrl = contentLocation.spec;
+          var childDomain = get(contentLocation.host);
+          var childService = getService(childDomain);
+          var parentUrl = content.top.location;
+          var parent = contentType == contentPolicy.TYPE_DOCUMENT;
+          var hardenedUrl;
+          var hardened;
+          var whitelisted;
+          parent && (requestCounts[parentUrl] = {});
+
+          if (childService) {
+            var parentDomain = get(parentUrl.hostname);
+            var parentService = getService(parentDomain);
+            var childName = childService.name;
+            var redirectSafe = childUrl != requests[parentUrl];
+
+            if (
+              parent || childDomain == parentDomain ||
+                  parentService && childName == parentService.name ||
+                      childService.category == contentName
+            ) { // The request is allowed: the top frame has the same origin.
+              if (redirectSafe) {
+                hardenedUrl = harden(childUrl);
+                hardened = hardenedUrl.hardened;
+                hardenedUrl = hardenedUrl.url;
+                if (hardened) contentLocation.spec = hardenedUrl;
+              }
+            } else if (
+              (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain] ||
+                  {})[childName]
+            ) { // The request is allowed: the service is whitelisted.
+              if (redirectSafe) {
+                hardenedUrl = harden(childUrl);
+                hardened = hardenedUrl.hardened;
+                hardenedUrl = hardenedUrl.url;
+                if (hardened) contentLocation.spec = hardenedUrl;
+                else whitelisted = true;
+              }
+            } else result = contentPolicy.REJECT_SERVER;
+                // The request is denied.
+
+            if (hardened || whitelisted || result != accept) {
+              var tabRequests =
+                  requestCounts[parentUrl] || (requestCounts[parentUrl] = {});
+              var category = childService.category;
+              var categoryRequests =
+                  tabRequests[category] || (tabRequests[category] = {});
+              var service = childService.name;
+              var serviceRequests =
+                  categoryRequests[service] || (
+                    categoryRequests[service] =
+                        {url: childService.url, count: 0}
+                  );
+              serviceRequests.count++;
+            }
+          }
+
+          childUrl != redirects[parentUrl] && delete requests[parentUrl];
+          delete redirects[parentUrl];
+
+          if (hardened) {
+            requests[parentUrl] = childUrl;
+            redirects[parentUrl] = hardenedUrl;
+          }
+        }
       }
     }
 

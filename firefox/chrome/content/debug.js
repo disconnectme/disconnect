@@ -1,5 +1,5 @@
 /*
-  A script that sets the default preferences.
+  A script for troubleshooting.
 
   Copyright 2012 Disconnect, Inc.
 
@@ -21,12 +21,10 @@
 */
 
 /**
- * The Disconnect preferences.
+ * Sends a message to the Error Console.
  */
-pref('extensions.disconnect.build', 0);
-pref(
-  'extensions.disconnect.whitelist',
-  '{"latimes.com":{"Google":true},"mediafire.com":{"Facebook":true},"salon.com":{"Google":true},"udacity.com":{"Twitter":true}}'
-);
-pref('extensions.disconnect.searchHardened', true);
-pref('extensions.disconnect.browsingHardened', true);
+function debug(message) {
+  Components.classes['@mozilla.org/consoleservice;1'].
+    getService(Components.interfaces.nsIConsoleService).
+    logStringMessage(message);
+}

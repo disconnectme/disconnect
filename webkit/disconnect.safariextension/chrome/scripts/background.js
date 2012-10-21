@@ -219,13 +219,11 @@ function incrementCounter(tabId, service, blocked) {
       CATEGORY_REQUESTS[SERVICE] ||
           (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
   SERVICE_REQUESTS.count++;
-  const UNBLOCKED = !blocked;
-  SERVICE_REQUESTS.blocked && UNBLOCKED && delete SERVICE_REQUESTS.blocked;
-  safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), UNBLOCKED);
+  safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 38;
+const CURRENT_BUILD = 39;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -292,9 +290,16 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
   localStorage.whitelist = JSON.stringify(WHITELIST);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
   const LATIMES_DOMAIN = 'latimes.com';
   (WHITELIST[LATIMES_DOMAIN] || (WHITELIST[LATIMES_DOMAIN] = {})).Google = true;
+  localStorage.whitelist = JSON.stringify(WHITELIST);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const UDACITY_DOMAIN = 'udacity.com';
+  (WHITELIST[UDACITY_DOMAIN] || (WHITELIST[UDACITY_DOMAIN] = {})).Twitter =
+      true;
   localStorage.whitelist = JSON.stringify(WHITELIST);
   localStorage.build = CURRENT_BUILD;
 }
