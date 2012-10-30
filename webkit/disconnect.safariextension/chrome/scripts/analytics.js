@@ -17,6 +17,7 @@ analytics.prototype.triggerEvent = function(event, attr) {
   }
   
   url += '/?' + queryString;
+  console.log(url)
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
@@ -27,3 +28,5 @@ analytics.prototype.triggerEvent = function(event, attr) {
   xhr.open("GET", url, true);
   xhr.send();
 }
+
+var atr = new analytics();
