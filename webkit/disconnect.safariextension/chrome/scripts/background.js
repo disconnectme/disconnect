@@ -462,7 +462,6 @@ if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.
 			var xhr = new XMLHttpRequest();
 			xhr.open("GET", "https://disconnect.me/test/sample", true);
 			xhr.onreadystatechange = function() {
-			  console.log(xhr)
 			  if (xhr.readyState == 4 && xhr.status == 200) {
 					if (xhr.responseText == 'activate') {
 						localStorage.searchHardenable = true;
