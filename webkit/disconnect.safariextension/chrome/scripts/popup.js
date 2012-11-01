@@ -119,12 +119,13 @@ const IMAGES = '../images/';
     });
 
     if (DESERIALIZE(localStorage.searchHardenable)) {
-      document.getElementById('search').className = 'shown';
-      const CHECKBOX = document.getElementsByTagName('input')[0];
-      CHECKBOX.checked = DESERIALIZE(localStorage.searchHardened);
-      
-      CHECKBOX.onclick = function() {
-        CHECKBOX.checked =
+      const SEARCH = document.getElementById('search');
+      SEARCH.className = 'shown';
+      const SEARCHBOX = SEARCH.getElementsByTagName('input')[0];
+      SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
+
+      SEARCHBOX.onclick = function() {
+        SEARCHBOX.checked =
             localStorage.searchHardened =
                 !DESERIALIZE(localStorage.searchHardened);
                 
@@ -136,6 +137,16 @@ const IMAGES = '../images/';
           });
       };
     }
+
+    const WIFIBOX =
+        document.getElementById('wifi').getElementsByTagName('input')[0];
+    WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
+
+    WIFIBOX.onclick = function() {
+      WIFIBOX.checked =
+          localStorage.browsingHardened =
+              !DESERIALIZE(localStorage.browsingHardened);
+    };
 
     const LINKS = document.getElementsByTagName('a');
     const LINK_COUNT = LINKS.length;

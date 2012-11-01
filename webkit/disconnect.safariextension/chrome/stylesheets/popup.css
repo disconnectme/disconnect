@@ -21,7 +21,7 @@
 */
 body, #services td { text-align: center }
 
-body, #search { font-size: x-small }
+body, #minioptions { font-size: x-small }
 
 body {
   margin: 3px;
@@ -70,4 +70,4 @@ input, :link, :visited { outline: none }
   width: 100%
 }
 
-.shown#search { display: table }
+.shown#search { display: table-row }
