@@ -422,7 +422,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     if (request.sendEvent == 'blimp-change-state' && request.data.hardenedState) {
       atr.triggerEvent('blimp-enabled', {});
     } else if (request.sendEvent == 'blimp-change-state' && !request.data.hardenedState) {
-      atr.triggerEvent('blimp-disabled', {});      
+      atr.triggerEvent('blimp-disabled', {});
     }
     sendResponse({});
     return;
@@ -456,18 +456,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
-/* Test for legacy configuration complications */
-if (deserialize(localStorage.searchHardenable)) {
-  var atr = new analytics();
-  atr.triggerEvent('blimp-configuration-error', {});
-  if (!deserialize(localStorage.searchHardened)) {
-    atr.triggerEvent('blimp-configuration-disabled', {});
-  }
-  //delete localStorage.searchHardenable;
-  //delete localStorage.searchHardened;
-}
-
-
 /* The interface is English only for now. */
 if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.searchHardenable)) {
 	chrome.cookies.getAll({url:'https://google.com', name:'PREF'}, function() {
@@ -475,7 +463,7 @@ if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.
 			var xhr = new XMLHttpRequest();
 			xhr.open("GET", "https://disconnect.me/test/sample", true);
 			xhr.onreadystatechange = function() {
-			  if (xhr.readyState == 4) {
+			  if (xhr.readyState == 4 && xhr.status == 200) {
 					if (xhr.responseText == 'activate') {
 						localStorage.searchHardenable = true;
             localStorage.searchHardened = true;

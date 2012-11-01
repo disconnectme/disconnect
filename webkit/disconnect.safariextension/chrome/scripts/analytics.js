@@ -27,3 +27,5 @@ analytics.prototype.triggerEvent = function(event, attr) {
   xhr.open("GET", url, true);
   xhr.send();
 }
+
+var atr = new analytics();
