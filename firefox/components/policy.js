@@ -22,6 +22,7 @@
     Gary Teh <garyjob@gmail.com>
 */
 Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils['import']('resource://modules/requests.js');
 var loader =
     Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -43,7 +44,6 @@ var sitename = new Sitename;
 var get = sitename.get;
 var requests = {};
 var redirects = {};
-var requestCounts = {};
 var contentName = 'Content';
 
 /**
@@ -138,7 +138,7 @@ Disconnect.prototype = {
               var serviceRequests =
                   categoryRequests[service] || (
                     categoryRequests[service] =
-                        {url: childService.url, count: 0}
+                        {url: childService.url, count: 0, blocked: !whitelisted}
                   );
               serviceRequests.count++;
             }

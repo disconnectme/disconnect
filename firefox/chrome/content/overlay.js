@@ -21,40 +21,18 @@
     Brian Kennish <byoogle@gmail.com>
     Gary Teh <garyjob@gmail.com>
 */
+Components.utils['import']('resource://modules/requests.js');
+var loader =
+    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader);
+loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
+loader.loadSubScript('chrome://disconnect/content/debug.js');
 
 /**
  * The Disconnect namespace.
  */
 if (typeof Disconnect == 'undefined') {
   var Disconnect = {
-    /**
-     * Fetches the number of tracking requests.
-     */
-    getRequestCount: function() {
-      return gBrowser.contentWindow.document.thirdPartyRequestCount;
-    },
-
-    /**
-     * Fetches the blocking state.
-     */
-    isUnblocked: function() {
-      return JSON.parse(content.localStorage.thirdPartiesUnblocked);
-    },
-
-    /**
-     * Paints the UI.
-     */
-    render: function(that, button) {
-      var sourceName = 'src';
-      if (that.getRequestCount())
-          button.setAttribute(
-            sourceName,
-            'chrome://disconnect/content/' +
-                (that.isUnblocked() ? 'unblocked' : 'blocked') + '.png'
-          );
-      else button.removeAttribute(sourceName);
-    },
-
     /**
      * Navigates to a URL.
      */
@@ -82,70 +60,67 @@ if (typeof Disconnect == 'undefined') {
         preferences.setIntPref(build, 1);
       }
 
-      var render = this.render;
-      var that = this;
       var button = document.getElementById('disconnect-button');
-
-      gBrowser.tabContainer.addEventListener('TabAttrModified', function() {
-        render(that, button);
-      }, false);
-
-      gBrowser.addEventListener('error', function() {
-        render(that, button);
-      }, false);
-
-      gBrowser.addEventListener('DOMContentLoaded', function() {
-        render(that, button);
-      }, false);
-
-      var toolbarButton = 'toolbarbutton-1';
-
-      button.addEventListener('mouseover', function() {
-        this.className = toolbarButton + ' highlighted';
-      }, true);
-
-      button.addEventListener('mouseout', function() {
-        this.className = toolbarButton;
-      }, false);
-
-      var blocking = document.getElementById('disconnect-blocking');
+      var get = (new Sitename).get;
+      var services =
+          document.
+            getElementById('disconnect-popup').
+            getElementsByTagName('menuitem');
+      var labelName = 'label';
+      var serviceLabel = ' request';
+      var command = 'command';
+      var browsingHardenedName = 'browsingHardened';
+      var wifi = document.getElementById('disconnect-wifi');
+      var wifiLabel = 'Secure Wi-Fi';
 
       button.addEventListener('click', function() {
-        var labelName = 'label';
-        var requestCount = that.getRequestCount() || 0;
-        var label = ' third-party request';
-        var shortcutName = 'accesskey';
+        var url = gBrowser.contentWindow.location;
+        var whitelist = JSON.parse(preferences.getCharPref('whitelist'));
+        var domain = get(url.hostname);
+        var domainWhitelist = whitelist[domain] || (whitelist[domain] = {});
 
-        if (that.isUnblocked()) {
-          blocking.setAttribute(
-            labelName,
-            'Block ' + requestCount + label + (requestCount - 1 ? 's' : '')
-          );
-          blocking.setAttribute(shortcutName, 'B');
-        } else {
-          blocking.setAttribute(
-            labelName,
-            'Unblock ' + requestCount + label + (requestCount - 1 ? 's' : '')
-          );
-          blocking.setAttribute(shortcutName, 'U');
+        for (var i = 0; i < 5; i++) {
+          var service = services[i];
+          var name = service.getAttribute('value');
+          var blocked = !domainWhitelist[name];
+          var count =
+              (((requestCounts[url] || {}).Disconnect || {})[name] || {}).count
+                  || 0;
+
+          if (blocked) {
+            service.className = service.className.slice(0, 15);
+            service.setAttribute(
+              labelName,
+              count + serviceLabel + (count - 1 ? 's' : '') + ' blocked'
+            );
+          } else {
+            service.className += ' disabled';
+            service.setAttribute(
+              labelName,
+              count + serviceLabel + (count - 1 ? 's' : '') + ' unblocked'
+            );
+          }
+
+          service.addEventListener(command, function(name, blocked) {
+            domainWhitelist[name] = blocked;
+            preferences.setCharPref('whitelist', JSON.stringify(whitelist));
+            content.location.reload();
+          }.bind(null, name, blocked), false);
         }
-      }, false);
 
-      var command = 'command';
+        var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+        browsingHardened && wifi.setAttribute(labelName, '✓ ' + wifiLabel);
 
-      blocking.addEventListener(command, function() {
-        content.localStorage.thirdPartiesUnblocked = !that.isUnblocked();
-        content.location.reload();
+        wifi.addEventListener(command, function() {
+          preferences.setBoolPref(browsingHardenedName, !browsingHardened);
+          browsingHardened && this.setAttribute(labelName, wifiLabel);
+        }, false);
       }, false);
 
       var go = this.go;
 
       document.
         getElementById('disconnect-help').
-        addEventListener(command, function() { go(this); }, false);
-
-      document.
-        getElementById('disconnect-feedback').
         addEventListener(command, function() { go(this); }, false);
     }
   };

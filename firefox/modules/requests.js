@@ -1,5 +1,5 @@
 /*
-  A script that sets the default preferences.
+  A script that persists the number of tracking requests.
 
   Copyright 2012 Disconnect, Inc.
 
@@ -19,14 +19,9 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
+var EXPORTED_SYMBOLS = ['requestCounts'];
 
 /**
- * The Disconnect preferences.
+ * Constants.
  */
-pref('extensions.disconnect.build', 0);
-pref(
-  'extensions.disconnect.whitelist',
-  '{"latimes.com":{"Google":true},"mediafire.com":{"Facebook":true},"salon.com":{"Google":true},"udacity.com":{"Twitter":true}}'
-);
-pref('extensions.disconnect.searchHardened', false);
-pref('extensions.disconnect.browsingHardened', true);
+var requestCounts = {};

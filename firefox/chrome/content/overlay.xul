@@ -34,25 +34,49 @@
       type="menu"
       class="toolbarbutton-1"
       id="disconnect-button"
-      image="chrome://disconnect/content/blocked.png"
       label="Disconnect"
       tooltiptext="View and manage requests"
       accesskey="D"
     >
       <menupopup id="disconnect-popup">
-        <menuitem id="disconnect-blocking"/>
+        <menuitem
+          class="menuitem-iconic"
+          id="disconnect-facebook"
+          accesskey="f"
+          value="Facebook"
+        />
+        <menuitem
+          class="menuitem-iconic"
+          id="disconnect-google"
+          accesskey="g"
+          value="Google"
+        />
+        <menuitem
+          class="menuitem-iconic"
+          id="disconnect-linkedin"
+          accesskey="i"
+          value="LinkedIn"
+        />
+        <menuitem
+          class="menuitem-iconic"
+          id="disconnect-twitter"
+          accesskey="t"
+          value="Twitter"
+        />
+        <menuitem
+          class="menuitem-iconic"
+          id="disconnect-yahoo"
+          accesskey="y"
+          value="Yahoo"
+        />
+        <menuseparator/>
+        <menuitem id="disconnect-wifi" accesskey="S"/>
         <menuseparator/>
         <menuitem
           id="disconnect-help"
           label="Ask Disconnect a question"
           accesskey="A"
           value="https://disconnect.me/help"
-        />
-        <menuitem
-          id="disconnect-feedback"
-          label="Give Disconnect props"
-          accesskey="G"
-          value="https://addons.mozilla.org/en-US/firefox/addon/fbdc/"
         />
       </menupopup>
     </toolbarbutton>
