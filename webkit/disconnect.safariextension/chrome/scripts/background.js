@@ -223,7 +223,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 40;
+const CURRENT_BUILD = 41;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -303,8 +303,11 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
   localStorage.whitelist = JSON.stringify(WHITELIST);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    localStorage.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  delete localStorage.blogOpened;
+  localStorage.build = CURRENT_BUILD;
+}
+
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
@@ -449,7 +452,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   if (!deserialize(localStorage.blogOpened)) {
-    TABS.create({url: 'https://blog.disconnect.me/new-versions-of-disconnect'});
+    TABS.create({url: 'markup/security.html'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;
