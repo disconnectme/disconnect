@@ -452,7 +452,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   if (!deserialize(localStorage.blogOpened)) {
-    TABS.create({url: 'markup/security.html'});
+    TABS.create({url: 'https://disconnect.me/security'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;
