@@ -223,7 +223,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 41;
+const CURRENT_BUILD = 42;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -303,11 +303,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
   localStorage.whitelist = JSON.stringify(WHITELIST);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  delete localStorage.blogOpened;
-  localStorage.build = CURRENT_BUILD;
-}
-
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    localStorage.build = CURRENT_BUILD;
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
