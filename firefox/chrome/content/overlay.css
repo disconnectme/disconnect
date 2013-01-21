@@ -1,0 +1,52 @@
+/*
+  An overlay style sheet that stops third parties and search engines from
+  tracking the webpages you go to and searches you do.
+
+  Copyright 2010-2012 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Gary Teh <garyjob@gmail.com>
+    Brian Kennish <byoogle@gmail.com>
+*/
+#disconnect-button {
+  -moz-box-orient: horizontal;
+  list-style-image: url(button.png);
+  -moz-image-region: rect(0, 16px, 16px, 0)
+}
+
+#disconnect-button:hover { -moz-image-region: rect(16px, 16px, 32px, 0) }
+
+#disconnect-popup .menuitem-iconic { list-style-image: url(services.png) }
+
+#disconnect-facebook { -moz-image-region: rect(0, 16px, 16px, 0) }
+
+.disabled#disconnect-facebook { -moz-image-region: rect(16px, 16px, 32px, 0) }
+
+#disconnect-google { -moz-image-region: rect(32px, 16px, 48px, 0) }
+
+.disabled#disconnect-google { -moz-image-region: rect(48px, 16px, 64px, 0) }
+
+#disconnect-linkedin { -moz-image-region: rect(64px, 16px, 80px, 0) }
+
+.disabled#disconnect-linkedin { -moz-image-region: rect(80px, 16px, 96px, 0) }
+
+#disconnect-twitter { -moz-image-region: rect(96px, 16px, 112px, 0) }
+
+.disabled#disconnect-twitter { -moz-image-region: rect(112px, 16px, 128px, 0) }
+
+#disconnect-yahoo { -moz-image-region: rect(128px, 16px, 144px, 0) }
+
+.disabled#disconnect-yahoo { -moz-image-region: rect(144px, 16px, 160px, 0) }

@@ -1,0 +1,47 @@
+{
+  "manifest_version": 2,
+  "name": "Disconnect",
+  "version": "4.2.0",
+  "description":
+      "Stop third parties and search engines from tracking the webpages you go to and searches you do.",
+  "icons": {"48": "images/48.png", "128": "images/128.png"},
+  "permissions": [
+    "chrome://favicon/",
+    "contextMenus",
+    "cookies",
+    "history",
+    "idle",
+    "notifications",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_security_policy":
+      "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "scripts": [
+      "scripts/vendor/port/port.js",
+      "scripts/vendor/jquery/jquery-1.7.2.min.js",
+      "scripts/vendor/sitename/sitename.js",
+      "scripts/vendor/sjcl/sjcl.js",
+      "scripts/services.js",
+      "scripts/analytics.js",
+      "scripts/background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "images/19.png",
+    "default_title": "View and manage requests"
+  },
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "css": ["stylesheets/content.css"],
+    "js": ["scripts/vendor/port/port.js", "scripts/content.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }]
+}

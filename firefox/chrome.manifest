@@ -1,0 +1,35 @@
+# A chrome manifest that stops third parties and search engines from tracking
+# the webpages you go to and searches you do.
+#
+# Copyright 2010-2012 Disconnect, Inc.
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Authors (one per line):
+#
+#   Brian Kennish <byoogle@gmail.com>
+#   Gary Teh <garyjob@gmail.com>
+
+# Modules.
+resource modules modules/
+
+# The content policy.
+component {3f722c5d-555d-4fbc-9444-c5e0d963de8f} components/policy.js
+contract @disconnect.me/d2;1 {3f722c5d-555d-4fbc-9444-c5e0d963de8f}
+category content-policy @disconnect.me/d2;1 @disconnect.me/d2;1
+
+# The overlay.
+content disconnect chrome/content/
+skin disconnect default chrome/skin/
+overlay chrome://browser/content/browser.xul chrome://disconnect/content/overlay.xul
+style chrome://global/content/customizeToolbar.xul chrome://disconnect/content/overlay.css
