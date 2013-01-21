@@ -331,7 +331,7 @@ const EXTENSION = '.png';
         $('.' + CLASS_NAME).each(function() {
           setTimeout(function(that) {
             $(that).removeClass(CLASS_NAME).addClass('t_hidden');
-          }.bind(null, this), 1000);
+          }.bind(null, this), 1400);
         });
       }, 100);
 
