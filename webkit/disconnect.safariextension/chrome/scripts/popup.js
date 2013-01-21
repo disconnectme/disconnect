@@ -53,17 +53,22 @@ function renderCategory(
   control,
   wrappedControl,
   badge,
+  badgeIcon,
+  text,
   textName,
   textCount
 ) {
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
-    control.title = UNBLOCK + name;
-    badge.src = IMAGES + lowercaseName + EXTENSION;
+    text.title = badge.title = UNBLOCK + lowercaseName;
+    badgeIcon.src = IMAGES + lowercaseName + EXTENSION;
   } else {
     wrappedControl.addClass(DEACTIVATED);
-    control.title = BLOCK + name;
-    badge.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
+    text.title =
+        badge.title =
+            BLOCK + lowercaseName +
+                (name == CATEGORIES[2] ? ' (not recommended)' : '');
+    badgeIcon.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
   }
 
   textName.text(name);
@@ -206,11 +211,13 @@ const EXTENSION = '.png';
         var wrappedCategoryControl = categoryControls.filter('.category');
         var categoryControl = wrappedCategoryControl[0];
         var serviceSurface = categoryControls.filter('.services').find('tbody');
-        var protoBadge = wrappedCategoryControl.find('.badge');
-        var badge = protoBadge.find('img')[0];
-        var text = wrappedCategoryControl.find('.text');
-        var textName = text.find('.name');
-        var textCount = text.find('.count');
+        var wrappedBadge = wrappedCategoryControl.find('.badge');
+        var badge = wrappedBadge[0];
+        var badgeIcon = wrappedBadge.find('img')[0];
+        var wrappedText = wrappedCategoryControl.find('.text');
+        var text = wrappedText[0];
+        var textName = wrappedText.find('.name');
+        var textCount = wrappedText.find('.count');
         var categoryWhitelist = SITE_WHITELIST[name] || {};
         var whitelisted = categoryWhitelist.whitelisted;
 
@@ -242,18 +249,22 @@ const EXTENSION = '.png';
           categoryControl,
           wrappedCategoryControl,
           badge,
+          badgeIcon,
+          text,
           textName,
           textCount
         );
         badge.alt = name;
 
-        protoBadge.add(text).click(function(
+        wrappedBadge.add(wrappedText).click(function(
           name,
           lowercaseName,
           requestCount,
           categoryControl,
           wrappedCategoryControl,
           badge,
+          badgeIcon,
+          text,
           textName,
           textCount,
           serviceSurface
@@ -274,6 +285,8 @@ const EXTENSION = '.png';
             categoryControl,
             wrappedCategoryControl,
             badge,
+            badgeIcon,
+            text,
             textName,
             textCount
           );
@@ -292,12 +305,17 @@ const EXTENSION = '.png';
           categoryControl,
           wrappedCategoryControl,
           badge,
+          badgeIcon,
+          text,
           textName,
           textCount,
           serviceSurface
         ));
 
-        wrappedCategoryControl.find('.action').click(function(serviceSurface) {
+        var action = wrappedCategoryControl.find('.action');
+        action[0].title += lowercaseName;
+
+        action.click(function(serviceSurface) {
           serviceSurface != activeServices &&
               activeServices.filter(':visible').hide();
           activeServices = serviceSurface.toggle();
@@ -307,6 +325,17 @@ const EXTENSION = '.png';
       }
 
       $('html').add(BODY).height($(window).height());
+      Tipped.create(
+        '[title]', {
+          skin: 'tiny',
+          stem: {spacing: 1},
+          background: {color: '#333', opacity: .9},
+          shadow: {offset: {x: 1, y: 1}, opacity: .1},
+          showDelay: 600,
+          fadeIn: 400,
+          fadeOut: 400
+        }
+      );
     });
 
     const SEARCH = $('.search ' + INPUT)[0];
