@@ -1,7 +1,7 @@
 <!--
   The markup for a popup that displays and drives the blocking of requests.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -21,31 +21,86 @@
 -->
 <link rel="stylesheet" href="../stylesheets/popup.css">
 <script src="../scripts/vendor/port/port.js"></script>
+<script src="../scripts/vendor/jquery/jquery.js"></script>
 <script src="../scripts/popup.js"></script>
-<table id="services">
+<table id="navbar">
   <tr>
-    <td><img></td>
-    <td></td>
+    <td class="badge"><img src="../images/disconnect.png" alt="Disconnect"></td>
+    <td class="text">
+      <a
+        title="Get help"
+        target="_blank"
+        href="https://disconnect.me/help"
+      >Help</a><a
+        title="Give props"
+        target="_blank"
+        href="https://chrome.google.com/webstore/detail/jeoacafpbcihiomhlakheieifhpjdfeo/reviews"
+      >Props</a>
+    </td>
   </tr>
 </table>
-<table id="minioptions">
-  <tr id="search">
-    <td><input type="checkbox"></td>
-    <td>Anonymize search</td>
-  </tr>
-  <tr id="wifi">
-    <td><input type="checkbox"></td>
-    <td>Secure Wi-Fi</td>
+<table id="shortcuts">
+  <tr>
+    <td>
+      <table class="shortcut">
+        <tr>
+          <td class="badge"><img></td>
+          <td class="text"></td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
-<a
-  title="Get help"
-  target="_blank"
-  href="https://disconnect.me/help"
->Help</a>
-|
-<a
-  title="Give props"
-  target="_blank"
-  href="https://chrome.google.com/webstore/detail/jeoacafpbcihiomhlakheieifhpjdfeo/reviews"
->Props</a>
+<table>
+  <tbody id="categories">
+    <tr class="category">
+      <td class="badge">
+        <table>
+          <tr>
+            <td><img></td>
+          </tr>
+        </table>
+      </td>
+      <td class="text">
+        <table>
+          <tr>
+            <td class="name"></td>
+          </tr>
+          <tr>
+            <td class="count"></td>
+          </tr>
+        </table>
+      </td>
+      <td class="action" title="Expand ">
+        <img src="../images/expand.png" alt="Expand">
+      </td>
+    </tr>
+    <tr class="border">
+      <td colspan="3"></td>
+    </tr>
+    <tr class="services">
+      <td colspan="3">
+        <table>
+          <tbody>
+            <tr class="service">
+              <td>
+                <input type="checkbox">
+                <a title="Visit " target="_blank"></a>
+              </td>
+              <td class="text"> requests</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table id="options">
+  <tr>
+    <td class="search"><input type="checkbox"> Secure search</td>
+    <td class="wifi"><input type="checkbox"> Secure Wi-Fi</td>
+  </tr>
+</table>
+<table id="dashboard">
+  <td><img src="../images/dashboard.png" alt="Disconnect Dashboard"></td>
+</table>

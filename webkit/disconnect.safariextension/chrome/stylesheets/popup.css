@@ -1,7 +1,7 @@
 /*
   The style sheet for a popup that displays and drives the blocking of requests.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -19,55 +19,163 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-body, #services td { text-align: center }
-
-body, #minioptions { font-size: x-small }
-
 body {
-  margin: 3px;
-  width: 140px;
-  font-family: Arial, sans-serif
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+  -webkit-user-select: none;
+  -moz-user-select: none
 }
+
+body.safari { margin: 0 4px }
 
 table {
-  margin-left: auto;
+  border-collapse: collapse;
+  font-size: x-small
+}
+
+#navbar {
   margin-right: auto;
-  border-collapse: collapse
+  margin-left: auto;
+  height: 30px
 }
 
-input, :link, :visited { outline: none }
+td { padding: 0 }
 
-:link, :visited {
+#navbar .badge { width: 110px }
+
+#navbar .text {
+  width: 70px;
+  text-align: right
+}
+
+#navbar a {
+  margin-left: 10px;
+  outline: none;
   text-decoration: none;
-  color: #003ea8
+  color: #999
 }
 
-:hover { text-decoration: underline }
+#navbar :hover { color: #333 }
 
-.safari { margin: 0 4px }
-
-.deactivated { color: #7f7f7f }
-
-.mouseover { background: #f4f6fc }
-
-#services {
-  margin-bottom: 3px;
-  font-size: small
+#shortcuts {
+  background: #2b2b2b;
+  width: 200px;
+  height: 45px;
+  text-align: center
 }
 
-#services tr {
-  border: solid #edeff5;
-  border-width: thin 0;
+.shortcut {
+  display: inline-block;
+  margin-right: 7px;
+  margin-left: 7px;
+  opacity: .9;
+  text-align: center;
   cursor: pointer
 }
 
-#services tr:first-child, #search { display: none }
+.shortcut:first-child { display: none }
 
-#services td { padding: 3px 0 3px 6px }
+.shortcut:hover { opacity: 1 }
 
-#services td:last-child {
-  padding-right: 6px;
-  width: 100%
+.shortcut td {
+  width: 24px;
+  height: 24px;
+  color: white
 }
 
-.shown#search { display: table-row }
+.shortcut .badge { background: #00ba4d }
+
+.shortcut.deactivated .badge { background: #5d5d5d }
+
+.shortcut .text { background: #0d8b42 }
+
+.shortcut.deactivated .text { background: #4c4c4c }
+
+.category {
+  height: 30px;
+  cursor: pointer
+}
+
+.category:first-child { display: none }
+
+.category:hover { background: gainsboro }
+
+.category .badge {
+  padding-right: 8px;
+  padding-left: 3px
+}
+
+.category .badge table {
+  background: #00ba4d;
+  width: 24px;
+  height: 24px;
+  text-align: center
+}
+
+.category.deactivated .badge table { background: #5d5d5d }
+
+.category .text { width: 100% }
+
+.category .text table {
+  border-collapse: separate;
+  border-spacing: 2px
+}
+
+.category .count { color: #999 }
+
+.border {
+  background: gainsboro;
+  height: 1px
+}
+
+.border:first-child { display: none }
+
+.services { background: #f3f3f3 }
+
+.services tbody { display: none }
+
+.service { height: 15px }
+
+.service:first-child { display: none }
+
+.service td { padding-left: 10px }
+
+.service input {
+  margin-left: 0;
+  width: 10px;
+  height: 10px
+}
+
+.service a {
+  text-decoration: none;
+  color: #666
+}
+
+.service :hover { color: #191919 }
+
+.service .text { color: #b3b3b3 }
+
+#options {
+  margin-right: auto;
+  margin-left: auto;
+  height: 30px;
+  cursor: default
+}
+
+#options td { width: 90px }
+
+#options input {
+  margin-left: 0;
+  width: 10px;
+  height: 10px
+}
+
+#options .wifi { text-align: right }
+
+#dashboard {
+  border-top: thin solid gainsboro;
+  background: #f3f3f3;
+  width: 200px;
+  text-align: center
+}

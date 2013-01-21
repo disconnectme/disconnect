@@ -2,7 +2,7 @@
   The script for a background page that handles request blocking and the
   visualization thereof.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -157,7 +157,7 @@ function reduceCookies(url, service, name) {
 
 /* Preps the browser action. */
 function initializeToolbar() {
-  BROWSER_ACTION.setBadgeBackgroundColor({color: [85, 144, 210, 255]});
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [0, 186, 77, 255]});
   const DETAILS = {popup: (SAFARI ? 'chrome' : '') + '/markup/popup.html'};
 
   if (SAFARI) {
@@ -188,7 +188,7 @@ function updateCounter(tabId, count, deactivated) {
         deserialize(localStorage.blogOpened)
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
-      tabId: tabId, color: [136, 136, 136, 255]
+      tabId: tabId, color: [93, 93, 93, 255]
     });
     BROWSER_ACTION.setBadgeText({tabId: tabId, text: (count || '') + ''});
   }
@@ -223,7 +223,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 42;
+const CURRENT_BUILD = 43;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;

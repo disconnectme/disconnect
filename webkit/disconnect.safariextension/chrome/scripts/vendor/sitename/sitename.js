@@ -4,7 +4,7 @@
  * <samp>byoogle.appspot.com</samp>).
  * <br />
  * <br />
- * Copyright 2012 Disconnect, Inc.
+ * Copyright 2012, 2013 Disconnect, Inc.
  * <br />
  * <br />
  * This program is free software: you can redistribute it and/or modify it under
@@ -91,7 +91,7 @@ function Sitename() {
   if (typeof jQuery == undeclared) {
     var script = document.createElement('script');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', '../scripts/vendor/jquery-1.7.2.min.js');
+    script.setAttribute('src', '../scripts/vendor/jquery.js');
     script.onload = function() { jQuery.noConflict(); };
     document.head.appendChild(script);
   }
