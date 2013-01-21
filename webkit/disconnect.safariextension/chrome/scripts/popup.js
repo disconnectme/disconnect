@@ -325,6 +325,16 @@ const EXTENSION = '.png';
       }
 
       $('html').add(BODY).height($(window).height());
+      const CLASS_NAME = 't_visible';
+
+      setInterval(function() {
+        $('.' + CLASS_NAME).each(function() {
+          setTimeout(function(that) {
+            $(that).removeClass(CLASS_NAME).addClass('t_hidden');
+          }.bind(null, this), 1000);
+        });
+      }, 100);
+
       Tipped.create(
         '[title]', {
           skin: 'tiny',
