@@ -329,27 +329,6 @@ const EXTENSION = '.png';
       }
 
       $('html').add(BODY).height($(window).height());
-      const CLASS_NAME = 't_visible';
-
-      setInterval(function() {
-        $('.' + CLASS_NAME).each(function() {
-          setTimeout(function(that) {
-            $(that).removeClass(CLASS_NAME).addClass('t_hidden');
-          }.bind(null, this), 1400);
-        });
-      }, 100);
-
-      Tipped.create(
-        '[title]', {
-          skin: 'tiny',
-          stem: {spacing: 1},
-          background: {color: '#333', opacity: .9},
-          shadow: {offset: {x: 1, y: 1}, opacity: .1},
-          showDelay: 600,
-          fadeIn: 400,
-          fadeOut: 400
-        }
-      );
     });
 
     const SEARCH = $('.search ' + INPUT)[0];
