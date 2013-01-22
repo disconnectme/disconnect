@@ -210,7 +210,8 @@ const EXTENSION = '.png';
         var categoryControls = CATEGORY_TEMPLATE.clone(true);
         var wrappedCategoryControl = categoryControls.filter('.category');
         var categoryControl = wrappedCategoryControl[0];
-        var serviceSurface = categoryControls.filter('.services').find('tbody');
+        var serviceContainer = categoryControls.filter('.services').find('div');
+        var serviceSurface = serviceContainer.find('tbody');
         var wrappedBadge = wrappedCategoryControl.find('.badge');
         var badge = wrappedBadge[0];
         var badgeIcon = wrappedBadge.find('img')[0];
@@ -315,11 +316,14 @@ const EXTENSION = '.png';
         var action = wrappedCategoryControl.find('.action');
         action[0].title += lowercaseName;
 
-        action.click(function(serviceSurface) {
-          serviceSurface != activeServices &&
-              activeServices.filter(':visible').hide();
-          activeServices = serviceSurface.toggle();
-        }.bind(null, serviceSurface));
+        action.click(function(serviceContainer) {
+          const EXPANDED_SERVICES = activeServices.filter(':visible');
+          if (EXPANDED_SERVICES.length && serviceContainer != activeServices)
+              EXPANDED_SERVICES.slideUp('fast', function() {
+                activeServices = serviceContainer.slideToggle('fast');
+              });
+          else activeServices = serviceContainer.slideToggle('fast');
+        }.bind(null, serviceContainer));
 
         CATEGORY_SURFACE.append(categoryControls);
       }

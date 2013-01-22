@@ -133,7 +133,7 @@ td { padding: 0 }
 
 .services { background: #f3f3f3 }
 
-.services tbody { display: none }
+.services div { display: none }
 
 .service { height: 15px }
 
