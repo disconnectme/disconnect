@@ -115,7 +115,7 @@ td { padding: 0 }
 
 .category.deactivated .badge table { background: #5d5d5d }
 
-.category .text { width: 100% }
+.category .text { width: 153px }
 
 .category .text table {
   border-collapse: separate;
