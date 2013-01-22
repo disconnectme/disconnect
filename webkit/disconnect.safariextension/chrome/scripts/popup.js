@@ -320,15 +320,9 @@ const EXTENSION = '.png';
           const EXPANDED_SERVICES = activeServices.filter(':visible');
           if (EXPANDED_SERVICES.length && serviceContainer != activeServices)
               EXPANDED_SERVICES.slideUp('fast', function() {
-                activeServices =
-                    serviceContainer.
-                      slideToggle('fast').
-                      effect('bounce', {distance: 1, times: 1}, 100);
-              }).effect('bounce', {distance: 1, times: 1}, 100);
-          else activeServices =
-              serviceContainer.
-                slideToggle('fast').
-                effect('bounce', {distance: 1, times: 1}, 100);
+                activeServices = serviceContainer.slideToggle('fast');
+              });
+          else activeServices = serviceContainer.slideToggle('fast');
         }.bind(null, serviceContainer));
 
         CATEGORY_SURFACE.append(categoryControls);
