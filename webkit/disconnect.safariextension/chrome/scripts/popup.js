@@ -135,6 +135,8 @@ const EXTENSION = '.png';
       const DOMAIN = GET(TAB.url);
       const SITE_WHITELIST =
           (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
+      const SHORTCUT_WHITELIST =
+          (SITE_WHITELIST.Disconnect || {}).services || {};
 
       for (var i = 0; i < SHORTCUT_COUNT; i++) {
         var name = SHORTCUTS[i];
@@ -152,7 +154,7 @@ const EXTENSION = '.png';
         renderShortcut(
           name,
           lowercaseName,
-          !SITE_WHITELIST[name],
+          !SHORTCUT_WHITELIST[name],
           requestCount,
           control,
           wrappedControl,
@@ -173,10 +175,16 @@ const EXTENSION = '.png';
           const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
           const LOCAL_SITE_WHITELIST =
               WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+          const DISCONNECT_WHITELIST =
+              LOCAL_SITE_WHITELIST.Disconnect ||
+                  (LOCAL_SITE_WHITELIST.Disconnect = {});
+          const LOCAL_SHORTCUT_WHITELIST =
+              DISCONNECT_WHITELIST.services ||
+                  (DISCONNECT_WHITELIST.services = {});
           renderShortcut(
             name,
             lowercaseName,
-            !(LOCAL_SITE_WHITELIST[name] = !LOCAL_SITE_WHITELIST[name]),
+            !(LOCAL_SHORTCUT_WHITELIST[name] = !LOCAL_SHORTCUT_WHITELIST[name]),
             requestCount,
             control,
             wrappedControl,

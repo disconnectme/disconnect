@@ -223,7 +223,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 43;
+const CURRENT_BUILD = 44;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -304,8 +304,23 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    localStorage.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) localStorage.blogOpened = true;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const MIGRATED_WHITELIST = {};
+
+  for (var domain in WHITELIST) {
+    var siteWhitelist =
+        (MIGRATED_WHITELIST[domain] = {}).Disconnect =
+            {whitelisted: false, services: {}};
+    for (var service in WHITELIST[domain])
+        siteWhitelist.services[service] = true;
+  }
+
+  localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
+  localStorage.build = CURRENT_BUILD;
+}
+
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
@@ -350,22 +365,23 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
   if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
-  var childService = getService(CHILD_DOMAIN);
+  const CHILD_SERVICE = getService(CHILD_DOMAIN);
   var hardenedUrl;
   var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
 
-  if (childService) {
+  if (CHILD_SERVICE) {
     const PARENT_DOMAIN = DOMAINS[TAB_ID];
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
-    const CHILD_NAME = childService.name;
+    const CHILD_NAME = CHILD_SERVICE.name;
+    const CHILD_CATEGORY = CHILD_SERVICE.category;
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
 
     if (
       PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
           PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name ||
-              childService.category == CONTENT_NAME
+              CHILD_CATEGORY == CONTENT_NAME
     ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
@@ -373,9 +389,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         hardenedUrl = hardenedUrl.url;
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
-    } else if ((
-      (deserialize(localStorage.whitelist) || {})[PARENT_DOMAIN] || {}
-    )[CHILD_NAME]) { // The request is allowed: the service is whitelisted.
+    } else if (
+      ((((deserialize(localStorage.whitelist) || {})[PARENT_DOMAIN] ||
+          {})[CHILD_CATEGORY] || {}).services || {})[CHILD_NAME]
+    ) { // The request is allowed: the service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
         hardened = hardenedUrl.hardened;
@@ -391,7 +408,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     }; // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
-        incrementCounter(TAB_ID, childService, !whitelisted);
+        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
