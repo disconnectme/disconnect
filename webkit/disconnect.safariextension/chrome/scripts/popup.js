@@ -313,13 +313,12 @@ const EXTENSION = '.png';
               LOCAL_SITE_WHITELIST[name] ||
                   (LOCAL_SITE_WHITELIST[name] =
                       {whitelisted: false, services: {}});
-          const BLOCKED = !(
-            CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted
-          );
+          const WHITELISTED =
+              CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted;
           renderCategory(
             name,
             lowercaseName,
-            BLOCKED,
+            !WHITELISTED,
             requestCount,
             categoryControl,
             wrappedCategoryControl,
@@ -330,8 +329,10 @@ const EXTENSION = '.png';
             textCount
           );
 
-          serviceSurface.find(INPUT).each(function() {
-            this.checked = BLOCKED;
+          serviceSurface.find(INPUT).each(function(index) {
+            if (index) this.checked = !(
+              CATEGORY_WHITELIST.services[$(this).next().text()] = WHITELISTED
+            );
           });
 
           localStorage.whitelist = JSON.stringify(WHITELIST);
