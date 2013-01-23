@@ -60,19 +60,22 @@ function renderCategory(
 ) {
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
-    text.title = badge.title = UNBLOCK + lowercaseName;
+    text.title =
+        badge.title =
+            UNBLOCK + lowercaseName +
+                (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
     badgeIcon.src = IMAGES + lowercaseName + EXTENSION;
   } else {
     wrappedControl.addClass(DEACTIVATED);
     text.title =
         badge.title =
             BLOCK + lowercaseName +
-                (name == CATEGORIES[2] ? ' (not recommended)' : '');
+                (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
     badgeIcon.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
   }
 
   textName.text(name);
-  textCount.text(requestCount + ' requests');
+  textCount.text(requestCount + REQUEST + (requestCount - 1 ? 's' : ''));
 }
 
 /* The background window. */
@@ -99,8 +102,17 @@ const CATEGORY_COUNT = CATEGORIES.length;
 /* The "tabs" API. */
 const TABS = BACKGROUND.TABS;
 
+/* The content key. */
+const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
+
 /* The deactivated keyword. */
 const DEACTIVATED = 'deactivated';
+
+/* The recommended keyword. */
+const RECOMMENDED = 'recommended';
+
+/* The request keyword. */
+const REQUEST = ' request';
 
 /* The input keyword. */
 const INPUT = 'input';
@@ -236,16 +248,31 @@ const EXTENSION = '.png';
           checkbox.checked =
               !whitelisted && !(categoryWhitelist.services || {})[serviceName];
 
-          checkbox.onclick = function() { this.checked = false; };
+          checkbox.onclick = function(name, serviceName) {
+            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const LOCAL_SITE_WHITELIST =
+                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            const CATEGORY_WHITELIST =
+                LOCAL_SITE_WHITELIST[name] ||
+                    (LOCAL_SITE_WHITELIST[name] =
+                        {whitelisted: false, services: {}});
+            const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+            this.checked =
+                SERVICE_WHITELIST[serviceName] =
+                    !SERVICE_WHITELIST[serviceName];
+            localStorage.whitelist = JSON.stringify(WHITELIST);
+            TABS.reload(ID);
+          }.bind(null, name, serviceName);
 
           var link = serviceControl.find('a')[0];
           link.title += serviceName;
           var service = categoryRequests[serviceName];
           link.href = service.url;
           $(link).text(serviceName);
-          var count = serviceControl.find('.text');
           var serviceCount = service.count;
-          count.text(serviceCount + count.text());
+          serviceControl.
+            find('.text').
+            text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
           serviceSurface.append(serviceControl);
           requestCount += serviceCount;
         }
@@ -282,7 +309,9 @@ const EXTENSION = '.png';
           const LOCAL_SITE_WHITELIST =
               WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
           const CATEGORY_WHITELIST =
-              LOCAL_SITE_WHITELIST[name] || (LOCAL_SITE_WHITELIST[name] = {});
+              LOCAL_SITE_WHITELIST[name] ||
+                  (LOCAL_SITE_WHITELIST[name] =
+                      {whitelisted: false, services: {}});
           const BLOCKED = !(
             CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted
           );
