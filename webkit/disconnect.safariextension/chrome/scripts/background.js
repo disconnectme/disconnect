@@ -370,6 +370,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
+  var date = new Date();
+  var month = date.getMonth() + 1;
+  month = (month < 10 ? '0' : '') + month;
+  var day = date.getDate();
+  day = (day < 10 ? '0' : '') + day;
+  date = date.getFullYear() + '-' + month + '-' + day;
 
   if (CHILD_SERVICE) {
     const PARENT_DOMAIN = DOMAINS[TAB_ID];
@@ -403,12 +409,18 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
         else whitelisted = true;
       }
-    } else blockingResponse = {
-      redirectUrl:
-          TYPE == 'image' ?
-              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
-                  : 'about:blank'
-    }; // The request is denied.
+    } else {
+      blockingResponse = {
+        redirectUrl:
+            TYPE == 'image' ?
+                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
+                    : 'about:blank'
+      };
+      const BLOCKED_REQUESTS = deserialize(localStorage.blockedRequests) || {};
+      BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
+          BLOCKED_REQUESTS[date] = 1;
+      localStorage.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+    } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
         incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted);
@@ -420,6 +432,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   if (hardened) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     REDIRECTS[TAB_ID] = hardenedUrl;
+    const HARDENED_REQUESTS = deserialize(localStorage.hardenedRequests) || {};
+    HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
+        HARDENED_REQUESTS[date] = 1;
+    localStorage.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
   }
 
   return blockingResponse;
