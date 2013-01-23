@@ -189,7 +189,8 @@ const EXTENSION = '.png';
               WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
           const DISCONNECT_WHITELIST =
               LOCAL_SITE_WHITELIST.Disconnect ||
-                  (LOCAL_SITE_WHITELIST.Disconnect = {});
+                  (LOCAL_SITE_WHITELIST.Disconnect =
+                      {whitelisted: false, services: {}});
           const LOCAL_SHORTCUT_WHITELIST =
               DISCONNECT_WHITELIST.services ||
                   (DISCONNECT_WHITELIST.services = {});
