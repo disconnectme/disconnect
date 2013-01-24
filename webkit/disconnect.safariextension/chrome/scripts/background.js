@@ -2,7 +2,7 @@
   The script for a background page that handles request blocking and the
   visualization thereof.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -304,8 +304,12 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    localStorage.build = CURRENT_BUILD;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  localStorage.blogOpened = true;
+  localStorage.build = CURRENT_BUILD;
+}
+
 delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
