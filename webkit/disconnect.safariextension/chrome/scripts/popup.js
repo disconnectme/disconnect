@@ -221,6 +221,8 @@ const EXTENSION = '.png';
       const CATEGORY_SURFACE = $('#categories');
       const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
       const SERVICE_TEMPLATE = CATEGORY_TEMPLATE.find('.service');
+      const SITE_BLACKLIST =
+          (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
       var activeServices = $();
 
       for (i = 0; i < CATEGORY_COUNT; i++) {
@@ -242,12 +244,14 @@ const EXTENSION = '.png';
         var textCount = wrappedText.find('.count');
         var categoryWhitelist = SITE_WHITELIST[name] || {};
         var whitelisted = categoryWhitelist.whitelisted;
+        var categoryBlacklist = SITE_BLACKLIST[name] || {};
 
         for (var serviceName in categoryRequests) {
           var serviceControl = SERVICE_TEMPLATE.clone(true);
           var checkbox = serviceControl.find(INPUT)[0];
           checkbox.checked =
-              !whitelisted && !(categoryWhitelist.services || {})[serviceName];
+              !whitelisted && !(categoryWhitelist.services || {})[serviceName]
+                  || categoryBlacklist[serviceName];
 
           checkbox.onclick = function(name, serviceName) {
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
@@ -258,10 +262,17 @@ const EXTENSION = '.png';
                     (LOCAL_SITE_WHITELIST[name] =
                         {whitelisted: false, services: {}});
             const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+            const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+            const LOCAL_SITE_BLACKLIST =
+                BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+            const CATEGORY_BLACKLIST =
+                LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
             this.checked =
                 SERVICE_WHITELIST[serviceName] =
-                    !SERVICE_WHITELIST[serviceName];
+                    !(CATEGORY_BLACKLIST[serviceName] =
+                        SERVICE_WHITELIST[serviceName]);
             localStorage.whitelist = JSON.stringify(WHITELIST);
+            localStorage.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);
           }.bind(null, name, serviceName);
 
@@ -328,14 +339,24 @@ const EXTENSION = '.png';
             textName,
             textCount
           );
+          const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+          const LOCAL_SITE_BLACKLIST =
+              BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+          const CATEGORY_BLACKLIST =
+              LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
 
           serviceSurface.find(INPUT).each(function(index) {
-            if (index) this.checked = !(
-              CATEGORY_WHITELIST.services[$(this).next().text()] = WHITELISTED
-            );
+            if (index) {
+              const SERVICE_NAME = $(this).next().text();
+              this.checked =
+                  CATEGORY_BLACKLIST[SERVICE_NAME] =
+                      !(CATEGORY_WHITELIST.services[SERVICE_NAME] =
+                          WHITELISTED);
+            }
           });
 
           localStorage.whitelist = JSON.stringify(WHITELIST);
+          localStorage.blacklist = JSON.stringify(BLACKLIST);
           TABS.reload(ID);
         }.bind(
           null,
