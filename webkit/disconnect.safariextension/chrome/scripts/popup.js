@@ -324,8 +324,20 @@ const EXTENSION = '.png';
               LOCAL_SITE_WHITELIST[name] ||
                   (LOCAL_SITE_WHITELIST[name] =
                       {whitelisted: false, services: {}});
+          const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
           const WHITELISTED =
               CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted;
+          const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+          const LOCAL_SITE_BLACKLIST =
+              BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+          const CATEGORY_BLACKLIST =
+              LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
+          for (var serviceName in SERVICE_WHITELIST)
+              SERVICE_WHITELIST[serviceName] = WHITELISTED;
+          for (var serviceName in CATEGORY_BLACKLIST)
+              CATEGORY_BLACKLIST[serviceName] = !WHITELISTED;
+          localStorage.whitelist = JSON.stringify(WHITELIST);
+          localStorage.blacklist = JSON.stringify(BLACKLIST);
           renderCategory(
             name,
             lowercaseName,
@@ -339,24 +351,11 @@ const EXTENSION = '.png';
             textName,
             textCount
           );
-          const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
-          const LOCAL_SITE_BLACKLIST =
-              BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-          const CATEGORY_BLACKLIST =
-              LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
 
           serviceSurface.find(INPUT).each(function(index) {
-            if (index) {
-              const SERVICE_NAME = $(this).next().text();
-              this.checked =
-                  CATEGORY_BLACKLIST[SERVICE_NAME] =
-                      !(CATEGORY_WHITELIST.services[SERVICE_NAME] =
-                          WHITELISTED);
-            }
+            if (index) this.checked = !WHITELISTED;
           });
 
-          localStorage.whitelist = JSON.stringify(WHITELIST);
-          localStorage.blacklist = JSON.stringify(BLACKLIST);
           TABS.reload(ID);
         }.bind(
           null,
