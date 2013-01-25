@@ -140,7 +140,7 @@ h2.domain img.tracker {
   font-weight: bold;
 }
 
-.demo span.next:hover, a:hover {
+.demo span.next:hover, #graphical a:hover {
   background: yellow;
   color: black;
 }
@@ -150,10 +150,6 @@ h2.domain img.tracker {
   padding: 5px;
   margin-top: 15px;
   border-radius: 5px;
-}
-
-.live-data {
-  font-size: 7pt;
 }
 
 #sidebar-content p:first-child, #sidebar-content h2 {
@@ -179,11 +175,6 @@ ul {
   color: white;
   width: 100%;
   text-align: center;
-}
-
-.privacy-policy {
-  margin-bottom: 0;
-  font-size: 7pt;
 }
 
 div.settings-menu {

@@ -105,6 +105,12 @@ const TABS = BACKGROUND.TABS;
 /* The content key. */
 const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
 
+/* The standard keyword. */
+const STANDARD = 'standard';
+
+/* The graphical keyword. */
+const GRAPHICAL = 'graphical';
+
 /* The deactivated keyword. */
 const DEACTIVATED = 'deactivated';
 
@@ -390,6 +396,14 @@ const EXTENSION = '.png';
       $('html').add(BODY).height($(window).height());
     });
 
+    const LINKS = document.getElementsByTagName('a');
+    const LINK_COUNT = LINKS.length;
+
+    for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
+      TABS.create({url: this.getAttribute('href')});
+      return false;
+    };
+
     const SEARCH = $('.search ' + INPUT)[0];
     SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
 
@@ -408,12 +422,13 @@ const EXTENSION = '.png';
               !DESERIALIZE(localStorage.browsingHardened);
     };
 
-    const LINKS = document.getElementsByTagName('a');
-    const LINK_COUNT = LINKS.length;
+    $('.mode').click(function() {
+      $('#' + STANDARD).fadeOut('fast', function() {
+        localStorage.displayMode = GRAPHICAL;
+        $('#' + GRAPHICAL).fadeIn('slow');
+      });
+    });
 
-    for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
-      TABS.create({url: this.getAttribute('href')});
-      return false;
-    };
+    $('#' + STANDARD).fadeIn('slow');
   }, true
 );

@@ -29,6 +29,8 @@ body {
 
 body.safari { margin: 0 4px }
 
+#standard { display: none }
+
 table {
   border-collapse: collapse;
   font-size: x-small
@@ -173,9 +175,16 @@ td { padding: 0 }
 
 #options .wifi { text-align: right }
 
+#options .mode {
+  text-align: center;
+  cursor: pointer
+}
+
 #dashboard {
   border-top: thin solid gainsboro;
   background: #f3f3f3;
   width: 200px;
   text-align: center
 }
+
+#graphical { display: none }
