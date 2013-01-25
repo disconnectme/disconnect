@@ -48,7 +48,8 @@ line.bold {
   display: none;
 }
 
-html, body {
+#graphical {
+  margin: 3px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9pt;
   padding: 0;
@@ -57,15 +58,11 @@ html, body {
   height: 588px;
 }
 
-body {
-  margin: 3px;
-}
-
-body.safari {
+#graphical.safari {
   margin: 0;
 }
 
-a {
+#graphical a {
   outline: none;
   font-size: 9pt;
   color: black;
