@@ -7,17 +7,10 @@
  * Copyright 2012, 2013 Disconnect, Inc.
  * <br />
  * <br />
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * <br />
- * <br />
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the <a
- * href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
- * for more details.
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at <a
+ * href="https://mozilla.org/MPL/2.0/">https://mozilla.org/MPL/2.0/</a>.
  * <br />
  * @constructor
  * @author <a href="https://github.com/byoogle">Brian Kennish</a>
@@ -51,7 +44,7 @@ function Sitename() {
     return domain;
   };
 
-  var version = '1.2.0';
+  var version = '1.4.0';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
   var altTldList = '../scripts/vendor/sitename/data/effective_tld_names.dat';
