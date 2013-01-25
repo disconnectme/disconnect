@@ -12,35 +12,6 @@ var recommendsActivated =
         !deserialize(localStorage.recommendsClosed);
 var addon = CollusionAddon;
 var graph;
-var popupOpenedAt = new Date();
-var recommender = new recommends(function(recommend){
-  $('#recommender-message').html(recommend.html);
-  $("#recommends a").click(function() {
-    if(/recommends/.test($(this).attr('class'))) {
-      // Dashlane link was clicked
-      chrome.extension.sendRequest({
-        track: {
-          name: 'chrollusion visit',
-          prop: {
-            ttl: ((new Date() - popupOpenedAt) / 1000)
-          }
-        },
-        dontRefresh: true            
-      });
-    } else if(/disconnect.me\/recommends/.test($(this).attr('href'))) {
-      //  Disconnect Link was clicked
-      chrome.extension.sendRequest({          
-        track: {
-          name: 'chrollusion visit disconnect recommends',
-          prop: {
-            ttl: ((new Date() - popupOpenedAt) / 1000)
-          }
-        },
-        dontRefresh: true
-      });
-    }
-  });
-});
 
 $(window).ready(function() {
   if (SAFARI) {
@@ -160,28 +131,11 @@ $(window).ready(function() {
       window.location.reload();
     });
     $("#update .close").click(function() {
-      chrome.extension.sendRequest({
-        track: {
-          name: 'chrollusion modal closed',
-            prop: {   
-              ttl: ((new Date() - popupOpenedAt) / 1000)
-            } 
-          }
-        });
-                
       localStorage.updateClosed = true;
       window.location.reload();
     });
     $("#recommends .close").click(function() {
-      chrome.extension.sendRequest({
-        track: {
-          name: 'chrollusion modal recommend closed',
-          prop: { 
-            ttl: ((new Date() - popupOpenedAt) / 1000)
-          }   
-        }
-      });
-      setTimeout(function(){
+      setTimeout(function() {
         window.location.reload();
         localStorage.recommendsClosed = true;          
       }, 100);
