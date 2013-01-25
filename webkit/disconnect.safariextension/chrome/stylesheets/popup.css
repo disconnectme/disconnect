@@ -165,7 +165,7 @@ td { padding: 0 }
   cursor: default
 }
 
-#options td { width: 90px }
+#options .search { width: 90px }
 
 #options input {
   margin-left: 0;
@@ -173,10 +173,16 @@ td { padding: 0 }
   height: 10px
 }
 
-#options .wifi { text-align: right }
+#options .wifi {
+  width: 90px;
+  text-align: right
+}
 
 #options .mode {
-  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+  border-collapse: separate;
+  border-spacing: 4px 1px;
   cursor: pointer
 }
 

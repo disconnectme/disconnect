@@ -78,6 +78,26 @@ function renderCategory(
   textCount.text(requestCount + REQUEST + (requestCount - 1 ? 's' : ''));
 }
 
+/* Picks a random animation path. */
+function getScene() {
+  return SCENES.splice(Math.floor(Math.random() * SCENES.length), 1)[0];
+}
+
+/* Plays a random animation. */
+function animate(icon) {
+  for (var i = 0; i < FRAME_COUNT - 1; i++)
+      setTimeout(function(scene, index) {
+        icon.src = IMAGES + scene + '/' + (index + 2) + EXTENSION;
+      }, i * FRAME_LENGTH, currentScene, i);
+  const PREVIOUS_SCENE = currentScene;
+  currentScene = getScene();
+  SCENES.push(PREVIOUS_SCENE);
+  for (i = 0; i < FRAME_COUNT; i++)
+      setTimeout(function(scene, index) {
+        icon.src = IMAGES + scene + '/' + (FRAME_COUNT - index) + EXTENSION;
+      }, (i + FRAME_COUNT - 1) * FRAME_LENGTH, currentScene, i);
+}
+
 /* The background window. */
 const BACKGROUND = chrome.extension.getBackgroundPage();
 
@@ -134,6 +154,18 @@ const IMAGES = '../images/';
 
 /* The image extension. */
 const EXTENSION = '.png';
+
+/* The animation sequences. */
+const SCENES = [1, 2, 3, 4, 5];
+
+/* The number of animation cells. */
+const FRAME_COUNT = 7;
+
+/* The duration of animation cells. */
+const FRAME_LENGTH = 100;
+
+/* The active animation sequence. */
+var currentScene = getScene();
 
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
@@ -422,13 +454,21 @@ const EXTENSION = '.png';
               !DESERIALIZE(localStorage.browsingHardened);
     };
 
-    $('.mode').click(function() {
+    const MODE = $('.mode');
+    const WRAPPED_ICON = MODE.find('img');
+    const ICON = WRAPPED_ICON[0];
+    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
+    ICON.alt = 'Graphical mode';
+
+    MODE.mouseenter(function() { animate(ICON); });
+
+    MODE.click(function() {
       $('#' + STANDARD).fadeOut('fast', function() {
         localStorage.displayMode = GRAPHICAL;
         $('#' + GRAPHICAL).fadeIn('slow');
       });
     });
 
-    $('#' + STANDARD).fadeIn('slow');
+    $('#' + STANDARD).fadeIn('slow', function() { animate(ICON); });
   }, true
 );
