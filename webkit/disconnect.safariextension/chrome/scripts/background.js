@@ -223,7 +223,7 @@ function incrementCounter(tabId, service, blocked) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 44;
+const CURRENT_BUILD = 43;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -304,7 +304,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) localStorage.blogOpened = true;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) localStorage.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const MIGRATED_WHITELIST = {};
