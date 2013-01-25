@@ -84,7 +84,7 @@ function getScene() {
 }
 
 /* Plays a random animation. */
-function animate(icon) {
+function animate(icon, callback) {
   for (var i = 0; i < FRAME_COUNT - 1; i++)
       setTimeout(function(scene, index) {
         icon.src = IMAGES + scene + '/' + (index + 2) + EXTENSION;
@@ -95,7 +95,18 @@ function animate(icon) {
   for (i = 0; i < FRAME_COUNT; i++)
       setTimeout(function(scene, index) {
         icon.src = IMAGES + scene + '/' + (FRAME_COUNT - index) + EXTENSION;
+        index == FRAME_COUNT - 1 && callback && callback();
       }, (i + FRAME_COUNT - 1) * FRAME_LENGTH, currentScene, i);
+}
+
+/* Restricts the animation to 1x per mouseover. */
+function handleHover() {
+  const ELEMENT = $(this);
+  ELEMENT.off('mouseenter');
+
+  animate(ELEMENT.find('img')[0], function() {
+    ELEMENT.mouseenter(handleHover);
+  });
 }
 
 /* The background window. */
@@ -455,12 +466,6 @@ var currentScene = getScene();
     };
 
     const MODE = $('.mode');
-    const WRAPPED_ICON = MODE.find('img');
-    const ICON = WRAPPED_ICON[0];
-    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
-    ICON.alt = 'Graphical mode';
-
-    MODE.mouseenter(function() { animate(ICON); });
 
     MODE.click(function() {
       $('#' + STANDARD).fadeOut('fast', function() {
@@ -469,6 +474,12 @@ var currentScene = getScene();
       });
     });
 
-    $('#' + STANDARD).fadeIn('slow', function() { animate(ICON); });
+    const ICON = MODE.find('img')[0];
+    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
+    ICON.alt = 'Graphical mode';
+
+    $('#' + STANDARD).fadeIn('slow', function() {
+      animate(ICON, function() { MODE.mouseenter(handleHover); });
+    });
   }, true
 );
