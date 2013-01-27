@@ -11,7 +11,6 @@ var GraphRunner = (function(jQuery, d3) {
   }, true);
 
   function Runner(options) {
-    var trackers = options.trackers;
     var SVG_WIDTH = options.width;
     var SVG_HEIGHT = options.height;
     var hideFavicons = options.hideFavicons;

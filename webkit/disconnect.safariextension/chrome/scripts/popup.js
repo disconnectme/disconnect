@@ -139,8 +139,8 @@ const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
 /* The standard keyword. */
 const STANDARD = 'standard';
 
-/* The graphical keyword. */
-const GRAPHICAL = 'graphical';
+/* The graph keyword. */
+const GRAPH = 'graph';
 
 /* The deactivated keyword. */
 const DEACTIVATED = 'deactivated';
@@ -447,6 +447,19 @@ var currentScene = getScene();
       return false;
     };
 
+    const MODE = $('.mode table');
+
+    MODE.click(function() {
+      $('#' + STANDARD).fadeOut('fast', function() {
+        localStorage.displayMode = GRAPH;
+        $('#' + GRAPH).fadeIn('slow');
+      });
+    });
+
+    const ICON = MODE.find('img')[0];
+    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
+    ICON.alt = 'Graph mode';
+
     const SEARCH = $('.search ' + INPUT)[0];
     SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
 
@@ -464,19 +477,6 @@ var currentScene = getScene();
           localStorage.browsingHardened =
               !DESERIALIZE(localStorage.browsingHardened);
     };
-
-    const MODE = $('.mode');
-
-    MODE.click(function() {
-      $('#' + STANDARD).fadeOut('fast', function() {
-        localStorage.displayMode = GRAPHICAL;
-        $('#' + GRAPHICAL).fadeIn('slow');
-      });
-    });
-
-    const ICON = MODE.find('img')[0];
-    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
-    ICON.alt = 'Graphical mode';
 
     $('#' + STANDARD).fadeIn('slow', function() {
       animate(ICON, function() { MODE.mouseenter(handleHover); });

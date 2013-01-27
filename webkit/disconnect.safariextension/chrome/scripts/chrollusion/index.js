@@ -60,7 +60,6 @@ $(window).ready(function() {
         updateClosed ?
             SAFARI ? 597 : recommendsActivated ? 536 : 586 :
                 SAFARI ? 556 : recommendsActivated ? 489 : 548,
-    trackers: {},
     hideFavicons: false 
   });
   graph = runner.graph;
@@ -72,10 +71,10 @@ $(window).ready(function() {
       $("#chart").addClass("fullscreen");
     } else
       $("#sidebar").slideDown('fast');
-    graph.update(backgroundPage.log);
+    graph.update(backgroundPage.LOG);
     $("#reset-graph").click(function() {
       if (addon.resetGraph) {
-        backgroundPage.log = {};
+        backgroundPage.LOG = {};
         window.location.reload();
       } else
         alert("You need to update your add-on to use this feature.");
@@ -84,7 +83,7 @@ $(window).ready(function() {
       localStorage.sitesHidden = sitesHidden = !sitesHidden;
       if (sitesHidden) location.reload();
       else {
-        graph.update(backgroundPage.log);
+        graph.update(backgroundPage.LOG);
         $(this).removeClass('invisible').html('Hide inactive sites');
       }
     });

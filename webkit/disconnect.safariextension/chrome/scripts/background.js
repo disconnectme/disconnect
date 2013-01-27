@@ -243,8 +243,14 @@ const REDIRECTS = {};
 /* The number of tracking requests per tab, overall and by third party. */
 const REQUEST_COUNTS = {};
 
+/* The Collusion data structure. */
+const LOG = {};
+
 /* The content key. */
 const CONTENT_NAME = 'Content';
+
+/* The "extension" API. */
+const EXTENSION = chrome.extension;
 
 /* The "tabs" API. */
 const TABS = chrome.tabs;
@@ -276,10 +282,16 @@ const IS_INITIALIZED = SITENAME.isInitialized;
 /* The domain getter. */
 const GET = SITENAME.get;
 
+/* The domain initialization. */
+const START_TIME = new Date();
+
 if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31)
-    localStorage.browsingHardened = true;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
+  delete localStorage.settingsEditable;
+  localStorage.browsingHardened = true;
+}
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
   const MEDIAFIRE_DOMAIN = 'mediafire.com';
@@ -323,10 +335,12 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage.build = CURRENT_BUILD;
 }
 
-delete localStorage.settingsEditable;
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
+localStorage.displayMode == 'graph' &&
+    parseInt(localStorage.sidebarCollapsed, 10) &&
+        localStorage.sidebarCollapsed--; // An experimental "semisticky" bit.
 
 /* Prepopulates the store of tab domain names. */
 const ID = setInterval(function() {
@@ -368,6 +382,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const CHILD_DOMAIN = GET(REQUESTED_URL);
   if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
   const CHILD_SERVICE = getService(CHILD_DOMAIN);
+  const PARENT_DOMAIN = DOMAINS[TAB_ID];
   var hardenedUrl;
   var hardened;
   var blockingResponse = {cancel: false};
@@ -380,7 +395,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   date = date.getFullYear() + '-' + month + '-' + day;
 
   if (CHILD_SERVICE) {
-    const PARENT_DOMAIN = DOMAINS[TAB_ID];
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
     const CHILD_NAME = CHILD_SERVICE.name;
     const CHILD_CATEGORY = CHILD_SERVICE.category;
@@ -442,6 +456,25 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     localStorage.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
   }
 
+  // The Collusion data structure.
+  if (!(CHILD_DOMAIN in LOG))
+      LOG[CHILD_DOMAIN] = {host: CHILD_DOMAIN, referrers: {}, visited: false};
+  if (!(PARENT_DOMAIN in LOG))
+      LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
+  LOG[PARENT_DOMAIN].visited = true;
+  const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+  if (!(PARENT_DOMAIN in REFERRERS))
+      REFERRERS[PARENT_DOMAIN] = {
+        host: PARENT_DOMAIN,
+        types: [new Date() - START_TIME]
+      };
+  const TYPES = REFERRERS[PARENT_DOMAIN].types;
+  TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+
+  // A live update.
+  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+  POPUP && POPUP.graph && POPUP.graph.update(LOG);
+
   return blockingResponse;
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
@@ -456,7 +489,7 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
 });
 
 /* Builds a block list or adds to the number of blocked requests. */
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
   
   if (request.sendEvent) {
