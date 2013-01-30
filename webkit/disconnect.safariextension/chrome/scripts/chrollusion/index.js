@@ -11,9 +11,14 @@ var recommendsActivated =
     deserialize(localStorage.recommendsExperiment) &&
         !deserialize(localStorage.recommendsClosed);
 var addon = CollusionAddon;
+var whitelist = deserialize(localStorage.whitelist) || {};
+var siteWhitelist;
+var blacklist = deserialize(localStorage.blacklist) || {};
+var siteBlacklist;
 var graph;
 
-$(window).ready(function() {
+/* Paints the graph UI. */
+function renderGraph() {
   if (SAFARI) {
     $("body").add("#update").add("#chart").addClass("safari");
     $("#update .safari").show();
@@ -54,90 +59,96 @@ $(window).ready(function() {
   }
   updateClosed || $("#update").show();
   recommendsActivated && recommender.hasCampaign() && $("#recommends").show();
-  var runner = GraphRunner.Runner({
-    width: sidebarCollapsed ? SAFARI ? 791 : 794 : SAFARI ? 576 : 575,
-    height:
-        updateClosed ?
-            SAFARI ? 597 : recommendsActivated ? 536 : 586 :
-                SAFARI ? 556 : recommendsActivated ? 489 : 548,
-    hideFavicons: false 
-  });
-  graph = runner.graph;
 
-  if (addon.isInstalled()) {
-    // You should only ever see this page if the addon is installed, anyway
-    if (sidebarCollapsed) {
-      $("#show-ui").slideDown(100);
-      $("#chart").addClass("fullscreen");
-    } else
-      $("#sidebar").slideDown('fast');
-    graph.update(backgroundPage.LOG);
-    $("#reset-graph").click(function() {
-      if (addon.resetGraph) {
-        backgroundPage.LOG = {};
-        window.location.reload();
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+    var domain = backgroundPage.GET(tabs[0].url);
+    siteWhitelist = whitelist[domain] || {};
+    siteBlacklist = blacklist[domain] || {};
+    var runner = GraphRunner.Runner({
+      width: sidebarCollapsed ? SAFARI ? 791 : 794 : SAFARI ? 576 : 575,
+      height:
+          updateClosed ?
+              SAFARI ? 597 : recommendsActivated ? 536 : 586 :
+                  SAFARI ? 556 : recommendsActivated ? 489 : 548,
+      hideFavicons: false 
+    });
+    graph = runner.graph;
+
+    if (addon.isInstalled()) {
+      // You should only ever see this page if the addon is installed, anyway
+      if (sidebarCollapsed) {
+        $("#show-ui").slideDown(100);
+        $("#chart").addClass("fullscreen");
       } else
-        alert("You need to update your add-on to use this feature.");
-    });
-    $("#hide-sites").click(function() {
-      localStorage.sitesHidden = sitesHidden = !sitesHidden;
-      if (sitesHidden) location.reload();
-      else {
-        graph.update(backgroundPage.LOG);
-        $(this).removeClass('invisible').html('Hide inactive sites');
-      }
-    });
-    $("#hide-ui").click(function() {
-      localStorage.sidebarCollapsed = 3;
-      $("#sidebar, #domain-infos, #show-instructions").slideUp('fast');
-      window.setTimeout(function() { window.location.reload(); }, 200);
-    });
-    $("#show-badge").click(function() {
-      localStorage.badgeHidden = badgeHidden = !badgeHidden;
-      if (badgeHidden) {
-        $("#show-badge").addClass("invisible").html("Show the tracker counter");
-        query({}, function(tabs) {
-          var tabCount = tabs.length;
-          for (var i = 0; i < tabCount; i++) {
-            setBadgeText({text: '', tabId: tabs[i].id});
-          }
-        });
-      } else {
-        $("#show-badge").removeClass("invisible").html("Hide the tracker counter");
-        query({}, function(tabs) {
-          var tabCount = tabs.length;
-          for (var i = 0; i < tabCount; i++) {
-            var tabId = tabs[i].id;
-            setBadgeText({
-              text: (Object.keys(backgroundPage.tabs[tabId] || {}).length || '') + '',
-              tabId: tabId
-            });
-          }
-        });
-      }
-    });
-    $("#show-instructions").click(function() {
-      $("#domain-infos, #show-instructions").hide();
-      $(".live-data").show();
-    });
-    $("#show-ui").click(function() {
-      delete localStorage.sidebarCollapsed;
-      $("#show-ui").slideUp(100);
-      window.setTimeout(function() { window.location.reload(); }, 100);
-    });
-    $("#block-tracking").click(function() {
-      localStorage.trackingUnblocked = !trackingUnblocked;
-      window.location.reload();
-    });
-    $("#update .close").click(function() {
-      localStorage.updateClosed = true;
-      window.location.reload();
-    });
-    $("#recommends .close").click(function() {
-      setTimeout(function() {
+        $("#sidebar").slideDown('fast');
+      graph.update(backgroundPage.LOG);
+      $("#reset-graph").click(function() {
+        if (addon.resetGraph) {
+          backgroundPage.LOG = {};
+          window.location.reload();
+        } else
+          alert("You need to update your add-on to use this feature.");
+      });
+      $("#hide-sites").click(function() {
+        localStorage.sitesHidden = sitesHidden = !sitesHidden;
+        if (sitesHidden) location.reload();
+        else {
+          graph.update(backgroundPage.LOG);
+          $(this).removeClass('invisible').html('Hide inactive sites');
+        }
+      });
+      $("#hide-ui").click(function() {
+        localStorage.sidebarCollapsed = 3;
+        $("#sidebar, #domain-infos, #show-instructions").slideUp('fast');
+        window.setTimeout(function() { window.location.reload(); }, 200);
+      });
+      $("#show-badge").click(function() {
+        localStorage.badgeHidden = badgeHidden = !badgeHidden;
+        if (badgeHidden) {
+          $("#show-badge").addClass("invisible").html("Show the tracker counter");
+          query({}, function(tabs) {
+            var tabCount = tabs.length;
+            for (var i = 0; i < tabCount; i++) {
+              setBadgeText({text: '', tabId: tabs[i].id});
+            }
+          });
+        } else {
+          $("#show-badge").removeClass("invisible").html("Hide the tracker counter");
+          query({}, function(tabs) {
+            var tabCount = tabs.length;
+            for (var i = 0; i < tabCount; i++) {
+              var tabId = tabs[i].id;
+              setBadgeText({
+                text: (Object.keys(backgroundPage.tabs[tabId] || {}).length || '') + '',
+                tabId: tabId
+              });
+            }
+          });
+        }
+      });
+      $("#show-instructions").click(function() {
+        $("#domain-infos, #show-instructions").hide();
+        $(".live-data").show();
+      });
+      $("#show-ui").click(function() {
+        delete localStorage.sidebarCollapsed;
+        $("#show-ui").slideUp(100);
+        window.setTimeout(function() { window.location.reload(); }, 100);
+      });
+      $("#block-tracking").click(function() {
+        localStorage.trackingUnblocked = !trackingUnblocked;
         window.location.reload();
-        localStorage.recommendsClosed = true;          
-      }, 100);
-    });
-  }
-});
+      });
+      $("#update .close").click(function() {
+        localStorage.updateClosed = true;
+        window.location.reload();
+      });
+      $("#recommends .close").click(function() {
+        setTimeout(function() {
+          window.location.reload();
+          localStorage.recommendsClosed = true;          
+        }, 100);
+      });
+    }
+  });
+}

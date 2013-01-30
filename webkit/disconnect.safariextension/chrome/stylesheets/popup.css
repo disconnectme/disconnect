@@ -165,7 +165,7 @@ td { padding: 0 }
   cursor: default
 }
 
-#options .whitelist { width: 90px }
+#options .whitelist { width: 85px }
 
 #options .whitelist table { margin-left: -4px }
 
@@ -175,9 +175,9 @@ td { padding: 0 }
   cursor: pointer
 }
 
-#options .mode { width: 90px }
+#options .visualization { width: 95px }
 
-#options .mode table {
+#options .visualization table {
   margin-right: -4px;
   margin-left: auto
 }
@@ -188,7 +188,7 @@ td { padding: 0 }
   height: 10px
 }
 
-#options .wifi { text-align: right }
+#options .search { text-align: right }
 
 #dashboard {
   border-top: thin solid gainsboro;

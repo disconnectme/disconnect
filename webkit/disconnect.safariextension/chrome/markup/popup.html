@@ -115,23 +115,25 @@
       <td class="whitelist">
         <table>
           <tr>
-            <td><img src="../images/1/1.png" alt="Whitelist site"></td>
+            <td><img src="../images/whitelist.png" alt="Whitelist"></td>
             <td>Whitelist site</td>
           </tr>
         </table>
       </td>
-      <td class="mode">
+      <td class="visualization">
         <table>
           <tr>
             <td><img></td>
-            <td>Graph mode</td>
+            <td>Visualize page</td>
           </tr>
         </table>
       </td>
     </tr>
     <tr>
-      <td class="search"><input type="checkbox"> Secure search</td>
       <td class="wifi"><input type="checkbox"> Secure Wi-Fi</td>
+      <td class="search" title="Coming soon">
+        <input type="checkbox"> Secure search
+      </td>
     </tr>
   </table>
   <table id="dashboard">
@@ -157,10 +159,10 @@
 
     <div id="sidebar-content">
     <div class="live-data">
-      <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been sent some of your personal info.</p>
+      <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that has or would’ve been sent some of your personal info.</p>
       <p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</p>
       <p>Circles in <span class="tracker">red</span> are known tracking sites. Circles in <span class="site">gray</span> aren’t, but may still track you.</p>
-      <p>Mouse over a circle to view that site’s tracking footprint. Drag a circle to reposition the graph.</p>
+      <p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</p>
     </div> <!-- end of live-data -->
     <div id="domain-infos"></div> <!-- Templates are copied into here -->
     <div class="settings-menu">

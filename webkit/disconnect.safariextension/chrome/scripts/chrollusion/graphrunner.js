@@ -59,6 +59,16 @@ var GraphRunner = (function(jQuery, d3) {
     vis.append("svg:path").attr("id", "domain-label");
     vis.append("svg:text").attr("id", "domain-label-text");
 
+    /* Determines whether a domains is blacklisted. */
+    function isBlocked(trackerInfo) {
+      var category = trackerInfo.category;
+      var categoryWhitelist = siteWhitelist[category] || {};
+      var name = trackerInfo.name;
+      return !categoryWhitelist.whitelisted &&
+          !(categoryWhitelist.services || {})[name] ||
+              (siteBlacklist[category] || {})[name];
+    }
+
     /* Makes a would-be selector CSS safe. */
     function harden(selector) { return selector.replace('.', '-'); }
 
@@ -70,13 +80,11 @@ var GraphRunner = (function(jQuery, d3) {
     function setDomainLink(target, d) {
       target.attr("href", "http://" + d.name);
       target.removeClass("tracker").removeClass("site");
-      if (d.trackerInfo) {
+      var trackerInfo = d.trackerInfo;
+      if (trackerInfo) {
         target.addClass("tracker");
 
-        var domain = d.name;
-        var whitelist = backgroundPage.whitelist;
-        var blacklist = backgroundPage.blacklist;
-        if (!trackingUnblocked && !whitelist[domain] || blacklist[domain])
+        if (isBlocked(trackerInfo))
           target.addClass("blocked");
       } else {
         target.addClass("site");
@@ -86,6 +94,7 @@ var GraphRunner = (function(jQuery, d3) {
     function showDomainInfo(d) {
       var className = d.name.replace(/\./g, '-dot-');
       var info = $("#domain-infos").find("." + className);
+      var trackerInfo = d.trackerInfo;
 
       $("#domain-infos .info").hide();
 
@@ -97,13 +106,13 @@ var GraphRunner = (function(jQuery, d3) {
         info.addClass(className);
         info.find("a.domain").text(d.name);
         var img = $('<img>');
-        if (d.trackerInfo)
+        if (trackerInfo)
           info.find("h2.domain").addClass("tracker");
         var attribute = "src";
         var faviconName = "favicon";
         img.attr(attribute, "../images/chrollusion/favicon.png")
            .addClass(faviconName + " " + harden(d.name));
-        if (trackingUnblocked || !d.trackerInfo)
+        if (!trackerInfo || !isBlocked(trackerInfo))
           favicon.get(d.host, function(url) {
             setFavicon(faviconName, d.name, attribute, url);
           });
@@ -113,10 +122,7 @@ var GraphRunner = (function(jQuery, d3) {
         $("#domain-infos").append(info);
       }
       else {
-        var domain = d.name;
-        var whitelist = backgroundPage.whitelist;
-        var blacklist = backgroundPage.blacklist;
-        if (trackingUnblocked && !blacklist[domain] || whitelist[domain])
+        if (!isBlocked(trackerInfo))
           info.find("h2.domain:first > a.tracker.blocked").removeClass("blocked");
         else
           info.find("h2.domain:first > a.tracker").addClass("blocked");
@@ -235,9 +241,6 @@ var GraphRunner = (function(jQuery, d3) {
           .duration(1000)
           .attr("r", function(d) { return radius(d); });
 
-      var whitelist = backgroundPage.whitelist;
-      var blacklist = backgroundPage.blacklist;
-
       // For each node, create svg group <g> to hold circle, image, and title
       var gs = node.enter().append("svg:g")
           .attr("class", "node")
@@ -274,19 +277,28 @@ var GraphRunner = (function(jQuery, d3) {
             d3.select("#domain-label-text").classed("hidden", true);
           })
           .on("click", function(d) {
-            if (d.trackerInfo) {
+            var trackerInfo = d.trackerInfo;
+            if (trackerInfo) {
               var domain = d.name;
-              var className = d.name.replace(/\./g, '-dot-');
+              var className = domain.replace(/\./g, '-dot-');
               var header = $("#domain-infos ." + className + " h2.domain:first > a.tracker");
-              var blocked =
-                  !trackingUnblocked && !whitelist[domain] || blacklist[domain];
+              var blocked = isBlocked(trackerInfo);
+              var category = trackerInfo.category;
+              var categoryWhitelist =
+                  siteWhitelist[category] || (
+                    siteWhitelist[category] = {whitelisted: false, services: {}}
+                  );
+              var serviceWhitelist = categoryWhitelist.services;
+              var name = trackerInfo.name;
+              var categoryBlacklist =
+                  siteBlacklist[category] || (siteBlacklist[category] = {});
               if (blocked) {
-                whitelist[domain] = true;
-                delete blacklist[domain];
+                serviceWhitelist[name] = true;
+                delete categoryBlacklist[name];
                 header.removeClass("blocked");
               } else {
-                delete whitelist[domain];
-                blacklist[domain] = true;
+                delete serviceWhitelist[name];
+                categoryBlacklist[name] = true;
                 header.addClass("blocked");
               }
               localStorage.whitelist = JSON.stringify(whitelist);
@@ -320,8 +332,9 @@ var GraphRunner = (function(jQuery, d3) {
         // If hiding favicons ("TED mode"), show initial letter of domain instead of favicon
         gs.append("svg:image")
           .attr("class", function(d) {
+            var trackerInfo = d.trackerInfo;
             var className = "node";
-            if (trackingUnblocked || !d.trackerInfo)
+            if (!trackerInfo || !isBlocked(trackerInfo))
               favicon.get(d.host, function(url) {
                 setFavicon(className, d.name, "href", url);
               });
@@ -344,7 +357,8 @@ var GraphRunner = (function(jQuery, d3) {
           return "no node round-border " + getClassForSite(d);
         })
         .classed("hidden", function(d) {
-          return (trackingUnblocked || d.wasVisited || !d.trackerInfo || whitelist[d.name]) && !blacklist[d.name];
+          var trackerInfo = d.trackerInfo;
+          return (d.wasVisited || !trackerInfo || !isBlocked(trackerInfo));
         });
 
       return node;
@@ -421,7 +435,7 @@ var GraphRunner = (function(jQuery, d3) {
       return list;
     }
 
-    function CollusionGraph(trackers) {
+    function CollusionGraph() {
       var nodes = [];
       var links = [];
       var domainIds = {};
@@ -430,16 +444,10 @@ var GraphRunner = (function(jQuery, d3) {
         var name = domain.name;
         if (!(name in domainIds)) {
           domainIds[name] = nodes.length;
-          var trackerInfo = null;
-          for (var i = 0; i < trackers.length; i++)
-            if (trackers[i].domain == name) {
-              trackerInfo = trackers[i];
-              break;
-            }
           nodes.push({
             name: name,
             host: domain.host,
-            trackerInfo: trackerInfo
+            trackerInfo: backgroundPage.getService(name)
           });
         }
         return domainIds[name];
@@ -499,7 +507,7 @@ var GraphRunner = (function(jQuery, d3) {
       };
     }
 
-    var graph = CollusionGraph(trackers);
+    var graph = CollusionGraph();
 
     var self = {
       graph: graph,
