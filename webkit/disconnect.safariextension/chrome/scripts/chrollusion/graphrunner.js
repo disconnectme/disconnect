@@ -61,9 +61,10 @@ var GraphRunner = (function(jQuery, d3) {
 
     /* Determines whether a domains is blacklisted. */
     function isBlocked(trackerInfo) {
-      var category = trackerInfo.category;
+      trackerInfo = trackerInfo || {};
+      var category = trackerInfo.category || null;
       var categoryWhitelist = siteWhitelist[category] || {};
-      var name = trackerInfo.name;
+      var name = trackerInfo.name || null;
       return !categoryWhitelist.whitelisted &&
           !(categoryWhitelist.services || {})[name] ||
               (siteBlacklist[category] || {})[name];

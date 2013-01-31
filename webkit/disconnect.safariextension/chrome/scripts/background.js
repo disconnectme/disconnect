@@ -463,7 +463,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
   LOG[PARENT_DOMAIN].visited = true;
   const REFERRERS = LOG[CHILD_DOMAIN].referrers;
-  if (!(PARENT_DOMAIN in REFERRERS))
+  if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
       REFERRERS[PARENT_DOMAIN] = {
         host: PARENT_DOMAIN,
         types: [new Date() - START_TIME]
