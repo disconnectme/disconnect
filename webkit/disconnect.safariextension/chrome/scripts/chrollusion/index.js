@@ -48,7 +48,7 @@ function renderGraph() {
   if (wifiDisabled) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
   } else {
-    $("#disable-wifi").html("Disable Wi-Fi security");
+    $("#disable-wifi").removeClass("invisible").html("Disable Wi-Fi security");
   }
   $("#show-instructions").hide();
   var whitelist = deserialize(localStorage.whitelist) || {};
@@ -59,11 +59,11 @@ function renderGraph() {
     siteWhitelist = whitelist[domain] || {};
     siteBlacklist = blacklist[domain] || {};
     var runner = GraphRunner.Runner({
-      width: sidebarCollapsed ? SAFARI ? 791 : 794 : SAFARI ? 576 : 575,
+      width: sidebarCollapsed ? SAFARI ? 697 : 700 : SAFARI ? 485 : 484,
       height:
           updateClosed ?
-              (SAFARI ? 597 : (recommendsActivated ? 536 : 586)) :
-                  (SAFARI ? 556 : (recommendsActivated ? 489 : 548)),
+              (SAFARI ? 495 : (recommendsActivated ? 434 : 484)) :
+                  (SAFARI ? 454 : (recommendsActivated ? 387 : 446)),
       hideFavicons: false 
     });
     graph = runner.graph;

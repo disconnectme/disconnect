@@ -49,13 +49,11 @@ line.bold {
 }
 
 #graph {
-  margin: 3px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9pt;
   padding: 0;
   background-color: white;
   color: #666666;
-  height: 588px;
 }
 
 #graph.safari {
@@ -70,7 +68,7 @@ line.bold {
 
 #page {
   position: relative;
-  width: 794px;
+  width: 706px;
 }
 
 #sidebar {
@@ -79,12 +77,13 @@ line.bold {
   left: 0px;
   width: 200px;
   padding-left: 15px;
+  padding-bottom: 15px;
   pointer-events: none;
 }
 
 #chart {
   position: absolute;
-  left: 219px;
+  left: 216px;
 }
 
 #chart.fullscreen {
@@ -93,6 +92,10 @@ line.bold {
 
 #chart.safari.fullscreen {
   left: 4px;
+}
+
+#chart svg {
+  margin: 3px;
 }
 
 #sidebar a, .info a, span.next {
