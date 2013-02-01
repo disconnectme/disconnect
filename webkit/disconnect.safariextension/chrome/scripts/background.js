@@ -469,8 +469,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         host: PARENT_DOMAIN,
         types: [new Date() - START_TIME]
       };
-  const TYPES = REFERRERS[PARENT_DOMAIN].types;
-  TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+  const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+
+  if (PARENT_REFERRERS) {
+    const TYPES = PARENT_REFERRERS.types;
+    TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+  }
 
   // A live update.
   const POPUP = EXTENSION.getViews({type: 'popup'})[0];
