@@ -12,6 +12,7 @@ var siteWhitelist;
 var blacklist = deserialize(localStorage.blacklist) || {};
 var siteBlacklist;
 var graph;
+var clicksHandled;
 
 /* Paints the graph UI. */
 function renderGraph() {
@@ -69,47 +70,54 @@ function renderGraph() {
       } else
         $("#sidebar").slideDown('fast');
       graph.update(backgroundPage.LOG);
-      $("#update .close").click(function() {
-        localStorage.updateClosed = true;
-        window.location.reload();
-      });
-      $("#recommends .close").click(function() {
-        setTimeout(function() {
-          window.location.reload();
-          localStorage.recommendsClosed = true;          
-        }, 100);
-      });
-      $("#unblock-tracking").click(function() {
-        localStorage.trackingUnblocked = !trackingUnblocked;
-        window.location.reload();
-      });
-      $("#show-list").click(function() {
-        $('#graph').fadeOut(function() {
-          localStorage.displayMode = 'standard';
-          $('#chart svg').remove();
-          $('#standard').fadeIn(function() {
-            var visualization = $('.visualization table');
 
-            animate(visualization.find('img')[0], function() {
-              visualization.mouseenter(handleHover);
+      if (!clicksHandled) {
+        clicksHandled = true;
+        $("#update .close").click(function() {
+          localStorage.updateClosed = true;
+          window.location.reload();
+        });
+        $("#recommends .close").click(function() {
+          setTimeout(function() {
+            window.location.reload();
+            localStorage.recommendsClosed = true;          
+          }, 100);
+        });
+        $("#unblock-tracking").click(function() {
+          localStorage.trackingUnblocked = !trackingUnblocked;
+          window.location.reload();
+        });
+        $("#show-list").click(function() {
+          $('#graph').fadeOut(function() {
+            localStorage.displayMode = 'standard';
+            $('#chart svg').remove();
+            $('#standard').fadeIn(function() {
+              var visualization = $('.visualization table');
+
+              animate(visualization.find('img')[0], function() {
+                if (!hoverHandled) {
+                  hoverHandled = true;
+                  visualization.mouseenter(handleHover);
+                }
+              });
             });
           });
         });
-      });
-      $("#hide-sidebar").click(function() {
-        localStorage.sidebarCollapsed = 3;
-        $("#sidebar, #domain-infos, #show-instructions").slideUp('fast');
-        window.setTimeout(function() { window.location.reload(); }, 200);
-      });
-      $("#show-instructions").click(function() {
-        $("#domain-infos, #show-instructions").hide();
-        $(".live-data").show();
-      });
-      $("#show-sidebar").click(function() {
-        delete localStorage.sidebarCollapsed;
-        $("#show-sidebar").slideUp(100);
-        window.setTimeout(function() { window.location.reload(); }, 100);
-      });
+        $("#hide-sidebar").click(function() {
+          localStorage.sidebarCollapsed = 3;
+          $("#sidebar, #domain-infos, #show-instructions").slideUp('fast');
+          window.setTimeout(function() { window.location.reload(); }, 200);
+        });
+        $("#show-instructions").click(function() {
+          $("#domain-infos, #show-instructions").hide();
+          $(".live-data").show();
+        });
+        $("#show-sidebar").click(function() {
+          delete localStorage.sidebarCollapsed;
+          $("#show-sidebar").slideUp(100);
+          window.setTimeout(function() { window.location.reload(); }, 100);
+        });
+      }
     }
   });
 }

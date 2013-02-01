@@ -178,6 +178,9 @@ const FRAME_LENGTH = 100;
 /* The active animation sequence. */
 var currentScene = getScene();
 
+/* The state of the view handler. */
+var hoverHandled;
+
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
@@ -484,6 +487,7 @@ var currentScene = getScene();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
       DISPLAY_MODE == STANDARD && animate(ICON, function() {
+        hoverHandled = true;
         VISUALIZATION.mouseenter(handleHover);
       });
     });
