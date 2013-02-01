@@ -7,9 +7,7 @@ var recommendsActivated =
     deserialize(localStorage.recommendsExperiment) &&
         !deserialize(localStorage.recommendsClosed);
 var addon = CollusionAddon;
-var whitelist = deserialize(localStorage.whitelist) || {};
 var siteWhitelist;
-var blacklist = deserialize(localStorage.blacklist) || {};
 var siteBlacklist;
 var graph;
 var clicksHandled;
@@ -38,15 +36,23 @@ function renderGraph() {
     chrome.tabs.create({url: $(this).attr("href")});
     return false;
   });
+  updateClosed || $("#update").show();
+  recommendsActivated && $("#recommends").show();
   $("#domain-infos").hide();
-  $("#show-instructions").hide();
   if (false) {
     $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
   } else {
     $("#unblock-tracking").html("Unblock tracking sites");
   }
-  updateClosed || $("#update").show();
-  recommendsActivated && $("#recommends").show();
+  var wifiDisabled = !deserialize(localStorage.browsingHardened);
+  if (wifiDisabled) {
+    $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
+  } else {
+    $("#disable-wifi").html("Disable Wi-Fi security");
+  }
+  $("#show-instructions").hide();
+  var whitelist = deserialize(localStorage.whitelist) || {};
+  var blacklist = deserialize(localStorage.blacklist) || {};
 
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
     var domain = backgroundPage.GET(tabs[0].url);
@@ -86,6 +92,13 @@ function renderGraph() {
         $("#unblock-tracking").click(function() {
           localStorage.trackingUnblocked = !trackingUnblocked;
           window.location.reload();
+        });
+        $("#disable-wifi").click(function() {
+          $('.wifi input')[0].checked =
+              localStorage.browsingHardened = !(wifiDisabled = !wifiDisabled);
+          $(this).
+            toggleClass("invisible").
+            text((wifiDisabled ? "Enable" : "Disable") + " Wi-Fi security");
         });
         $("#show-list").click(function() {
           $('#graph').fadeOut(function() {
