@@ -91,14 +91,12 @@ function renderGraph() {
           $('#graph').fadeOut(function() {
             localStorage.displayMode = 'standard';
             $('#chart svg').remove();
-            $('#standard').fadeIn(function() {
-              var visualization = $('.visualization table');
+            var visualization = $('.visualization table');
+            visualization.off('mouseenter');
 
+            $('#standard').fadeIn(function() {
               animate(visualization.find('img')[0], function() {
-                if (!hoverHandled) {
-                  hoverHandled = true;
-                  visualization.mouseenter(handleHover);
-                }
+                visualization.mouseenter(handleHover);
               });
             });
           });
