@@ -19,8 +19,11 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
+html { height: 304px }
+
 body {
   margin: 0;
+  height: 304px;
   font-family: Arial, sans-serif;
   color: #333;
   -webkit-user-select: none;

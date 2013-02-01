@@ -467,7 +467,7 @@ var GraphRunner = (function(jQuery, d3) {
       return {
         data: null,
         update: function(json) {
-          query({currentWindow: true, active: true}, function(tabs) {
+          chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
             this.data = json;
             drawing.force.stop();
 

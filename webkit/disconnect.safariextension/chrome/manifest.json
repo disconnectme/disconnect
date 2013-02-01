@@ -29,7 +29,6 @@
       "scripts/vendor/sitename/sitename.js",
       "scripts/vendor/sjcl/sjcl.js",
       "scripts/services.js",
-      "scripts/analytics.js",
       "scripts/background.js"
     ]
   },

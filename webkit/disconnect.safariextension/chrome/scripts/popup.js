@@ -479,8 +479,13 @@ var currentScene = getScene();
               !DESERIALIZE(localStorage.searchHardened);
     };
 
-    $('#' + STANDARD).fadeIn('slow', function() {
-      animate(ICON, function() { VISUALIZATION.mouseenter(handleHover); });
+    const DISPLAY_MODE = localStorage.displayMode;
+    DISPLAY_MODE == GRAPH && renderGraph();
+
+    $('#' + DISPLAY_MODE).fadeIn('slow', function() {
+      DISPLAY_MODE == STANDARD && animate(ICON, function() {
+        VISUALIZATION.mouseenter(handleHover);
+      });
     });
   }, true
 );

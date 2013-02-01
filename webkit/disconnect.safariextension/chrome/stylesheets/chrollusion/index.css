@@ -189,13 +189,16 @@ div.settings-menu > ul {
   font-size: 8pt;
 }
 
-div.settings-menu > ul > li,
-div.settings-menu.collapsed,
-div.settings-menu > ul > li.invisible:hover {
+div.settings-menu > ul > li, div.settings-menu.collapsed {
   cursor: pointer;
   padding: 5px;
   margin-top: 5px;
   border-radius: 3px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+}
+
+div.settings-menu > ul > li.invisible:hover {
   background: rgba(0, 0, 0, 0.75);
   color: white;
 }
@@ -219,27 +222,14 @@ div.settings-menu.collapsed {
   font-size: 8pt;
 }
 
-#show-ui {
+#show-sidebar {
   display: none;
   left: 15px;
   width: 10px;
 }
 
-#show-ui:hover {
+#show-sidebar:hover {
   border-color: black;
-}
-
-#block-tracking, #block-tracking.blocked:hover {
-  right: 15px;
-  border-color: #d62728;
-  background: white;
-  color: #d62728;
-}
-
-#block-tracking.blocked, #block-tracking:hover {
-  border-color: white;
-  background: #d62728;
-  color: white;
 }
 
 #deployment-info {
