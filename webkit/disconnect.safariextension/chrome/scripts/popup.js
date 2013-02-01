@@ -455,6 +455,7 @@ var hoverHandled;
     VISUALIZATION.click(function() {
       $('#' + STANDARD).fadeOut('fast', function() {
         localStorage.displayMode = GRAPH;
+        $(".live-data").show();
         renderGraph();
         $('#' + GRAPH).fadeIn('slow');
       });
