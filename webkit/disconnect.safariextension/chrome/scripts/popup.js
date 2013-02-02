@@ -183,6 +183,7 @@ var currentScene = getScene();
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
+    var activeServices = $();
 
     TABS.query({currentWindow: true, active: true}, function(tabs) {
       const TAB = tabs[0];
@@ -272,7 +273,6 @@ var currentScene = getScene();
       const SERVICE_TEMPLATE = CATEGORY_TEMPLATE.find('.service');
       const SITE_BLACKLIST =
           (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
-      var activeServices = $();
 
       for (i = 0; i < CATEGORY_COUNT; i++) {
         var name = CATEGORIES[i];
@@ -450,8 +450,10 @@ var currentScene = getScene();
     const VISUALIZATION = $('.visualization table');
 
     VISUALIZATION.click(function() {
+      localStorage.displayMode = GRAPH;
+
       $('#' + STANDARD).fadeOut('fast', function() {
-        localStorage.displayMode = GRAPH;
+        activeServices.hide();
         $(".live-data").show();
         renderGraph();
         $('#' + GRAPH).fadeIn('slow');

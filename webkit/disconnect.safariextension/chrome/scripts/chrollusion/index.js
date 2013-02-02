@@ -77,7 +77,7 @@ function renderGraph() {
           $("#show-sidebar").show();
           $("#chart").addClass("fullscreen");
         } else {
-          $("#sidebar").show();
+          $("#sidebar, #domain-infos").show();
           $("#chart").removeClass("fullscreen");
         }
         $("#update .close").click(function() {
@@ -103,8 +103,9 @@ function renderGraph() {
           $('.wifi input')[0].checked = wifiDisabled;
         });
         $("#show-list").click(function() {
+          localStorage.displayMode = 'standard';
+
           $('#graph').fadeOut(function() {
-            localStorage.displayMode = 'standard';
             $('#chart svg').remove();
             var visualization = $('.visualization table');
             visualization.off('mouseenter');
