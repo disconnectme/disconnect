@@ -71,10 +71,6 @@ line.bold {
   width: 706px;
 }
 
-#page.fullscreen {
-  width: 406px;
-}
-
 #sidebar {
   position: absolute;
   top: 10px;
@@ -90,11 +86,11 @@ line.bold {
   left: 216px;
 }
 
-.fullscreen #chart {
+#chart.fullscreen {
   left: 0;
 }
 
-.fullscreen #chart.safari {
+#chart.safari.fullscreen {
   left: 4px;
 }
 
