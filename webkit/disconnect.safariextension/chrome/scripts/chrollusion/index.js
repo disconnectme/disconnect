@@ -58,7 +58,7 @@ function renderGraph() {
     siteWhitelist = whitelist[domain] || {};
     siteBlacklist = blacklist[domain] || {};
     var runner = GraphRunner.Runner({
-      width: sidebarCollapsed ? SAFARI ? 697 : 700 : SAFARI ? 485 : 484,
+      width: sidebarCollapsed ? SAFARI ? 397 : 400 : SAFARI ? 485 : 484,
       height:
           updateClosed ?
               (SAFARI ? 495 : (recommendsActivated ? 434 : 484)) :
@@ -75,10 +75,10 @@ function renderGraph() {
         ranOnce = true;
         if (sidebarCollapsed) {
           $("#show-sidebar").show();
-          $("#chart").addClass("fullscreen");
+          $("#page").addClass("fullscreen");
         } else {
           $("#sidebar").show();
-          $("#chart").removeClass("fullscreen");
+          $("#page").removeClass("fullscreen");
         }
         $("#update .close").click(function() {
           localStorage.updateClosed = true;
@@ -126,7 +126,7 @@ function renderGraph() {
                 $("#show-sidebar").slideDown(100);
               }, 400);
 
-              $("#chart").addClass("fullscreen");
+              $("#page").addClass("fullscreen");
               renderGraph();
             });
         });
@@ -140,7 +140,7 @@ function renderGraph() {
           $("#show-sidebar").slideUp(100, function() {
             $('#chart svg').remove();
             $("#sidebar, #domain-infos, #show-instructions").slideDown();
-            $("#chart").removeClass("fullscreen");
+            $("#page").removeClass("fullscreen");
             renderGraph();
           });
         });
