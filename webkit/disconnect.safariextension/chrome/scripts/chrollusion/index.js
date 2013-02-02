@@ -44,8 +44,7 @@ function renderGraph() {
   } else {
     $("#unblock-tracking").html("Unblock tracking sites");
   }
-  var wifiDisabled = !deserialize(localStorage.browsingHardened);
-  if (wifiDisabled) {
+  if (!deserialize(localStorage.browsingHardened)) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
   } else {
     $("#disable-wifi").removeClass("invisible").html("Disable Wi-Fi security");
@@ -94,11 +93,13 @@ function renderGraph() {
           window.location.reload();
         });
         $("#disable-wifi").click(function() {
-          $('.wifi input')[0].checked =
-              localStorage.browsingHardened = !(wifiDisabled = !wifiDisabled);
+          var wifiDisabled =
+              localStorage.browsingHardened =
+                  !deserialize(localStorage.browsingHardened);
           $(this).
             toggleClass("invisible").
-            text((wifiDisabled ? "Enable" : "Disable") + " Wi-Fi security");
+            text((wifiDisabled ? "Disable" : "Enable") + " Wi-Fi security");
+          $('.wifi input')[0].checked = wifiDisabled;
         });
         $("#show-list").click(function() {
           $('#graph').fadeOut(function() {
