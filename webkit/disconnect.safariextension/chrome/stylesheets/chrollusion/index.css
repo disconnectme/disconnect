@@ -219,7 +219,7 @@ div.settings-menu.collapsed:hover {
 
 div.settings-menu.collapsed {
   position: absolute;
-  top: 15px;
+  top: 10px;
   border: 1px solid white;
   text-align: center;
   font-size: 8pt;

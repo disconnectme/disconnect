@@ -10,7 +10,7 @@ var addon = CollusionAddon;
 var siteWhitelist;
 var siteBlacklist;
 var graph;
-var clicksHandled;
+var ranOnce;
 
 /* Paints the graph UI. */
 function renderGraph() {
@@ -69,15 +69,17 @@ function renderGraph() {
 
     if (addon.isInstalled()) {
       // You should only ever see this page if the addon is installed, anyway
-      if (sidebarCollapsed) {
-        $("#show-sidebar").slideDown(100);
-        $("#chart").addClass("fullscreen");
-      } else
-        $("#sidebar").slideDown('fast');
       graph.update(backgroundPage.LOG);
 
-      if (!clicksHandled) {
-        clicksHandled = true;
+      if (!ranOnce) {
+        ranOnce = true;
+        if (sidebarCollapsed) {
+          $("#show-sidebar").show();
+          $("#chart").addClass("fullscreen");
+        } else {
+          $("#sidebar").show();
+          $("#chart").removeClass("fullscreen");
+        }
         $("#update .close").click(function() {
           localStorage.updateClosed = true;
           window.location.reload();
@@ -90,7 +92,6 @@ function renderGraph() {
         });
         $("#unblock-tracking").click(function() {
           localStorage.trackingUnblocked = !trackingUnblocked;
-          window.location.reload();
         });
         $("#disable-wifi").click(function() {
           var wifiDisabled =
@@ -116,9 +117,18 @@ function renderGraph() {
           });
         });
         $("#hide-sidebar").click(function() {
-          localStorage.sidebarCollapsed = 3;
-          $("#sidebar, #domain-infos, #show-instructions").slideUp('fast');
-          window.setTimeout(function() { window.location.reload(); }, 200);
+          sidebarCollapsed = localStorage.sidebarCollapsed = 3;
+          $("#sidebar, #domain-infos, #show-instructions").
+            slideUp(function() {
+              $('#chart svg').remove();
+
+              setTimeout(function() {
+                $("#show-sidebar").slideDown(100);
+              }, 400);
+
+              $("#chart").addClass("fullscreen");
+              renderGraph();
+            });
         });
         $("#show-instructions").click(function() {
           $("#domain-infos, #show-instructions").hide();
@@ -126,8 +136,13 @@ function renderGraph() {
         });
         $("#show-sidebar").click(function() {
           delete localStorage.sidebarCollapsed;
-          $("#show-sidebar").slideUp(100);
-          window.setTimeout(function() { window.location.reload(); }, 100);
+          sidebarCollapsed = localStorage.sidebarCollapsed;
+          $("#show-sidebar").slideUp(100, function() {
+            $('#chart svg').remove();
+            $("#sidebar, #domain-infos, #show-instructions").slideDown();
+            $("#chart").removeClass("fullscreen");
+            renderGraph();
+          });
         });
       }
     }
