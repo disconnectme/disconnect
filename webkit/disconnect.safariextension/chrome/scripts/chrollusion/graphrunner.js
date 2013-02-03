@@ -470,12 +470,13 @@ var GraphRunner = (function(jQuery, d3) {
           chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
             this.data = json;
             drawing.force.stop();
+            var url = tabs[0].url;
 
             for (var name in json) {
               var domain = json[name];
               var referrers = domain.referrers;
               for (var referrerName in referrers)
-                if (!sitesHidden || tabs[0].url.indexOf(referrerName) + 1)
+                if (!sitesHidden || url.indexOf(referrerName) + 1)
                   addLink({
                     from: {name: referrerName, host: referrers[referrerName].host},
                     to: {name: name, host: domain.host}
@@ -502,6 +503,11 @@ var GraphRunner = (function(jQuery, d3) {
             drawing.force.links(links);
             drawing.force.start();
             createLinks(links);
+            whitelist = deserialize(localStorage.whitelist) || {};
+            var domain = backgroundPage.GET(url);
+            siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+            blacklist = deserialize(localStorage.blacklist) || {};
+            siteBlacklist = blacklist[domain] || (blacklist[domain] = {});
             createNodes(nodes, drawing.force);
           });
         }
