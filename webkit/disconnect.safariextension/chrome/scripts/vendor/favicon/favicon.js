@@ -68,9 +68,9 @@ function Favicon(alt) {
 
                 if (!successful && type && type.indexOf('image/') + 1 && data) {
                   successful = true;
-                  callback(favicon);
+                  callback(this);
                 }
-              }).bind(favicon);
+              }.bind(favicon));
             }
           }
         }
@@ -80,7 +80,7 @@ function Favicon(alt) {
     return this;
   };
 
-  var version = '1.3.0';
+  var version = '1.3.1';
   var protocols = ['http://'];
   var subdomains = ['', 'www.'];
   var paths = ['/favicon.ico'];
