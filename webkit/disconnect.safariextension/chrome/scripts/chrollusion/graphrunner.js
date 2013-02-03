@@ -305,6 +305,7 @@ var GraphRunner = (function(jQuery, d3) {
               localStorage.whitelist = JSON.stringify(whitelist);
               localStorage.blacklist = JSON.stringify(blacklist);
               d3.select(this).select("line").classed("hidden", blocked);
+              chrome.tabs.reload(tabId);
             }
           })
         .call(force.drag);
@@ -468,18 +469,21 @@ var GraphRunner = (function(jQuery, d3) {
         data: null,
         update: function(json) {
           chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+            var tab = tabs[0];
+            var url = tab.url;
+            domain = backgroundPage.GET(url);
+            tabId = tab.id;
             this.data = json;
             drawing.force.stop();
-            var url = tabs[0].url;
 
             for (var name in json) {
-              var domain = json[name];
-              var referrers = domain.referrers;
+              var site = json[name];
+              var referrers = site.referrers;
               for (var referrerName in referrers)
                 if (!sitesHidden || url.indexOf(referrerName) + 1)
                   addLink({
                     from: {name: referrerName, host: referrers[referrerName].host},
-                    to: {name: name, host: domain.host}
+                    to: {name: name, host: site.host}
                   });
             }
             for (var n = 0; n < nodes.length; n++) {
@@ -504,7 +508,6 @@ var GraphRunner = (function(jQuery, d3) {
             drawing.force.start();
             createLinks(links);
             whitelist = deserialize(localStorage.whitelist) || {};
-            var domain = backgroundPage.GET(url);
             siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
             blacklist = deserialize(localStorage.blacklist) || {};
             siteBlacklist = blacklist[domain] || (blacklist[domain] = {});

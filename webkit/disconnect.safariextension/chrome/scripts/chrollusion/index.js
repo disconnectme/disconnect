@@ -6,12 +6,14 @@ var updateClosed = deserialize(localStorage.updateClosed);
 var recommendsActivated =
     deserialize(localStorage.recommendsExperiment) &&
         !deserialize(localStorage.recommendsClosed);
+var graph;
 var addon = CollusionAddon;
+var domain;
+var tabId;
 var whitelist;
 var siteWhitelist;
 var blacklist;
 var siteBlacklist;
-var graph;
 var ranOnce;
 
 /* Paints the graph UI. */
@@ -41,11 +43,26 @@ function renderGraph() {
   updateClosed || $("#update").show();
   recommendsActivated && $("#recommends").show();
   $("#domain-infos").hide();
-  if (false) {
-    $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
-  } else {
-    $("#unblock-tracking").html("Unblock tracking sites");
-  }
+  whitelist = deserialize(localStorage.whitelist) || {};
+
+  backgroundPage.TABS.query({currentWindow: true, active: true}, function(tabs) {
+    var domain = GET(tabs[0].url);
+    siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+    var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
+    if (
+      serviceWhitelist.Facebook && serviceWhitelist.Google &&
+          serviceWhitelist.Twitter &&
+              (siteWhitelist.Advertising || {}).whitelisted &&
+                  (siteWhitelist.Analytics || {}).whitelisted &&
+                      (siteWhitelist.Content || {}).whitelisted &&
+                          (siteWhitelist.Social || {}).whitelisted
+    ) {
+      $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
+    } else {
+      $("#unblock-tracking").html("Unblock tracking sites");
+    }
+  });
+
   if (!deserialize(localStorage.browsingHardened)) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
   } else {
@@ -87,7 +104,87 @@ function renderGraph() {
         }, 100);
       });
       $("#unblock-tracking").click(function() {
-        localStorage.trackingUnblocked = !trackingUnblocked;
+        whitelist = deserialize(localStorage.whitelist) || {};
+        siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+        var disconnectWhitelist =
+            siteWhitelist.Disconnect || (siteWhitelist.Disconnect = {});
+        var serviceWhitelist =
+            disconnectWhitelist.services || (disconnectWhitelist.services = {});
+        var advertisingWhitelist =
+            siteWhitelist.Advertising || (siteWhitelist.Advertising = {});
+        var analyticsWhitelist =
+            siteWhitelist.Analytics || (siteWhitelist.Analytics = {});
+        var contentWhitelist =
+            siteWhitelist.Content || (siteWhitelist.Content = {});
+        var socialWhitelist =
+            siteWhitelist.Social || (siteWhitelist.Social = {});
+        var trackingUnblocked =
+            serviceWhitelist.Facebook && serviceWhitelist.Google &&
+                serviceWhitelist.Twitter && advertisingWhitelist.whitelisted &&
+                    analyticsWhitelist.whitelisted &&
+                        contentWhitelist.whitelisted &&
+                            socialWhitelist.whitelisted;
+        serviceWhitelist.Facebook =
+            serviceWhitelist.Google =
+                serviceWhitelist.Twitter =
+                    advertisingWhitelist.whitelisted =
+                        analyticsWhitelist.whitelisted =
+                            contentWhitelist.whitelisted =
+                                socialWhitelist.whitelisted =
+                                    !trackingUnblocked;
+        advertisingWhitelist.services = analyticsWhitelist.services =
+            contentWhitelist.services = socialWhitelist.services = {};
+        localStorage.whitelist = JSON.stringify(whitelist);
+        blacklist = deserialize(localStorage.blacklist);
+        blacklist && delete blacklist[domain];
+        localStorage.blacklist = JSON.stringify(blacklist);
+        $(this).
+          toggleClass("invisible").
+          text((trackingUnblocked ? "Unblock" : "Block") + " tracking sites");
+        d3.selectAll("line.tracker").classed("hidden", !trackingUnblocked);
+        var disconnectRequests =
+            (backgroundPage.REQUEST_COUNTS[tabId] || {}).Disconnect || {};
+
+        for (var i = 0; i < SHORTCUT_COUNT; i++) {
+          var name = SHORTCUTS[i];
+          var shortcutRequests = disconnectRequests[name];
+          var control = $('.shortcut')[i + 1];
+          renderShortcut(
+            name,
+            name.toLowerCase(),
+            trackingUnblocked,
+            shortcutRequests ? shortcutRequests.count : 0,
+            control,
+            $(control),
+            control.
+              getElementsByClassName('badge')[0].
+              getElementsByTagName('img')[0],
+            control.getElementsByClassName('text')[0]
+          );
+        }
+
+        for (i = 0; i < CATEGORY_COUNT; i++) {
+          var name = CATEGORIES[i];
+          var control = $('.category')[i + 1];
+          var wrappedControl = $(control);
+          var wrappedBadge = wrappedControl.find('.badge');
+          var wrappedText = wrappedControl.find('.text');
+          renderCategory(
+            name,
+            name.toLowerCase(),
+            trackingUnblocked,
+            0,
+            control,
+            wrappedControl,
+            wrappedBadge[0],
+            wrappedBadge.find('img')[0],
+            wrappedText[0],
+            wrappedText.find('.name'),
+            wrappedText.find('.count')
+          );
+        }
+
+        chrome.tabs.reload(tabId);
       });
       $("#disable-wifi").click(function() {
         var wifiDisabled =
