@@ -305,7 +305,7 @@ var GraphRunner = (function(jQuery, d3) {
               localStorage.whitelist = JSON.stringify(whitelist);
               localStorage.blacklist = JSON.stringify(blacklist);
               d3.select(this).select("line").classed("hidden", blocked);
-              chrome.tabs.reload(tabId);
+              tabApi.reload(tabId);
             }
           })
         .call(force.drag);
@@ -468,7 +468,7 @@ var GraphRunner = (function(jQuery, d3) {
       return {
         data: null,
         update: function(json) {
-          chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
+          tabApi.query({currentWindow: true, active: true}, function(tabs) {
             var tab = tabs[0];
             var url = tab.url;
             domain = backgroundPage.GET(url);

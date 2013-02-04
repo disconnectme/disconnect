@@ -1,20 +1,21 @@
 var backgroundPage = chrome.extension.getBackgroundPage();
 var deserialize = backgroundPage.deserialize;
-var sidebarCollapsed = parseInt(localStorage.sidebarCollapsed, 10);
-var sitesHidden = deserialize(localStorage.sitesHidden);
 var updateClosed = deserialize(localStorage.updateClosed);
 var recommendsActivated =
     deserialize(localStorage.recommendsExperiment) &&
         !deserialize(localStorage.recommendsClosed);
-var graph;
-var addon = CollusionAddon;
+var tabApi = chrome.tabs;
+var whitelist;
 var domain;
 var tabId;
-var whitelist;
 var siteWhitelist;
+var graph;
+var addon = CollusionAddon;
+var sitesHidden = deserialize(localStorage.sitesHidden);
+var ranOnce;
+var sidebarCollapsed = parseInt(localStorage.sidebarCollapsed, 10);
 var blacklist;
 var siteBlacklist;
-var ranOnce;
 
 /* Paints the graph UI. */
 function renderGraph() {
@@ -27,28 +28,36 @@ function renderGraph() {
   } else {
     if (!deserialize(localStorage.promoHidden)) {
       localStorage.promoHidden = true;
+
       setTimeout(function() {
-        chrome.browserAction.setBadgeText({text: ''});
+        chrome.browserAction.setBadgeText({text: ""});
       }, 200);
     }
+
     $("#update .chrome").show();
     $("#logo").attr({
       src: "../images/chrollusion/chrome.png", alt: "Collusion for Chrome"
     });
   }
-  $("a").click(function() {
-    chrome.tabs.create({url: $(this).attr("href")});
-    return false;
-  });
+
   updateClosed || $("#update").show();
   recommendsActivated && $("#recommends").show();
+
+  $("a").click(function() {
+    tabApi.create({url: $(this).attr("href")});
+    return false;
+  });
+
   $("#domain-infos").hide();
   whitelist = deserialize(localStorage.whitelist) || {};
 
-  backgroundPage.TABS.query({currentWindow: true, active: true}, function(tabs) {
-    var domain = GET(tabs[0].url);
+  tabApi.query({currentWindow: true, active: true}, function(tabs) {
+    var tab = tabs[0];
+    domain = backgroundPage.GET(tab.url);
+    tabId = tab.id;
     siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
     var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
+
     if (
       serviceWhitelist.Facebook && serviceWhitelist.Google &&
           serviceWhitelist.Twitter &&
@@ -68,15 +77,15 @@ function renderGraph() {
   } else {
     $("#disable-wifi").removeClass("invisible").html("Disable Wi-Fi security");
   }
-  $("#show-instructions").hide();
 
+  $("#show-instructions").hide();
   var runner = GraphRunner.Runner({
     width: sidebarCollapsed ? SAFARI ? 697 : 700 : SAFARI ? 485 : 484,
     height:
         updateClosed ?
             (SAFARI ? 495 : (recommendsActivated ? 434 : 484)) :
                 (SAFARI ? 454 : (recommendsActivated ? 387 : 446)),
-    hideFavicons: false 
+    hideFavicons: false
   });
   graph = runner.graph;
 
@@ -86,6 +95,19 @@ function renderGraph() {
 
     if (!ranOnce) {
       ranOnce = true;
+
+      $("#update .close").click(function() {
+        localStorage.updateClosed = true;
+        window.location.reload();
+      });
+
+      $("#recommends .close").click(function() {
+        setTimeout(function() {
+          localStorage.recommendsClosed = true;
+          window.location.reload();
+        }, 100);
+      });
+
       if (sidebarCollapsed) {
         $("#show-sidebar").show();
         $("#chart").addClass("fullscreen");
@@ -93,16 +115,7 @@ function renderGraph() {
         $("#sidebar, #domain-infos").show();
         $("#chart").removeClass("fullscreen");
       }
-      $("#update .close").click(function() {
-        localStorage.updateClosed = true;
-        window.location.reload();
-      });
-      $("#recommends .close").click(function() {
-        setTimeout(function() {
-          window.location.reload();
-          localStorage.recommendsClosed = true;          
-        }, 100);
-      });
+
       $("#unblock-tracking").click(function() {
         whitelist = deserialize(localStorage.whitelist) || {};
         siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
@@ -148,7 +161,7 @@ function renderGraph() {
         for (var i = 0; i < SHORTCUT_COUNT; i++) {
           var name = SHORTCUTS[i];
           var shortcutRequests = disconnectRequests[name];
-          var control = $('.shortcut')[i + 1];
+          var control = $(".shortcut")[i + 1];
           renderShortcut(
             name,
             name.toLowerCase(),
@@ -157,18 +170,18 @@ function renderGraph() {
             control,
             $(control),
             control.
-              getElementsByClassName('badge')[0].
-              getElementsByTagName('img')[0],
-            control.getElementsByClassName('text')[0]
+              getElementsByClassName("badge")[0].
+              getElementsByTagName("img")[0],
+            control.getElementsByClassName("text")[0]
           );
         }
 
         for (i = 0; i < CATEGORY_COUNT; i++) {
           var name = CATEGORIES[i];
-          var control = $('.category')[i + 1];
+          var control = $(".category")[i + 1];
           var wrappedControl = $(control);
-          var wrappedBadge = wrappedControl.find('.badge');
-          var wrappedText = wrappedControl.find('.text');
+          var wrappedBadge = wrappedControl.find(".badge");
+          var wrappedText = wrappedControl.find(".text");
           renderCategory(
             name,
             name.toLowerCase(),
@@ -177,15 +190,16 @@ function renderGraph() {
             control,
             wrappedControl,
             wrappedBadge[0],
-            wrappedBadge.find('img')[0],
+            wrappedBadge.find("img")[0],
             wrappedText[0],
-            wrappedText.find('.name'),
-            wrappedText.find('.count')
+            wrappedText.find(".name"),
+            wrappedText.find(".count")
           );
         }
 
-        chrome.tabs.reload(tabId);
+        tabApi.reload(tabId);
       });
+
       $("#disable-wifi").click(function() {
         var wifiDisabled =
             localStorage.browsingHardened =
@@ -193,46 +207,49 @@ function renderGraph() {
         $(this).
           toggleClass("invisible").
           text((wifiDisabled ? "Disable" : "Enable") + " Wi-Fi security");
-        $('.wifi input')[0].checked = wifiDisabled;
+        $(".wifi input")[0].checked = wifiDisabled;
       });
+
       $("#show-list").click(function() {
-        localStorage.displayMode = 'standard';
+        localStorage.displayMode = "standard";
 
-        $('#graph').fadeOut(function() {
-          $('#chart svg').remove();
-          var visualization = $('.visualization table');
-          visualization.off('mouseenter');
+        $("#graph").fadeOut(function() {
+          $("#chart svg").remove();
+          var visualization = $(".visualization table");
+          visualization.off("mouseenter");
 
-          $('#standard').fadeIn(function() {
-            animate(visualization.find('img')[0], function() {
+          $("#standard").fadeIn(function() {
+            animate(visualization.find("img")[0], function() {
               visualization.mouseenter(handleHover);
             });
           });
         });
       });
+
       $("#hide-sidebar").click(function() {
         sidebarCollapsed = localStorage.sidebarCollapsed = 3;
-        $("#sidebar, #domain-infos, #show-instructions").
-          slideUp(function() {
-            $('#chart svg').remove();
 
-            setTimeout(function() {
-              $("#show-sidebar").slideDown(100);
-            }, 400);
+        $("#sidebar, #domain-infos, #show-instructions").slideUp(function() {
+          $("#chart svg").remove();
 
-            $("#chart").addClass("fullscreen");
-            renderGraph();
-          });
+          setTimeout(function() { $("#show-sidebar").slideDown(100); }, 400);
+
+          $("#chart").addClass("fullscreen");
+          renderGraph();
+        });
       });
+
       $("#show-instructions").click(function() {
         $("#domain-infos, #show-instructions").hide();
         $(".live-data").show();
       });
+
       $("#show-sidebar").click(function() {
         delete localStorage.sidebarCollapsed;
         sidebarCollapsed = localStorage.sidebarCollapsed;
+
         $("#show-sidebar").slideUp(100, function() {
-          $('#chart svg').remove();
+          $("#chart svg").remove();
           $("#sidebar, #domain-infos, #show-instructions").slideDown();
           $("#chart").removeClass("fullscreen");
           renderGraph();
