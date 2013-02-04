@@ -187,14 +187,14 @@ var currentScene = getScene();
 
     TABS.query({currentWindow: true, active: true}, function(tabs) {
       const TAB = tabs[0];
-      const ID = TAB.id;
+      const DOMAIN = domain = GET(TAB.url);
+      const ID = tabId = TAB.id;
       const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
       const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
       const SHORTCUT_SURFACE =
           document.getElementById('shortcuts').getElementsByTagName('td')[0];
       const SHORTCUT_TEMPLATE =
           SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-      const DOMAIN = GET(TAB.url);
       const SITE_WHITELIST =
           (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
       const SHORTCUT_WHITELIST =
@@ -446,6 +446,8 @@ var currentScene = getScene();
       TABS.create({url: this.getAttribute('href')});
       return false;
     };
+
+    $('.whitelist table').click(function() { whitelistSite(); });
 
     const VISUALIZATION = $('.visualization table');
 
