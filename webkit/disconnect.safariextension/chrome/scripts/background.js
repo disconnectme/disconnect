@@ -209,7 +209,7 @@ function safelyUpdateCounter(tabId, count, deactivated) {
 }
 
 /* Tallies and indicates the number of tracking requests. */
-function incrementCounter(tabId, service, blocked) {
+function incrementCounter(tabId, service, blocked, popup) {
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
   const CATEGORY = service.category;
   const CATEGORY_REQUESTS =
@@ -218,8 +218,10 @@ function incrementCounter(tabId, service, blocked) {
   const SERVICE_REQUESTS =
       CATEGORY_REQUESTS[SERVICE] ||
           (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
-  SERVICE_REQUESTS.count++;
+  const REQUEST_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
+  popup && CATEGORY == 'Disconnect' &&
+      popup.updateShortcut(SERVICE, REQUEST_COUNT);
 }
 
 /* The current build number. */
@@ -248,6 +250,9 @@ const LOG = {};
 
 /* The content key. */
 const CONTENT_NAME = 'Content';
+
+/* The graph value. */
+const GRAPH_NAME = 'graph';
 
 /* The "extension" API. */
 const EXTENSION = chrome.extension;
@@ -339,7 +344,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
-localStorage.displayMode == 'graph' &&
+localStorage.displayMode == GRAPH_NAME &&
     parseInt(localStorage.sidebarCollapsed, 10) &&
         localStorage.sidebarCollapsed--; // An experimental "semisticky" bit.
 
@@ -394,6 +399,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   var day = date.getDate();
   day = (day < 10 ? '0' : '') + day;
   date = date.getFullYear() + '-' + month + '-' + day;
+  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
 
   if (CHILD_SERVICE) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
@@ -442,7 +448,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
-        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted);
+        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
@@ -477,8 +483,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   }
 
   // A live update.
-  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
-  POPUP && POPUP.graph && POPUP.graph.update(LOG);
+  if (localStorage.displayMode == GRAPH_NAME) {
+    const GRAPH = POPUP && POPUP.graph;
+    GRAPH && GRAPH.update(LOG);
+  }
 
   return blockingResponse;
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
