@@ -218,10 +218,12 @@ function incrementCounter(tabId, service, blocked, popup) {
   const SERVICE_REQUESTS =
       CATEGORY_REQUESTS[SERVICE] ||
           (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
-  const REQUEST_COUNT = ++SERVICE_REQUESTS.count;
+  const REQUEST_COUNT = SERVICE_REQUESTS.count++;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
   popup && CATEGORY == 'Disconnect' &&
-      popup.updateShortcut(SERVICE, REQUEST_COUNT);
+      setTimeout(function(popup, name, requestCount) {
+        popup.updateShortcut(name, requestCount);
+      }.bind(null, popup, SERVICE, REQUEST_COUNT + 1), REQUEST_COUNT * 50);
 }
 
 /* The current build number. */
