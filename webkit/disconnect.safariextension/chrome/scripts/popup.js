@@ -22,7 +22,14 @@
 
 /* Outputs major third-party details as per the blocking state. */
 function renderShortcut(
-  name, lowercaseName, blocked, control, wrappedControl, badge
+  name,
+  lowercaseName,
+  blocked,
+  requestCount,
+  control,
+  wrappedControl,
+  badge,
+  text
 ) {
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
@@ -33,6 +40,8 @@ function renderShortcut(
     control.title = BLOCK + name;
     badge.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
   }
+
+  text.textContent = requestCount;
 }
 
 /* Refreshes major third-party details. */
@@ -185,6 +194,8 @@ var currentScene = getScene();
       const TAB = tabs[0];
       const DOMAIN = domain = GET(TAB.url);
       const ID = tabId = TAB.id;
+      const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
+      const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
       const SHORTCUT_SURFACE =
           document.getElementById('shortcuts').getElementsByTagName('td')[0];
       const SHORTCUT_TEMPLATE =
@@ -197,6 +208,8 @@ var currentScene = getScene();
       for (var i = 0; i < SHORTCUT_COUNT; i++) {
         var name = SHORTCUTS[i];
         var lowercaseName = name.toLowerCase();
+        var shortcutRequests = DISCONNECT_REQUESTS[name];
+        var requestCount = shortcutRequests ? shortcutRequests.count : 0;
         var control =
             SHORTCUT_SURFACE.appendChild(SHORTCUT_TEMPLATE.cloneNode(true));
         var wrappedControl = $(control);
@@ -204,18 +217,27 @@ var currentScene = getScene();
             control.
               getElementsByClassName('badge')[0].
               getElementsByTagName('img')[0];
+        var text = control.getElementsByClassName('text')[0];
         renderShortcut(
           name,
           lowercaseName,
           !SHORTCUT_WHITELIST[name],
+          requestCount,
           control,
           wrappedControl,
-          badge
+          badge,
+          text
         );
         badge.alt = name;
 
         control.onclick = function(
-          name, lowercaseName, control, wrappedControl, badge
+          name,
+          lowercaseName,
+          requestCount,
+          control,
+          wrappedControl,
+          badge,
+          text
         ) {
           const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
           const LOCAL_SITE_WHITELIST =
@@ -231,16 +253,26 @@ var currentScene = getScene();
             name,
             lowercaseName,
             !(LOCAL_SHORTCUT_WHITELIST[name] = !LOCAL_SHORTCUT_WHITELIST[name]),
+            requestCount,
             control,
             wrappedControl,
-            badge
+            badge,
+            text
           );
           localStorage.whitelist = JSON.stringify(WHITELIST);
           TABS.reload(ID);
-        }.bind(null, name, lowercaseName, control, wrappedControl, badge);
+        }.bind(
+          null,
+          name,
+          lowercaseName,
+          requestCount,
+          control,
+          wrappedControl,
+          badge,
+          text
+        );
       }
 
-      const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
       const CATEGORY_SURFACE = $('#categories');
       const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
       const SERVICE_TEMPLATE = CATEGORY_TEMPLATE.find('.service');
