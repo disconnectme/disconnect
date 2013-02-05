@@ -95,7 +95,7 @@ function renderCategory(
 
 /* Refreshes minor third-party details. */
 function updateCategory(
-  id, categoryName, categoryCount, serviceName, serviceCount
+  id, categoryName, categoryCount, serviceName, serviceUrl, serviceCount
 ) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     if (id == tabs[0].id) {
@@ -108,14 +108,43 @@ function updateCategory(
       setTimeout(function() {
         $($('.category .count')[INDEX]).
           text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
-        const CONTROL =
-            $($('.services')[INDEX]).
-              find('.service:contains(' + serviceName + ')')[0];
-        CONTROL &&
-            $(CONTROL).
+        const CONTROL = $($('.services')[INDEX]);
+        var serviceControl =
+            CONTROL.find('.service:contains(' + serviceName + ')');
+
+        if (serviceControl[0])
+            serviceControl.
               find('.text').
               text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
+        else {
+          serviceControl = serviceTemplate.clone(true);
+          var link = serviceControl.find('a')[0];
+          link.title += serviceName;
+          link.href = serviceUrl;
+          $(link).text(serviceName);
+          serviceControl.
+            find('.text').
+            text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
+          CONTROL.find('tbody').append(serviceControl);
+        }
       }, CATEGORY_LIVE[serviceName]++ * 50);
+    }
+  });
+}
+
+/* Resets third-party details. */
+function clearServices(id) {
+  TABS.query({currentWindow: true, active: true}, function(tabs) {
+    if (id == tabs[0].id) {
+      $('.shortcut .text').each(function(index) { index && $(this).text(0); });
+
+      $('.category .count').each(function(index) {
+        index && $(this).text(0 + REQUEST + 's');
+      });
+
+      $('.services div:visible').slideUp('fast');
+
+      $('.service').each(function(index) { index && $(this).remove(); });
     }
   });
 }
@@ -220,6 +249,9 @@ const FRAME_LENGTH = 100;
 /* The number of request updates. */
 const LIVE_REQUESTS = {};
 
+/* The service scaffolding. */
+var serviceTemplate;
+
 /* The active animation sequence. */
 var currentScene = getScene();
 
@@ -315,9 +347,9 @@ var currentScene = getScene();
 
       const CATEGORY_SURFACE = $('#categories');
       const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
-      const SERVICE_TEMPLATE = CATEGORY_TEMPLATE.find('.service');
       const SITE_BLACKLIST =
           (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
+      serviceTemplate = CATEGORY_TEMPLATE.find('.service');
 
       for (i = 0; i < CATEGORY_COUNT; i++) {
         var name = CATEGORIES[i];
@@ -341,7 +373,7 @@ var currentScene = getScene();
         var categoryBlacklist = SITE_BLACKLIST[name] || {};
 
         for (var serviceName in categoryRequests) {
-          var serviceControl = SERVICE_TEMPLATE.clone(true);
+          var serviceControl = serviceTemplate.clone(true);
           var checkbox = serviceControl.find(INPUT)[0];
           checkbox.checked =
               !whitelisted && !(categoryWhitelist.services || {})[serviceName]

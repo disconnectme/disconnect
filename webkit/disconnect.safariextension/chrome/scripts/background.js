@@ -218,9 +218,10 @@ function incrementCounter(tabId, service, blocked, popup) {
   const CATEGORY_REQUESTS =
       TAB_REQUESTS[CATEGORY] || (TAB_REQUESTS[CATEGORY] = {});
   const SERVICE = service.name;
+  const SERVICE_URL = service.url;
   const SERVICE_REQUESTS =
       CATEGORY_REQUESTS[SERVICE] ||
-          (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
+          (CATEGORY_REQUESTS[SERVICE] = {url: SERVICE_URL, count: 0});
   const SERVICE_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
   if (popup)
@@ -231,7 +232,7 @@ function incrementCounter(tabId, service, blocked, popup) {
         for (var name in CATEGORY_REQUESTS)
             categoryCount += CATEGORY_REQUESTS[name].count;
         popup.updateCategory(
-          tabId, CATEGORY, categoryCount, SERVICE, SERVICE_COUNT
+          tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
         );
       }
 }
@@ -503,13 +504,14 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   return blockingResponse;
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
-/* Resets the number of tracking requests for a tab. */
+/* Resets the number of tracking requests and services for a tab. */
 chrome.webNavigation.onCommitted.addListener(function(details) {
-  const TAB_ID = details.tabId;
-
   if (!details.frameId) {
+    const TAB_ID = details.tabId;
     delete REQUEST_COUNTS[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
+    const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+    POPUP && POPUP.clearServices(TAB_ID);
   }
 });
 
