@@ -108,6 +108,13 @@ function updateCategory(
       setTimeout(function() {
         $($('.category .count')[INDEX]).
           text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
+        const CONTROL =
+            $($('.services')[INDEX]).
+              find('.service:contains(' + serviceName + ')')[0];
+        CONTROL &&
+            $(CONTROL).
+              find('.text').
+              text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
       }, CATEGORY_LIVE[serviceName]++ * 50);
     }
   });
