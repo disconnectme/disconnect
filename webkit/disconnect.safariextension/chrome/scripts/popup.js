@@ -45,8 +45,8 @@ function renderShortcut(
 }
 
 /* Refreshes major third-party details. */
-function updateShortcut(name, requestCount) {
-  $('.shortcut .text')[SHORTCUTS.indexOf(name) + 1].textContent = requestCount;
+function updateShortcut(name, count) {
+  $($('.shortcut .text')[SHORTCUTS.indexOf(name) + 1]).text(count);
 }
 
 /* Outputs minor third-party details as per the blocking state. */
@@ -81,6 +81,13 @@ function renderCategory(
 
   textName.text(name);
   textCount.text(requestCount + REQUEST + (requestCount - 1 ? 's' : ''));
+}
+
+/* Refreshes minor third-party details. */
+function updateCategory(categoryName, categoryCount, service, serviceCount) {
+  const INDEX = CATEGORIES.indexOf(categoryName) + 1;
+  $($('.category .count')[INDEX]).
+    text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
 }
 
 /* Picks a random animation path. */
