@@ -142,9 +142,14 @@ function clearServices(id) {
         index && $(this).text(0 + REQUEST + 's');
       });
 
-      $('.services div:visible').slideUp('fast');
+      const CONTROL = $('.services');
+      CONTROL.find('div:visible').slideUp('fast');
 
-      $('.service').each(function(index) { index && $(this).remove(); });
+      CONTROL.each(function(index) {
+        index && $(this).find('.service').each(function(index) {
+          index && $(this).remove();
+        });
+      });
     }
   });
 }

@@ -212,7 +212,7 @@ function safelyUpdateCounter(tabId, count, deactivated) {
 }
 
 /* Tallies and indicates the number of tracking requests. */
-function incrementCounter(tabId, service, blocked, popup, parent) {
+function incrementCounter(tabId, service, blocked, popup) {
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
   const CATEGORY = service.category;
   const CATEGORY_REQUESTS =
@@ -224,21 +224,17 @@ function incrementCounter(tabId, service, blocked, popup, parent) {
           (CATEGORY_REQUESTS[SERVICE] = {url: SERVICE_URL, count: 0});
   const SERVICE_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
-
-  if (popup) {
-    popup && popup.clearServices(tabId);
-
-    if (CATEGORY == 'Disconnect')
-        popup.updateShortcut(tabId, SERVICE, SERVICE_COUNT);
-    else {
-      var categoryCount = 0;
-      for (var name in CATEGORY_REQUESTS)
-          categoryCount += CATEGORY_REQUESTS[name].count;
-      popup.updateCategory(
-        tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
-      );
-    }
-  }
+  if (popup)
+      if (CATEGORY == 'Disconnect')
+          popup.updateShortcut(tabId, SERVICE, SERVICE_COUNT);
+      else {
+        var categoryCount = 0;
+        for (var name in CATEGORY_REQUESTS)
+            categoryCount += CATEGORY_REQUESTS[name].count;
+        popup.updateCategory(
+          tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
+        );
+      }
 }
 
 /* The current build number. */
@@ -465,7 +461,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
-        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP, PARENT);
+        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
@@ -514,6 +510,8 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
     const TAB_ID = details.tabId;
     delete REQUEST_COUNTS[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
+    const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+    POPUP && POPUP.clearServices(TAB_ID);
   }
 });
 

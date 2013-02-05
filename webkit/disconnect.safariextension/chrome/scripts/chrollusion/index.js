@@ -30,18 +30,15 @@ function whitelistSite() {
   blacklist = deserialize(localStorage.blacklist);
   blacklist && delete blacklist[domain];
   localStorage.blacklist = JSON.stringify(blacklist);
-  var disconnectRequests =
-      (backgroundPage.REQUEST_COUNTS[tabId] || {}).Disconnect || {};
 
   for (var i = 0; i < SHORTCUT_COUNT; i++) {
     var name = SHORTCUTS[i];
-    var shortcutRequests = disconnectRequests[name];
     var control = $(".shortcut")[i + 1];
     renderShortcut(
       name,
       name.toLowerCase(),
       trackingUnblocked,
-      shortcutRequests ? shortcutRequests.count : 0,
+      0,
       control,
       $(control),
       control.
