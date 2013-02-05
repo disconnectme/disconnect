@@ -220,18 +220,15 @@ function incrementCounter(tabId, service, blocked, popup) {
           (CATEGORY_REQUESTS[SERVICE] = {url: service.url, count: 0});
   const SERVICE_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
-
-  setTimeout(function() {
-    if (popup)
-        if (CATEGORY == 'Disconnect')
-            popup.updateShortcut(SERVICE, SERVICE_COUNT);
-        else {
-          var categoryCount = 0;
-          for (var name in CATEGORY_REQUESTS)
-              categoryCount += CATEGORY_REQUESTS[name].count;
-          popup.updateCategory(CATEGORY, categoryCount, SERVICE, SERVICE_COUNT);
-        }
-  }, (SERVICE_COUNT - 1) * 50);
+  if (popup)
+      if (CATEGORY == 'Disconnect')
+          popup.updateShortcut(SERVICE, SERVICE_COUNT);
+      else {
+        var categoryCount = 0;
+        for (var name in CATEGORY_REQUESTS)
+            categoryCount += CATEGORY_REQUESTS[name].count;
+        popup.updateCategory(CATEGORY, categoryCount, SERVICE, SERVICE_COUNT);
+      }
 }
 
 /* The current build number. */

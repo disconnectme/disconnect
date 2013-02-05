@@ -46,7 +46,13 @@ function renderShortcut(
 
 /* Refreshes major third-party details. */
 function updateShortcut(name, count) {
-  $($('.shortcut .text')[SHORTCUTS.indexOf(name) + 1]).text(count);
+  const DISCONNECT_LIVE =
+      LIVE_REQUESTS.Disconnect || (LIVE_REQUESTS.Disconnect = {});
+  DISCONNECT_LIVE[name] === undefined && (DISCONNECT_LIVE[name] = 0);
+
+  setTimeout(function() {
+    $($('.shortcut .text')[SHORTCUTS.indexOf(name) + 1]).text(count);
+  }, DISCONNECT_LIVE[name]++ * 50);
 }
 
 /* Outputs minor third-party details as per the blocking state. */
@@ -84,10 +90,18 @@ function renderCategory(
 }
 
 /* Refreshes minor third-party details. */
-function updateCategory(categoryName, categoryCount, service, serviceCount) {
+function updateCategory(
+  categoryName, categoryCount, serviceName, serviceCount
+) {
+  const CATEGORY_LIVE =
+      LIVE_REQUESTS[categoryName] || (LIVE_REQUESTS[categoryName] = {});
+  CATEGORY_LIVE[serviceName] === undefined && (CATEGORY_LIVE[serviceName] = 0);
   const INDEX = CATEGORIES.indexOf(categoryName) + 1;
-  $($('.category .count')[INDEX]).
-    text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
+
+  setTimeout(function() {
+    $($('.category .count')[INDEX]).
+      text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
+  }, CATEGORY_LIVE[serviceName]++ * 50);
 }
 
 /* Picks a random animation path. */
@@ -186,6 +200,9 @@ const FRAME_COUNT = 7;
 
 /* The duration of animation cells. */
 const FRAME_LENGTH = 100;
+
+/* The number of request updates. */
+const LIVE_REQUESTS = {};
 
 /* The active animation sequence. */
 var currentScene = getScene();
