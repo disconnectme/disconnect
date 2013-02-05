@@ -143,11 +143,11 @@ function clearServices(id) {
       });
 
       const CONTROL = $('.services');
-      CONTROL.find('div:visible').slideUp('fast');
-
-      CONTROL.each(function(index) {
-        index && $(this).find('.service').each(function(index) {
-          index && $(this).remove();
+      CONTROL.find('div:visible').slideUp('fast', function() {
+        CONTROL.each(function(index) {
+          index && $(this).find('.service').each(function(index) {
+            index && $(this).remove();
+          });
         });
       });
     }
