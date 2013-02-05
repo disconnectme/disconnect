@@ -190,7 +190,10 @@ function updateCounter(tabId, count, deactivated) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId, color: [93, 93, 93, 255]
     });
-    BROWSER_ACTION.setBadgeText({tabId: tabId, text: (count || '') + ''});
+
+    setTimeout(function() {
+      BROWSER_ACTION.setBadgeText({tabId: tabId, text: (count || '') + ''});
+    }, count * 50);
   }
 }
 
