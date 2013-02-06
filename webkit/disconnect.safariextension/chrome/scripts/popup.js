@@ -122,17 +122,17 @@ function updateCategory(
               text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
         else {
           serviceControl = serviceTemplate.clone(true);
-          var checkbox = serviceControl.find(INPUT)[0];
+          const CHECKBOX = serviceControl.find(INPUT)[0];
           const CATEGORY_WHITELIST =
               ((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] ||
                   {})[categoryName] || {};
-          checkbox.checked =
+          CHECKBOX.checked =
               !CATEGORY_WHITELIST.whitelisted &&
                   !(CATEGORY_WHITELIST.services || {})[serviceName] ||
                       (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
                           {})[categoryName] || {})[serviceName];
 
-          checkbox.onclick = function(categoryName, serviceName) {
+          CHECKBOX.onclick = function(categoryName, serviceName) {
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
@@ -156,10 +156,10 @@ function updateCategory(
             TABS.reload(ID);
           }.bind(null, categoryName, serviceName);
 
-          var link = serviceControl.find('a')[0];
-          link.title += serviceName;
-          link.href = serviceUrl;
-          $(link).text(serviceName);
+          const LINK = serviceControl.find('a')[0];
+          LINK.title += serviceName;
+          LINK.href = serviceUrl;
+          $(LINK).text(serviceName);
           serviceControl.
             find('.text').
             text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
