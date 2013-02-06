@@ -30,45 +30,6 @@ function whitelistSite() {
   blacklist = deserialize(localStorage.blacklist);
   blacklist && delete blacklist[domain];
   localStorage.blacklist = JSON.stringify(blacklist);
-
-  for (var i = 0; i < SHORTCUT_COUNT; i++) {
-    var name = SHORTCUTS[i];
-    var control = $(".shortcut")[i + 1];
-    renderShortcut(
-      name,
-      name.toLowerCase(),
-      trackingUnblocked,
-      0,
-      control,
-      $(control),
-      control.
-        getElementsByClassName("badge")[0].
-        getElementsByTagName("img")[0],
-      control.getElementsByClassName("text")[0]
-    );
-  }
-
-  for (i = 0; i < CATEGORY_COUNT; i++) {
-    var name = CATEGORIES[i];
-    var control = $(".category")[i + 1];
-    var wrappedControl = $(control);
-    var wrappedBadge = wrappedControl.find(".badge");
-    var wrappedText = wrappedControl.find(".text");
-    renderCategory(
-      name,
-      name.toLowerCase(),
-      trackingUnblocked,
-      0,
-      control,
-      wrappedControl,
-      wrappedBadge[0],
-      wrappedBadge.find("img")[0],
-      wrappedText[0],
-      wrappedText.find(".name"),
-      wrappedText.find(".count")
-    );
-  }
-
   tabApi.reload(tabId);
   return trackingUnblocked;
 }

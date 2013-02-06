@@ -136,11 +136,46 @@ function updateCategory(
 function clearServices(id) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     if (id == tabs[0].id) {
-      $('.shortcut .text').each(function(index) { index && $(this).text(0); });
+      whitelist = deserialize(localStorage.whitelist) || {};
+      siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
 
-      $('.category .count').each(function(index) {
-        index && $(this).text(0 + REQUEST + 's');
-      });
+      for (var i = 0; i < SHORTCUT_COUNT; i++) {
+        var name = SHORTCUTS[i];
+        var control = $('.shortcut')[i + 1];
+        renderShortcut(
+          name,
+          name.toLowerCase(),
+          !((siteWhitelist.Disconnect || {}).services || {})[name],
+          0,
+          control,
+          $(control),
+          control.
+            getElementsByClassName('badge')[0].
+            getElementsByTagName('img')[0],
+          control.getElementsByClassName('text')[0]
+        );
+      }
+
+      for (i = 0; i < CATEGORY_COUNT; i++) {
+        var name = CATEGORIES[i];
+        var control = $('.category')[i + 1];
+        var wrappedControl = $(control);
+        var wrappedBadge = wrappedControl.find('.badge');
+        var wrappedText = wrappedControl.find('.text');
+        renderCategory(
+          name,
+          name.toLowerCase(),
+          !(siteWhitelist[name] || {}).whitelisted,
+          0,
+          control,
+          wrappedControl,
+          wrappedBadge[0],
+          wrappedBadge.find('img')[0],
+          wrappedText[0],
+          wrappedText.find('.name'),
+          wrappedText.find('.count')
+        );
+      }
 
       const CONTROL = $('.services');
       CONTROL.find('div:visible').slideUp('fast', function() {
@@ -538,7 +573,7 @@ var currentScene = getScene();
 
       $('#' + STANDARD).fadeOut('fast', function() {
         activeServices.hide();
-        $(".live-data").show();
+        $('.live-data').show();
         renderGraph();
         $('#' + GRAPH).fadeIn('slow');
       });
