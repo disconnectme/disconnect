@@ -98,7 +98,11 @@ function updateCategory(
   id, categoryName, categoryCount, serviceName, serviceUrl, serviceCount
 ) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
-    if (id == tabs[0].id) {
+    const TAB = tabs[0];
+    const DOMAIN = domain = GET(TAB.url);
+    const ID = tabId = TAB.id;
+
+    if (id == ID) {
       const CATEGORY_LIVE =
           LIVE_REQUESTS[categoryName] || (LIVE_REQUESTS[categoryName] = {});
       CATEGORY_LIVE[serviceName] === undefined &&
@@ -118,6 +122,40 @@ function updateCategory(
               text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
         else {
           serviceControl = serviceTemplate.clone(true);
+          var checkbox = serviceControl.find(INPUT)[0];
+          const CATEGORY_WHITELIST =
+              ((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] ||
+                  {})[categoryName] || {};
+          checkbox.checked =
+              !CATEGORY_WHITELIST.whitelisted &&
+                  !(CATEGORY_WHITELIST.services || {})[serviceName] ||
+                      (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
+                          {})[categoryName] || {})[serviceName];
+
+          checkbox.onclick = function(categoryName, serviceName) {
+            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const SITE_WHITELIST =
+                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            const LOCAL_CATEGORY_WHITELIST =
+                SITE_WHITELIST[categoryName] ||
+                    (SITE_WHITELIST[categoryName] =
+                        {whitelisted: false, services: {}});
+            const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
+            const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+            const SITE_BLACKLIST =
+                BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+            const CATEGORY_BLACKLIST =
+                SITE_BLACKLIST[categoryName] ||
+                    (SITE_BLACKLIST[categoryName] = {});
+            this.checked =
+                SERVICE_WHITELIST[serviceName] =
+                    !(CATEGORY_BLACKLIST[serviceName] =
+                        SERVICE_WHITELIST[serviceName]);
+            localStorage.whitelist = JSON.stringify(WHITELIST);
+            localStorage.blacklist = JSON.stringify(BLACKLIST);
+            TABS.reload(ID);
+          }.bind(null, categoryName, serviceName);
+
           var link = serviceControl.find('a')[0];
           link.title += serviceName;
           link.href = serviceUrl;
