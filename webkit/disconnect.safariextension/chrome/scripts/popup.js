@@ -178,13 +178,15 @@ function clearServices(id) {
       }
 
       const CONTROL = $('.services');
-      CONTROL.find('div:visible').slideUp('fast', function() {
+      CONTROL.find('div:visible').slideUp('fast');
+
+      setTimeout(function() {
         CONTROL.each(function(index) {
           index && $(this).find('.service').each(function(index) {
             index && $(this).remove();
           });
         });
-      });
+      }, 200);
     }
   });
 }
