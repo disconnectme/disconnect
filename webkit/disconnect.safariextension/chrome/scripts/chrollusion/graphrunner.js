@@ -60,14 +60,20 @@ var GraphRunner = (function(jQuery, d3) {
     vis.append("svg:text").attr("id", "domain-label-text");
 
     /* Determines whether a domains is blacklisted. */
-    function isBlocked(trackerInfo) {
+    function isBlocked(host, trackerInfo) {
       trackerInfo = trackerInfo || {};
+      var childService = getService(host);
+      var parentService = getService(domain);
       var category = trackerInfo.category || null;
       var categoryWhitelist = siteWhitelist[category] || {};
       var name = trackerInfo.name || null;
-      return !categoryWhitelist.whitelisted &&
-          !(categoryWhitelist.services || {})[name] ||
-              (siteBlacklist[category] || {})[name];
+      return !(
+        childService && parentService && childService.name == parentService.name
+      ) && (
+        !categoryWhitelist.whitelisted &&
+            !(categoryWhitelist.services || {})[name] ||
+                (siteBlacklist[category] || {})[name]
+      );
     }
 
     /* Makes a would-be selector CSS safe. */
@@ -82,10 +88,15 @@ var GraphRunner = (function(jQuery, d3) {
       target.attr("href", "http://" + d.name);
       target.removeClass("tracker").removeClass("site");
       var trackerInfo = d.trackerInfo;
-      if (trackerInfo) {
+      var host = d.host;
+      var childService = getService(host);
+      var parentService = getService(domain);
+      if (trackerInfo && !(
+        childService && parentService && childService.name == parentService.name
+      )) {
         target.addClass("tracker");
 
-        if (isBlocked(trackerInfo))
+        if (isBlocked(host, trackerInfo))
           target.addClass("blocked");
       } else {
         target.addClass("site");
@@ -107,13 +118,17 @@ var GraphRunner = (function(jQuery, d3) {
         info.addClass(className);
         info.find("a.domain").text(d.name);
         var img = $('<img>');
-        if (trackerInfo)
+        var childService = getService(d.host);
+        var parentService = getService(domain);
+        if (trackerInfo && !(
+          childService && parentService && childService.name == parentService.name
+        ))
           info.find("h2.domain").addClass("tracker");
         var attribute = "src";
         var faviconName = "favicon";
         img.attr(attribute, "../images/chrollusion/favicon.png")
            .addClass(faviconName + " " + harden(d.name));
-        if (!trackerInfo || !isBlocked(trackerInfo))
+        if (!trackerInfo || !isBlocked(d.host, trackerInfo))
           favicon.get(d.host, function(url) {
             setFavicon(faviconName, d.name, attribute, url);
           });
@@ -123,7 +138,7 @@ var GraphRunner = (function(jQuery, d3) {
         $("#domain-infos").append(info);
       }
       else {
-        if (!isBlocked(trackerInfo))
+        if (!isBlocked(d.host, trackerInfo))
           info.find("h2.domain:first > a.tracker.blocked").removeClass("blocked");
         else
           info.find("h2.domain:first > a.tracker").addClass("blocked");
@@ -194,7 +209,11 @@ var GraphRunner = (function(jQuery, d3) {
         if (d.wasVisited) {
           return "visited";
         }
-        if (d.trackerInfo) {
+        var childService = getService(d.host);
+        var parentService = getService(domain);
+        if (d.trackerInfo && !(
+          childService && parentService && childService.name == parentService.name
+        )) {
           return "tracker";
         } else {
           return "site";
@@ -283,7 +302,7 @@ var GraphRunner = (function(jQuery, d3) {
               var domain = d.name;
               var className = domain.replace(/\./g, '-dot-');
               var header = $("#domain-infos ." + className + " h2.domain:first > a.tracker");
-              var blocked = isBlocked(trackerInfo);
+              var blocked = isBlocked(d.host, trackerInfo);
               var category = trackerInfo.category;
               var categoryWhitelist =
                   siteWhitelist[category] || (
@@ -336,7 +355,7 @@ var GraphRunner = (function(jQuery, d3) {
           .attr("class", function(d) {
             var trackerInfo = d.trackerInfo;
             var className = "node";
-            if (!trackerInfo || !isBlocked(trackerInfo))
+            if (!trackerInfo || !isBlocked(d.host, trackerInfo))
               favicon.get(d.host, function(url) {
                 setFavicon(className, d.name, "href", url);
               });
@@ -360,7 +379,7 @@ var GraphRunner = (function(jQuery, d3) {
         })
         .classed("hidden", function(d) {
           var trackerInfo = d.trackerInfo;
-          return (d.wasVisited || !trackerInfo || !isBlocked(trackerInfo));
+          return (d.wasVisited || !trackerInfo || !isBlocked(d.host, trackerInfo));
         });
 
       return node;
@@ -449,7 +468,7 @@ var GraphRunner = (function(jQuery, d3) {
           nodes.push({
             name: name,
             host: domain.host,
-            trackerInfo: backgroundPage.getService(name)
+            trackerInfo: getService(name)
           });
         }
         return domainIds[name];

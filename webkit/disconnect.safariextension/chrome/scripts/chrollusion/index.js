@@ -46,6 +46,7 @@ var whitelist;
 var domain;
 var tabId;
 var siteWhitelist;
+var getService = backgroundPage.getService;
 var graph;
 var addon = CollusionAddon;
 var sitesHidden = deserialize(localStorage.sitesHidden);
