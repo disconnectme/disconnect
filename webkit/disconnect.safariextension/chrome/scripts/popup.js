@@ -252,11 +252,11 @@ function animate(icon, callback) {
 
 /* Restricts the animation to 1x per mouseover. */
 function handleHover() {
-  const ELEMENT = $(this);
-  ELEMENT.off('mouseenter');
+  const TARGET = $('.' + this.className.split(' ', 1));
+  TARGET.off('mouseenter');
 
-  animate(ELEMENT.find('img')[0], function() {
-    ELEMENT.mouseenter(handleHover);
+  animate(TARGET.find('img')[0], function() {
+    TARGET.mouseenter(handleHover);
   });
 }
 
@@ -604,9 +604,9 @@ var currentScene = getScene();
       return false;
     };
 
-    $('.whitelist table').click(function() { whitelistSite(); });
+    $('.whitelist').click(function() { whitelistSite(); });
 
-    const VISUALIZATION = $('.visualization table');
+    const VISUALIZATION = $('.visualization');
 
     VISUALIZATION.click(function() {
       localStorage.displayMode = GRAPH;
@@ -622,21 +622,22 @@ var currentScene = getScene();
     const ICON = VISUALIZATION.find('img')[0];
     ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
     ICON.alt = 'Graph';
-
-    const WIFI = $('.wifi ' + INPUT)[0];
-    WIFI.checked = DESERIALIZE(localStorage.browsingHardened);
+    const WIFI = $('.wifi');
+    const WIFIBOX = WIFI.find(INPUT)[0];
+    WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
 
     WIFI.onclick = function() {
-      this.checked =
+      WIFIBOX.checked =
           localStorage.browsingHardened =
               !DESERIALIZE(localStorage.browsingHardened);
     };
 
-    const SEARCH = $('.search ' + INPUT)[0];
-    SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
+    const SEARCH = $('.search');
+    const SEARCHBOX = SEARCH.find(INPUT)[0];
+    SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
 
     SEARCH.onclick = function() {
-      this.checked =
+      SEARCHBOX.checked =
           localStorage.searchHardened =
               !DESERIALIZE(localStorage.searchHardened);
     };

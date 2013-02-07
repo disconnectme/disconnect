@@ -177,7 +177,7 @@ function renderGraph() {
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
-          var visualization = $(".visualization table");
+          var visualization = $(".visualization");
           visualization.off("mouseenter");
 
           $("#standard").fadeIn(function() {
