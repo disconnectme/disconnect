@@ -148,8 +148,29 @@ td { padding: 0 }
 
 .service input {
   margin-left: 0;
+  -webkit-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
   width: 10px;
   height: 10px
+}
+
+.service input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+.service input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+.service input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
 }
 
 .service a {
@@ -186,9 +207,29 @@ td { padding: 0 }
 }
 
 #options input {
-  margin-left: 0;
-  width: 10px;
-  height: 10px
+  -webkit-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+#options input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+#options input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+#options input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
 }
 
 #options .search { text-align: right }
