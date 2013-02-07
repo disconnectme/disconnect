@@ -160,6 +160,10 @@ function renderGraph() {
           toggleClass("invisible").
           text((trackingUnblocked ? "Unblock" : "Block") + " tracking sites");
         d3.selectAll("line.tracker").classed("hidden", !trackingUnblocked);
+        $(".whitelisting img")[0].alt =
+            trackingUnblocked ? "Whitelist" : "Blacklist";
+        $(".whitelisting.text").
+          text((trackingUnblocked ? "Whitelist" : "Blacklist") + " site");
       });
 
       $("#disable-wifi").click(function() {

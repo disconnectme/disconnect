@@ -593,6 +593,37 @@ var currentScene = getScene();
         CATEGORY_SURFACE.append(categoryControls);
       }
 
+      const SERVICE_WHITELIST =
+          (SITE_WHITELIST.Disconnect || {}).services || {};
+      const WHITELISTING = $('.whitelisting');
+      const WHITELISTING_ICON = WHITELISTING.find('img')[0];
+      const WHITELISTING_TEXT = WHITELISTING.filter('.text');
+
+      if (
+        SERVICE_WHITELIST.Facebook && SERVICE_WHITELIST.Google &&
+            SERVICE_WHITELIST.Twitter &&
+                (SITE_WHITELIST.Advertising || {}).whitelisted &&
+                    (SITE_WHITELIST.Analytics || {}).whitelisted &&
+                        (SITE_WHITELIST.Content || {}).whitelisted &&
+                            (SITE_WHITELIST.Social || {}).whitelisted
+      ) {
+        WHITELISTING_ICON.alt = 'Blacklist';
+        WHITELISTING_TEXT.text('Blacklist site');
+      } else {
+        WHITELISTING_ICON.alt = 'Whitelist';
+        WHITELISTING_TEXT.text('Whitelist site');
+      }
+
+      WHITELISTING.click(function() {
+        if (whitelistSite()) {
+          WHITELISTING_ICON.alt = 'Whitelist';
+          WHITELISTING_TEXT.text('Whitelist site');
+        } else {
+          WHITELISTING_ICON.alt = 'Blacklist';
+          WHITELISTING_TEXT.text('Blacklist site');
+        }
+      });
+
       $('html').add(BODY).height($(window).height());
     });
 
@@ -603,8 +634,6 @@ var currentScene = getScene();
       TABS.create({url: this.getAttribute('href')});
       return false;
     };
-
-    $('.whitelist').click(function() { whitelistSite(); });
 
     const VISUALIZATION = $('.visualization');
 
