@@ -41,9 +41,9 @@ function renderShortcut(
     badge.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
   }
 
-  wrappedControl.mouseenter(function() {
+  wrappedControl.off('mouseenter').mouseenter(function() {
     badge.src = badge.src.replace('.', HIGHLIGHTED);
-  }).mouseleave(function() {
+  }).off('mouseleave').mouseleave(function() {
     badge.src = badge.src.replace(HIGHLIGHTED, '.');
   });
 
