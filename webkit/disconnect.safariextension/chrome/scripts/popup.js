@@ -41,6 +41,12 @@ function renderShortcut(
     badge.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
   }
 
+  wrappedControl.mouseenter(function() {
+    badge.src = badge.src.replace('.', HIGHLIGHTED);
+  }).mouseleave(function() {
+    badge.src = badge.src.replace(HIGHLIGHTED, '.');
+  });
+
   text.textContent = requestCount;
 }
 
@@ -295,6 +301,9 @@ const GRAPH = 'graph';
 
 /* The deactivated keyword. */
 const DEACTIVATED = 'deactivated';
+
+/* The highlighted keyword. */
+const HIGHLIGHTED = '-highlighted.';
 
 /* The recommended keyword. */
 const RECOMMENDED = 'recommended';

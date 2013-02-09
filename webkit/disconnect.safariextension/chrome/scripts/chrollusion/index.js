@@ -150,7 +150,7 @@ function renderGraph() {
         $("#show-sidebar").show();
         $("#chart").addClass("fullscreen");
       } else {
-        $("#sidebar, #domain-infos").show();
+        $("#sidebar").show();
         $("#chart").removeClass("fullscreen");
       }
 
@@ -195,7 +195,7 @@ function renderGraph() {
       $("#hide-sidebar").click(function() {
         sidebarCollapsed = localStorage.sidebarCollapsed = 3;
 
-        $("#sidebar, #domain-infos, #show-instructions").slideUp(function() {
+        $("#sidebar").slideUp(function() {
           $("#chart svg").remove();
 
           setTimeout(function() { $("#show-sidebar").slideDown(100); }, 400);
@@ -216,7 +216,7 @@ function renderGraph() {
 
         $("#show-sidebar").slideUp(100, function() {
           $("#chart svg").remove();
-          $("#sidebar, #domain-infos, #show-instructions").slideDown();
+          $("#sidebar, .live-data, #show-instructions").slideDown();
           $("#chart").removeClass("fullscreen");
           renderGraph();
         });
