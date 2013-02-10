@@ -256,12 +256,12 @@ function animateAction(action, button, name) {
 
   setTimeout(function() {
     button.src =
-        button.src.replace(COLLAPSED ? EXPAND : COLLAPSE, LIMBO);
+        button.src.replace(COLLAPSED ? EXPAND : COLLAPSE, TRANSITION);
   }, FRAME_LENGTH);
 
   setTimeout(function() {
     button.src =
-        button.src.replace(LIMBO, COLLAPSED ? COLLAPSE : EXPAND);
+        button.src.replace(TRANSITION, COLLAPSED ? COLLAPSE : EXPAND);
   }, 2 * FRAME_LENGTH);
 }
 
@@ -338,8 +338,8 @@ const HIGHLIGHTED = '-highlighted.';
 /* The expand keyword. */
 const EXPAND = 'expand';
 
-/* The limbo keyword. */
-const LIMBO = 'limbo';
+/* The transition keyword. */
+const TRANSITION = 'transition';
 
 /* The collapse keyword. */
 const COLLAPSE = 'collapse';
