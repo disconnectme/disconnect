@@ -98,7 +98,7 @@ td { padding: 0 }
 
 .category:first-child { display: none }
 
-.category:hover { background: #e8e8e8 }
+.category:hover { background: gainsboro }
 
 .category .badge {
   padding-right: 8px;

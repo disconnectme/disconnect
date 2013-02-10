@@ -221,6 +221,13 @@ function clearServices(id) {
         );
       }
 
+      const BUTTON = $('.category .action img[src*=' + COLLAPSE + ']');
+      const ACTION = BUTTON.parent();
+      animateAction(
+        ACTION[0],
+        BUTTON[0],
+        ACTION.prev().find('.name').text().toLowerCase()
+      );
       const CONTROL = $('.services');
       CONTROL.find('div:visible').slideUp('fast');
 
