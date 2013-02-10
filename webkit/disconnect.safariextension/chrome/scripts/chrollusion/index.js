@@ -29,7 +29,7 @@ function whitelistSite() {
   localStorage.whitelist = JSON.stringify(whitelist);
   blacklist = deserialize(localStorage.blacklist);
   blacklist && delete blacklist[domain];
-  localStorage.blacklist = JSON.stringify(blacklist);
+  localStorage.blacklist = JSON.stringify(blacklist || {});
   tabApi.reload(tabId);
   return trackingUnblocked;
 }

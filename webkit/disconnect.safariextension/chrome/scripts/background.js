@@ -249,6 +249,9 @@ const DOMAINS = {};
 /* The whitelisted services per domain name. */
 const WHITELIST = deserialize(localStorage.whitelist) || {};
 
+/* The blacklisted services per domain name. */
+const BLACKLIST = deserialize(localStorage.blacklist) || {};
+
 /* The previous requested URL of the tabs. */
 const REQUESTS = {};
 
@@ -348,6 +351,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   }
 
   localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
+  localStorage.blacklist = JSON.stringify(BLACKLIST);
   localStorage.displayMode = 'list';
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
