@@ -734,7 +734,7 @@ var currentScene = getScene();
               !DESERIALIZE(localStorage.searchHardened);
     };
 
-    const DISPLAY_MODE = localStorage.displayMode;
+    const DISPLAY_MODE = localStorage.displayMode || LIST;
     DISPLAY_MODE == GRAPH && renderGraph();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
