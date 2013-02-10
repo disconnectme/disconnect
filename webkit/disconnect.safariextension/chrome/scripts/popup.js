@@ -235,13 +235,28 @@ function clearServices(id) {
   });
 }
 
+/* Plays an expanding or collapsing animation. */
+function animateAction(button) {
+  const COLLAPSED = button.src.indexOf(EXPAND) + 1;
+
+  setTimeout(function() {
+    button.src =
+        button.src.replace(COLLAPSED ? EXPAND : COLLAPSE, LIMBO);
+  }, FRAME_LENGTH);
+
+  setTimeout(function() {
+    button.src =
+        button.src.replace(LIMBO, COLLAPSED ? COLLAPSE : EXPAND);
+  }, 2 * FRAME_LENGTH);
+}
+
 /* Picks a random animation path. */
 function getScene() {
   return SCENES.splice(Math.floor(Math.random() * SCENES.length), 1)[0];
 }
 
-/* Plays a random animation. */
-function animate(icon, callback) {
+/* Plays a random visualization animation. */
+function animateVisualization(icon, callback) {
   for (var i = 0; i < FRAME_COUNT - 1; i++)
       setTimeout(function(scene, index) {
         icon.src = IMAGES + scene + '/' + (index + 2) + EXTENSION;
@@ -261,7 +276,7 @@ function handleHover() {
   const TARGET = $('.' + this.className.split(' ', 1));
   TARGET.off('mouseenter');
 
-  animate(TARGET.find('img')[0], function() {
+  animateVisualization(TARGET.find('img')[0], function() {
     TARGET.mouseenter(handleHover);
   });
 }
@@ -304,6 +319,15 @@ const DEACTIVATED = 'deactivated';
 
 /* The highlighted keyword. */
 const HIGHLIGHTED = '-highlighted.';
+
+/* The expand keyword. */
+const EXPAND = 'expand';
+
+/* The limbo keyword. */
+const LIMBO = 'limbo';
+
+/* The collapse keyword. */
+const COLLAPSE = 'collapse';
 
 /* The recommended keyword. */
 const RECOMMENDED = 'recommended';
@@ -589,20 +613,32 @@ var currentScene = getScene();
 
         var action = wrappedCategoryControl.find('.action');
         action[0].title += lowercaseName;
-        var expand = action.find('img')[0];
+        var button = action.find('img')[0];
 
-        action.mouseenter(function(expand) {
-          expand.src = expand.src.replace('.', HIGHLIGHTED);
-        }.bind(null, expand)).mouseleave(function(expand) {
-          expand.src = expand.src.replace(HIGHLIGHTED, '.');
-        }.bind(null, expand)).click(function(serviceContainer) {
+        action.mouseenter(function(button) {
+          button.src = button.src.replace('.', HIGHLIGHTED);
+        }.bind(null, button)).mouseleave(function(button) {
+          button.src = button.src.replace(HIGHLIGHTED, '.');
+        }.bind(null, button)).click(function(serviceContainer, button) {
           const EXPANDED_SERVICES = activeServices.filter(':visible');
-          if (EXPANDED_SERVICES.length && serviceContainer != activeServices)
-              EXPANDED_SERVICES.slideUp('fast', function() {
-                activeServices = serviceContainer.slideToggle('fast');
-              });
-          else activeServices = serviceContainer.slideToggle('fast');
-        }.bind(null, serviceContainer));
+          if (EXPANDED_SERVICES.length && serviceContainer != activeServices) {
+            animateAction(
+              EXPANDED_SERVICES.
+                parent().
+                parent().
+                prev().
+                prev().
+                find('.action img')[0]
+            );
+            EXPANDED_SERVICES.slideUp('fast', function() {
+              animateAction(button);
+              activeServices = serviceContainer.slideToggle('fast');
+            });
+          } else {
+            animateAction(button);
+            activeServices = serviceContainer.slideToggle('fast');
+          }
+        }.bind(null, serviceContainer, button));
 
         CATEGORY_SURFACE.append(categoryControls);
       }
@@ -689,7 +725,7 @@ var currentScene = getScene();
     DISPLAY_MODE == GRAPH && renderGraph();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
-      DISPLAY_MODE == STANDARD && animate(ICON, function() {
+      DISPLAY_MODE == STANDARD && animateVisualization(ICON, function() {
         VISUALIZATION.mouseenter(handleHover);
       });
     });
