@@ -185,7 +185,7 @@ function renderGraph() {
           visualization.off("mouseenter");
 
           $("#standard").fadeIn(function() {
-            animate(visualization.find("img")[0], function() {
+            animateVisualization(visualization.find("img")[0], function() {
               visualization.mouseenter(handleHover);
             });
           });
