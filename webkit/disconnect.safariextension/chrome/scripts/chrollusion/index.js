@@ -177,14 +177,14 @@ function renderGraph() {
       });
 
       $("#show-list").click(function() {
-        localStorage.displayMode = "standard";
+        localStorage.displayMode = "list";
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
           var visualization = $(".visualization");
           visualization.off("mouseenter");
 
-          $("#standard").fadeIn(function() {
+          $("#list").fadeIn(function() {
             animateVisualization(visualization.find("img")[0], function() {
               visualization.mouseenter(handleHover);
             });

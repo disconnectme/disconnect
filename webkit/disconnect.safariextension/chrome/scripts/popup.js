@@ -316,8 +316,8 @@ const TABS = BACKGROUND.TABS;
 /* The content key. */
 const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
 
-/* The standard keyword. */
-const STANDARD = 'standard';
+/* The list keyword. */
+const LIST = 'list';
 
 /* The graph keyword. */
 const GRAPH = 'graph';
@@ -703,7 +703,7 @@ var currentScene = getScene();
     VISUALIZATION.click(function() {
       localStorage.displayMode = GRAPH;
 
-      $('#' + STANDARD).fadeOut('fast', function() {
+      $('#' + LIST).fadeOut('fast', function() {
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
@@ -738,7 +738,7 @@ var currentScene = getScene();
     DISPLAY_MODE == GRAPH && renderGraph();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
-      DISPLAY_MODE == STANDARD && animateVisualization(ICON, function() {
+      DISPLAY_MODE == LIST && animateVisualization(ICON, function() {
         VISUALIZATION.mouseenter(handleHover);
       });
     });

@@ -348,7 +348,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   }
 
   localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
-  localStorage.displayMode = 'standard';
+  localStorage.displayMode = 'list';
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
   localStorage.build = CURRENT_BUILD;
