@@ -236,8 +236,16 @@ function clearServices(id) {
 }
 
 /* Plays an expanding or collapsing animation. */
-function animateAction(button) {
+function animateAction(action, button, name) {
   const COLLAPSED = button.src.indexOf(EXPAND) + 1;
+
+  if (COLLAPSED) {
+    action.title = 'Collapse ' + name;
+    button.alt = 'Collapse';
+  } else {
+    action.title = 'Expand ' + name;
+    button.alt = 'Expand';
+  }
 
   setTimeout(function() {
     button.src =
@@ -611,34 +619,39 @@ var currentScene = getScene();
           serviceSurface
         ));
 
-        var action = wrappedCategoryControl.find('.action');
-        action[0].title += lowercaseName;
-        var button = action.find('img')[0];
+        var wrappedAction = wrappedCategoryControl.find('.action');
+        var action = wrappedAction[0];
+        action.title = 'Expand ' + lowercaseName;
+        var button = wrappedAction.find('img')[0];
 
-        action.mouseenter(function(button) {
+        wrappedAction.mouseenter(function(button) {
           button.src = button.src.replace('.', HIGHLIGHTED);
         }.bind(null, button)).mouseleave(function(button) {
           button.src = button.src.replace(HIGHLIGHTED, '.');
-        }.bind(null, button)).click(function(serviceContainer, button) {
+        }.bind(null, button)).click(function(
+          serviceContainer, action, button, name
+        ) {
           const EXPANDED_SERVICES = activeServices.filter(':visible');
           if (EXPANDED_SERVICES.length && serviceContainer != activeServices) {
             animateAction(
+              action,
               EXPANDED_SERVICES.
                 parent().
                 parent().
                 prev().
                 prev().
-                find('.action img')[0]
+                find('.action img')[0],
+                name
             );
             EXPANDED_SERVICES.slideUp('fast', function() {
-              animateAction(button);
+              animateAction(action, button, name);
               activeServices = serviceContainer.slideToggle('fast');
             });
           } else {
-            animateAction(button);
+            animateAction(action, button, name);
             activeServices = serviceContainer.slideToggle('fast');
           }
-        }.bind(null, serviceContainer, button));
+        }.bind(null, serviceContainer, action, button, lowercaseName));
 
         CATEGORY_SURFACE.append(categoryControls);
       }
