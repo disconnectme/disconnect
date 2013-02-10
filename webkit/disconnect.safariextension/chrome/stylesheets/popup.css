@@ -98,14 +98,14 @@ td { padding: 0 }
 
 .category:first-child { display: none }
 
-.category:hover { background: gainsboro }
+.category:hover { background: #e8e8e8 }
 
 .category .badge {
   padding-right: 8px;
   padding-left: 3px
 }
 
-.category .text { width: 153px }
+.category .text { width: 130px }
 
 .category .text table {
   border-collapse: separate;
@@ -113,6 +113,11 @@ td { padding: 0 }
 }
 
 .category .count { color: #999 }
+
+.category .action {
+  width: 35px;
+  text-align: center
+}
 
 .border {
   background: gainsboro;

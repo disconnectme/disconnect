@@ -589,8 +589,13 @@ var currentScene = getScene();
 
         var action = wrappedCategoryControl.find('.action');
         action[0].title += lowercaseName;
+        var expand = action.find('img')[0];
 
-        action.click(function(serviceContainer) {
+        action.mouseenter(function(expand) {
+          expand.src = expand.src.replace('.', HIGHLIGHTED);
+        }.bind(null, expand)).mouseleave(function(expand) {
+          expand.src = expand.src.replace(HIGHLIGHTED, '.');
+        }.bind(null, expand)).click(function(serviceContainer) {
           const EXPANDED_SERVICES = activeServices.filter(':visible');
           if (EXPANDED_SERVICES.length && serviceContainer != activeServices)
               EXPANDED_SERVICES.slideUp('fast', function() {
