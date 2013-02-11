@@ -13,15 +13,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.4</string>
+	<string>2.0.5</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>7</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
 		<real>104857600</real>
 		<key>Global Page</key>
-		<string>chrome/markup/background.html</string>
+		<string>background.html</string>
 		<key>Toolbar Items</key>
 		<array>
 			<dict>
