@@ -711,6 +711,14 @@ var currentScene = getScene();
       localStorage.displayMode = GRAPH;
 
       $('#' + LIST).fadeOut('fast', function() {
+        const BUTTON =
+            activeServices.
+              parent().
+              parent().
+              prev().
+              prev().
+              find('.action img')[0];
+        BUTTON.src = BUTTON.src.replace(COLLAPSE, EXPAND);
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
