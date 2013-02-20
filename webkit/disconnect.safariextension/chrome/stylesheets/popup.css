@@ -64,6 +64,14 @@ td { padding: 0 }
 
 #navbar .text a:hover { color: #333 }
 
+#navbar span {
+  margin-left: 10px;
+  color: #999;
+  cursor: default
+}
+
+#navbar .text a:last-child { display: none }
+
 #shortcuts {
   background: #2b2b2b;
   width: 200px;
@@ -231,5 +239,9 @@ td { padding: 0 }
   width: 200px;
   text-align: center
 }
+
+#sharing { display: none }
+
+#sharing a:last-child { margin-left: 10px }
 
 #graph { display: none }

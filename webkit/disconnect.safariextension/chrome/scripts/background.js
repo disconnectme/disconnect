@@ -303,8 +303,11 @@ const IS_INITIALIZED = SITENAME.isInitialized;
 /* The domain getter. */
 const GET = SITENAME.get;
 
-/* The domain initialization. */
-const START_TIME = new Date();
+/* The Shadow Web. */
+const PLAYBACK = [];
+
+/* T-0. */
+var startTime;
 
 if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
@@ -403,7 +406,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   const TAB_ID = details.tabId;
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
-  if (PARENT) DOMAINS[TAB_ID] = CHILD_DOMAIN;
+
+  if (PARENT) {
+    DOMAINS[TAB_ID] = CHILD_DOMAIN;
+    if (!startTime) startTime = new Date();
+  }
+
   const CHILD_SERVICE = getService(CHILD_DOMAIN);
   const PARENT_DOMAIN = DOMAINS[TAB_ID];
   var hardenedUrl;
@@ -487,10 +495,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
   LOG[PARENT_DOMAIN].visited = true;
   const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+  const ELAPSED_TIME = new Date() - startTime;
   if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
       REFERRERS[PARENT_DOMAIN] = {
         host: PARENT_DOMAIN,
-        types: [new Date() - START_TIME]
+        types: [ELAPSED_TIME]
       };
   const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
 
@@ -498,6 +507,14 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const TYPES = PARENT_REFERRERS.types;
     TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
   }
+
+  // For art.
+  PLAYBACK.push({
+    time: ELAPSED_TIME,
+    domain: CHILD_DOMAIN,
+    type: TYPE,
+    tracker: !!(CHILD_SERVICE && CHILD_SERVICE.category != CONTENT_NAME)
+  });
 
   // A live update.
   if (localStorage.displayMode == GRAPH_NAME) {

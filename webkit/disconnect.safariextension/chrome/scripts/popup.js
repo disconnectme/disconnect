@@ -34,11 +34,11 @@ function renderShortcut(
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     control.title = UNBLOCK + name;
-    badge.src = IMAGES + lowercaseName + EXTENSION;
+    badge.src = IMAGES + lowercaseName + '/1' + EXTENSION;
   } else {
     wrappedControl.addClass(DEACTIVATED);
     control.title = BLOCK + name;
-    badge.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
+    badge.src = IMAGES + lowercaseName + '/1-' + DEACTIVATED + EXTENSION;
   }
 
   wrappedControl.off('mouseenter').mouseenter(function() {
@@ -388,6 +388,14 @@ var currentScene = getScene();
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
+    Tipped.create('#navbar span', $('#sharing')[0], {
+      skin: 'tiny',
+      shadow: {color: '#fff', opacity: .1},
+      stem: {spacing: 1},
+      background: {color: '#333', opacity: .9},
+      fadeIn: 400,
+      fadeOut: 400
+    });
     var activeServices = $();
 
     TABS.query({currentWindow: true, active: true}, function(tabs) {
@@ -718,7 +726,7 @@ var currentScene = getScene();
               prev().
               prev().
               find('.action img')[0];
-        BUTTON.src = BUTTON.src.replace(COLLAPSE, EXPAND);
+        if (BUTTON) BUTTON.src = BUTTON.src.replace(COLLAPSE, EXPAND);
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
