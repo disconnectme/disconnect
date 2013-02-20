@@ -391,7 +391,7 @@ var currentScene = getScene();
     Tipped.create('#navbar span', $('#sharing')[0], {
       skin: 'tiny',
       shadow: {color: '#fff', opacity: .1},
-      stem: {spacing: 1},
+      stem: {spacing: -1},
       background: {color: '#333', opacity: .9},
       fadeIn: 400,
       fadeOut: 400

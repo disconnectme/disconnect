@@ -24,7 +24,9 @@ html { height: 304px }
 body {
   margin: 0;
   height: 304px;
-  font-family: Arial, sans-serif;
+  font-family:
+      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
+          sans-serif;
   color: #333;
   -webkit-user-select: none;
   -moz-user-select: none
@@ -36,7 +38,7 @@ body.safari { margin: 0 4px }
 
 table {
   border-collapse: collapse;
-  font-size: x-small
+  font-size: xx-small
 }
 
 #navbar {
@@ -84,6 +86,7 @@ td { padding: 0 }
   margin-right: 7px;
   margin-left: 7px;
   text-align: center;
+  font-size: x-small;
   cursor: pointer
 }
 
@@ -117,7 +120,8 @@ td { padding: 0 }
 
 .category .text table {
   border-collapse: separate;
-  border-spacing: 2px
+  border-spacing: 2px;
+  font-size: x-small
 }
 
 .category .count { color: #999 }
