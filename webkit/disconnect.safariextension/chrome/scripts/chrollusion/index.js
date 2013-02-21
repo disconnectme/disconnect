@@ -176,22 +176,6 @@ function renderGraph() {
         $(".wifi input")[0].checked = wifiDisabled;
       });
 
-      $("#show-list").click(function() {
-        localStorage.displayMode = "list";
-
-        $("#graph").fadeOut(function() {
-          $("#chart svg").remove();
-          var visualization = $(".visualization");
-          visualization.off("mouseenter");
-
-          $("#list").fadeIn(function() {
-            animateVisualization(visualization.find("img")[0], function() {
-              visualization.mouseenter(handleHover);
-            });
-          });
-        });
-      });
-
       $("#hide-sidebar").click(function() {
         sidebarCollapsed = localStorage.sidebarCollapsed = 3;
 
@@ -219,6 +203,22 @@ function renderGraph() {
           $("#sidebar, .live-data, #show-instructions").slideDown();
           $("#chart").removeClass("fullscreen");
           renderGraph();
+        });
+      });
+
+      $("#show-list").click(function() {
+        localStorage.displayMode = "list";
+
+        $("#graph").fadeOut(function() {
+          $("#chart svg").remove();
+          var visualization = $(".visualization");
+          visualization.off("mouseenter");
+
+          $("#list").fadeIn(function() {
+            animateVisualization(visualization.find("img")[0], function() {
+              visualization.mouseenter(handleHover);
+            });
+          });
         });
       });
     }
