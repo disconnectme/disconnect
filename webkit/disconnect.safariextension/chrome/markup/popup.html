@@ -159,9 +159,9 @@
 
     <div id="sidebar-content">
     <div class="live-data">
-      <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that has or would’ve been sent some of your personal info.</p>
+      <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</p>
       <p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</p>
-      <p>Circles in <span class="tracker">red</span> are known tracking sites. Circles in <span class="site">gray</span> aren’t, but may still track you.</p>
+      <p><span class="tracker">Red</span> circles are known tracking sites. <span class="site">Gray</span> circles aren’t but may still track you.</p>
       <p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</p>
     </div> <!-- end of live-data -->
     <div id="domain-infos"></div> <!-- Templates are copied into here -->
@@ -169,7 +169,6 @@
       <ul>
         <li id="unblock-tracking"></li>
         <li id="disable-wifi"></li>
-        <li class="invisible" id="show-list">Show list view</li>
         <li id="hide-sidebar">Hide sidebar</li>
         <li class="invisible" id="show-instructions">Show instructions</li>
       </ul>
@@ -178,6 +177,7 @@
   </div> <!-- End of #sidebar -->
   <div id="chart"></div><!-- The d3 layout graph will go inside this div -->
   <div class="settings-menu collapsed" id="show-sidebar">+</div>
+  <div class="settings-menu collapsed" id="show-list">Show list view</div>
   </div>
   <div id="addon-installation-detected" style="display: none;">
     Collusion add-on detected! Reload this page to see your graph.

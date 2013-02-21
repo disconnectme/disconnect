@@ -49,8 +49,8 @@ line.bold {
 }
 
 #graph {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 9pt;
+  font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 8pt;
   padding: 0;
   background-color: white;
   color: #666666;
@@ -62,7 +62,6 @@ line.bold {
 
 #graph a {
   outline: none;
-  font-size: 9pt;
   color: black;
 }
 
@@ -102,6 +101,8 @@ line.bold {
   pointer-events: auto;
 }
 
+hr { border-width: 1px 0 0 }
+
 blockquote {
   margin-left: 10px;
   font-style: italic;
@@ -130,8 +131,22 @@ h2.domain img.tracker {
   stroke: #d62728;
 }
 
+.live-data .tracker {
+  background: #d62728;
+  padding-right: 1px;
+  padding-left: 1px;
+  color: white;
+}
+
 .site {
   stroke: #7f7f7f;
+}
+
+.live-data .site {
+  background: #7f7f7f;
+  padding-right: 1px;
+  padding-left: 1px;
+  color: white;
 }
 
 .visited {
@@ -144,7 +159,11 @@ h2.domain img.tracker {
 }
 
 .demo span.next:hover, #graph a:hover {
+  margin-right: -1px;
+  margin-left: -1px;
   background: yellow;
+  padding-right: 1px;
+  padding-left: 1px;
   color: black;
 }
 
@@ -157,6 +176,7 @@ h2.domain img.tracker {
 
 #sidebar-content p:first-child, #sidebar-content h2 {
   margin-top: 0;
+  font-size: 8pt;
 }
 #sidebar-content #domain-infos .info a.tracker {
   color: #d62728;
@@ -222,7 +242,6 @@ div.settings-menu.collapsed {
   top: 10px;
   border: 1px solid white;
   text-align: center;
-  font-size: 8pt;
 }
 
 #show-sidebar {
@@ -233,6 +252,19 @@ div.settings-menu.collapsed {
 
 #show-sidebar:hover {
   border-color: black;
+}
+
+#show-list {
+  right: 15px;
+  border-color: white;
+  background: #009548;
+  color: white;
+}
+
+#show-list:hover {
+  border-color: #009548;
+  background: white;
+  color: #009548;
 }
 
 #deployment-info {
@@ -274,7 +306,7 @@ html.deployment-production #deployment-info {
 .share {
   display: inline-block;
   margin-top: 455px;
-  background: url(../../images/chrollusion/share.png);
+  background: url(../images/chrollusion/share.png);
   width: 200px;
   height: 60px;
   cursor: pointer;
@@ -288,14 +320,14 @@ html.deployment-production #deployment-info {
 .close {
   display: inline-block;
   vertical-align: text-top;
-  background: url(../../images/chrollusion/close.png);
+  background: url(../images/chrollusion/close.png);
   width: 12px;
   height: 12px;
   cursor: pointer;
 }
 
 .close:hover {
-  background: url(../../images/chrollusion/close-hover.png);
+  background: url(../images/chrollusion/close-hover.png);
 }
 
 .dashlane {
