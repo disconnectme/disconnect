@@ -131,22 +131,8 @@ h2.domain img.tracker {
   stroke: #d62728;
 }
 
-.live-data .tracker {
-  background: #d62728;
-  padding-right: 1px;
-  padding-left: 1px;
-  color: white;
-}
-
 .site {
   stroke: #7f7f7f;
-}
-
-.live-data .site {
-  background: #7f7f7f;
-  padding-right: 1px;
-  padding-left: 1px;
-  color: white;
 }
 
 .visited {
@@ -258,6 +244,7 @@ div.settings-menu.collapsed {
   right: 15px;
   border-color: white;
   background: #009548;
+  width: 170px;
   color: white;
 }
 
