@@ -49,7 +49,7 @@ line.bold {
 }
 
 #graph {
-  font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: ProximaNova-Regular, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 8pt;
   padding: 0;
   background-color: white;
@@ -293,7 +293,7 @@ html.deployment-production #deployment-info {
 .share {
   display: inline-block;
   margin-top: 455px;
-  background: url(../images/chrollusion/share.png);
+  background: url(../../images/chrollusion/share.png);
   width: 200px;
   height: 60px;
   cursor: pointer;
@@ -307,14 +307,14 @@ html.deployment-production #deployment-info {
 .close {
   display: inline-block;
   vertical-align: text-top;
-  background: url(../images/chrollusion/close.png);
+  background: url(../../images/chrollusion/close.png);
   width: 12px;
   height: 12px;
   cursor: pointer;
 }
 
 .close:hover {
-  background: url(../images/chrollusion/close-hover.png);
+  background: url(../../images/chrollusion/close-hover.png);
 }
 
 .dashlane {
