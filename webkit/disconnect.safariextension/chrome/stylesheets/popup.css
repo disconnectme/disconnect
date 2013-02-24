@@ -241,8 +241,17 @@ td { padding: 0 }
   border-top: thin solid gainsboro;
   background: #f3f3f3;
   width: 200px;
-  text-align: center
+  cursor: default
 }
+
+#dashboard table {
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  font-size: 8px
+}
+
+#dashboard .label { width: 66px }
 
 #sharing { display: none }
 

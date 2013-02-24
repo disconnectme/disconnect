@@ -757,6 +757,82 @@ var currentScene = getScene();
               !DESERIALIZE(localStorage.searchHardened);
     };
 
+    const DASHBOARD =
+        d3.
+          select('#data').
+          append('svg:svg').
+          attr('width', 198).
+          attr('height', 40);
+    DASHBOARD.
+      append('svg:line').
+      attr('x1', 3).
+      attr('y1', 0).
+      attr('x2', 3).
+      attr('y2', 39).
+      attr('stroke', '#333');
+    DASHBOARD.
+      append('svg:line').
+      attr('x1', 4).
+      attr('y1', 0).
+      attr('x2', 4).
+      attr('y2', 38).
+      attr('stroke', '#f3f3f3');
+    DASHBOARD.
+      append('svg:line').
+      attr('x1', 4).
+      attr('y1', 39).
+      attr('x2', 196).
+      attr('y2', 39).
+      attr('stroke', '#333');
+    DASHBOARD.
+      append('svg:line').
+      attr('x1', 4).
+      attr('y1', 40).
+      attr('x2', 196).
+      attr('y2', 40).
+      attr('stroke', '#f3f3f3');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 28).
+      attr('y', 0).
+      attr('width', 10).
+      attr('height', 38).
+      attr('fill', '#ff7f00');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 29).
+      attr('y', 11).
+      attr('width', 8).
+      attr('height', 27).
+      attr('fill', '#ffbf3f');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 94).
+      attr('y', 0).
+      attr('width', 10).
+      attr('height', 38).
+      attr('fill', '#007f3f');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 95).
+      attr('y', 11).
+      attr('width', 8).
+      attr('height', 27).
+      attr('fill', '#00bf3f');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 160).
+      attr('y', 0).
+      attr('width', 10).
+      attr('height', 38).
+      attr('fill', '#007fff');
+    DASHBOARD.
+      append('svg:rect').
+      attr('x', 161).
+      attr('y', 11).
+      attr('width', 8).
+      attr('height', 27).
+      attr('fill', '#00bfff');
     const DISPLAY_MODE = localStorage.displayMode || LIST;
     DISPLAY_MODE == GRAPH && renderGraph();
 
