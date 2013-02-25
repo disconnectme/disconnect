@@ -244,7 +244,9 @@ function incrementCounter(tabId, service, blocked, popup) {
 
     BLOCKED_COUNT && setTimeout(function() {
       popup.renderBlockedRequest(
-        Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT), TOTAL_COUNT
+        tabId,
+        Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+        TOTAL_COUNT
       );
     }, TIMEOUT);
 
@@ -252,7 +254,9 @@ function incrementCounter(tabId, service, blocked, popup) {
 
     SECURED_COUNT && setTimeout(function() {
       popup.renderSecuredRequest(
-        Math.min(SECURED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT), TOTAL_COUNT
+        tabId,
+        Math.min(SECURED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+        TOTAL_COUNT
       );
     }, TIMEOUT);
   }

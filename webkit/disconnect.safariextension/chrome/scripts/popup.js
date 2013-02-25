@@ -287,54 +287,59 @@ function animateVisualization(icon, callback) {
 }
 
 /* Outputs a blocked request. */
-function renderBlockedRequest(blockedCount, totalCount) {
-  d3.select('#speed').remove();
-  const HEIGHT = Math.round((blockedCount / totalCount || 0) * 36);
-  const Y = 38 - HEIGHT;
-  dashboard.
-    append('svg:rect').
-    attr('id', 'speed').
-    attr('x', 29).
-    attr('y', Y).
-    attr('width', 8).
-    attr('height', HEIGHT).
-    attr('fill', '#ffbf3f');
-  d3.select('#privacy').remove();
-  dashboard.
-    append('svg:rect').
-    attr('id', 'privacy').
-    attr('x', 95).
-    attr('y', Y).
-    attr('width', 8).
-    attr('height', HEIGHT).
-    attr('fill', '#00bf3f');
+function renderBlockedRequest(id, blockedCount, totalCount) {
+  if (id == tabId) {
+    d3.select('#speed').remove();
+    const HEIGHT = Math.round((blockedCount / totalCount || 0) * 36);
+    const Y = 38 - HEIGHT;
+    dashboard.
+      append('svg:rect').
+      attr('id', 'speed').
+      attr('x', 29).
+      attr('y', Y).
+      attr('width', 8).
+      attr('height', HEIGHT).
+      attr('fill', '#ffbf3f');
+    d3.select('#privacy').remove();
+    dashboard.
+      append('svg:rect').
+      attr('id', 'privacy').
+      attr('x', 95).
+      attr('y', Y).
+      attr('width', 8).
+      attr('height', HEIGHT).
+      attr('fill', '#00bf3f');
+  }
 }
 
 /* Outputs a secured request. */
-function renderSecuredRequest(securedCount, totalCount) {
-  d3.select('#security').remove();
-  const HEIGHT = Math.round((securedCount / totalCount || 0) * 36);
-  dashboard.
-    append('svg:rect').
-    attr('id', 'security').
-    attr('x', 161).
-    attr('y', 38 - HEIGHT).
-    attr('width', 8).
-    attr('height', HEIGHT).
-    attr('fill', '#00bfff');
+function renderSecuredRequest(id, securedCount, totalCount) {
+  if (id == tabId) {
+    d3.select('#security').remove();
+    const HEIGHT = Math.round((securedCount / totalCount || 0) * 36);
+    dashboard.
+      append('svg:rect').
+      attr('id', 'security').
+      attr('x', 161).
+      attr('y', 38 - HEIGHT).
+      attr('width', 8).
+      attr('height', HEIGHT).
+      attr('fill', '#00bfff');
+  }
 }
 
 /* Outputs total, blocked, and secured requests. */
 function renderGraphs() {
-  const BLOCKED_COUNT = tabDashboard.blocked;
-  const TOTAL_COUNT = tabDashboard.total;
-  const BLOCKED_ITERATIONS =
-      Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * 18) + 18;
-  const SECURED_COUNT = tabDashboard.secured;
-  const SECURED_ITERATIONS =
-      Math.round((SECURED_COUNT / TOTAL_COUNT || 0) * 18) + 18;
-  const ITERATIONS = Math.max(BLOCKED_ITERATIONS, SECURED_ITERATIONS, 23);
-  const DUMMY_COUNT = TOTAL_COUNT || 100;
+  const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+  const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+  const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+  const SECURED_COUNT = TAB_DASHBOARD.secured || 0;
+  const ITERATIONS = Math.max(
+    Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * 18) + 18,
+    Math.round((SECURED_COUNT / TOTAL_COUNT || 0) * 18) + 18,
+    23
+  );
+  const DUMMY_COUNT = TOTAL_COUNT || 1;
 
   for (var i = 1; i < ITERATIONS; i++) {
     setTimeout(function(index, delay) {
@@ -370,22 +375,24 @@ function renderGraphs() {
           attr('fill', '#007fff');
       }
 
-      if (index > 10) {
+      if (index > 15) {
         const DEFAULT_COUNT = DUMMY_COUNT * .28;
-        const OFFSET_INDEX = index - 10;
+        const OFFSET_INDEX = index - 15;
         const MODULUS = ITERATIONS - 17;
         const FRACTION = (
           OFFSET_INDEX > MODULUS ? MODULUS - OFFSET_INDEX % MODULUS :
               OFFSET_INDEX
         ) / (ITERATIONS - 18);
-        index < BLOCKED_ITERATIONS &&
-            renderBlockedRequest(Math.round(
-              Math.min(BLOCKED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION
-            ), DUMMY_COUNT);
-        index < SECURED_ITERATIONS &&
-            renderSecuredRequest(Math.round(
-              Math.min(SECURED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION
-            ), DUMMY_COUNT);
+        renderBlockedRequest(
+          tabId,
+          Math.min(BLOCKED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION,
+          DUMMY_COUNT
+        );
+        renderSecuredRequest(
+          tabId,
+          Math.min(SECURED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION,
+          DUMMY_COUNT
+        );
       }
 
       if (timeout) timeout = (ITERATIONS - index - 1) * 25;
@@ -484,6 +491,9 @@ const FRAME_LENGTH = 100;
 /* The number of request updates. */
 const LIVE_REQUESTS = {};
 
+/* The number of total, blocked, and secured requests per tab. */
+const DASHBOARD = BACKGROUND.DASHBOARD;
+
 /* The service scaffolding. */
 var serviceTemplate;
 
@@ -492,9 +502,6 @@ var currentScene = getScene();
 
 /* The dashboard container. */
 var dashboard;
-
-/* The number of total, blocked, and secured requests for the current tab. */
-var tabDashboard = {total: 0, blocked: 0, secured: 0};
 
 /* The remaining load time in milliseconds. */
 var timeout = 1600;
@@ -818,8 +825,6 @@ var timeout = 1600;
         }
       });
 
-      const TAB_DASHBOARD = BACKGROUND.DASHBOARD[ID];
-      if (TAB_DASHBOARD) tabDashboard = TAB_DASHBOARD;
       $('html').add(BODY).height($(window).height());
     });
 
