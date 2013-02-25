@@ -286,6 +286,113 @@ function animateVisualization(icon, callback) {
       }, (i + FRAME_COUNT - 1) * FRAME_LENGTH, currentScene, i);
 }
 
+/* Outputs a blocked request. */
+function renderBlockedRequest(blockedCount, totalCount) {
+  d3.select('#speed').remove();
+  const HEIGHT = Math.round((blockedCount / totalCount || 0) * 36);
+  const Y = 38 - HEIGHT;
+  dashboard.
+    append('svg:rect').
+    attr('id', 'speed').
+    attr('x', 29).
+    attr('y', Y).
+    attr('width', 8).
+    attr('height', HEIGHT).
+    attr('fill', '#ffbf3f');
+  d3.select('#privacy').remove();
+  dashboard.
+    append('svg:rect').
+    attr('id', 'privacy').
+    attr('x', 95).
+    attr('y', Y).
+    attr('width', 8).
+    attr('height', HEIGHT).
+    attr('fill', '#00bf3f');
+}
+
+/* Outputs a secured request. */
+function renderSecuredRequest(securedCount, totalCount) {
+  d3.select('#security').remove();
+  const HEIGHT = Math.round((securedCount / totalCount || 0) * 36);
+  dashboard.
+    append('svg:rect').
+    attr('id', 'security').
+    attr('x', 161).
+    attr('y', 38 - HEIGHT).
+    attr('width', 8).
+    attr('height', HEIGHT).
+    attr('fill', '#00bfff');
+}
+
+/* Outputs total, blocked, and secured requests. */
+function renderGraphs() {
+  const BLOCKED_COUNT = tabDashboard.blocked;
+  const TOTAL_COUNT = tabDashboard.total;
+  const BLOCKED_ITERATIONS =
+      Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * 18) + 18;
+  const SECURED_COUNT = tabDashboard.secured;
+  const SECURED_ITERATIONS =
+      Math.round((SECURED_COUNT / TOTAL_COUNT || 0) * 18) + 18;
+  const ITERATIONS = Math.max(BLOCKED_ITERATIONS, SECURED_ITERATIONS, 23);
+  const DUMMY_COUNT = TOTAL_COUNT || 100;
+
+  for (var i = 1; i < ITERATIONS; i++) {
+    setTimeout(function(index, delay) {
+      if (index < 21) {
+        d3.select('#speed-total').remove();
+        const HEIGHT = (index > 19 ? 19 - index % 19 : index) * 2;
+        const Y = 38 - HEIGHT;
+        dashboard.
+          insert('svg:rect', '#speed').
+          attr('id', 'speed-total').
+          attr('x', 28).
+          attr('y', Y).
+          attr('width', 10).
+          attr('height', HEIGHT).
+          attr('fill', '#ff7f00');
+        d3.select('#privacy-total').remove();
+        dashboard.
+          insert('svg:rect', '#privacy').
+          attr('id', 'privacy-total').
+          attr('x', 94).
+          attr('y', Y).
+          attr('width', 10).
+          attr('height', HEIGHT).
+          attr('fill', '#007f3f');
+        d3.select('#security-total').remove();
+        dashboard.
+          insert('svg:rect', '#security').
+          attr('id', 'security-total').
+          attr('x', 160).
+          attr('y', Y).
+          attr('width', 10).
+          attr('height', HEIGHT).
+          attr('fill', '#007fff');
+      }
+
+      if (index > 10) {
+        const DEFAULT_COUNT = DUMMY_COUNT * .28;
+        const OFFSET_INDEX = index - 10;
+        const MODULUS = ITERATIONS - 17;
+        const FRACTION = (
+          OFFSET_INDEX > MODULUS ? MODULUS - OFFSET_INDEX % MODULUS :
+              OFFSET_INDEX
+        ) / (ITERATIONS - 18);
+        index < BLOCKED_ITERATIONS &&
+            renderBlockedRequest(Math.round(
+              Math.min(BLOCKED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION
+            ), DUMMY_COUNT);
+        index < SECURED_ITERATIONS &&
+            renderSecuredRequest(Math.round(
+              Math.min(SECURED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION
+            ), DUMMY_COUNT);
+      }
+
+      if (timeout) timeout = (ITERATIONS - index - 1) * 25;
+    }, i * 25, i);
+  }
+}
+
 /* Restricts the animation to 1x per mouseover. */
 function handleHover() {
   const TARGET = $('.' + this.className.split(' ', 1));
@@ -382,6 +489,15 @@ var serviceTemplate;
 
 /* The active animation sequence. */
 var currentScene = getScene();
+
+/* The dashboard container. */
+var dashboard;
+
+/* The number of total, blocked, and secured requests for the current tab. */
+var tabDashboard = {total: 0, blocked: 0, secured: 0};
+
+/* The remaining load time in milliseconds. */
+var timeout = 1600;
 
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
@@ -702,6 +818,8 @@ var currentScene = getScene();
         }
       });
 
+      const TAB_DASHBOARD = BACKGROUND.DASHBOARD[ID];
+      if (TAB_DASHBOARD) tabDashboard = TAB_DASHBOARD;
       $('html').add(BODY).height($(window).height());
     });
 
@@ -757,89 +875,22 @@ var currentScene = getScene();
               !DESERIALIZE(localStorage.searchHardened);
     };
 
-    const DASHBOARD =
+    dashboard =
         d3.
           select('#data').
           append('svg:svg').
           attr('width', 198).
           attr('height', 40);
-    DASHBOARD.
-      append('svg:line').
-      attr('x1', 3).
-      attr('y1', 0).
-      attr('x2', 3).
-      attr('y2', 39).
-      attr('stroke', '#333');
-    DASHBOARD.
-      append('svg:line').
-      attr('x1', 4).
-      attr('y1', 0).
-      attr('x2', 4).
-      attr('y2', 38).
-      attr('stroke', '#f3f3f3');
-    DASHBOARD.
-      append('svg:line').
-      attr('x1', 4).
-      attr('y1', 39).
-      attr('x2', 196).
-      attr('y2', 39).
-      attr('stroke', '#333');
-    DASHBOARD.
-      append('svg:line').
-      attr('x1', 4).
-      attr('y1', 40).
-      attr('x2', 196).
-      attr('y2', 40).
-      attr('stroke', '#f3f3f3');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 28).
-      attr('y', 0).
-      attr('width', 10).
-      attr('height', 38).
-      attr('fill', '#ff7f00');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 29).
-      attr('y', 11).
-      attr('width', 8).
-      attr('height', 27).
-      attr('fill', '#ffbf3f');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 94).
-      attr('y', 0).
-      attr('width', 10).
-      attr('height', 38).
-      attr('fill', '#007f3f');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 95).
-      attr('y', 11).
-      attr('width', 8).
-      attr('height', 27).
-      attr('fill', '#00bf3f');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 160).
-      attr('y', 0).
-      attr('width', 10).
-      attr('height', 38).
-      attr('fill', '#007fff');
-    DASHBOARD.
-      append('svg:rect').
-      attr('x', 161).
-      attr('y', 11).
-      attr('width', 8).
-      attr('height', 27).
-      attr('fill', '#00bfff');
     const DISPLAY_MODE = localStorage.displayMode || LIST;
     DISPLAY_MODE == GRAPH && renderGraph();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
-      DISPLAY_MODE == LIST && animateVisualization(ICON, function() {
-        VISUALIZATION.mouseenter(handleHover);
-      });
+      if (DISPLAY_MODE == LIST) {
+        animateVisualization(ICON, function() {
+          VISUALIZATION.mouseenter(handleHover);
+        });
+        renderGraphs();
+      }
     });
   }, true
 );

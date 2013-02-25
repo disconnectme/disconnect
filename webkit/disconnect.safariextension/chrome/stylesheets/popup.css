@@ -239,7 +239,7 @@ td { padding: 0 }
 
 #dashboard {
   border-top: thin solid gainsboro;
-  background: #f3f3f3;
+  background: url(../images/dashboard.png);
   width: 200px;
   cursor: default
 }

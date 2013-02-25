@@ -224,17 +224,38 @@ function incrementCounter(tabId, service, blocked, popup) {
           (CATEGORY_REQUESTS[SERVICE] = {url: SERVICE_URL, count: 0});
   const SERVICE_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
-  if (popup)
-      if (CATEGORY == 'Disconnect')
-          popup.updateShortcut(tabId, SERVICE, SERVICE_COUNT);
-      else {
-        var categoryCount = 0;
-        for (var name in CATEGORY_REQUESTS)
-            categoryCount += CATEGORY_REQUESTS[name].count;
-        popup.updateCategory(
-          tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
-        );
-      }
+
+  if (popup) {
+    if (CATEGORY == 'Disconnect')
+        popup.updateShortcut(tabId, SERVICE, SERVICE_COUNT);
+    else {
+      var categoryCount = 0;
+      for (var name in CATEGORY_REQUESTS)
+          categoryCount += CATEGORY_REQUESTS[name].count;
+      popup.updateCategory(
+        tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
+      );
+    }
+
+    const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+    const BLOCKED_COUNT = TAB_DASHBOARD.blocked;
+    const TIMEOUT = popup.timeout;
+    const TOTAL_COUNT = TAB_DASHBOARD.total;
+
+    BLOCKED_COUNT && setTimeout(function() {
+      popup.renderBlockedRequest(
+        Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT), TOTAL_COUNT
+      );
+    }, TIMEOUT);
+
+    const SECURED_COUNT = TAB_DASHBOARD.secured;
+
+    SECURED_COUNT && setTimeout(function() {
+      popup.renderSecuredRequest(
+        Math.min(SECURED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT), TOTAL_COUNT
+      );
+    }, TIMEOUT);
+  }
 }
 
 /* The current build number. */
@@ -260,6 +281,9 @@ const REDIRECTS = {};
 
 /* The number of tracking requests per tab, overall and by third party. */
 const REQUEST_COUNTS = {};
+
+/* The number of total, blocked, and secured requests per tab. */
+const DASHBOARD = {};
 
 /* The Collusion data structure. */
 const LOG = {};
@@ -418,13 +442,16 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
+  const TAB_DASHBOARD =
+      DASHBOARD[TAB_ID] ||
+          (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
+  TAB_DASHBOARD.total++;
   var date = new Date();
   var month = date.getMonth() + 1;
   month = (month < 10 ? '0' : '') + month;
   var day = date.getDate();
   day = (day < 10 ? '0' : '') + day;
   date = date.getFullYear() + '-' + month + '-' + day;
-  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
 
   if (CHILD_SERVICE) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
@@ -466,14 +493,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
                     : 'about:blank'
       };
+      TAB_DASHBOARD.blocked++;
       const BLOCKED_REQUESTS = deserialize(localStorage.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
       localStorage.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
     } // The request is denied.
-
-    if (blockingResponse.redirectUrl || whitelisted)
-        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
@@ -482,11 +507,16 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   if (hardened) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     REDIRECTS[TAB_ID] = hardenedUrl;
+    TAB_DASHBOARD.secured++;
     const HARDENED_REQUESTS = deserialize(localStorage.hardenedRequests) || {};
     HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
         HARDENED_REQUESTS[date] = 1;
     localStorage.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
   }
+
+  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+  if (blockingResponse.redirectUrl || whitelisted)
+      incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP);
 
   // The Collusion data structure.
   if (!(CHILD_DOMAIN in LOG))
@@ -509,7 +539,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   }
 
   // For art.
-  PLAYBACK.push({
+  false && PLAYBACK.push({
     time: ELAPSED_TIME,
     domain: CHILD_DOMAIN,
     type: TYPE,
@@ -530,6 +560,7 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
   if (!details.frameId) {
     const TAB_ID = details.tabId;
     delete REQUEST_COUNTS[TAB_ID];
+    delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
     const POPUP = EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
