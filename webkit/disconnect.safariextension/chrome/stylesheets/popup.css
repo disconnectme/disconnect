@@ -253,8 +253,15 @@ td { padding: 0 }
 
 #dashboard .label { width: 66px }
 
-#sharing { display: none }
+.sharing {
+  display: none;
+  color: #efefef;
+  white-space: nowrap;
+  cursor: default
+}
 
-#sharing a:last-child { margin-left: 10px }
+.sharing td { padding-left: 10px }
+
+.sharing td:first-child { padding-left: 0 }
 
 #graph { display: none }

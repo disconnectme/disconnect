@@ -289,25 +289,26 @@ function animateVisualization(icon, callback) {
 /* Outputs a blocked request. */
 function renderBlockedRequest(id, blockedCount, totalCount) {
   if (id == tabId) {
-    d3.select('#speed').remove();
-    const HEIGHT = Math.round((blockedCount / totalCount || 0) * 36);
-    const Y = 38 - HEIGHT;
+    d3.select('.subtotal.speed').remove();
+    const HEIGHT = (blockedCount / totalCount || 0) * 36;
+    const SPEED_HEIGHT = Math.round(HEIGHT * BENCHMARK_CONSTANT);
+    const PRIVACY_HEIGHT = Math.round(HEIGHT);
     dashboard.
-      append('svg:rect').
-      attr('id', 'speed').
+      insert('svg:rect', '.control.speed').
+      attr('class', 'subtotal speed').
       attr('x', 29).
-      attr('y', Y).
+      attr('y', 38 - SPEED_HEIGHT).
       attr('width', 8).
-      attr('height', HEIGHT).
+      attr('height', SPEED_HEIGHT).
       attr('fill', '#ffbf3f');
-    d3.select('#privacy').remove();
+    d3.select('.subtotal.privacy').remove();
     dashboard.
-      append('svg:rect').
-      attr('id', 'privacy').
+      insert('svg:rect', '.control.privacy').
+      attr('class', 'subtotal privacy').
       attr('x', 95).
-      attr('y', Y).
+      attr('y', 38 - PRIVACY_HEIGHT).
       attr('width', 8).
-      attr('height', HEIGHT).
+      attr('height', PRIVACY_HEIGHT).
       attr('fill', '#00bf3f');
   }
 }
@@ -315,11 +316,11 @@ function renderBlockedRequest(id, blockedCount, totalCount) {
 /* Outputs a secured request. */
 function renderSecuredRequest(id, securedCount, totalCount) {
   if (id == tabId) {
-    d3.select('#security').remove();
+    d3.select('.subtotal.security').remove();
     const HEIGHT = Math.round((securedCount / totalCount || 0) * 36);
     dashboard.
-      append('svg:rect').
-      attr('id', 'security').
+      insert('svg:rect', '.control.security').
+      attr('class', 'subtotal security').
       attr('x', 161).
       attr('y', 38 - HEIGHT).
       attr('width', 8).
@@ -330,6 +331,85 @@ function renderSecuredRequest(id, securedCount, totalCount) {
 
 /* Outputs total, blocked, and secured requests. */
 function renderGraphs() {
+  dashboard.
+    append('svg:rect').
+    attr('class', 'control speed').
+    attr('x', 10).
+    attr('y', 0).
+    attr('width', 46).
+    attr('height', 40).
+    attr('fill', 'transparent');
+
+  Tipped.create('.control.speed', $('.sharing.speed')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      $('.sharing.speed .text').text((
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * BENCHMARK_CONSTANT * 100
+      ).toFixed() + '% (' + (
+        BLOCKED_COUNT * TRACKING_BENCHMARK / 1000
+      ).toFixed(1) + 's) faster');
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
+  dashboard.
+    append('svg:rect').
+    attr('class', 'control privacy').
+    attr('x', 76).
+    attr('y', 0).
+    attr('width', 46).
+    attr('height', 40).
+    attr('fill', 'transparent');
+
+  Tipped.create('.control.privacy', $('.sharing.privacy')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+      $('.sharing.privacy .text').text(
+        BLOCKED_COUNT + REQUEST + (BLOCKED_COUNT - 1 ? 's' : '')
+      );
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
+  dashboard.
+    append('svg:rect').
+    attr('class', 'control security').
+    attr('x', 142).
+    attr('y', 0).
+    attr('width', 46).
+    attr('height', 40).
+    attr('fill', 'transparent');
+
+  Tipped.create('.control.security', $('.sharing.security')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+      $('.sharing.security .text').text(
+        SECURED_COUNT + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
+      );
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
   const TAB_DASHBOARD = DASHBOARD[tabId] || {};
   const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
   const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
@@ -344,30 +424,30 @@ function renderGraphs() {
   for (var i = 1; i < ITERATIONS; i++) {
     setTimeout(function(index, delay) {
       if (index < 21) {
-        d3.select('#speed-total').remove();
+        d3.select('.total.speed').remove();
         const HEIGHT = (index > 19 ? 19 - index % 19 : index) * 2;
         const Y = 38 - HEIGHT;
         dashboard.
-          insert('svg:rect', '#speed').
-          attr('id', 'speed-total').
+          insert('svg:rect', '.subtotal.speed').
+          attr('class', 'total speed').
           attr('x', 28).
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
           attr('fill', '#ff7f00');
-        d3.select('#privacy-total').remove();
+        d3.select('.total.privacy').remove();
         dashboard.
-          insert('svg:rect', '#privacy').
-          attr('id', 'privacy-total').
+          insert('svg:rect', '.subtotal.privacy').
+          attr('class', 'total privacy').
           attr('x', 94).
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
           attr('fill', '#007f3f');
-        d3.select('#security-total').remove();
+        d3.select('.total.security').remove();
         dashboard.
-          insert('svg:rect', '#security').
-          attr('id', 'security-total').
+          insert('svg:rect', '.subtotal.security').
+          attr('class', 'total security').
           attr('x', 160).
           attr('y', Y).
           attr('width', 10).
@@ -494,6 +574,15 @@ const LIVE_REQUESTS = {};
 /* The number of total, blocked, and secured requests per tab. */
 const DASHBOARD = BACKGROUND.DASHBOARD;
 
+/* The mean load time of a tracking request in milliseconds. */
+const TRACKING_BENCHMARK = 72.6141083689391;
+
+/* The mean load time of a request in milliseconds. */
+const REQUEST_BENCHMARK = 55.787731003361;
+
+/* The ratio of mean load times. */
+const BENCHMARK_CONSTANT = TRACKING_BENCHMARK / REQUEST_BENCHMARK;
+
 /* The service scaffolding. */
 var serviceTemplate;
 
@@ -511,7 +600,7 @@ var timeout = 1600;
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
-    Tipped.create('#navbar span', $('#sharing')[0], {
+    Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
       skin: 'tiny',
       shadow: {color: '#fff', opacity: .1},
       stem: {spacing: -1},
