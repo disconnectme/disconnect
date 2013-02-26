@@ -287,11 +287,12 @@ function animateVisualization(icon, callback) {
 }
 
 /* Outputs a blocked request. */
-function renderBlockedRequest(id, blockedCount, totalCount) {
+function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
   if (id == tabId) {
     d3.select('.subtotal.speed').remove();
     const HEIGHT = (blockedCount / totalCount || 0) * 36;
-    const SPEED_HEIGHT = Math.round(HEIGHT * BENCHMARK_CONSTANT);
+    const SPEED_HEIGHT =
+        Math.round(HEIGHT * (weighted ? 1 : BENCHMARK_CONSTANT));
     const PRIVACY_HEIGHT = Math.round(HEIGHT);
     dashboard.
       insert('svg:rect', '.control.speed').
@@ -420,6 +421,7 @@ function renderGraphs() {
     23
   );
   const DUMMY_COUNT = TOTAL_COUNT || 1;
+  const WEIGHTED = ITERATIONS == 23;
 
   for (var i = 1; i < ITERATIONS; i++) {
     setTimeout(function(index, delay) {
@@ -466,7 +468,8 @@ function renderGraphs() {
         renderBlockedRequest(
           tabId,
           Math.min(BLOCKED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION,
-          DUMMY_COUNT
+          DUMMY_COUNT,
+          WEIGHTED
         );
         renderSecuredRequest(
           tabId,
