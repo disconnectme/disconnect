@@ -949,6 +949,7 @@ var timeout = 1600;
     };
 
     const VISUALIZATION = $('.visualization');
+    VISUALIZATION.mouseenter(handleHover);
 
     VISUALIZATION.click(function() {
       localStorage.displayMode = GRAPH;
@@ -1002,12 +1003,7 @@ var timeout = 1600;
     DISPLAY_MODE == GRAPH && renderGraph();
 
     $('#' + DISPLAY_MODE).fadeIn('slow', function() {
-      if (DISPLAY_MODE == LIST) {
-        animateVisualization(ICON, function() {
-          VISUALIZATION.mouseenter(handleHover);
-        });
-        renderGraphs();
-      }
+      DISPLAY_MODE == LIST && renderGraphs();
     });
   }, true
 );

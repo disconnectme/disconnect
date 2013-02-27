@@ -211,14 +211,13 @@ function renderGraph() {
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
-          var visualization = $(".visualization");
-          visualization.off("mouseenter");
+          currentScene = getScene();
+          $(".visualization img")[0].src =
+              "../images/" + currentScene + "/1.png";
+          d3.selectAll(".total").remove();
+          d3.selectAll(".subtotal").remove();
 
-          $("#list").fadeIn(function() {
-            animateVisualization(visualization.find("img")[0], function() {
-              visualization.mouseenter(handleHover);
-            });
-          });
+          $("#list").fadeIn(function() { renderGraphs(); });
         });
       });
     }
