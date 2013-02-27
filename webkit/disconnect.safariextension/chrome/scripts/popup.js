@@ -290,7 +290,7 @@ function animateVisualization(icon, callback) {
 function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
   if (id == tabId) {
     d3.select('.subtotal.speed').remove();
-    const HEIGHT = (blockedCount / totalCount || 0) * 36;
+    const HEIGHT = (blockedCount / totalCount || 0) * 35;
     const SPEED_HEIGHT =
         Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
     const BANDWIDTH_HEIGHT =
@@ -319,7 +319,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
 function renderSecuredRequest(id, securedCount, totalCount) {
   if (id == tabId) {
     d3.select('.subtotal.security').remove();
-    const HEIGHT = Math.round((securedCount / totalCount || 0) * 36);
+    const HEIGHT = Math.round((securedCount / totalCount || 0) * 35);
     dashboard.
       insert('svg:rect', '.control.security').
       attr('class', 'subtotal security').
@@ -409,7 +409,7 @@ function renderGraphs() {
     onShow: function() {
       const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
       $('.sharing.security .text').text(
-        SECURED_COUNT + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
+        SECURED_COUNT + ' secured' + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
       );
     },
     fadeIn: 400,
@@ -622,6 +622,12 @@ var timeout = 1600;
       shadow: {color: '#fff', opacity: .1},
       stem: {spacing: -1},
       background: {color: '#333', opacity: .9},
+      onShow: function() {
+        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+        $('.sharing.disconnect .text').text(
+          BLOCKED_COUNT + ' blocked' + REQUEST + (BLOCKED_COUNT - 1 ? 's' : '')
+        );
+      },
       fadeIn: 400,
       fadeOut: 400
     });
