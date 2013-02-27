@@ -292,8 +292,9 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
     d3.select('.subtotal.speed').remove();
     const HEIGHT = (blockedCount / totalCount || 0) * 36;
     const SPEED_HEIGHT =
-        Math.round(HEIGHT * (weighted ? 1 : BENCHMARK_CONSTANT));
-    const PRIVACY_HEIGHT = Math.round(HEIGHT);
+        Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
+    const BANDWIDTH_HEIGHT =
+        Math.round(HEIGHT * (weighted ? 1 : SIZE_CONSTANT));
     dashboard.
       insert('svg:rect', '.control.speed').
       attr('class', 'subtotal speed').
@@ -301,16 +302,16 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
       attr('y', 38 - SPEED_HEIGHT).
       attr('width', 8).
       attr('height', SPEED_HEIGHT).
-      attr('fill', '#ffbf3f');
-    d3.select('.subtotal.privacy').remove();
+      attr('fill', '#ff7f00');
+    d3.select('.subtotal.bandwidth').remove();
     dashboard.
-      insert('svg:rect', '.control.privacy').
-      attr('class', 'subtotal privacy').
+      insert('svg:rect', '.control.bandwidth').
+      attr('class', 'subtotal bandwidth').
       attr('x', 95).
-      attr('y', 38 - PRIVACY_HEIGHT).
+      attr('y', 38 - BANDWIDTH_HEIGHT).
       attr('width', 8).
-      attr('height', PRIVACY_HEIGHT).
-      attr('fill', '#00bf3f');
+      attr('height', BANDWIDTH_HEIGHT).
+      attr('fill', '#ffbf3f');
   }
 }
 
@@ -352,9 +353,9 @@ function renderGraphs() {
       const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
       const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
       $('.sharing.speed .text').text((
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * BENCHMARK_CONSTANT * 100
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100
       ).toFixed() + '% (' + (
-        BLOCKED_COUNT * TRACKING_BENCHMARK / 1000
+        BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
       ).toFixed(1) + 's) faster');
     },
     fadeIn: 400,
@@ -363,24 +364,28 @@ function renderGraphs() {
 
   dashboard.
     append('svg:rect').
-    attr('class', 'control privacy').
+    attr('class', 'control bandwidth').
     attr('x', 76).
     attr('y', 0).
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
 
-  Tipped.create('.control.privacy', $('.sharing.privacy')[0], {
+  Tipped.create('.control.bandwidth', $('.sharing.bandwidth')[0], {
     skin: 'tiny',
     offset: {x: 23},
     shadow: {opacity: .1},
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
     onShow: function() {
-      const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-      $('.sharing.privacy .text').text(
-        BLOCKED_COUNT + REQUEST + (BLOCKED_COUNT - 1 ? 's' : '')
-      );
+      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      $('.sharing.bandwidth .text').text((
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100
+      ).toFixed() + '% (' + (
+        BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
+      ).toFixed() + 'K) less data');
     },
     fadeIn: 400,
     fadeOut: 400
@@ -416,7 +421,7 @@ function renderGraphs() {
   const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
   const SECURED_COUNT = TAB_DASHBOARD.secured || 0;
   const ITERATIONS = Math.max(
-    Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * 18) + 18,
+    Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 18) + 18,
     Math.round((SECURED_COUNT / TOTAL_COUNT || 0) * 18) + 18,
     23
   );
@@ -436,16 +441,16 @@ function renderGraphs() {
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
-          attr('fill', '#ff7f00');
-        d3.select('.total.privacy').remove();
+          attr('fill', '#ff3f00');
+        d3.select('.total.bandwidth').remove();
         dashboard.
-          insert('svg:rect', '.subtotal.privacy').
-          attr('class', 'total privacy').
+          insert('svg:rect', '.subtotal.bandwidth').
+          attr('class', 'total bandwidth').
           attr('x', 94).
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
-          attr('fill', '#007f3f');
+          attr('fill', '#ff7f00');
         d3.select('.total.security').remove();
         dashboard.
           insert('svg:rect', '.subtotal.security').
@@ -577,14 +582,23 @@ const LIVE_REQUESTS = {};
 /* The number of total, blocked, and secured requests per tab. */
 const DASHBOARD = BACKGROUND.DASHBOARD;
 
-/* The mean load time of a tracking request in milliseconds. */
-const TRACKING_BENCHMARK = 72.6141083689391;
+/* The mean load time of a tracking resource in milliseconds. */
+const TRACKING_RESOURCE_TIME = 72.6141083689391;
 
-/* The mean load time of a request in milliseconds. */
-const REQUEST_BENCHMARK = 55.787731003361;
+/* The mean load time of a resource in milliseconds. */
+const RESOURCE_TIME = 55.787731003361;
 
 /* The ratio of mean load times. */
-const BENCHMARK_CONSTANT = TRACKING_BENCHMARK / REQUEST_BENCHMARK;
+const TIME_CONSTANT = TRACKING_RESOURCE_TIME / RESOURCE_TIME;
+
+/* The mean file size of a tracking resource in kilobytes. */
+const TRACKING_RESOURCE_SIZE = 8.51145760261889;
+
+/* The mean file size of a resource in kilobytes. */
+const RESOURCE_SIZE = 10.4957370842049;
+
+/* The ratio of mean file sizes. */
+const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
 
 /* The service scaffolding. */
 var serviceTemplate;
