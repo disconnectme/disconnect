@@ -420,11 +420,10 @@ function renderGraphs() {
   const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
   const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
   const SECURED_COUNT = TAB_DASHBOARD.secured || 0;
-  const ITERATIONS = Math.max(
-    Math.round((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 18) + 18,
-    Math.round((SECURED_COUNT / TOTAL_COUNT || 0) * 18) + 18,
-    23
-  );
+  const ITERATIONS = Math.round(Math.max(
+    (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT,
+    SECURED_COUNT / TOTAL_COUNT || 0
+  ) * 13) + 23;
   const DUMMY_COUNT = TOTAL_COUNT || 1;
   const WEIGHTED = ITERATIONS == 23;
 
