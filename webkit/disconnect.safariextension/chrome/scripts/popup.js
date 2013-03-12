@@ -972,22 +972,20 @@ var timeout = 1600;
     const ICON = VISUALIZATION.find('img')[0];
     ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
     ICON.alt = 'Graph';
-    const WIFI = $('.wifi');
-    const WIFIBOX = WIFI.find(INPUT)[0];
-    WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
+    const WIFI = $('.wifi ' + INPUT)[0];
+    WIFI.checked = DESERIALIZE(localStorage.browsingHardened);
 
     WIFI.onclick = function() {
-      WIFIBOX.checked =
+      this.checked =
           localStorage.browsingHardened =
               !DESERIALIZE(localStorage.browsingHardened);
     };
 
-    const SEARCH = $('.search');
-    const SEARCHBOX = SEARCH.find(INPUT)[0];
-    SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
+    const SEARCH = $('.search ' + INPUT)[0];
+    SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
 
     SEARCH.onclick = function() {
-      SEARCHBOX.checked =
+      this.checked =
           localStorage.searchHardened =
               !DESERIALIZE(localStorage.searchHardened);
     };
