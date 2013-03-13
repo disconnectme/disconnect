@@ -146,7 +146,7 @@ td { padding: 0 }
 
 .service:first-child { display: none }
 
-.service td { padding-left: 10px }
+.service .control { padding-left: 10px }
 
 .service input {
   margin-left: 0;
@@ -155,8 +155,8 @@ td { padding: 0 }
   border: 1px solid rgba(0, 0, 0, .25);
   border-radius: 2px;
   background: -webkit-linear-gradient(#ededed 38%, #dedede);
-  width: 10px;
-  height: 10px
+  width: 12px;
+  height: 12px
 }
 
 .service input:hover { border-color: rgba(0, 0, 0, .5) }
@@ -177,6 +177,8 @@ td { padding: 0 }
   background-size: contain
 }
 
+.service .link { padding-left: 5px }
+
 .service a {
   text-decoration: none;
   color: #666
@@ -184,7 +186,10 @@ td { padding: 0 }
 
 .service :hover { color: #191919 }
 
-.service .text { color: #b3b3b3 }
+.service .text {
+  padding-left: 10px;
+  color: #b3b3b3
+}
 
 #options {
   margin-right: auto;
