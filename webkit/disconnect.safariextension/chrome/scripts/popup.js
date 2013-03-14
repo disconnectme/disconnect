@@ -50,7 +50,7 @@ function renderShortcut(
               }).mouseleave(function() {
                 badge.src = badge.src.replace(HIGHLIGHTED, '.');
               });
-        }, i * 50, badge, lowercaseName, i);
+        }, i * 40, badge, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
     control.title = BLOCK + name;
@@ -67,7 +67,7 @@ function renderShortcut(
               }).mouseleave(function() {
                 badge.src = badge.src.replace(HIGHLIGHTED, '.');
               });
-        }, i * 50, badge, lowercaseName, i);
+        }, i * 40, badge, lowercaseName, i);
   }
 
   text.textContent = requestCount;
