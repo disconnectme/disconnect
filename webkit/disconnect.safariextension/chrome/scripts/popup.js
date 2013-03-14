@@ -29,12 +29,20 @@ function renderShortcut(
   control,
   wrappedControl,
   badge,
-  text
+  text,
+  animation
 ) {
+  const COUNT = animation > 1 ? 15 : animation;
+
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     control.title = UNBLOCK + name;
-    badge.src = IMAGES + lowercaseName + '/1' + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badge, lowercaseName, index) {
+          badge.src =
+              IMAGES + lowercaseName + '/' + (index % 14 + 1) +
+                  (index < COUNT - 1 ? '-' + DEACTIVATED : '') + EXTENSION;
+        }, i * 50, badge, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
     control.title = BLOCK + name;
@@ -196,7 +204,8 @@ function clearServices(id) {
           control.
             getElementsByClassName('badge')[0].
             getElementsByTagName('img')[0],
-          control.getElementsByClassName('text')[0]
+          control.getElementsByClassName('text')[0],
+          0
         );
       }
 
@@ -668,7 +677,8 @@ var timeout = 1600;
           control,
           wrappedControl,
           badge,
-          text
+          text,
+          1
         );
         badge.alt = name;
 
@@ -699,7 +709,8 @@ var timeout = 1600;
             control,
             wrappedControl,
             badge,
-            text
+            text,
+            2
           );
           localStorage.whitelist = JSON.stringify(WHITELIST);
           TABS.reload(ID);
