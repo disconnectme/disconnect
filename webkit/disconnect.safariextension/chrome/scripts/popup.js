@@ -32,28 +32,43 @@ function renderShortcut(
   text,
   animation
 ) {
-  const COUNT = animation > 1 ? 15 : animation;
+  const COUNT = animation < 2 ? animation : 21;
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     control.title = UNBLOCK + name;
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badge, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
           badge.src =
-              IMAGES + lowercaseName + '/' + (index % 14 + 1) +
-                  (index < COUNT - 1 ? '-' + DEACTIVATED : '') + EXTENSION;
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badge.src = badge.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              });
         }, i * 50, badge, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
     control.title = BLOCK + name;
-    badge.src = IMAGES + lowercaseName + '/1-' + DEACTIVATED + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badge, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
+          badge.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badge.src = badge.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 50, badge, lowercaseName, i);
   }
-
-  wrappedControl.off('mouseenter').mouseenter(function() {
-    badge.src = badge.src.replace('.', HIGHLIGHTED);
-  }).off('mouseleave').mouseleave(function() {
-    badge.src = badge.src.replace(HIGHLIGHTED, '.');
-  });
 
   text.textContent = requestCount;
 }
