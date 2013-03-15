@@ -958,7 +958,7 @@ var whitelistingClicked = 0;
       }
 
       WHITELISTING.click(function() {
-        whitelistingClicked = 7;
+        whitelistingClicked = 3;
 
         if (whitelistSite()) {
           WHITELISTING_ICON.alt = 'Whitelist';
