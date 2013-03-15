@@ -111,10 +111,9 @@ function renderCategory(
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
-    text.title =
-        badge.title =
-            UNBLOCK + lowercaseName +
-                (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
+    badge.title =
+        UNBLOCK + lowercaseName +
+            (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
           index || wrappedControl.off('mouseenter').off('mouseleave');
@@ -131,10 +130,9 @@ function renderCategory(
         }, i * 40, badgeIcon, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
-    text.title =
-        badge.title =
-            BLOCK + lowercaseName +
-                (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
+    badge.title =
+        BLOCK + lowercaseName +
+            (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
           index || wrappedControl.off('mouseenter').off('mouseleave');
@@ -864,7 +862,7 @@ var whitelistingClicked = 0;
         );
         badge.alt = name;
 
-        wrappedBadge.add(wrappedText).click(function(
+        wrappedBadge.click(function(
           name,
           lowercaseName,
           requestCount,
@@ -935,10 +933,10 @@ var whitelistingClicked = 0;
 
         var wrappedAction = wrappedCategoryControl.find('.action');
         var action = wrappedAction[0];
-        action.title = 'Expand ' + lowercaseName;
+        action.title = text.title = 'Expand ' + lowercaseName;
         var button = wrappedAction.find('img')[0];
 
-        wrappedAction.mouseenter(function(button) {
+        wrappedText.add(wrappedAction).mouseenter(function(button) {
           button.src = button.src.replace('.', HIGHLIGHTED);
         }.bind(null, button)).mouseleave(function(button) {
           button.src = button.src.replace(HIGHLIGHTED, '.');
