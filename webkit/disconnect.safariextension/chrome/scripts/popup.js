@@ -108,6 +108,7 @@ function renderCategory(
   const COUNT =
       animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
           animation;
+  const WRAPPED_BADGE = $(badge);
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
@@ -116,13 +117,13 @@ function renderCategory(
             (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
-          index || wrappedControl.off('mouseenter').off('mouseleave');
+          index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
           badgeIcon.src =
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
           index > COUNT - 2 &&
-              wrappedControl.mouseenter(function() {
+              WRAPPED_BADGE.mouseenter(function() {
                 badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
               }).mouseleave(function() {
                 badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
@@ -135,13 +136,13 @@ function renderCategory(
             (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
-          index || wrappedControl.off('mouseenter').off('mouseleave');
+          index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
           badgeIcon.src =
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
           index > COUNT - 2 &&
-              wrappedControl.mouseenter(function() {
+              WRAPPED_BADGE.mouseenter(function() {
                 badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
               }).mouseleave(function() {
                 badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
