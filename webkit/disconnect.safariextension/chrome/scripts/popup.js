@@ -102,22 +102,53 @@ function renderCategory(
   badgeIcon,
   text,
   textName,
-  textCount
+  textCount,
+  animation
 ) {
+  const COUNT =
+      animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
+          animation;
+
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     text.title =
         badge.title =
             UNBLOCK + lowercaseName +
                 (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
-    badgeIcon.src = IMAGES + lowercaseName + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badgeIcon, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
+          badgeIcon.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badgeIcon, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
     text.title =
         badge.title =
             BLOCK + lowercaseName +
                 (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
-    badgeIcon.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badgeIcon, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
+          badgeIcon.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badgeIcon, lowercaseName, i);
   }
 
   textName.text(name);
@@ -243,7 +274,8 @@ function clearServices(id) {
           wrappedBadge.find('img')[0],
           wrappedText[0],
           wrappedText.find('.name'),
-          wrappedText.find('.count')
+          wrappedText.find('.count'),
+          0
         );
       }
 
@@ -827,7 +859,8 @@ var whitelistingClicked = 0;
           badgeIcon,
           text,
           textName,
-          textCount
+          textCount,
+          1
         );
         badge.alt = name;
 
@@ -876,7 +909,8 @@ var whitelistingClicked = 0;
             badgeIcon,
             text,
             textName,
-            textCount
+            textCount,
+            2
           );
 
           serviceSurface.find(INPUT).each(function(index) {
@@ -958,7 +992,7 @@ var whitelistingClicked = 0;
       }
 
       WHITELISTING.click(function() {
-        whitelistingClicked = 3;
+        whitelistingClicked = 7;
 
         if (whitelistSite()) {
           WHITELISTING_ICON.alt = 'Whitelist';
