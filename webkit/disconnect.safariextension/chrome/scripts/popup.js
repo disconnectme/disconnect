@@ -32,7 +32,9 @@ function renderShortcut(
   text,
   animation
 ) {
-  const COUNT = animation < 2 ? animation : 21;
+  const COUNT =
+      animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
+          animation;
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
@@ -635,6 +637,9 @@ var dashboard;
 /* The remaining load time in milliseconds. */
 var timeout = 1600;
 
+/* Whether or not the whitelist button was clicked. */
+var whitelistingClicked = 0;
+
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
@@ -953,6 +958,8 @@ var timeout = 1600;
       }
 
       WHITELISTING.click(function() {
+        whitelistingClicked = 7;
+
         if (whitelistSite()) {
           WHITELISTING_ICON.alt = 'Whitelist';
           WHITELISTING_TEXT.text('Whitelist site');
