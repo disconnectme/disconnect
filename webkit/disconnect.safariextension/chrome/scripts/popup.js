@@ -676,6 +676,13 @@ var whitelistingClicked = 0;
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
+
+    $('#navbar img').mouseenter(function() {
+      this.src = this.src.replace('.', HIGHLIGHTED);
+    }).mouseleave(function() {
+      this.src = this.src.replace(HIGHLIGHTED, '.');
+    });
+
     Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
       skin: 'tiny',
       shadow: {color: '#fff', opacity: .1},
@@ -690,6 +697,7 @@ var whitelistingClicked = 0;
       fadeIn: 400,
       fadeOut: 400
     });
+
     var activeServices = $();
 
     TABS.query({currentWindow: true, active: true}, function(tabs) {
