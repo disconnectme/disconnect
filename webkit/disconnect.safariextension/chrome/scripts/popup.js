@@ -324,10 +324,10 @@ function animateAction(action, button, name) {
 
 /* Plays a whitelist animation. */
 function animateWhitelisting(icon, callback) {
-  for (var i = 1; i < 19; i++)
+  for (var i = 1; i < 21; i++)
       setTimeout(function(index) {
-        icon.src = IMAGES + 'list/' + (index % 18 + 1) + EXTENSION;
-        index == 18 && callback && callback();
+        icon.src = IMAGES + 'list/' + (index % 20 + 1) + EXTENSION;
+        index == 20 && callback && callback();
       }, (i - 1) * 50, i);
 }
 
