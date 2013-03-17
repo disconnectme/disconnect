@@ -322,6 +322,15 @@ function animateAction(action, button, name) {
   }, 2 * FRAME_LENGTH);
 }
 
+/* Plays a whitelist animation. */
+function animateWhitelisting(icon, callback) {
+  for (var i = 1; i < 19; i++)
+      setTimeout(function(index) {
+        icon.src = IMAGES + 'list/' + (index % 18 + 1) + EXTENSION;
+        index == 18 && callback && callback();
+      }, (i - 1) * 50, i);
+}
+
 /* Picks a random animation path. */
 function getScene() {
   return SCENES.splice(Math.floor(Math.random() * SCENES.length), 1)[0];
@@ -544,13 +553,23 @@ function renderGraphs() {
   }
 }
 
-/* Restricts the animation to 1x per mouseover. */
-function handleHover() {
+/* Restricts the whitelist animation to 1x per mouseover. */
+function handleWhitelisting() {
+  const TARGET = $('.' + this.className.split(' ', 1));
+  TARGET.off('mouseenter');
+
+  animateWhitelisting(TARGET.find('img')[0], function() {
+    TARGET.mouseenter(handleWhitelisting);
+  });
+}
+
+/* Restricts the visualization animation to 1x per mouseover. */
+function handleVisualization() {
   const TARGET = $('.' + this.className.split(' ', 1));
   TARGET.off('mouseenter');
 
   animateVisualization(TARGET.find('img')[0], function() {
-    TARGET.mouseenter(handleHover);
+    TARGET.mouseenter(handleVisualization);
   });
 }
 
@@ -962,7 +981,7 @@ var whitelistingClicked = 0;
                 prev().
                 prev().
                 find('.action img')[0],
-                name
+              name
             );
             EXPANDED_SERVICES.slideUp('fast', function() {
               animateAction(action, button, name);
@@ -998,6 +1017,8 @@ var whitelistingClicked = 0;
         WHITELISTING_TEXT.text('Whitelist site');
       }
 
+      WHITELISTING.mouseenter(handleWhitelisting);
+
       WHITELISTING.click(function() {
         whitelistingClicked = 7;
 
@@ -1022,7 +1043,7 @@ var whitelistingClicked = 0;
     };
 
     const VISUALIZATION = $('.visualization');
-    VISUALIZATION.mouseenter(handleHover);
+    VISUALIZATION.mouseenter(handleVisualization);
 
     VISUALIZATION.click(function() {
       localStorage.displayMode = GRAPH;
