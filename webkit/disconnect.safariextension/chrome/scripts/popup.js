@@ -1089,6 +1089,13 @@ var whitelistingClicked = 0;
           append('svg:svg').
           attr('width', 198).
           attr('height', 40);
+
+    $('.sharing img').mouseenter(function() {
+      this.src = this.src.replace('.', HIGHLIGHTED);
+    }).mouseleave(function() {
+      this.src = this.src.replace(HIGHLIGHTED, '.');
+    });
+
     const DISPLAY_MODE = localStorage.displayMode || LIST;
     DISPLAY_MODE == GRAPH && renderGraph();
 
