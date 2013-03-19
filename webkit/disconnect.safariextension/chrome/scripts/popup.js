@@ -278,7 +278,7 @@ function clearServices(id) {
         );
       }
 
-      const BUTTON = $('.category .action img[src*=' + COLLAPSE + ']');
+      const BUTTON = $('.category .action img[src*=5]');
       const ACTION = BUTTON.parent();
       animateAction(
         ACTION[0],
@@ -301,25 +301,26 @@ function clearServices(id) {
 
 /* Plays an expanding or collapsing animation. */
 function animateAction(action, button, name) {
-  const COLLAPSED = button.src.indexOf(EXPAND) + 1;
+  const COLLAPSED = button.src.indexOf(1) + 1;
 
   if (COLLAPSED) {
-    action.title = 'Collapse ' + name;
-    button.alt = 'Collapse';
+    action.title = COLLAPSE + ' ' + name;
+    button.alt = COLLAPSE;
   } else {
-    action.title = 'Expand ' + name;
-    button.alt = 'Expand';
+    action.title = EXPAND + ' ' + name;
+    button.alt = EXPAND;
   }
 
-  setTimeout(function() {
-    button.src =
-        button.src.replace(COLLAPSED ? EXPAND : COLLAPSE, TRANSITION);
-  }, FRAME_LENGTH);
-
-  setTimeout(function() {
-    button.src =
-        button.src.replace(TRANSITION, COLLAPSED ? COLLAPSE : EXPAND);
-  }, 2 * FRAME_LENGTH);
+  for (var i = 0; i < 12; i++)
+      setTimeout(function(index) {
+        button.src =
+            button.src.replace(
+              COLLAPSED ? index < 10 ? index + 1 : 19 - index :
+                  index < 7 ? 7 - index : Math.abs(9 - index) + 11,
+              COLLAPSED ? index < 9 ? index + 2 : 18 - index :
+                  index < 6 ? 6 - index : (Math.abs(8 - index) + 10) % 13 + 1
+            );
+      }, i * 25, i);
 }
 
 /* Plays a whitelist animation. */
@@ -613,13 +614,10 @@ const DEACTIVATED = 'deactivated';
 const HIGHLIGHTED = '-highlighted.';
 
 /* The expand keyword. */
-const EXPAND = 'expand';
-
-/* The transition keyword. */
-const TRANSITION = 'transition';
+const EXPAND = 'Expand';
 
 /* The collapse keyword. */
-const COLLAPSE = 'collapse';
+const COLLAPSE = 'Collapse';
 
 /* The recommended keyword. */
 const RECOMMENDED = 'recommended';
@@ -961,7 +959,7 @@ var whitelistingClicked = 0;
 
         var wrappedAction = wrappedCategoryControl.find('.action');
         var action = wrappedAction[0];
-        action.title = text.title = 'Expand ' + lowercaseName;
+        action.title = text.title = EXPAND + ' ' + lowercaseName;
         var button = wrappedAction.find('img')[0];
 
         wrappedText.add(wrappedAction).mouseenter(function(button) {
@@ -1056,7 +1054,7 @@ var whitelistingClicked = 0;
               prev().
               prev().
               find('.action img')[0];
-        if (BUTTON) BUTTON.src = BUTTON.src.replace(COLLAPSE, EXPAND);
+        if (BUTTON) BUTTON.src = BUTTON.src.replace(5, 1);
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
