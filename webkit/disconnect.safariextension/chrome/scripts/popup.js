@@ -311,14 +311,14 @@ function animateAction(action, button, name) {
     button.alt = EXPAND;
   }
 
-  for (var i = 0; i < 12; i++)
+  for (var i = 0; i < 10; i++)
       setTimeout(function(index) {
         button.src =
             button.src.replace(
-              COLLAPSED ? index < 10 ? index + 1 : 19 - index :
-                  index < 7 ? 7 - index : Math.abs(9 - index) + 11,
-              COLLAPSED ? index < 9 ? index + 2 : 18 - index :
-                  index < 6 ? 6 - index : (Math.abs(8 - index) + 10) % 13 + 1
+              COLLAPSED ? index < 8 ? index + 1 : 17 - index :
+                  index < 7 ? 7 - index : Math.abs(8 - index) + 10,
+              COLLAPSED ? index < 7 ? index + 2 : 16 - index :
+                  index < 6 ? 6 - index : (Math.abs(7 - index) + 9) % 11 + 1
             );
       }, i * 25, i);
 }
