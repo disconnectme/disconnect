@@ -164,9 +164,15 @@ h2.domain img.tracker {
   margin-top: 0;
   font-size: 8pt;
 }
+
+#sidebar-content #domain-infos .info a.visited {
+  color: #3388ff;
+}
+
 #sidebar-content #domain-infos .info a.tracker {
   color: #d62728;
 }
+
 #sidebar-content #domain-infos .info a.tracker.blocked {
   text-decoration: line-through;
 }

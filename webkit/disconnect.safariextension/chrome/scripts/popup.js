@@ -29,23 +29,48 @@ function renderShortcut(
   control,
   wrappedControl,
   badge,
-  text
+  text,
+  animation
 ) {
+  const COUNT =
+      animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
+          animation;
+
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     control.title = UNBLOCK + name;
-    badge.src = IMAGES + lowercaseName + '/1' + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badge, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
+          badge.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badge.src = badge.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badge, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
     control.title = BLOCK + name;
-    badge.src = IMAGES + lowercaseName + '/1-' + DEACTIVATED + EXTENSION;
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badge, lowercaseName, index) {
+          index || wrappedControl.off('mouseenter').off('mouseleave');
+          badge.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
+          index > COUNT - 2 &&
+              wrappedControl.mouseenter(function() {
+                badge.src = badge.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badge, lowercaseName, i);
   }
-
-  wrappedControl.off('mouseenter').mouseenter(function() {
-    badge.src = badge.src.replace('.', HIGHLIGHTED);
-  }).off('mouseleave').mouseleave(function() {
-    badge.src = badge.src.replace(HIGHLIGHTED, '.');
-  });
 
   text.textContent = requestCount;
 }
@@ -77,22 +102,52 @@ function renderCategory(
   badgeIcon,
   text,
   textName,
-  textCount
+  textCount,
+  animation
 ) {
+  const COUNT =
+      animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
+          animation;
+  const WRAPPED_BADGE = $(badge);
+
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
-    text.title =
-        badge.title =
-            UNBLOCK + lowercaseName +
-                (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
-    badgeIcon.src = IMAGES + lowercaseName + EXTENSION;
+    badge.title =
+        UNBLOCK + lowercaseName +
+            (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badgeIcon, lowercaseName, index) {
+          index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
+          badgeIcon.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
+          index > COUNT - 2 &&
+              WRAPPED_BADGE.mouseenter(function() {
+                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badgeIcon, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
-    text.title =
-        badge.title =
-            BLOCK + lowercaseName +
-                (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
-    badgeIcon.src = IMAGES + lowercaseName + '-' + DEACTIVATED + EXTENSION;
+    badge.title =
+        BLOCK + lowercaseName +
+            (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
+    for (var i = 0; i < COUNT; i++)
+        setTimeout(function(badgeIcon, lowercaseName, index) {
+          index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
+          badgeIcon.src =
+              IMAGES + lowercaseName + '/' +
+                  (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                      (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
+          index > COUNT - 2 &&
+              WRAPPED_BADGE.mouseenter(function() {
+                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              }).mouseleave(function() {
+                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              });
+        }, i * 40, badgeIcon, lowercaseName, i);
   }
 
   textName.text(name);
@@ -196,7 +251,8 @@ function clearServices(id) {
           control.
             getElementsByClassName('badge')[0].
             getElementsByTagName('img')[0],
-          control.getElementsByClassName('text')[0]
+          control.getElementsByClassName('text')[0],
+          0
         );
       }
 
@@ -217,11 +273,12 @@ function clearServices(id) {
           wrappedBadge.find('img')[0],
           wrappedText[0],
           wrappedText.find('.name'),
-          wrappedText.find('.count')
+          wrappedText.find('.count'),
+          0
         );
       }
 
-      const BUTTON = $('.category .action img[src*=' + COLLAPSE + ']');
+      const BUTTON = $('.category .action img[src*=5]');
       const ACTION = BUTTON.parent();
       animateAction(
         ACTION[0],
@@ -244,25 +301,49 @@ function clearServices(id) {
 
 /* Plays an expanding or collapsing animation. */
 function animateAction(action, button, name) {
-  const COLLAPSED = button.src.indexOf(EXPAND) + 1;
+  const COLLAPSED = button.src.indexOf(1) + 1;
 
   if (COLLAPSED) {
-    action.title = 'Collapse ' + name;
-    button.alt = 'Collapse';
+    action.title = COLLAPSE + ' ' + name;
+    button.alt = COLLAPSE;
   } else {
-    action.title = 'Expand ' + name;
-    button.alt = 'Expand';
+    action.title = EXPAND + ' ' + name;
+    button.alt = EXPAND;
   }
 
-  setTimeout(function() {
-    button.src =
-        button.src.replace(COLLAPSED ? EXPAND : COLLAPSE, TRANSITION);
-  }, FRAME_LENGTH);
+  var previousFrame;
+  var currentFrame;
+  for (var i = 0; i < 10; i++)
+      setTimeout(function(index) {
+        if (COLLAPSED) {
+          previousFrame = index < 9 ? index + 1 : 8;
+          currentFrame = index < 8 ? index + 2 : 16 - index;
+        } else {
+          previousFrame = index < 7 ? 7 - index : Math.abs(8 - index) + 10;
+          currentFrame =
+              index < 6 ? 6 - index : (Math.abs(7 - index) + 9) % 11 + 1;
+        }
 
-  setTimeout(function() {
-    button.src =
-        button.src.replace(TRANSITION, COLLAPSED ? COLLAPSE : EXPAND);
-  }, 2 * FRAME_LENGTH);
+        button.src =
+            button.src.replace(
+              '/' + previousFrame + '.',
+              '/' + currentFrame + '.'
+            );
+        button.src =
+            button.src.replace(
+              '/' + previousFrame + '-',
+              '/' + currentFrame + '-'
+            );
+      }, i * 25, i);
+}
+
+/* Plays a whitelist animation. */
+function animateWhitelisting(icon, callback) {
+  for (var i = 1; i < 21; i++)
+      setTimeout(function(index) {
+        icon.src = IMAGES + 'list/' + (index % 20 + 1) + EXTENSION;
+        index == 20 && callback && callback();
+      }, (i - 1) * 50, i);
 }
 
 /* Picks a random animation path. */
@@ -487,13 +568,23 @@ function renderGraphs() {
   }
 }
 
-/* Restricts the animation to 1x per mouseover. */
-function handleHover() {
+/* Restricts the whitelist animation to 1x per mouseover. */
+function handleWhitelisting() {
+  const TARGET = $('.' + this.className.split(' ', 1));
+  TARGET.off('mouseenter');
+
+  animateWhitelisting(TARGET.find('img')[0], function() {
+    TARGET.mouseenter(handleWhitelisting);
+  });
+}
+
+/* Restricts the visualization animation to 1x per mouseover. */
+function handleVisualization() {
   const TARGET = $('.' + this.className.split(' ', 1));
   TARGET.off('mouseenter');
 
   animateVisualization(TARGET.find('img')[0], function() {
-    TARGET.mouseenter(handleHover);
+    TARGET.mouseenter(handleVisualization);
   });
 }
 
@@ -537,13 +628,10 @@ const DEACTIVATED = 'deactivated';
 const HIGHLIGHTED = '-highlighted.';
 
 /* The expand keyword. */
-const EXPAND = 'expand';
-
-/* The transition keyword. */
-const TRANSITION = 'transition';
+const EXPAND = 'Expand';
 
 /* The collapse keyword. */
-const COLLAPSE = 'collapse';
+const COLLAPSE = 'Collapse';
 
 /* The recommended keyword. */
 const RECOMMENDED = 'recommended';
@@ -611,11 +699,21 @@ var dashboard;
 /* The remaining load time in milliseconds. */
 var timeout = 1600;
 
+/* Whether or not the whitelist button was clicked. */
+var whitelistingClicked = 0;
+
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
+
+    $('#navbar img').mouseenter(function() {
+      this.src = this.src.replace('.', HIGHLIGHTED);
+    }).mouseleave(function() {
+      this.src = this.src.replace(HIGHLIGHTED, '.');
+    });
+
     Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
       skin: 'tiny',
       shadow: {color: '#fff', opacity: .1},
@@ -630,6 +728,7 @@ var timeout = 1600;
       fadeIn: 400,
       fadeOut: 400
     });
+
     var activeServices = $();
 
     TABS.query({currentWindow: true, active: true}, function(tabs) {
@@ -668,7 +767,8 @@ var timeout = 1600;
           control,
           wrappedControl,
           badge,
-          text
+          text,
+          1
         );
         badge.alt = name;
 
@@ -699,7 +799,8 @@ var timeout = 1600;
             control,
             wrappedControl,
             badge,
-            text
+            text,
+            2
           );
           localStorage.whitelist = JSON.stringify(WHITELIST);
           TABS.reload(ID);
@@ -796,11 +897,12 @@ var timeout = 1600;
           badgeIcon,
           text,
           textName,
-          textCount
+          textCount,
+          1
         );
         badge.alt = name;
 
-        wrappedBadge.add(wrappedText).click(function(
+        wrappedBadge.click(function(
           name,
           lowercaseName,
           requestCount,
@@ -845,7 +947,8 @@ var timeout = 1600;
             badgeIcon,
             text,
             textName,
-            textCount
+            textCount,
+            2
           );
 
           serviceSurface.find(INPUT).each(function(index) {
@@ -870,10 +973,10 @@ var timeout = 1600;
 
         var wrappedAction = wrappedCategoryControl.find('.action');
         var action = wrappedAction[0];
-        action.title = 'Expand ' + lowercaseName;
+        action.title = text.title = EXPAND + ' ' + lowercaseName;
         var button = wrappedAction.find('img')[0];
 
-        wrappedAction.mouseenter(function(button) {
+        wrappedText.add(wrappedAction).mouseenter(function(button) {
           button.src = button.src.replace('.', HIGHLIGHTED);
         }.bind(null, button)).mouseleave(function(button) {
           button.src = button.src.replace(HIGHLIGHTED, '.');
@@ -890,7 +993,7 @@ var timeout = 1600;
                 prev().
                 prev().
                 find('.action img')[0],
-                name
+              name
             );
             EXPANDED_SERVICES.slideUp('fast', function() {
               animateAction(action, button, name);
@@ -926,7 +1029,11 @@ var timeout = 1600;
         WHITELISTING_TEXT.text('Whitelist site');
       }
 
+      WHITELISTING.mouseenter(handleWhitelisting);
+
       WHITELISTING.click(function() {
+        whitelistingClicked = 7;
+
         if (whitelistSite()) {
           WHITELISTING_ICON.alt = 'Whitelist';
           WHITELISTING_TEXT.text('Whitelist site');
@@ -948,7 +1055,7 @@ var timeout = 1600;
     };
 
     const VISUALIZATION = $('.visualization');
-    VISUALIZATION.mouseenter(handleHover);
+    VISUALIZATION.mouseenter(handleVisualization);
 
     VISUALIZATION.click(function() {
       localStorage.displayMode = GRAPH;
@@ -961,7 +1068,7 @@ var timeout = 1600;
               prev().
               prev().
               find('.action img')[0];
-        if (BUTTON) BUTTON.src = BUTTON.src.replace(COLLAPSE, EXPAND);
+        if (BUTTON) BUTTON.src = BUTTON.src.replace(5, 1);
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
@@ -996,6 +1103,13 @@ var timeout = 1600;
           append('svg:svg').
           attr('width', 198).
           attr('height', 40);
+
+    $('.sharing img').mouseenter(function() {
+      this.src = this.src.replace('.', HIGHLIGHTED);
+    }).mouseleave(function() {
+      this.src = this.src.replace(HIGHLIGHTED, '.');
+    });
+
     const DISPLAY_MODE = localStorage.displayMode || LIST;
     DISPLAY_MODE == GRAPH && renderGraph();
 

@@ -85,13 +85,16 @@ var GraphRunner = (function(jQuery, d3) {
     }
 
     function setDomainLink(target, d) {
-      target.attr("href", "http://" + d.name);
-      target.removeClass("tracker").removeClass("site");
+      var name = d.name;
+      target.attr("href", "http://" + name);
+      target.removeClass("visited").removeClass("tracker").removeClass("site");
       var trackerInfo = d.trackerInfo;
       var host = d.host;
       var childService = getService(host);
       var parentService = getService(domain);
-      if (trackerInfo && !(
+      if (d.wasVisited && name == domain) {
+        target.addClass("visited");
+      } else if (trackerInfo && !(
         childService && parentService && childService.name == parentService.name
       )) {
         target.addClass("tracker");
@@ -206,7 +209,7 @@ var GraphRunner = (function(jQuery, d3) {
       }
 
       function getClassForSite(d) {
-        if (d.wasVisited) {
+        if (d.wasVisited && d.name == domain) {
           return "visited";
         }
         var childService = getService(d.host);
@@ -338,7 +341,7 @@ var GraphRunner = (function(jQuery, d3) {
         .attr("class", "glow")
         .attr("fill", "url(#glow-gradient)")
         .classed("hidden", function(d) {
-                return !d.wasVisited;
+                return !(d.wasVisited && d.name == domain);
               });
 
       gs.append("svg:circle")
@@ -379,7 +382,7 @@ var GraphRunner = (function(jQuery, d3) {
         })
         .classed("hidden", function(d) {
           var trackerInfo = d.trackerInfo;
-          return (d.wasVisited || !trackerInfo || !isBlocked(d.host, trackerInfo));
+          return (d.wasVisited && d.name == domain || !trackerInfo || !isBlocked(d.host, trackerInfo));
         });
 
       return node;
