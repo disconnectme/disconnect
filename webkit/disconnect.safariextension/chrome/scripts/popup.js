@@ -311,14 +311,28 @@ function animateAction(action, button, name) {
     button.alt = EXPAND;
   }
 
+  var previousFrame;
+  var currentFrame;
   for (var i = 0; i < 10; i++)
       setTimeout(function(index) {
+        if (COLLAPSED) {
+          previousFrame = index < 9 ? index + 1 : 8;
+          currentFrame = index < 8 ? index + 2 : 16 - index;
+        } else {
+          previousFrame = index < 7 ? 7 - index : Math.abs(8 - index) + 10;
+          currentFrame =
+              index < 6 ? 6 - index : (Math.abs(7 - index) + 9) % 11 + 1;
+        }
+
         button.src =
             button.src.replace(
-              COLLAPSED ? index < 8 ? index + 1 : 17 - index :
-                  index < 7 ? 7 - index : Math.abs(8 - index) + 10,
-              COLLAPSED ? index < 7 ? index + 2 : 16 - index :
-                  index < 6 ? 6 - index : (Math.abs(7 - index) + 9) % 11 + 1
+              '/' + previousFrame + '.',
+              '/' + currentFrame + '.'
+            );
+        button.src =
+            button.src.replace(
+              '/' + previousFrame + '-',
+              '/' + currentFrame + '-'
             );
       }, i * 25, i);
 }
