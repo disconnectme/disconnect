@@ -1046,13 +1046,10 @@ var whitelistingClicked = 0;
       $('html').add(BODY).height($(window).height());
     });
 
-    const LINKS = document.getElementsByTagName('a');
-    const LINK_COUNT = LINKS.length;
-
-    for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
-      TABS.create({url: this.getAttribute('href')});
+    $(document).on('click', 'a', function() {
+      TABS.create({url: $(this).attr('href')});
       return false;
-    };
+    });
 
     const VISUALIZATION = $('.visualization');
     VISUALIZATION.mouseenter(handleVisualization);
