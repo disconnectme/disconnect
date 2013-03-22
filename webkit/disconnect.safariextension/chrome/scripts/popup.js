@@ -278,7 +278,7 @@ function clearServices(id) {
         );
       }
 
-      const BUTTON = $('.category .action img[src*=5]');
+      const BUTTON = $('.category .action img[src*=7]');
       const ACTION = BUTTON.parent();
       animateAction(
         ACTION[0],
@@ -1065,7 +1065,7 @@ var whitelistingClicked = 0;
               prev().
               prev().
               find('.action img')[0];
-        if (BUTTON) BUTTON.src = BUTTON.src.replace(5, 1);
+        if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
         activeServices.hide();
         $('.live-data').show();
         renderGraph();
