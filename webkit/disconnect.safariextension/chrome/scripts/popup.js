@@ -30,7 +30,8 @@ function renderShortcut(
   wrappedControl,
   badge,
   text,
-  animation
+  animation,
+  callback
 ) {
   const COUNT =
       animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
@@ -46,12 +47,16 @@ function renderShortcut(
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
-          index > COUNT - 2 &&
-              wrappedControl.mouseenter(function() {
-                badge.src = badge.src.replace('.', HIGHLIGHTED);
-              }).mouseleave(function() {
-                badge.src = badge.src.replace(HIGHLIGHTED, '.');
-              });
+
+          if (index > COUNT - 2) {
+            wrappedControl.mouseenter(function() {
+              badge.src = badge.src.replace('.', HIGHLIGHTED);
+            }).mouseleave(function() {
+              badge.src = badge.src.replace(HIGHLIGHTED, '.');
+            });
+
+            callback && wrappedControl.click(callback);
+          }
         }, i * 40, badge, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
@@ -63,16 +68,72 @@ function renderShortcut(
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
-          index > COUNT - 2 &&
-              wrappedControl.mouseenter(function() {
-                badge.src = badge.src.replace('.', HIGHLIGHTED);
-              }).mouseleave(function() {
-                badge.src = badge.src.replace(HIGHLIGHTED, '.');
-              });
+
+          if (index > COUNT - 2) {
+            wrappedControl.mouseenter(function() {
+              badge.src = badge.src.replace('.', HIGHLIGHTED);
+            }).mouseleave(function() {
+              badge.src = badge.src.replace(HIGHLIGHTED, '.');
+            });
+
+            callback && wrappedControl.click(callback);
+          }
         }, i * 40, badge, lowercaseName, i);
   }
 
   text.textContent = requestCount;
+}
+
+/* Restricts the animation of major third parties to 1x per click. */
+function handleShortcut(
+  domain,
+  id,
+  name,
+  lowercaseName,
+  requestCount,
+  control,
+  wrappedControl,
+  badge,
+  text
+) {
+  wrappedControl.off('click');
+  const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+  const LOCAL_SITE_WHITELIST =
+      WHITELIST[domain] || (WHITELIST[domain] = {});
+  const DISCONNECT_WHITELIST =
+      LOCAL_SITE_WHITELIST.Disconnect ||
+          (LOCAL_SITE_WHITELIST.Disconnect =
+              {whitelisted: false, services: {}});
+  const LOCAL_SHORTCUT_WHITELIST =
+      DISCONNECT_WHITELIST.services ||
+          (DISCONNECT_WHITELIST.services = {});
+  renderShortcut(
+    name,
+    lowercaseName,
+    !(LOCAL_SHORTCUT_WHITELIST[name] = !LOCAL_SHORTCUT_WHITELIST[name]),
+    requestCount,
+    control,
+    wrappedControl,
+    badge,
+    text,
+    2,
+    function() {
+      handleShortcut(
+        domain,
+        id,
+        name,
+        lowercaseName,
+        requestCount,
+        control,
+        wrappedControl,
+        badge,
+        text
+      );
+    }
+  );
+  localStorage.whitelist = JSON.stringify(WHITELIST);
+  renderWhitelisting(LOCAL_SITE_WHITELIST);
+  TABS.reload(id);
 }
 
 /* Refreshes major third-party details. */
@@ -799,7 +860,7 @@ var whitelistingClicked = 0;
         );
         badge.alt = name;
 
-        control.onclick = function(
+        wrappedControl.click(function(
           name,
           lowercaseName,
           requestCount,
@@ -808,30 +869,17 @@ var whitelistingClicked = 0;
           badge,
           text
         ) {
-          const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
-          const LOCAL_SITE_WHITELIST =
-              WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-          const DISCONNECT_WHITELIST =
-              LOCAL_SITE_WHITELIST.Disconnect ||
-                  (LOCAL_SITE_WHITELIST.Disconnect =
-                      {whitelisted: false, services: {}});
-          const LOCAL_SHORTCUT_WHITELIST =
-              DISCONNECT_WHITELIST.services ||
-                  (DISCONNECT_WHITELIST.services = {});
-          renderShortcut(
+          handleShortcut(
+            DOMAIN,
+            ID,
             name,
             lowercaseName,
-            !(LOCAL_SHORTCUT_WHITELIST[name] = !LOCAL_SHORTCUT_WHITELIST[name]),
             requestCount,
             control,
             wrappedControl,
             badge,
-            text,
-            2
+            text
           );
-          localStorage.whitelist = JSON.stringify(WHITELIST);
-          renderWhitelisting(LOCAL_SITE_WHITELIST);
-          TABS.reload(ID);
         }.bind(
           null,
           name,
@@ -841,7 +889,7 @@ var whitelistingClicked = 0;
           wrappedControl,
           badge,
           text
-        );
+        ));
       }
 
       const CATEGORY_SURFACE = $('#categories');
