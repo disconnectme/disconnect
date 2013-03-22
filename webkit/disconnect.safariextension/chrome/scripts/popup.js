@@ -164,7 +164,8 @@ function renderCategory(
   text,
   textName,
   textCount,
-  animation
+  animation,
+  callback
 ) {
   const COUNT =
       animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
@@ -183,12 +184,16 @@ function renderCategory(
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '-' + DEACTIVATED : '') + EXTENSION;
-          index > COUNT - 2 &&
-              WRAPPED_BADGE.mouseenter(function() {
-                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
-              }).mouseleave(function() {
-                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
-              });
+
+          if (index > COUNT - 2) {
+            WRAPPED_BADGE.mouseenter(function() {
+              badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+            }).mouseleave(function() {
+              badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+            });
+
+            callback && WRAPPED_BADGE.click(callback);
+          }
         }, i * 40, badgeIcon, lowercaseName, i);
   } else {
     wrappedControl.addClass(DEACTIVATED);
@@ -202,17 +207,99 @@ function renderCategory(
               IMAGES + lowercaseName + '/' +
                   (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
                       (index < COUNT - 7 ? '' : '-' + DEACTIVATED) + EXTENSION;
-          index > COUNT - 2 &&
-              WRAPPED_BADGE.mouseenter(function() {
-                badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
-              }).mouseleave(function() {
-                badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
-              });
+
+          if (index > COUNT - 2) {
+            WRAPPED_BADGE.mouseenter(function() {
+              badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+            }).mouseleave(function() {
+              badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+            });
+
+            callback && WRAPPED_BADGE.click(callback);
+          }
         }, i * 40, badgeIcon, lowercaseName, i);
   }
 
   textName.text(name);
   textCount.text(requestCount + REQUEST + (requestCount - 1 ? 's' : ''));
+}
+
+/* Restricts the animation of minor third parties to 1x per click. */
+function handleCategory(
+  domain,
+  id,
+  name,
+  lowercaseName,
+  requestCount,
+  categoryControl,
+  wrappedCategoryControl,
+  badge,
+  badgeIcon,
+  text,
+  textName,
+  textCount,
+  serviceSurface
+) {
+  $(badge).off('click');
+  const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+  const LOCAL_SITE_WHITELIST =
+      WHITELIST[domain] || (WHITELIST[domain] = {});
+  const CATEGORY_WHITELIST =
+      LOCAL_SITE_WHITELIST[name] ||
+          (LOCAL_SITE_WHITELIST[name] =
+              {whitelisted: false, services: {}});
+  const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+  const WHITELISTED =
+      CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted;
+  const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+  const LOCAL_SITE_BLACKLIST =
+      BLACKLIST[domain] || (BLACKLIST[domain] = {});
+  const CATEGORY_BLACKLIST =
+      LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
+  for (var serviceName in SERVICE_WHITELIST)
+      SERVICE_WHITELIST[serviceName] = WHITELISTED;
+  for (var serviceName in CATEGORY_BLACKLIST)
+      CATEGORY_BLACKLIST[serviceName] = !WHITELISTED;
+  localStorage.whitelist = JSON.stringify(WHITELIST);
+  localStorage.blacklist = JSON.stringify(BLACKLIST);
+  renderCategory(
+    name,
+    lowercaseName,
+    !WHITELISTED,
+    requestCount,
+    categoryControl,
+    wrappedCategoryControl,
+    badge,
+    badgeIcon,
+    text,
+    textName,
+    textCount,
+    2,
+    function() {
+      handleCategory(
+        domain,
+        id,
+        name,
+        lowercaseName,
+        requestCount,
+        categoryControl,
+        wrappedCategoryControl,
+        badge,
+        badgeIcon,
+        text,
+        textName,
+        textCount,
+        serviceSurface
+      );
+    }
+  );
+
+  serviceSurface.find(INPUT).each(function(index) {
+    if (index) this.checked = !WHITELISTED;
+  });
+
+  renderWhitelisting(LOCAL_SITE_WHITELIST);
+  TABS.reload(id);
 }
 
 /* Refreshes minor third-party details. */
@@ -991,31 +1078,11 @@ var whitelistingClicked = 0;
           textCount,
           serviceSurface
         ) {
-          const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
-          const LOCAL_SITE_WHITELIST =
-              WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-          const CATEGORY_WHITELIST =
-              LOCAL_SITE_WHITELIST[name] ||
-                  (LOCAL_SITE_WHITELIST[name] =
-                      {whitelisted: false, services: {}});
-          const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-          const WHITELISTED =
-              CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted;
-          const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
-          const LOCAL_SITE_BLACKLIST =
-              BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-          const CATEGORY_BLACKLIST =
-              LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
-          for (var serviceName in SERVICE_WHITELIST)
-              SERVICE_WHITELIST[serviceName] = WHITELISTED;
-          for (var serviceName in CATEGORY_BLACKLIST)
-              CATEGORY_BLACKLIST[serviceName] = !WHITELISTED;
-          localStorage.whitelist = JSON.stringify(WHITELIST);
-          localStorage.blacklist = JSON.stringify(BLACKLIST);
-          renderCategory(
+          handleCategory(
+            DOMAIN,
+            ID,
             name,
             lowercaseName,
-            !WHITELISTED,
             requestCount,
             categoryControl,
             wrappedCategoryControl,
@@ -1024,15 +1091,8 @@ var whitelistingClicked = 0;
             text,
             textName,
             textCount,
-            2
+            serviceSurface
           );
-
-          serviceSurface.find(INPUT).each(function(index) {
-            if (index) this.checked = !WHITELISTED;
-          });
-
-          renderWhitelisting(LOCAL_SITE_WHITELIST);
-          TABS.reload(ID);
         }.bind(
           null,
           name,
