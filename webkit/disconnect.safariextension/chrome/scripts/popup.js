@@ -337,6 +337,33 @@ function animateAction(action, button, name) {
       }, i * 25, i);
 }
 
+/* Outputs the global blocking state. */
+function renderWhitelisting(siteWhitelist) {
+  const SERVICE_WHITELIST = (siteWhitelist.Disconnect || {}).services || {};
+  const WHITELISTING = $('.whitelisting');
+  const WHITELISTING_ICON = WHITELISTING.find('img')[0];
+  const WHITELISTING_TEXT = WHITELISTING.filter('.text');
+
+  if (
+    SERVICE_WHITELIST.Facebook && SERVICE_WHITELIST.Google &&
+        SERVICE_WHITELIST.Twitter &&
+            (siteWhitelist.Advertising || {}).whitelisted &&
+                (siteWhitelist.Analytics || {}).whitelisted &&
+                    (siteWhitelist.Content || {}).whitelisted &&
+                        (siteWhitelist.Social || {}).whitelisted
+  ) {
+    WHITELISTING_ICON.alt = 'Blacklist';
+    WHITELISTING_TEXT.text('Blacklist site');
+  } else {
+    WHITELISTING_ICON.alt = 'Whitelist';
+    WHITELISTING_TEXT.text('Whitelist site');
+  }
+
+  return {
+    control: WHITELISTING, icon: WHITELISTING_ICON, text: WHITELISTING_TEXT
+  };
+}
+
 /* Plays a whitelist animation. */
 function animateWhitelisting(icon, callback) {
   for (var i = 1; i < 21; i++)
@@ -803,6 +830,7 @@ var whitelistingClicked = 0;
             2
           );
           localStorage.whitelist = JSON.stringify(WHITELIST);
+          renderWhitelisting(LOCAL_SITE_WHITELIST);
           TABS.reload(ID);
         }.bind(
           null,
@@ -955,6 +983,7 @@ var whitelistingClicked = 0;
             if (index) this.checked = !WHITELISTED;
           });
 
+          renderWhitelisting(LOCAL_SITE_WHITELIST);
           TABS.reload(ID);
         }.bind(
           null,
@@ -1008,27 +1037,10 @@ var whitelistingClicked = 0;
         CATEGORY_SURFACE.append(categoryControls);
       }
 
-      const SERVICE_WHITELIST =
-          (SITE_WHITELIST.Disconnect || {}).services || {};
-      const WHITELISTING = $('.whitelisting');
-      const WHITELISTING_ICON = WHITELISTING.find('img')[0];
-      const WHITELISTING_TEXT = WHITELISTING.filter('.text');
-
-      if (
-        SERVICE_WHITELIST.Facebook && SERVICE_WHITELIST.Google &&
-            SERVICE_WHITELIST.Twitter &&
-                (SITE_WHITELIST.Advertising || {}).whitelisted &&
-                    (SITE_WHITELIST.Analytics || {}).whitelisted &&
-                        (SITE_WHITELIST.Content || {}).whitelisted &&
-                            (SITE_WHITELIST.Social || {}).whitelisted
-      ) {
-        WHITELISTING_ICON.alt = 'Blacklist';
-        WHITELISTING_TEXT.text('Blacklist site');
-      } else {
-        WHITELISTING_ICON.alt = 'Whitelist';
-        WHITELISTING_TEXT.text('Whitelist site');
-      }
-
+      const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
+      const WHITELISTING = WHITELISTING_ELEMENTS.control;
+      const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
+      const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
       WHITELISTING.mouseenter(handleWhitelisting);
 
       WHITELISTING.click(function() {
