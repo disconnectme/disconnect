@@ -244,28 +244,30 @@ function handleCategory(
   const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
   const LOCAL_SITE_WHITELIST =
       WHITELIST[domain] || (WHITELIST[domain] = {});
+  const CONTENT = name == CONTENT_NAME;
   const CATEGORY_WHITELIST =
       LOCAL_SITE_WHITELIST[name] ||
-          (LOCAL_SITE_WHITELIST[name] =
-              {whitelisted: false, services: {}});
+          (LOCAL_SITE_WHITELIST[name] = {whitelisted: CONTENT, services: {}});
   const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-  const WHITELISTED =
-      CATEGORY_WHITELIST.whitelisted = !CATEGORY_WHITELIST.whitelisted;
+  var whitelisted = CATEGORY_WHITELIST.whitelisted;
+  whitelisted =
+      CATEGORY_WHITELIST.whitelisted =
+          !(whitelisted || CONTENT && whitelisted !== false);
   const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
   const LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
   const CATEGORY_BLACKLIST =
       LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
   for (var serviceName in SERVICE_WHITELIST)
-      SERVICE_WHITELIST[serviceName] = WHITELISTED;
+      SERVICE_WHITELIST[serviceName] = whitelisted;
   for (var serviceName in CATEGORY_BLACKLIST)
-      CATEGORY_BLACKLIST[serviceName] = !WHITELISTED;
+      CATEGORY_BLACKLIST[serviceName] = !whitelisted;
   localStorage.whitelist = JSON.stringify(WHITELIST);
   localStorage.blacklist = JSON.stringify(BLACKLIST);
   renderCategory(
     name,
     lowercaseName,
-    !WHITELISTED,
+    !whitelisted,
     requestCount,
     categoryControl,
     wrappedCategoryControl,
@@ -295,7 +297,7 @@ function handleCategory(
   );
 
   serviceSurface.find(INPUT).each(function(index) {
-    if (index) this.checked = !WHITELISTED;
+    if (index) this.checked = !whitelisted;
   });
 
   renderWhitelisting(LOCAL_SITE_WHITELIST);
@@ -335,11 +337,12 @@ function updateCategory(
           const CATEGORY_WHITELIST =
               ((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] ||
                   {})[categoryName] || {};
-          CHECKBOX.checked =
-              !CATEGORY_WHITELIST.whitelisted &&
-                  !(CATEGORY_WHITELIST.services || {})[serviceName] ||
-                      (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
-                          {})[categoryName] || {})[serviceName];
+          const WHITELISTED = CATEGORY_WHITELIST.whitelisted;
+          CHECKBOX.checked = !(
+            WHITELISTED || categoryName == CONTENT_NAME && WHITELISTED !== false
+          ) && !(CATEGORY_WHITELIST.services || {})[serviceName] ||
+              (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
+                  {})[categoryName] || {})[serviceName];
 
           CHECKBOX.onclick = function(categoryName, serviceName) {
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
@@ -347,9 +350,11 @@ function updateCategory(
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
             const LOCAL_CATEGORY_WHITELIST =
                 SITE_WHITELIST[categoryName] ||
-                    (SITE_WHITELIST[categoryName] =
-                        {whitelisted: false, services: {}});
+                    (SITE_WHITELIST[categoryName] = {
+                      whitelisted: categoryName == CONTENT_NAME, services: {}
+                    });
             const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
+            const WHITELISTED = SERVICE_WHITELIST[serviceName];
             const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
             const SITE_BLACKLIST =
                 BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
@@ -359,7 +364,10 @@ function updateCategory(
             this.checked =
                 SERVICE_WHITELIST[serviceName] =
                     !(CATEGORY_BLACKLIST[serviceName] =
-                        SERVICE_WHITELIST[serviceName]);
+                        WHITELISTED ||
+                            categoryName == CONTENT_NAME &&
+                                LOCAL_CATEGORY_WHITELIST.whitelisted &&
+                                    WHITELISTED !== false);
             localStorage.whitelist = JSON.stringify(WHITELIST);
             localStorage.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);
@@ -404,6 +412,8 @@ function clearServices(id) {
         );
       }
 
+      const WHITELISTED = (siteWhitelist[name] || {}).whitelisted;
+
       for (i = 0; i < CATEGORY_COUNT; i++) {
         var name = CATEGORIES[i];
         var control = $('.category')[i + 1];
@@ -413,7 +423,7 @@ function clearServices(id) {
         renderCategory(
           name,
           name.toLowerCase(),
-          !(siteWhitelist[name] || {}).whitelisted,
+          !(WHITELISTED || name == CONTENT_NAME && WHITELISTED !== false),
           0,
           control,
           wrappedControl,
@@ -779,7 +789,7 @@ const SHORTCUTS = ['Facebook', 'Google', 'Twitter'];
 const SHORTCUT_COUNT = SHORTCUTS.length;
 
 /* The other types of third parties. */
-const CATEGORIES = ['Advertising', 'Analytics', 'Content', 'Social'];
+const CATEGORIES = ['Advertising', 'Analytics', 'Social', 'Content'];
 
 /* The number of other types of third parties. */
 const CATEGORY_COUNT = CATEGORIES.length;
@@ -1004,6 +1014,8 @@ var whitelistingClicked = 0;
         var textCount = wrappedText.find('.count');
         var categoryWhitelist = SITE_WHITELIST[name] || {};
         var whitelisted = categoryWhitelist.whitelisted;
+        whitelisted =
+            whitelisted || name == CONTENT_NAME && whitelisted !== false;
         var categoryBlacklist = SITE_BLACKLIST[name] || {};
 
         for (var serviceName in categoryRequests) {
@@ -1017,11 +1029,13 @@ var whitelistingClicked = 0;
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const LOCAL_SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            const CONTENT = name == CONTENT_NAME;
             const CATEGORY_WHITELIST =
                 LOCAL_SITE_WHITELIST[name] ||
                     (LOCAL_SITE_WHITELIST[name] =
-                        {whitelisted: false, services: {}});
+                        {whitelisted: CONTENT, services: {}});
             const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+            const WHITELISTED = SERVICE_WHITELIST[serviceName];
             const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
             const LOCAL_SITE_BLACKLIST =
                 BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
@@ -1030,7 +1044,9 @@ var whitelistingClicked = 0;
             this.checked =
                 SERVICE_WHITELIST[serviceName] =
                     !(CATEGORY_BLACKLIST[serviceName] =
-                        SERVICE_WHITELIST[serviceName]);
+                        WHITELISTED ||
+                            CONTENT && CATEGORY_WHITELIST.whitelisted &&
+                                WHITELISTED !== false);
             localStorage.whitelist = JSON.stringify(WHITELIST);
             localStorage.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);

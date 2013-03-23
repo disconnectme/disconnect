@@ -173,7 +173,6 @@ function getCount(tabRequests) {
   var count = 0;
 
   for (var categoryName in tabRequests) {
-    if (categoryName == CONTENT_NAME) continue;
     var category = tabRequests[categoryName];
     for (var serviceName in category) count += category[serviceName].count;
   }
@@ -437,16 +436,16 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   if (CHILD_SERVICE) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
     const CHILD_NAME = CHILD_SERVICE.name;
-    const CHILD_CATEGORY = CHILD_SERVICE.category;
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
+    const CHILD_CATEGORY = CHILD_SERVICE.category;
+    const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
     const CATEGORY_WHITELIST =
         ((deserialize(localStorage.whitelist) || {})[PARENT_DOMAIN] ||
             {})[CHILD_CATEGORY] || {};
 
     if (
       PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
-          PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name ||
-              CHILD_CATEGORY == CONTENT_NAME
+          PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
     ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
@@ -455,7 +454,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
     } else if (
-      (CATEGORY_WHITELIST.whitelisted ||
+      (CONTENT || CATEGORY_WHITELIST.whitelisted ||
           (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
               !(((deserialize(localStorage.blacklist) || {})[PARENT_DOMAIN] ||
                   {})[CHILD_CATEGORY] || {})[CHILD_NAME]
@@ -482,7 +481,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
-        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted, POPUP);
+        incrementCounter(TAB_ID, CHILD_SERVICE, !whitelisted || CONTENT, POPUP);
   }
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
