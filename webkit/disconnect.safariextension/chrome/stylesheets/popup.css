@@ -142,8 +142,6 @@ td { padding: 0 }
 
 .services div { display: none }
 
-.services .overflow { height: 5px }
-
 .service { height: 15px }
 
 .service:first-child { display: none }

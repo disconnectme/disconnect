@@ -445,12 +445,7 @@ function clearServices(id) {
         ACTION.prev().find('.name').text().toLowerCase()
       );
       const CONTROL = $('.services');
-
-      CONTROL.find('div:visible').slideUp('fast', function() {
-        $($(this).siblings()[1]).slideDown(50, function() {
-          $(this).slideUp(50);
-        });
-      });
+      CONTROL.find('div:visible').slideUp('fast');
 
       setTimeout(function() {
         CONTROL.each(function(index) {
@@ -1155,26 +1150,12 @@ var whitelistingClicked = 0;
               name
             );
             EXPANDED_SERVICES.slideUp('fast', function() {
-              $(EXPANDED_SERVICES.siblings()[1]).slideDown(50, function() {
-                $(this).slideUp(50);
-              });
-
               animateAction(action, button, name);
-
-              activeServices = serviceContainer.slideToggle('fast', function() {
-                $(serviceContainer.siblings()[1]).slideDown(50, function() {
-                  $(this).slideUp(50);
-                });
-              });
+              activeServices = serviceContainer.slideToggle('fast');
             });
           } else {
             animateAction(action, button, name);
-
-            activeServices = serviceContainer.slideToggle('fast', function() {
-              $(serviceContainer.siblings()[1]).slideDown(50, function() {
-                $(this).slideUp(50);
-              });
-            });
+            activeServices = serviceContainer.slideToggle('fast');
           }
         }.bind(null, serviceContainer, action, button, lowercaseName));
 
