@@ -11,12 +11,11 @@ function whitelistSite() {
   var analyticsWhitelist =
       siteWhitelist.Analytics || (siteWhitelist.Analytics = {});
   var socialWhitelist = siteWhitelist.Social || (siteWhitelist.Social = {});
-  contentBlocked = (siteWhitelist.Content || {}).whitelisted === false;
   var trackingUnblocked =
       serviceWhitelist.Facebook && serviceWhitelist.Google &&
           serviceWhitelist.Twitter && advertisingWhitelist.whitelisted &&
               analyticsWhitelist.whitelisted && socialWhitelist.whitelisted &&
-                  !contentBlocked;
+                  (siteWhitelist.Content || {}).whitelisted !== false;
   serviceWhitelist.Facebook =
       serviceWhitelist.Google =
           serviceWhitelist.Twitter =

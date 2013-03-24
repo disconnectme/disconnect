@@ -170,9 +170,10 @@ function renderCategory(
   const CONTENT = name == CONTENT_NAME;
   const COUNT =
       animation > 1 ||
-          whitelistingClicked && whitelistingClicked-- &&
-              (!CONTENT || contentBlocked && !(contentBlocked = false)) ? 21 :
-                  animation;
+          whitelistingClicked && whitelistingClicked-- && !(
+            CONTENT &&
+                $('.whitelisting').filter('.text').text() == 'Whitelist site'
+          ) ? 21 : animation;
   const WRAPPED_BADGE = $(badge);
 
   if (blocked) {
@@ -507,8 +508,8 @@ function renderWhitelisting(siteWhitelist) {
         SERVICE_WHITELIST.Twitter &&
             (siteWhitelist.Advertising || {}).whitelisted &&
                 (siteWhitelist.Analytics || {}).whitelisted &&
-                    (siteWhitelist.Content || {}).whitelisted !== false &&
-                        (siteWhitelist.Social || {}).whitelisted
+                    (siteWhitelist.Social || {}).whitelisted &&
+                        (siteWhitelist.Content || {}).whitelisted !== false
   ) {
     WHITELISTING_ICON.alt = 'Blacklist';
     WHITELISTING_TEXT.text('Blacklist site');
@@ -886,9 +887,6 @@ var timeout = 1600;
 
 /* Whether or not the whitelist button was clicked. */
 var whitelistingClicked = 0;
-
-/* Whether or not the content category was blacklisted. */
-var contentBlocked;
 
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
