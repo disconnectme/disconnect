@@ -2,8 +2,7 @@
   "manifest_version": 2,
   "name": "Disconnect",
   "version": "5.0.0",
-  "description":
-      "Stop third parties and search engines from tracking the webpages you go to and searches you do.",
+  "description": "Make the web faster, more private, and more secure.",
   "icons": {"48": "images/48.png", "128": "images/128.png"},
   "permissions": [
     "chrome://favicon/",
