@@ -167,16 +167,18 @@ function renderCategory(
   animation,
   callback
 ) {
+  const CONTENT = name == CONTENT_NAME;
   const COUNT =
-      animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
-          animation;
+      animation > 1 ||
+          whitelistingClicked && whitelistingClicked-- &&
+              (!CONTENT || contentBlocked && !(contentBlocked = false)) ? 21 :
+                  animation;
   const WRAPPED_BADGE = $(badge);
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
     badge.title =
-        UNBLOCK + lowercaseName +
-            (name == CONTENT_NAME ? ' (' + RECOMMENDED + ')' : '');
+        UNBLOCK + lowercaseName + (CONTENT ? ' (' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
           index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
@@ -198,8 +200,7 @@ function renderCategory(
   } else {
     wrappedControl.addClass(DEACTIVATED);
     badge.title =
-        BLOCK + lowercaseName +
-            (name == CONTENT_NAME ? ' (not ' + RECOMMENDED + ')' : '');
+        BLOCK + lowercaseName + (CONTENT ? ' (not ' + RECOMMENDED + ')' : '');
     for (var i = 0; i < COUNT; i++)
         setTimeout(function(badgeIcon, lowercaseName, index) {
           index || WRAPPED_BADGE.off('mouseenter').off('mouseleave');
@@ -348,10 +349,11 @@ function updateCategory(
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            const CONTENT = categoryName == CONTENT_NAME;
             const LOCAL_CATEGORY_WHITELIST =
                 SITE_WHITELIST[categoryName] ||
                     (SITE_WHITELIST[categoryName] = {
-                      whitelisted: categoryName == CONTENT_NAME, services: {}
+                      whitelisted: CONTENT, services: {}
                     });
             const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
             const WHITELISTED = SERVICE_WHITELIST[serviceName];
@@ -365,9 +367,8 @@ function updateCategory(
                 SERVICE_WHITELIST[serviceName] =
                     !(CATEGORY_BLACKLIST[serviceName] =
                         WHITELISTED ||
-                            categoryName == CONTENT_NAME &&
-                                LOCAL_CATEGORY_WHITELIST.whitelisted &&
-                                    WHITELISTED !== false);
+                            CONTENT && LOCAL_CATEGORY_WHITELIST.whitelisted &&
+                                WHITELISTED !== false);
             localStorage.whitelist = JSON.stringify(WHITELIST);
             localStorage.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);
@@ -412,10 +413,9 @@ function clearServices(id) {
         );
       }
 
-      const WHITELISTED = (siteWhitelist[name] || {}).whitelisted;
-
       for (i = 0; i < CATEGORY_COUNT; i++) {
         var name = CATEGORIES[i];
+        var whitelisted = (siteWhitelist[name] || {}).whitelisted;
         var control = $('.category')[i + 1];
         var wrappedControl = $(control);
         var wrappedBadge = wrappedControl.find('.badge');
@@ -423,7 +423,7 @@ function clearServices(id) {
         renderCategory(
           name,
           name.toLowerCase(),
-          !(WHITELISTED || name == CONTENT_NAME && WHITELISTED !== false),
+          !(whitelisted || name == CONTENT_NAME && whitelisted !== false),
           0,
           control,
           wrappedControl,
@@ -507,7 +507,7 @@ function renderWhitelisting(siteWhitelist) {
         SERVICE_WHITELIST.Twitter &&
             (siteWhitelist.Advertising || {}).whitelisted &&
                 (siteWhitelist.Analytics || {}).whitelisted &&
-                    (siteWhitelist.Content || {}).whitelisted &&
+                    (siteWhitelist.Content || {}).whitelisted !== false &&
                         (siteWhitelist.Social || {}).whitelisted
   ) {
     WHITELISTING_ICON.alt = 'Blacklist';
@@ -886,6 +886,9 @@ var timeout = 1600;
 
 /* Whether or not the whitelist button was clicked. */
 var whitelistingClicked = 0;
+
+/* Whether or not the content category was blacklisted. */
+var contentBlocked;
 
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(

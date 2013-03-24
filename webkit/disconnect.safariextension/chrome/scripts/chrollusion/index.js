@@ -10,22 +10,23 @@ function whitelistSite() {
       siteWhitelist.Advertising || (siteWhitelist.Advertising = {});
   var analyticsWhitelist =
       siteWhitelist.Analytics || (siteWhitelist.Analytics = {});
-  var contentWhitelist = siteWhitelist.Content || (siteWhitelist.Content = {});
   var socialWhitelist = siteWhitelist.Social || (siteWhitelist.Social = {});
+  contentBlocked = (siteWhitelist.Content || {}).whitelisted === false;
   var trackingUnblocked =
       serviceWhitelist.Facebook && serviceWhitelist.Google &&
           serviceWhitelist.Twitter && advertisingWhitelist.whitelisted &&
-              analyticsWhitelist.whitelisted && contentWhitelist.whitelisted &&
-                  socialWhitelist.whitelisted;
+              analyticsWhitelist.whitelisted && socialWhitelist.whitelisted &&
+                  !contentBlocked;
   serviceWhitelist.Facebook =
       serviceWhitelist.Google =
           serviceWhitelist.Twitter =
               advertisingWhitelist.whitelisted =
                   analyticsWhitelist.whitelisted =
-                      contentWhitelist.whitelisted =
-                          socialWhitelist.whitelisted = !trackingUnblocked;
+                      socialWhitelist.whitelisted = !trackingUnblocked;
   advertisingWhitelist.services = analyticsWhitelist.services =
-      contentWhitelist.services = socialWhitelist.services = {};
+      socialWhitelist.services = {};
+  !trackingUnblocked &&
+      (siteWhitelist.Content = {whitelisted: true, services: {}});
   localStorage.whitelist = JSON.stringify(whitelist);
   blacklist = deserialize(localStorage.blacklist);
   blacklist && delete blacklist[domain];
