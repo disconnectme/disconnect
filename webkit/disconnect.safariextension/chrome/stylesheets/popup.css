@@ -188,7 +188,8 @@ td { padding: 0 }
 
 .service .text {
   padding-left: 10px;
-  color: #b3b3b3
+  color: #b3b3b3;
+  cursor: default
 }
 
 #options {
