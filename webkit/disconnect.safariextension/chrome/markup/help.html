@@ -1,0 +1,293 @@
+<!--
+  The markup for a help page.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../stylesheets/vendor/typography/typography.css">
+<link rel="stylesheet" href="../stylesheets/vendor/tipped/tipped.css">
+<link rel="stylesheet" href="../stylesheets/chrollusion/index.css">
+<link rel="stylesheet" href="../stylesheets/help.css">
+<script src="../scripts/vendor/port/port.js"></script>
+<script src="../scripts/vendor/jquery/jquery.js"></script>
+<script src="../scripts/vendor/tipped/tipped.js"></script>
+<script src="../scripts/vendor/d3/d3.js"></script>
+<script src="../scripts/vendor/d3/d3.layout.js"></script>
+<script src="../scripts/vendor/d3/d3.geom.js"></script>
+<script src="../scripts/vendor/favicon/favicon.js"></script>
+<script src="../scripts/chrollusion/index-content-script.js"></script>
+<script src="../scripts/chrollusion/collusion-addon.js"></script>
+<script src="../scripts/chrollusion/graphrunner.js"></script>
+<script src="../scripts/chrollusion/index-help.js"></script>
+<script src="../scripts/help.js"></script>
+<div id="list">
+  <table id="navbar">
+    <tr>
+      <td class="badge">
+        <a
+          title="Visit Disconnect"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/disconnect.png" alt="Disconnect"></a>
+      </td>
+      <td class="text">
+        <a
+          title="Get help"
+          target="_blank"
+          href="https://disconnect.me/help"
+        >Help</a><span title="Share Disconnect">Share</span><a
+          title="Pay what you want"
+          target="_blank"
+          href="https://disconnect.me/pwyw"
+        >$</a>
+      </td>
+    </tr>
+  </table>
+  <table id="shortcuts">
+    <tr>
+      <td>
+        <table class="shortcut">
+          <tr>
+            <td class="badge"><img></td>
+            <td class="text"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table>
+    <tbody id="categories">
+      <tr class="category">
+        <td class="badge"><img></td>
+        <td class="text">
+          <table>
+            <tr>
+              <td class="name"></td>
+            </tr>
+            <tr>
+              <td class="count"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="action"><img src="../images/expand/1.png"></td>
+      </tr>
+      <tr class="border">
+        <td colspan="3"></td>
+      </tr>
+      <tr class="services">
+        <td colspan="3">
+          <div>
+            <table>
+              <tbody>
+                <tr class="service">
+                  <td class="control"><input type="checkbox"></td>
+                  <td class="link">
+                    <a title="Visit " target="_blank"></a>
+                  </td>
+                  <td class="text"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table id="options">
+    <tr>
+      <td class="whitelisting badge"><img src="../images/list/1.png"></td>
+      <td class="whitelisting text"></td>
+      <td class="visualization badge"><img></td>
+      <td class="visualization text">Visualize page</td>
+    </tr>
+    <tr>
+      <td class="wifi"><input type="checkbox"></td>
+      <td class="wifi">Secure Wi-Fi</td>
+      <td class="search" title="Coming soon">
+        <input type="checkbox" disabled>
+      </td>
+      <td class="search disabled" title="Coming soon">Secure search</td>
+    </tr>
+  </table>
+  <table id="dashboard">
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="label">
+              Time
+              <br>
+              saved
+            </td>
+            <td class="label">Bandwidth saved</td>
+            <td class="label">Requests secured</td>
+          </tr>
+          <tr>
+            <td colspan="3" id="data"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table class="sharing disconnect">
+    <tr>
+      <td class="text"></td>
+      <td>
+        <a
+          title="Share Disconnect"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/facebook.png" alt="Facebook"></a>
+      </td>
+      <td>
+        <a
+          title="Tweet about Disconnect"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/twitter.png" alt="Twitter"></a>
+      </td>
+    </tr>
+  </table>
+  <table class="sharing speed">
+    <tr>
+      <td class="text"></td>
+      <td>
+        <a
+          title="Share speed"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/facebook.png" alt="Facebook"></a>
+      </td>
+      <td>
+        <a
+          title="Tweet about speed"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/twitter.png" alt="Twitter"></a>
+      </td>
+    </tr>
+  </table>
+  <table class="sharing bandwidth">
+    <tr>
+      <td class="text"></td>
+      <td>
+        <a
+          title="Share bandwidth"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/facebook.png" alt="Facebook"></a>
+      </td>
+      <td>
+        <a
+          title="Tweet about bandwidth"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/twitter.png" alt="Twitter"></a>
+      </td>
+    </tr>
+  </table>
+  <table class="sharing security">
+    <tr>
+      <td class="text"></td>
+      <td>
+        <a
+          title="Share security"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/facebook.png" alt="Facebook"></a>
+      </td>
+      <td>
+        <a
+          title="Tweet about security"
+          target="_blank"
+          href="https://disconnect.me/"
+        ><img src="../images/twitter.png" alt="Twitter"></a>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="graph">
+  <div class="notification" id="update" style="display: none">
+    <div class="close"></div>
+    &nbsp;<strong><span class="chrome">v2.0</span><span class="safari">v2.0</span></strong> • Click <strong>Hide inactive sites</strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
+    <div class="share" id="js-share-fb" style="display: none"></div>
+    <div class="share" id="js-share-tweet" style="display: none"></div>
+  </div>
+  <div class="notification" id="recommends" style="display: none">
+    <div class="close"></div>
+    <span id='recommender-message'></span>
+  </div>
+  <div id="page">
+  <div id="sidebar" style="display: none;">
+    <h1></h1>
+    <img id="logo">
+    <hr/>
+
+    <div id="sidebar-content">
+    <div class="live-data">
+      <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</p>
+      <p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</p>
+      <p><span class="tracker">Red</span> circles are known tracking sites. <span class="site">Gray</span> circles aren’t but may still track you.</p>
+      <p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</p>
+    </div> <!-- end of live-data -->
+    <div id="domain-infos"></div> <!-- Templates are copied into here -->
+    <div class="settings-menu">
+      <ul>
+        <li id="unblock-tracking"></li>
+        <li id="disable-wifi"></li>
+        <li id="hide-sidebar">Hide sidebar</li>
+        <li class="invisible" id="show-instructions">Show instructions</li>
+      </ul>
+    </div> <!-- end of settingsmenu -->
+    </div> <!-- End of #sidebar-content -->
+  </div> <!-- End of #sidebar -->
+  <div id="chart"></div><!-- The d3 layout graph will go inside this div -->
+  <div class="settings-menu collapsed" id="show-sidebar">+</div>
+  <div class="settings-menu collapsed" id="show-list">Show list view</div>
+  </div>
+  <div id="addon-installation-detected" style="display: none;">
+    Collusion add-on detected! Reload this page to see your graph.
+  </div>
+  <div id="templates">
+    <div class="info" style="display: none;">
+      <h2 class="domain"><a class="domain"></a></h2>
+
+      <div class="referrees">
+        <p>When you visit this site, the following sites are informed:</p>
+        <ul></ul>
+      </div>
+      <div class="referrers">
+        <p>This site is informed when you visit the following sites:</p>
+        <ul></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Social Sharing Stuff -->
+  <div id="social_share">
+    <!-- Start Twitter Stuff-->
+    <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</a>
+    <!-- End Twitter Stuff-->
+
+    <!-- Start Facebook Stuff-->
+    <a name="fb_share" share_url="https://blog.disconnect.me/collusion-for-safari"></a>
+    <!-- End Facebook Stuff-->
+  </div>
+  <!-- End Social Sharing Stuff -->
+</div>
