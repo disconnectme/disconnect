@@ -50,9 +50,9 @@ function renderShortcut(
 
           if (index > COUNT - 2) {
             wrappedControl.mouseenter(function() {
-              badge.src = badge.src.replace('.', HIGHLIGHTED);
+              badge.src = badge.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
             }).mouseleave(function() {
-              badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              badge.src = badge.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
             callback && wrappedControl.click(callback);
@@ -71,9 +71,9 @@ function renderShortcut(
 
           if (index > COUNT - 2) {
             wrappedControl.mouseenter(function() {
-              badge.src = badge.src.replace('.', HIGHLIGHTED);
+              badge.src = badge.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
             }).mouseleave(function() {
-              badge.src = badge.src.replace(HIGHLIGHTED, '.');
+              badge.src = badge.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
             callback && wrappedControl.click(callback);
@@ -189,9 +189,11 @@ function renderCategory(
 
           if (index > COUNT - 2) {
             WRAPPED_BADGE.mouseenter(function() {
-              badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              badgeIcon.src =
+                  badgeIcon.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
             }).mouseleave(function() {
-              badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              badgeIcon.src =
+                  badgeIcon.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
             callback && WRAPPED_BADGE.click(callback);
@@ -211,9 +213,11 @@ function renderCategory(
 
           if (index > COUNT - 2) {
             WRAPPED_BADGE.mouseenter(function() {
-              badgeIcon.src = badgeIcon.src.replace('.', HIGHLIGHTED);
+              badgeIcon.src =
+                  badgeIcon.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
             }).mouseleave(function() {
-              badgeIcon.src = badgeIcon.src.replace(HIGHLIGHTED, '.');
+              badgeIcon.src =
+                  badgeIcon.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
             callback && WRAPPED_BADGE.click(callback);
@@ -389,71 +393,77 @@ function updateCategory(
 
 /* Resets third-party details. */
 function clearServices(id) {
-  TABS.query({currentWindow: true, active: true}, function(tabs) {
-    if (id == tabs[0].id) {
-      whitelist = deserialize(localStorage.whitelist) || {};
-      siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+  if (id == 0) {
+    whitelist = deserialize(localStorage.whitelist) || {};
+    siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+    const TAB_REQUESTS = REQUEST_COUNTS[tabId] || {};
+    const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
 
-      for (var i = 0; i < SHORTCUT_COUNT; i++) {
-        var name = SHORTCUTS[i];
-        var control = $('.shortcut')[i + 1];
-        renderShortcut(
-          name,
-          name.toLowerCase(),
-          !((siteWhitelist.Disconnect || {}).services || {})[name],
-          0,
-          control,
-          $(control),
-          control.
-            getElementsByClassName('badge')[0].
-            getElementsByTagName('img')[0],
-          control.getElementsByClassName('text')[0],
-          0
-        );
-      }
-
-      for (i = 0; i < CATEGORY_COUNT; i++) {
-        var name = CATEGORIES[i];
-        var whitelisted = (siteWhitelist[name] || {}).whitelisted;
-        var control = $('.category')[i + 1];
-        var wrappedControl = $(control);
-        var wrappedBadge = wrappedControl.find('.badge');
-        var wrappedText = wrappedControl.find('.text');
-        renderCategory(
-          name,
-          name.toLowerCase(),
-          !(whitelisted || name == CONTENT_NAME && whitelisted !== false),
-          0,
-          control,
-          wrappedControl,
-          wrappedBadge[0],
-          wrappedBadge.find('img')[0],
-          wrappedText[0],
-          wrappedText.find('.name'),
-          wrappedText.find('.count'),
-          0
-        );
-      }
-
-      const BUTTON = $('.category .action img[src*=7]');
-      const ACTION = BUTTON.parent();
-      animateAction(
-        ACTION[0],
-        BUTTON[0],
-        ACTION.prev().find('.name').text().toLowerCase()
+    for (var i = 0; i < SHORTCUT_COUNT; i++) {
+      var name = SHORTCUTS[i];
+      var shortcutRequests = DISCONNECT_REQUESTS[name];
+      var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+      var control = $('.shortcut')[i + 1];
+      renderShortcut(
+        name,
+        name.toLowerCase(),
+        !((siteWhitelist.Disconnect || {}).services || {})[name],
+        requestCount,
+        control,
+        $(control),
+        control.
+          getElementsByClassName('badge')[0].
+          getElementsByTagName('img')[0],
+        control.getElementsByClassName('text')[0],
+        0
       );
-      const CONTROL = $('.services');
-      CONTROL.find('div:visible').slideUp('fast');
-
-      setTimeout(function() {
-        CONTROL.each(function(index) {
-          index && $(this).find('.service').each(function(index) {
-            index && $(this).remove();
-          });
-        });
-      }, 200);
     }
-  });
+
+    for (i = 0; i < CATEGORY_COUNT; i++) {
+      var name = CATEGORIES[i];
+      var whitelisted = (siteWhitelist[name] || {}).whitelisted;
+      var categoryRequests = TAB_REQUESTS[name];
+      var requestCount = 0;
+      for (var serviceName in categoryRequests)
+          requestCount += categoryRequests[serviceName].count;
+      var control = $('.category')[i + 1];
+      var wrappedControl = $(control);
+      var wrappedBadge = wrappedControl.find('.badge');
+      var wrappedText = wrappedControl.find('.text');
+      renderCategory(
+        name,
+        name.toLowerCase(),
+        !(whitelisted || name == CONTENT_NAME && whitelisted !== false),
+        requestCount,
+        control,
+        wrappedControl,
+        wrappedBadge[0],
+        wrappedBadge.find('img')[0],
+        wrappedText[0],
+        wrappedText.find('.name'),
+        wrappedText.find('.count'),
+        0
+      );
+    }
+
+    const BUTTON = $('.category .action img[src*=7]');
+    const ACTION = BUTTON.parent();
+    animateAction(
+      ACTION[0],
+      BUTTON[0],
+      ACTION.prev().find('.name').text().toLowerCase()
+    );
+    const CONTROL = $('.services');
+    CONTROL.find('div:visible').slideUp('fast');
+
+    setTimeout(function() {
+      CONTROL.each(function(index) {
+        index && $(this).find('.service').each(function(index) {
+          index && $(this).remove();
+        });
+      });
+    }, 200);
+  }
 }
 
 /* Plays an expanding or collapsing animation. */
@@ -772,14 +782,8 @@ function handleVisualization() {
   });
 }
 
-/* The background window. */
-const BACKGROUND = chrome.extension.getBackgroundPage();
-
-/* The domain getter. */
-const GET = BACKGROUND.GET;
-
 /* The object deserializer. */
-const DESERIALIZE = BACKGROUND.deserialize;
+const DESERIALIZE = deserialize;
 
 /* The major third parties. */
 const SHORTCUTS = ['Facebook', 'Google', 'Twitter'];
@@ -793,11 +797,8 @@ const CATEGORIES = ['Advertising', 'Analytics', 'Social', 'Content'];
 /* The number of other types of third parties. */
 const CATEGORY_COUNT = CATEGORIES.length;
 
-/* The "tabs" API. */
-const TABS = BACKGROUND.TABS;
-
 /* The content key. */
-const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
+const CONTENT_NAME = 'Content';
 
 /* The list keyword. */
 const LIST = 'list';
@@ -809,7 +810,7 @@ const GRAPH = 'graph';
 const DEACTIVATED = 'deactivated';
 
 /* The highlighted keyword. */
-const HIGHLIGHTED = '-highlighted.';
+const HIGHLIGHTED = '-highlighted';
 
 /* The expand keyword. */
 const EXPAND = 'Expand';
@@ -847,11 +848,41 @@ const FRAME_COUNT = 7;
 /* The duration of animation cells. */
 const FRAME_LENGTH = 100;
 
+/* The number of tracking requests per tab, overall and by third party. */
+const REQUEST_COUNTS = {
+  0: {
+    Content: {
+      Microsoft: {url: 'http://www.microsoft.com/', count: 3},
+      'Limelight Networks': {url: 'http://www.limelight.com/', count: 1}
+    },
+    Analytics: {
+      Compuware: {url: 'http://www.compuware.com/', count: 1},
+      Chartbeat: {url: 'http://chartbeat.com/', count: 1},
+      comScore: {url: 'http://www.comscore.com/', count: 3},
+      Safecount: {url: 'http://www.safecount.net/', count: 1}
+    },
+    Advertising: {
+      Peer39: {url: 'http://www.peer39.com/', count: 1},
+      Nielsen: {url: 'http://www.nielsen.com/', count: 2},
+      Criteo: {url: 'http://www.criteo.com/', count: 12},
+      Krux: {url: 'http://www.krux.com/', count: 1},
+      BlueKai: {url: 'http://www.bluekai.com/', count: 1},
+      Outbrain: {url: 'http://www.outbrain.com/', count: 1},
+      InsightExpress: {url: 'http://www.insightexpress.com/', count: 1}
+    },
+    Disconnect: {
+      Facebook: {url: 'http://www.facebook.com/', count: 2},
+      Google: {url: 'http://www.google.com/', count: 11},
+      Twitter: {url: 'https://twitter.com/', count: 1}
+    }
+  }
+};
+
 /* The number of request updates. */
 const LIVE_REQUESTS = {};
 
 /* The number of total, blocked, and secured requests per tab. */
-const DASHBOARD = BACKGROUND.DASHBOARD;
+const DASHBOARD = {0: {total: 145, blocked: 39, secured: 0}};
 
 /* The mean load time of a tracking resource in milliseconds. */
 const TRACKING_RESOURCE_TIME = 72.6141083689391;
@@ -886,15 +917,18 @@ var timeout = 1600;
 /* Whether or not the whitelist button was clicked. */
 var whitelistingClicked = 0;
 
+if (localStorage.browsingHardened == null) localStorage.browsingHardened = true;
+localStorage.displayMode = 'list';
+
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
     if (SAFARI) $('body').addClass('safari');
 
     $('#navbar img').mouseenter(function() {
-      this.src = this.src.replace('.', HIGHLIGHTED);
+      this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
     }).mouseleave(function() {
-      this.src = this.src.replace(HIGHLIGHTED, '.');
+      this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
     });
 
     Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
@@ -913,160 +947,187 @@ var whitelistingClicked = 0;
       fadeOut: 400
     });
 
+    const DOMAIN = domain;
+    const ID = tabId;
+    const TAB_REQUESTS = REQUEST_COUNTS[ID] || {};
+    const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
+    const SHORTCUT_SURFACE =
+        document.getElementById('shortcuts').getElementsByTagName('td')[0];
+    const SHORTCUT_TEMPLATE =
+        SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
+    const SITE_WHITELIST =
+        (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
+    const SHORTCUT_WHITELIST =
+        (SITE_WHITELIST.Disconnect || {}).services || {};
+
+    for (var i = 0; i < SHORTCUT_COUNT; i++) {
+      var name = SHORTCUTS[i];
+      var lowercaseName = name.toLowerCase();
+      var shortcutRequests = DISCONNECT_REQUESTS[name];
+      var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+      var control =
+          SHORTCUT_SURFACE.appendChild(SHORTCUT_TEMPLATE.cloneNode(true));
+      var wrappedControl = $(control);
+      var badge =
+          control.
+            getElementsByClassName('badge')[0].
+            getElementsByTagName('img')[0];
+      var text = control.getElementsByClassName('text')[0];
+      renderShortcut(
+        name,
+        lowercaseName,
+        !SHORTCUT_WHITELIST[name],
+        requestCount,
+        control,
+        wrappedControl,
+        badge,
+        text,
+        1
+      );
+      badge.alt = name;
+
+      wrappedControl.click(function(
+        name,
+        lowercaseName,
+        requestCount,
+        control,
+        wrappedControl,
+        badge,
+        text
+      ) {
+        handleShortcut(
+          DOMAIN,
+          ID,
+          name,
+          lowercaseName,
+          requestCount,
+          control,
+          wrappedControl,
+          badge,
+          text
+        );
+      }.bind(
+        null,
+        name,
+        lowercaseName,
+        requestCount,
+        control,
+        wrappedControl,
+        badge,
+        text
+      ));
+    }
+
+    const CATEGORY_SURFACE = $('#categories');
+    const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
+    const SITE_BLACKLIST =
+        (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
+    serviceTemplate = CATEGORY_TEMPLATE.find('.service');
     var activeServices = $();
 
-    TABS.query({currentWindow: true, active: true}, function(tabs) {
-      const TAB = tabs[0];
-      const DOMAIN = domain = GET(TAB.url);
-      const ID = tabId = TAB.id;
-      const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
-      const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
-      const SHORTCUT_SURFACE =
-          document.getElementById('shortcuts').getElementsByTagName('td')[0];
-      const SHORTCUT_TEMPLATE =
-          SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-      const SITE_WHITELIST =
-          (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
-      const SHORTCUT_WHITELIST =
-          (SITE_WHITELIST.Disconnect || {}).services || {};
+    for (i = 0; i < CATEGORY_COUNT; i++) {
+      var name = CATEGORIES[i];
+      var lowercaseName = name.toLowerCase();
+      var categoryRequests = TAB_REQUESTS[name];
+      var requestCount = 0;
+      var categoryControls = CATEGORY_TEMPLATE.clone(true);
+      var wrappedCategoryControl = categoryControls.filter('.category');
+      var categoryControl = wrappedCategoryControl[0];
+      var serviceContainer = categoryControls.filter('.services').find('div');
+      var serviceSurface = serviceContainer.find('tbody');
+      var wrappedBadge = wrappedCategoryControl.find('.badge');
+      var badge = wrappedBadge[0];
+      var badgeIcon = wrappedBadge.find('img')[0];
+      var wrappedText = wrappedCategoryControl.find('.text');
+      var text = wrappedText[0];
+      var textName = wrappedText.find('.name');
+      var textCount = wrappedText.find('.count');
+      var categoryWhitelist = SITE_WHITELIST[name] || {};
+      var whitelisted = categoryWhitelist.whitelisted;
+      whitelisted =
+          whitelisted || name == CONTENT_NAME && whitelisted !== false;
+      var categoryBlacklist = SITE_BLACKLIST[name] || {};
 
-      for (var i = 0; i < SHORTCUT_COUNT; i++) {
-        var name = SHORTCUTS[i];
-        var lowercaseName = name.toLowerCase();
-        var shortcutRequests = DISCONNECT_REQUESTS[name];
-        var requestCount = shortcutRequests ? shortcutRequests.count : 0;
-        var control =
-            SHORTCUT_SURFACE.appendChild(SHORTCUT_TEMPLATE.cloneNode(true));
-        var wrappedControl = $(control);
-        var badge =
-            control.
-              getElementsByClassName('badge')[0].
-              getElementsByTagName('img')[0];
-        var text = control.getElementsByClassName('text')[0];
-        renderShortcut(
-          name,
-          lowercaseName,
-          !SHORTCUT_WHITELIST[name],
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text,
-          1
-        );
-        badge.alt = name;
+      for (var serviceName in categoryRequests) {
+        var serviceControl = serviceTemplate.clone(true);
+        var checkbox = serviceControl.find(INPUT)[0];
+        checkbox.checked =
+            !whitelisted && !(categoryWhitelist.services || {})[serviceName]
+                || categoryBlacklist[serviceName];
 
-        wrappedControl.click(function(
-          name,
-          lowercaseName,
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text
-        ) {
-          handleShortcut(
-            DOMAIN,
-            ID,
-            name,
-            lowercaseName,
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text
-          );
-        }.bind(
-          null,
-          name,
-          lowercaseName,
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text
-        ));
+        checkbox.onclick = function(name, serviceName) {
+          const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+          const LOCAL_SITE_WHITELIST =
+              WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+          const CONTENT = name == CONTENT_NAME;
+          const CATEGORY_WHITELIST =
+              LOCAL_SITE_WHITELIST[name] ||
+                  (LOCAL_SITE_WHITELIST[name] =
+                      {whitelisted: CONTENT, services: {}});
+          const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+          const WHITELISTED = SERVICE_WHITELIST[serviceName];
+          const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+          const LOCAL_SITE_BLACKLIST =
+              BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+          const CATEGORY_BLACKLIST =
+              LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
+          this.checked =
+              SERVICE_WHITELIST[serviceName] =
+                  !(CATEGORY_BLACKLIST[serviceName] =
+                      WHITELISTED ||
+                          CONTENT && CATEGORY_WHITELIST.whitelisted &&
+                              WHITELISTED !== false);
+          localStorage.whitelist = JSON.stringify(WHITELIST);
+          localStorage.blacklist = JSON.stringify(BLACKLIST);
+        }.bind(null, name, serviceName);
+
+        var link = serviceControl.find('a')[0];
+        link.title += serviceName;
+        var service = categoryRequests[serviceName];
+        link.href = service.url;
+        $(link).text(serviceName);
+        var serviceCount = service.count;
+        serviceControl.
+          find('.text').
+          text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
+        serviceSurface.append(serviceControl);
+        requestCount += serviceCount;
       }
 
-      const CATEGORY_SURFACE = $('#categories');
-      const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
-      const SITE_BLACKLIST =
-          (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
-      serviceTemplate = CATEGORY_TEMPLATE.find('.service');
+      renderCategory(
+        name,
+        lowercaseName,
+        !whitelisted,
+        requestCount,
+        categoryControl,
+        wrappedCategoryControl,
+        badge,
+        badgeIcon,
+        text,
+        textName,
+        textCount,
+        1
+      );
+      badge.alt = name;
 
-      for (i = 0; i < CATEGORY_COUNT; i++) {
-        var name = CATEGORIES[i];
-        var lowercaseName = name.toLowerCase();
-        var categoryRequests = TAB_REQUESTS[name];
-        var requestCount = 0;
-        var categoryControls = CATEGORY_TEMPLATE.clone(true);
-        var wrappedCategoryControl = categoryControls.filter('.category');
-        var categoryControl = wrappedCategoryControl[0];
-        var serviceContainer = categoryControls.filter('.services').find('div');
-        var serviceSurface = serviceContainer.find('tbody');
-        var wrappedBadge = wrappedCategoryControl.find('.badge');
-        var badge = wrappedBadge[0];
-        var badgeIcon = wrappedBadge.find('img')[0];
-        var wrappedText = wrappedCategoryControl.find('.text');
-        var text = wrappedText[0];
-        var textName = wrappedText.find('.name');
-        var textCount = wrappedText.find('.count');
-        var categoryWhitelist = SITE_WHITELIST[name] || {};
-        var whitelisted = categoryWhitelist.whitelisted;
-        whitelisted =
-            whitelisted || name == CONTENT_NAME && whitelisted !== false;
-        var categoryBlacklist = SITE_BLACKLIST[name] || {};
-
-        for (var serviceName in categoryRequests) {
-          var serviceControl = serviceTemplate.clone(true);
-          var checkbox = serviceControl.find(INPUT)[0];
-          checkbox.checked =
-              !whitelisted && !(categoryWhitelist.services || {})[serviceName]
-                  || categoryBlacklist[serviceName];
-
-          checkbox.onclick = function(name, serviceName) {
-            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
-            const LOCAL_SITE_WHITELIST =
-                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const CONTENT = name == CONTENT_NAME;
-            const CATEGORY_WHITELIST =
-                LOCAL_SITE_WHITELIST[name] ||
-                    (LOCAL_SITE_WHITELIST[name] =
-                        {whitelisted: CONTENT, services: {}});
-            const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-            const WHITELISTED = SERVICE_WHITELIST[serviceName];
-            const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
-            const LOCAL_SITE_BLACKLIST =
-                BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-            const CATEGORY_BLACKLIST =
-                LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
-            this.checked =
-                SERVICE_WHITELIST[serviceName] =
-                    !(CATEGORY_BLACKLIST[serviceName] =
-                        WHITELISTED ||
-                            CONTENT && CATEGORY_WHITELIST.whitelisted &&
-                                WHITELISTED !== false);
-            localStorage.whitelist = JSON.stringify(WHITELIST);
-            localStorage.blacklist = JSON.stringify(BLACKLIST);
-          }.bind(null, name, serviceName);
-
-          var link = serviceControl.find('a')[0];
-          link.title += serviceName;
-          var service = categoryRequests[serviceName];
-          link.href = service.url;
-          $(link).text(serviceName);
-          var serviceCount = service.count;
-          serviceControl.
-            find('.text').
-            text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
-          serviceSurface.append(serviceControl);
-          requestCount += serviceCount;
-        }
-
-        renderCategory(
+      wrappedBadge.click(function(
+        name,
+        lowercaseName,
+        requestCount,
+        categoryControl,
+        wrappedCategoryControl,
+        badge,
+        badgeIcon,
+        text,
+        textName,
+        textCount,
+        serviceSurface
+      ) {
+        handleCategory(
+          DOMAIN,
+          ID,
           name,
           lowercaseName,
-          !whitelisted,
           requestCount,
           categoryControl,
           wrappedCategoryControl,
@@ -1075,111 +1136,80 @@ var whitelistingClicked = 0;
           text,
           textName,
           textCount,
-          1
+          serviceSurface
         );
-        badge.alt = name;
+      }.bind(
+        null,
+        name,
+        lowercaseName,
+        requestCount,
+        categoryControl,
+        wrappedCategoryControl,
+        badge,
+        badgeIcon,
+        text,
+        textName,
+        textCount,
+        serviceSurface
+      ));
 
-        wrappedBadge.click(function(
-          name,
-          lowercaseName,
-          requestCount,
-          categoryControl,
-          wrappedCategoryControl,
-          badge,
-          badgeIcon,
-          text,
-          textName,
-          textCount,
-          serviceSurface
-        ) {
-          handleCategory(
-            DOMAIN,
-            ID,
-            name,
-            lowercaseName,
-            requestCount,
-            categoryControl,
-            wrappedCategoryControl,
-            badge,
-            badgeIcon,
-            text,
-            textName,
-            textCount,
-            serviceSurface
+      var wrappedAction = wrappedCategoryControl.find('.action');
+      var action = wrappedAction[0];
+      action.title = text.title = EXPAND + ' ' + lowercaseName;
+      var button = wrappedAction.find('img')[0];
+
+      wrappedText.add(wrappedAction).mouseenter(function(button) {
+        button.src = button.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
+      }.bind(null, button)).mouseleave(function(button) {
+        button.src = button.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
+      }.bind(null, button)).click(function(
+        serviceContainer, action, button, name
+      ) {
+        const EXPANDED_SERVICES = activeServices.filter(':visible');
+        if (EXPANDED_SERVICES.length && serviceContainer != activeServices) {
+          animateAction(
+            action,
+            EXPANDED_SERVICES.
+              parent().
+              parent().
+              prev().
+              prev().
+              find('.action img')[0],
+            name
           );
-        }.bind(
-          null,
-          name,
-          lowercaseName,
-          requestCount,
-          categoryControl,
-          wrappedCategoryControl,
-          badge,
-          badgeIcon,
-          text,
-          textName,
-          textCount,
-          serviceSurface
-        ));
-
-        var wrappedAction = wrappedCategoryControl.find('.action');
-        var action = wrappedAction[0];
-        action.title = text.title = EXPAND + ' ' + lowercaseName;
-        var button = wrappedAction.find('img')[0];
-
-        wrappedText.add(wrappedAction).mouseenter(function(button) {
-          button.src = button.src.replace('.', HIGHLIGHTED);
-        }.bind(null, button)).mouseleave(function(button) {
-          button.src = button.src.replace(HIGHLIGHTED, '.');
-        }.bind(null, button)).click(function(
-          serviceContainer, action, button, name
-        ) {
-          const EXPANDED_SERVICES = activeServices.filter(':visible');
-          if (EXPANDED_SERVICES.length && serviceContainer != activeServices) {
-            animateAction(
-              action,
-              EXPANDED_SERVICES.
-                parent().
-                parent().
-                prev().
-                prev().
-                find('.action img')[0],
-              name
-            );
-            EXPANDED_SERVICES.slideUp('fast', function() {
-              animateAction(action, button, name);
-              activeServices = serviceContainer.slideToggle('fast');
-            });
-          } else {
+          EXPANDED_SERVICES.slideUp('fast', function() {
             animateAction(action, button, name);
             activeServices = serviceContainer.slideToggle('fast');
-          }
-        }.bind(null, serviceContainer, action, button, lowercaseName));
-
-        CATEGORY_SURFACE.append(categoryControls);
-      }
-
-      const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
-      const WHITELISTING = WHITELISTING_ELEMENTS.control;
-      const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
-      const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
-      WHITELISTING.mouseenter(handleWhitelisting);
-
-      WHITELISTING.click(function() {
-        whitelistingClicked = 7;
-
-        if (whitelistSite()) {
-          WHITELISTING_ICON.alt = 'Whitelist';
-          WHITELISTING_TEXT.text('Whitelist site');
+          });
         } else {
-          WHITELISTING_ICON.alt = 'Blacklist';
-          WHITELISTING_TEXT.text('Blacklist site');
+          animateAction(action, button, name);
+          activeServices = serviceContainer.slideToggle('fast');
         }
-      });
+      }.bind(null, serviceContainer, action, button, lowercaseName));
+
+      CATEGORY_SURFACE.append(categoryControls);
+    }
+
+    const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
+    const WHITELISTING = WHITELISTING_ELEMENTS.control;
+    const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
+    const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
+    WHITELISTING.mouseenter(handleWhitelisting);
+
+    WHITELISTING.click(function() {
+      whitelistingClicked = 7;
+
+      if (whitelistSite()) {
+        WHITELISTING_ICON.alt = 'Whitelist';
+        WHITELISTING_TEXT.text('Whitelist site');
+      } else {
+        WHITELISTING_ICON.alt = 'Blacklist';
+        WHITELISTING_TEXT.text('Blacklist site');
+      }
     });
 
     $(document).on('click', 'a', function() {
-      TABS.create({url: $(this).attr('href')});
+      window.open($(this).attr('href'));
       return false;
     });
 
@@ -1234,9 +1264,9 @@ var whitelistingClicked = 0;
           attr('height', 40);
 
     $('.sharing img').mouseenter(function() {
-      this.src = this.src.replace('.', HIGHLIGHTED);
+      this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
     }).mouseleave(function() {
-      this.src = this.src.replace(HIGHLIGHTED, '.');
+      this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
     });
 
     const DISPLAY_MODE = localStorage.displayMode || LIST;

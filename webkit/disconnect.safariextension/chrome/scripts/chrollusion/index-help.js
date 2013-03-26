@@ -1,3 +1,8 @@
+/* Destringifies an object. */
+function deserialize(object) {
+  return typeof object == 'string' ? JSON.parse(object) : object;
+}
+
 /* Toggles the blocking state globally. */
 function whitelistSite() {
   whitelist = deserialize(localStorage.whitelist) || {};
@@ -35,21 +40,83 @@ function whitelistSite() {
 }
 
 /* Constants. */
-var backgroundPage = chrome.extension.getBackgroundPage();
-var deserialize = backgroundPage.deserialize;
-var updateClosed = deserialize(localStorage.updateClosed);
+var updateClosed = deserialize(localStorage.updateClosed = true);
 var recommendsActivated =
     deserialize(localStorage.recommendsExperiment) &&
-        !deserialize(localStorage.recommendsClosed);
-var tabApi = chrome.tabs;
+        !deserialize(localStorage.recommendsClosed = true);
 var whitelist;
-var domain;
-var tabId;
+var domain = 'wsj.com';
+var tabId = 0;
 var siteWhitelist;
-var getService = backgroundPage.getService;
 var graph;
 var addon = CollusionAddon;
-var sitesHidden = deserialize(localStorage.sitesHidden);
+var LOG = {
+  'wsj.com': {host: 'wsj.com', referrers: {}, visited: true},
+  'wsj.net': {host: 'wsj.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [1667, 'stylesheet', 'script', 'image']}
+  }, visited: false},
+  'msn.com': {host: 'msn.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [1746, 'script', 'sub_frame', 'image']}
+  }, visited: false},
+  'axf8.net': {host: 'axf8.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [2491, 'script']}
+  }, visited: false},
+  'typekit.net': {host: 'typekit.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [2658, 'image']}
+  }, visited: false},
+  'peer39.net': {host: 'peer39.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [3745, 'script']}
+  }, visited: false},
+  'llnwd.net': {host: 'llnwd.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [5556, 'script']}
+  }, visited: false},
+  'imrworldwide.com': {host: 'imrworldwide.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [5586, 'image']}
+  }, visited: false},
+  'facebook.net': {host: 'facebook.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [5590, 'script']}
+  }, visited: false},
+  'dowjoneson.com': {host: 'dowjoneson.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [5616, 'image']}
+  }, visited: false},
+  'akamai.net': {host: 'akamai.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [5645, 'script']}
+  }, visited: false},
+  'doubleclick.net': {host: 'doubleclick.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [6426, 'image', 'sub_frame', 'script']}
+  }, visited: false},
+  'chartbeat.com': {host: 'chartbeat.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [6429, 'script']}
+  }, visited: false},
+  'criteo.com': {host: 'criteo.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [6473, 'script', 'image', 'sub_frame']}
+  }, visited: false},
+  'scorecardresearch.com': {host: 'scorecardresearch.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [6813, 'image', 'script']}
+  }, visited: false},
+  'tiqcdn.com': {host: 'tiqcdn.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [7018, 'script']}
+  }, visited: false},
+  'krxd.net': {host: 'krxd.net', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [8236, 'script']}
+  }, visited: false},
+  'dl-rms.com': {host: 'dl-rms.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [8247, 'script']}
+  }, visited: false},
+  'bluekai.com': {host: 'bluekai.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [12693, 'sub_frame']}
+  }, visited: false},
+  'outbrain.com': {host: 'outbrain.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [14498, 'script']}
+  }, visited: false},
+  'insightexpressai.com': {host: 'insightexpressai.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [16926, 'image']}
+  }, visited: false},
+  'twitter.com': {host: 'twitter.com', referrers: {
+    'wsj.com': {host: 'wsj.com', types: [18845, 'sub_frame']}
+  }, visited: false}
+};
+var sitesHidden = deserialize(localStorage.sitesHidden = true);
 var ranOnce;
 var sidebarCollapsed = parseInt(localStorage.sidebarCollapsed, 10);
 var blacklist;
@@ -66,10 +133,6 @@ function renderGraph() {
   } else {
     if (!deserialize(localStorage.promoHidden)) {
       localStorage.promoHidden = true;
-
-      setTimeout(function() {
-        chrome.browserAction.setBadgeText({text: ""});
-      }, 200);
     }
 
     $("#update .chrome").show();
@@ -82,33 +145,27 @@ function renderGraph() {
   recommendsActivated && $("#recommends").show();
 
   $("a").click(function() {
-    tabApi.create({url: $(this).attr("href")});
+    window.open($(this).attr("href"));
     return false;
   });
 
   $("#domain-infos").hide();
   whitelist = deserialize(localStorage.whitelist) || {};
+  siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+  var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
 
-  tabApi.query({currentWindow: true, active: true}, function(tabs) {
-    var tab = tabs[0];
-    domain = backgroundPage.GET(tab.url);
-    tabId = tab.id;
-    siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
-    var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
-
-    if (
-      serviceWhitelist.Facebook && serviceWhitelist.Google &&
-          serviceWhitelist.Twitter &&
-              (siteWhitelist.Advertising || {}).whitelisted &&
-                  (siteWhitelist.Analytics || {}).whitelisted &&
-                      (siteWhitelist.Content || {}).whitelisted &&
-                          (siteWhitelist.Social || {}).whitelisted
-    ) {
-      $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
-    } else {
-      $("#unblock-tracking").html("Unblock tracking sites");
-    }
-  });
+  if (
+    serviceWhitelist.Facebook && serviceWhitelist.Google &&
+        serviceWhitelist.Twitter &&
+            (siteWhitelist.Advertising || {}).whitelisted &&
+                (siteWhitelist.Analytics || {}).whitelisted &&
+                    (siteWhitelist.Content || {}).whitelisted &&
+                        (siteWhitelist.Social || {}).whitelisted
+  ) {
+    $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
+  } else {
+    $("#unblock-tracking").html("Unblock tracking sites");
+  }
 
   if (!deserialize(localStorage.browsingHardened)) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
@@ -129,7 +186,7 @@ function renderGraph() {
 
   if (addon.isInstalled()) {
     // You should only ever see this page if the addon is installed, anyway
-    graph.update(backgroundPage.LOG);
+    graph.update(LOG);
 
     if (!ranOnce) {
       ranOnce = true;
