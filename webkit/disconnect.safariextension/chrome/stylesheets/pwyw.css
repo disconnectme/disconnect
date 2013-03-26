@@ -1,0 +1,179 @@
+/*
+The style sheet for the pay what you want page.
+
+Copyright 2010-2013 Disconnect, Inc.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+Authors (one per line):
+
+Eason Goodale <eason.goodale@gmail.com>
+*/
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#logo {
+  margin-top: 28px;
+  margin-left: 182px;
+  margin-bottom: 30px;
+}
+
+.info-boxes {
+  margin-top: 27px;
+  margin-left: 182px;
+  height: 340px;
+}
+
+.info-boxes .info-box {
+  float: left;
+  margin-right: 70px;
+  width: 288px;
+}
+
+.headline {
+  font-size: 150%;
+}
+
+#demo-box {
+  padding-top: 60px;
+  padding-left: 182px;
+  padding-bottom: 49px;
+  background-color: #ebebeb;
+  height: 631px;
+  width: 100%;
+}
+
+#demo-box .screenshot-text {
+  margin-bottom: 65px;
+  width: 410px;
+}
+
+.green {
+  color: #5baf4d;
+}
+
+.large-title {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 150%;
+}
+
+#demo-box #screenshot {
+  float: right;
+  margin-top: -30px;
+  margin-right: 196px;
+}
+
+#video-box {
+  margin-top: 50px;
+  margin-left: 182px;
+  margin-bottom: 60px;
+}
+
+#video-box #video-text {
+  float: right;
+  margin-right: 74px;
+  width: 376px;
+  text-align: right;
+}
+
+#payment-box {
+  margin-left: 182px;
+}
+
+#payment-box #payment-headlines {
+  border-bottom: #d5d5d5;
+}
+
+#payment-box .number {
+  float: left;
+  font-size: 150%;
+  font-weight: bold;
+}
+
+#payment-box .content {
+  margin-top: 15px;
+  margin-left: 40px;
+  margin-bottom: 25px;
+}
+
+#payment-box .instruction {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+#payment-box .border-top {
+  border-top: 1px solid #d5d5d5;
+  padding-top: 29px;
+}
+
+#payment-box .payment-selection {
+  margin-left: -26px;
+}
+
+#payment-box #custom-amount {
+  width: 80px;
+}
+
+#payment-box #choose-division {
+  display: none;
+  width: 640px;
+}
+
+#payment-box #payment-buttons {
+  margin-bottom: 50px;
+}
+
+#payment-box .description {
+  margin-bottom: 10px;
+}
+
+#payment-box #slider {
+  position: relative;
+  height: 11px;
+}
+
+#payment-box .ui-slider-handle {
+  background: url(../images/pwyw/slider-handle.png) no-repeat;
+  height: 11px;
+  width: 11px;
+  position: absolute;
+  margin-left: -6px;
+  top: -4px;
+}
+
+#payment-box .slider-holder {
+  height: 5px;
+  position: relative;
+  background: url(../images/pwyw/slider.png) no-repeat;
+  width: 359px;
+  top: 7px;
+  margin-bottom: 20px;
+}
+
+#payment-box .slider-container {
+  float: right;
+}
+
+#payment-box .slider-values {
+  float: right;
+  margin-left: 10px;
+}
+#payment-box .slider-values input{
+  display: block;
+  width: 80px;
+}
