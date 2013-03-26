@@ -211,7 +211,9 @@ function renderGraph() {
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
+          var previousScene = currentScene;
           currentScene = getScene();
+          SCENES.push(previousScene);
           $(".visualization img")[0].src =
               "../images/" + currentScene + "/1.png";
           d3.selectAll(".total").remove();
