@@ -1,67 +1,91 @@
+/*
+The javascript for the pay what you want page.
+
+Copyright 2010-2013 Disconnect, Inc.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+Authors (one per line):
+
+Eason Goodale <eason.goodale@gmail.com>
+*/
+
 $(function() {
-  var disconnect_slider = $("#disconnect_slider")
-  var charity_slider = $("#charity_slider")
-  var disconnect_box = $("#disconnect_amount")
-  var charity_box = $("#charity_amount")
+  var disconnectSlider = $('#disconnect-slider');
+  var charitySlider = $('#charity-slider');
+  var disconnectBox = $('#disconnect-amount');
+  var charityBox = $('#charity-amount');
 
-  function update_value_box() {
-    var total = $("#payment_total input[name=payment_group]:checked").val()
-    var charity_total = total * (charity_slider.slider('option', 'value')/100);
-    var disconnect_total = total * (disconnect_slider.slider('option', 'value')/100);
+  /*Updates the displayed value box to reflect total payment amount changes.*/
+  function updateValueBox() {
+    var total = $('#payment-total input[name=payment-group]:checked').val()
+    var charityTotal = total * (charitySlider.slider('option', 'value') / 100);
+    var disconnectTotal = total * (disconnectSlider.slider('option', 'value') / 100);
 
-    charity_box.val("$" + charity_total);
-    disconnect_box.val("$" + disconnect_total);
+    charityBox.val('$' + charityTotal);
+    disconnectBox.val('$' + disconnectTotal);
   }
 
-  disconnect_slider.slider({
+  disconnectSlider.slider({
     value: 100,
-    orientation: "horizontal",
+    orientation: 'horizontal',
     animate: true
   });
-  charity_slider.slider({
+  charitySlider.slider({
     value: 0,
-    orientation: "horizontal",
+    orientation: 'horizontal',
     animate: true
   });
 
-  update_value_box();
+  updateValueBox();
 
-  disconnect_slider.bind('slide',function(){
-    var disconnect_value = disconnect_slider.slider('option', 'value');
-    var charity_value = 100 - disconnect_value;
-    charity_slider.slider('option', 'value', charity_value);
-    update_value_box();
+  disconnectSlider.bind('slide',function() {
+    var disconnectValue = disconnectSlider.slider('option', 'value');
+    var charityValue = 100 - disconnectValue;
+    charitySlider.slider('option', 'value', charityValue);
+    updateValueBox();
   });
-  charity_slider.bind('slide',function(){
-    var charity_value = charity_slider.slider('option', 'value');
-    var disconnect_value = 100 - charity_value;
-    disconnect_slider.slider('option', 'value', disconnect_value);
-    update_value_box();
-  });
-
-  $("#custom_amount").change( function(){
-    $("input:radio[name=payment_group]")[4].checked = true;
-    $("#custom_radio").val($("#custom_amount").val());
-    update_value_box();
+  charitySlider.bind('slide',function() {
+    var charityValue = charitySlider.slider('option', 'value');
+    var disconnectValue = 100 - charityValue;
+    disconnectSlider.slider('option', 'value', disconnectValue);
+    updateValueBox();
   });
 
-  $("input:radio[name=payment_group]").click( function(){
-    update_value_box();
+  $('#custom-amount').change( function() {
+    $('input:radio[name=payment-group]')[4].checked = true;
+    $('#custom-radio').val($('#custom-amount').val());
+    updateValueBox();
+  });
+
+  $('input:radio[name=payment-group]').click( function() {
+    updateValueBox();
   })
 
-  $('#stripe').click(function(){
-    var total = $("#payment_total input[name=payment_group]:checked").val()
-    var charity_total = total * (charity_slider.slider('option', 'value')/100);
-    var disconnect_total = total * (disconnect_slider.slider('option', 'value')/100);
+  $('#stripe').click(function() {
+    var total = $('#payment-total input[name=payment-group]:checked').val()
+    var charityTotal = total * (charitySlider.slider('option', 'value') / 100);
+    var disconnectTotal = total * (disconnectSlider.slider('option', 'value') / 100);
     
     var token = function(res){
-      var $input = $('<input type=hidden name=stripeToken />').val(res.id);
+      var $input = $('<input type="hidden" name="stripeToken">').val(res.id);
       $('form').append($input).submit();
     };
 
     StripeCheckout.open({
+      //update this to our actual production key before it goes live
       key:         'pk_test_czwzkTp2tactuLOEOqbMTRzG',
-      amount:      disconnect_total * 100,
+      amount:      disconnectTotal * 100,
       name:        'Disconnect Payment',
       description: 'Thank you for your contribution!',
       token:       token
