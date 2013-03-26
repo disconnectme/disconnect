@@ -1,175 +1,179 @@
+/*
+The style sheet for the pay what you want page.
+
+Copyright 2010-2013 Disconnect, Inc.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+Authors (one per line):
+
+Eason Goodale <eason.goodale@gmail.com>
+*/
+
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 #logo {
+  margin-top: 28px;
   margin-left: 182px;
   margin-bottom: 30px;
-  margin-top: 28px;
 }
 
-.info_boxes {
-  margin-left: 182px;
+.info-boxes {
   margin-top: 27px;
+  margin-left: 182px;
   height: 340px;
-
 }
 
-.info_boxes .info_box {
+.info-boxes .info-box {
   float: left;
-  width: 288px;
   margin-right: 70px;
+  width: 288px;
 }
 
 .headline {
   font-size: 150%;
 }
 
-#grey_box {
-  background-color: #ebebeb;
-  padding-left: 182px;
+#demo-box {
   padding-top: 60px;
+  padding-left: 182px;
   padding-bottom: 49px;
+  background-color: #ebebeb;
   height: 631px;
   width: 100%;
 }
 
-#grey_box .grey_text {
+#demo-box .screenshot-text {
   margin-bottom: 65px;
   width: 410px;
 }
 
-.green_headline {
+.green {
   color: #5baf4d;
 }
 
-.large_title {
-  font-size: 150%;
+.large-title {
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: 150%;
 }
 
-#grey_box #screenshot {
+#demo-box #screenshot {
+  float: right;
   margin-top: -30px;
   margin-right: 196px;
-  float: right;
 }
 
-#video_box {
-  margin-left: 182px;
+#video-box {
   margin-top: 50px;
+  margin-left: 182px;
   margin-bottom: 60px;
 }
 
-#video_box #video_text {
-  margin-right: 74px;
+#video-box #video-text {
   float: right;
+  margin-right: 74px;
   width: 376px;
   text-align: right;
 }
 
-#payment_box {
+#payment-box {
   margin-left: 182px;
 }
 
-#payment_box #payment_headlines {
+#payment-box #payment-headlines {
   border-bottom: #d5d5d5;
 }
 
-#payment_box .payment_radio {
-
-}
-
-#payment_box .number {
+#payment-box .number {
   float: left;
   font-size: 150%;
   font-weight: bold;
 }
 
-#payment_box .content {
+#payment-box .content {
+  margin-top: 15px;
   margin-left: 40px;
   margin-bottom: 25px;
-  margin-top: 15px;
 }
 
-#payment_box .instruction {
+#payment-box .instruction {
   margin-top: 5px;
   margin-left: 20px;
 }
 
-#payment_box .border_top {
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #d5d5d5;
+#payment-box .border-top {
+  border-top: 1px solid #d5d5d5;
   padding-top: 29px;
 }
 
-#payment_box .payment_selection {
+#payment-box .payment-selection {
   margin-left: -26px;
 }
 
-#payment_box #custom_amount {
+#payment-box #custom-amount {
   width: 80px;
 }
 
-#payment_box #choose_division {
+#payment-box #choose-division {
+  display: none;
   width: 640px;
 }
 
-#payment_box #payment_buttons {
+#payment-box #payment-buttons {
   margin-bottom: 50px;
 }
 
-#slider_descriptions {
-  
-}
-
-#payment_box .description {
+#payment-box .description {
   margin-bottom: 10px;
 }
 
-#payment_box #slider {
-  height:11px !important;
-  position:relative !important;
+#payment-box #slider {
+  position: relative;
+  height: 11px;
 }
 
-#payment_box .ui-slider-handle {
-  background:url(https://humblepull-wolfire.netdna-ssl.com/static/hashed/369d611c54324f3ef0ad662d18d45435c87c2f41.png) no-repeat !important;
-  height:11px !important;
-  width:11px !important;
-  position:absolute !important;
-  margin-left:-6px !important;
-  z-index:10 !important;
-  top:-4px !important;
+#payment-box .ui-slider-handle {
+  background: url(../images/pwyw/slider-handle.png) no-repeat;
+  height: 11px;
+  width: 11px;
+  position: absolute;
+  margin-left: -6px;
+  top: -4px;
 }
 
-#payment_box .slider-holder {
-  height:5px !important;
-  position:relative !important;
-  background:url(https://humblepull-wolfire.netdna-ssl.com/static/hashed/ac1aad59e9aea8b45c08d601b1752ee068c1dc8c.png) no-repeat !important;
-  width: 359px !important;
-  top:7px !important;
+#payment-box .slider-holder {
+  height: 5px;
+  position: relative;
+  background: url(../images/pwyw/slider.png) no-repeat;
+  width: 359px;
+  top: 7px;
   margin-bottom: 20px;
 }
-#payment_box .slider-holder .right {
-  position:absolute !important;
-  right:-2px !important;
-  top:0 !important;
-  bottom:0 !important;
-  width:2px !important;
-  background:url(https://humblepull-wolfire.netdna-ssl.com/static/hashed/ac1aad59e9aea8b45c08d601b1752ee068c1dc8c.png) no-repeat right !important;
-}
-#payment_box .slider-container {
+
+#payment-box .slider-container {
   float: right;
 }
 
-#payment_box .slider_values {
+#payment-box .slider-values {
   float: right;
   margin-left: 10px;
 }
-#payment_box .slider_values input{
+#payment-box .slider-values input{
+  display: block;
   width: 80px;
-  display: block
 }
