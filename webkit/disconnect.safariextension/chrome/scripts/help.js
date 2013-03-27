@@ -171,7 +171,7 @@ function renderCategory(
       animation > 1 ||
           whitelistingClicked && whitelistingClicked-- && !(
             CONTENT &&
-                $('.whitelisting').filter('.text').text() == 'Whitelist site'
+                $('.whitelisting').filter('.text').text() == 'Blacklist site'
           ) ? 21 : animation;
   const WRAPPED_BADGE = $(badge);
 
@@ -422,18 +422,21 @@ function clearServices(id) {
     for (i = 0; i < CATEGORY_COUNT; i++) {
       var name = CATEGORIES[i];
       var whitelisted = (siteWhitelist[name] || {}).whitelisted;
+      whitelisted =
+          whitelisted || name == CONTENT_NAME && whitelisted !== false;
       var categoryRequests = TAB_REQUESTS[name];
       var requestCount = 0;
       for (var serviceName in categoryRequests)
           requestCount += categoryRequests[serviceName].count;
-      var control = $('.category')[i + 1];
+      var countingIndex = i + 1;
+      var control = $('.category')[countingIndex];
       var wrappedControl = $(control);
       var wrappedBadge = wrappedControl.find('.badge');
       var wrappedText = wrappedControl.find('.text');
       renderCategory(
         name,
         name.toLowerCase(),
-        !(whitelisted || name == CONTENT_NAME && whitelisted !== false),
+        !whitelisted,
         requestCount,
         control,
         wrappedControl,
@@ -444,25 +447,24 @@ function clearServices(id) {
         wrappedText.find('.count'),
         0
       );
+
+      $($('.services')[countingIndex]).find(INPUT).each(function(index) {
+        if (index) this.checked = !whitelisted;
+      });
     }
 
-    const BUTTON = $('.category .action img[src*=7]');
-    const ACTION = BUTTON.parent();
-    animateAction(
-      ACTION[0],
-      BUTTON[0],
-      ACTION.prev().find('.name').text().toLowerCase()
-    );
-    const CONTROL = $('.services');
-    CONTROL.find('div:visible').slideUp('fast');
+    const WRAPPED_BUTTON = $('.category .action img[src*=7]');
+    const BUTTON = WRAPPED_BUTTON[0];
 
-    setTimeout(function() {
-      CONTROL.each(function(index) {
-        index && $(this).find('.service').each(function(index) {
-          index && $(this).remove();
-        });
-      });
-    }, 200);
+    if (BUTTON) {
+      const ACTION = WRAPPED_BUTTON.parent();
+      animateAction(
+        ACTION[0],
+        BUTTON,
+        ACTION.prev().find('.name').text().toLowerCase()
+      );
+      $('.services').find('div:visible').slideUp('fast');
+    }
   }
 }
 
