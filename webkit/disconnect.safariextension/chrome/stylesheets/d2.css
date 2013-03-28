@@ -22,7 +22,7 @@
 */
 body {
   margin: 0;
-  min-width: 800px;
+  min-width: 980px;
   font:
       small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
           Arial, sans-serif;
@@ -82,6 +82,12 @@ h2 {
 }
 
 #more:hover { text-decoration: underline }
+
+#try {
+  position: absolute;
+  left: -150px;
+  top: 300px
+}
 
 #embed {
   display: inline-block;
