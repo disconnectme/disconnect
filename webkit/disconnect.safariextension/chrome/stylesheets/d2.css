@@ -1,66 +1,123 @@
 /*
-The style sheet for the pay what you want page.
+  The style sheet for a pay-what-you-want page.
 
-Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2013 Disconnect, Inc.
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
 
-Authors (one per line):
+  Authors (one per line):
 
-Eason Goodale <eason.goodale@gmail.com>
+    Eason Goodale <eason.goodale@gmail.com>
+    Brian Kennish <byoogle@gmail.com>
 */
-
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  min-width: 800px;
+  font:
+      small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
+          Arial, sans-serif;
+  color: #2b2b2b
 }
 
-#logo {
-  margin-top: 28px;
-  margin-left: 182px;
-  margin-bottom: 30px;
+#header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 10%;
+  background: #f9f9f9
 }
 
-.info-boxes {
-  margin-top: 27px;
-  margin-left: 182px;
-  height: 340px;
+#hero {
+  margin-top: -45px;
+  margin-right: 5%;
+  margin-left: 10%;
+  background: url(../images/d2/browser.png) no-repeat top right;
+  height: 651px;
+  overflow: visible
 }
 
-.info-boxes .info-box {
+#description {
+  display: inline-block;
+  margin-top: 120px;
+  margin-left: 6%;
+  width: 60%;
+  vertical-align: top
+}
+
+h2 {
+  font-weight: normal;
+  color: #999
+}
+
+#cta { margin-top: 60px }
+
+#pwyw {
+  display: inline-block;
   float: left;
-  margin-right: 70px;
-  width: 288px;
+  margin-right: 15px;
+  background: url(../images/d2/pwyw.png);
+  width: 240px;
+  height: 56px;
+  cursor: pointer
 }
 
-.headline {
-  font-size: 150%;
+#pwyw:hover { background-position: 0 -56px }
+
+#more {
+  display: table-cell;
+  height: 56px;
+  vertical-align: middle;
+  font-size: medium;
+  color: #5baf4d;
+  cursor: pointer
 }
 
-#demo-box {
-  padding-top: 60px;
-  padding-left: 182px;
-  padding-bottom: 49px;
-  background-color: #ebebeb;
-  height: 631px;
-  width: 100%;
+#more:hover { text-decoration: underline }
+
+#embed {
+  display: inline-block;
+  width: 33%;
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2)
 }
 
-#demo-box .screenshot-text {
-  margin-bottom: 65px;
-  width: 410px;
+#features {
+  margin-top: -120px;
+  margin-right: 5%;
+  margin-left: 10%
 }
+
+.feature {
+  display: inline-block;
+  width: 33%
+}
+
+.feature img {
+  float: left;
+  margin-right: 15px
+}
+
+.feature .text {
+  display: table-cell;
+  height: 80px;
+  vertical-align: middle
+}
+
+.feature h2 {
+  margin-top: 0;
+  color: #2b2b2b
+}
+
+.feature p { margin-bottom: 0 }
 
 .green {
   color: #5baf4d;
@@ -72,16 +129,11 @@ body {
   font-size: 150%;
 }
 
-#demo-box #screenshot {
-  float: right;
-  margin-top: -30px;
-  margin-right: 196px;
-}
-
 #video-box {
   margin-top: 50px;
   margin-left: 182px;
   margin-bottom: 60px;
+  background-color: #ebebeb;
 }
 
 #video-box #video-text {

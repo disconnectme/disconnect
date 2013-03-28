@@ -1,164 +1,496 @@
+<!DOCTYPE
+  html
+  PUBLIC
+  "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd"
+>
 <!--
-The markup for a page that allows users to pay/donate to Disconnect.
+  The markup for a pay-what-you-want page.
 
-Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
 
-Authors (one per line):
+  Authors (one per line):
 
-Eason Goodale <eason.goodale@gmail.com>
+    Eason Goodale <eason.goodale@gmail.com>
+    Brian Kennish <byoogle@gmail.com>
 -->
-
 <html>
-  <head>
-    <title>
-      In private browsing & search | Stop online tracking & malware | Disconnect
-    </title>
-    <script src="../scripts/vendor/stripe/checkout.js"></script>
-    <script src="../scripts/vendor/jquery/jquery.js"></script>
-    <script src="../scripts/vendor/jquery/jquery-ui.js"></script>
-    <script src="../scripts/d2.js"></script>
-    <link rel="stylesheet" href="../stylesheets/vendor/typography/typography.css">
-    <link rel="stylesheet" href="../stylesheets/d2.css">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Introducing Disconnect 2</title>
+    <link rel="icon" href="favicon.ico">
+    <link
+      rel="stylesheet"
+      href="../stylesheets/vendor/typography/typography.css"
+    >
     <link rel="stylesheet" href="../stylesheets/vendor/stripe/stripe.css">
+    <link rel="stylesheet" href="../stylesheets/d2.css">
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/jquery/jquery.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/jquery/jquery-ui.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/stripe/checkout.js"
+    ></script>
+    <script type="text/javascript" src="../scripts/d2.js"></script>
+    <!-- Additional Disconnect dependencies. ... -->
+    <link rel="stylesheet" href="../stylesheets/vendor/tipped/tipped.css">
+    <link rel="stylesheet" href="../stylesheets/chrollusion/index.css">
+    <link rel="stylesheet" href="../stylesheets/embed.css">
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/port/port.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/tipped/tipped.js"
+    ></script>
+    <script type="text/javascript" src="../scripts/vendor/d3/d3.js"></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/d3/d3.layout.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/d3/d3.geom.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/sjcl/sjcl.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/favicon/favicon.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/chrollusion/index-content-script.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/chrollusion/collusion-addon.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/chrollusion/graphrunner.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/chrollusion/index-embed.js"
+    ></script>
+    <script type="text/javascript" src="../scripts/embed.js"></script>
+    <!-- ... Additional Disconnect dependencies. -->
   </head>
   <body>
     <div id="header">
-      <div id="logo"> 
-        <a href=""><img alt="Disconnect Logo" src="../images/d2/disconnect-logo.png"></a> 
+      <a href="/"><img src="../images/d2/disconnect.png" alt="Disconnect"></a>
+    </div>
+    <div id="hero">
+      <div id="description">
+        <h1>Introducing Disconnect 2</h1>
+        <h2>
+          Pay what you want. Make the web
+          <br>
+          faster, more private, &amp; more secure.
+        </h2>
+        <div id="cta">
+          <div id="pwyw"></div>
+          <div id="more">Or learn more</div>
+        </div>
+      </div>
+      <div id="embed">
+        <!-- Disconnect. ... -->
+        <div id="list">
+          <table id="navbar">
+            <tr>
+              <td class="badge">
+                <a
+                  title="Visit Disconnect"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/disconnect.png" alt="Disconnect"></a>
+              </td>
+              <td class="text">
+                <a
+                  title="Get help"
+                  target="_blank"
+                  href="https://disconnect.me/help"
+                >Help</a><span title="Share Disconnect">Share</span><a
+                  title="Pay what you want"
+                  target="_blank"
+                  href="https://disconnect.me/pwyw"
+                >$</a>
+              </td>
+            </tr>
+          </table>
+          <table id="shortcuts">
+            <tr>
+              <td>
+                <table class="shortcut">
+                  <tr>
+                    <td class="badge"><img></td>
+                    <td class="text"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tbody id="categories">
+              <tr class="category">
+                <td class="badge"><img></td>
+                <td class="text">
+                  <table>
+                    <tr>
+                      <td class="name"></td>
+                    </tr>
+                    <tr>
+                      <td class="count"></td>
+                    </tr>
+                  </table>
+                </td>
+                <td class="action"><img src="../images/expand/1.png"></td>
+              </tr>
+              <tr class="border">
+                <td colspan="3"></td>
+              </tr>
+              <tr class="services">
+                <td colspan="3">
+                  <div>
+                    <table>
+                      <tbody>
+                        <tr class="service">
+                          <td class="control"><input type="checkbox"></td>
+                          <td class="link">
+                            <a title="Visit " target="_blank"></a>
+                          </td>
+                          <td class="text"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table id="options">
+            <tr>
+              <td class="whitelisting badge">
+                <img src="../images/list/1.png">
+              </td>
+              <td class="whitelisting text"></td>
+              <td class="visualization badge"><img></td>
+              <td class="visualization text">Visualize page</td>
+            </tr>
+            <tr>
+              <td class="wifi"><input type="checkbox"></td>
+              <td class="wifi">Secure Wi-Fi</td>
+              <td class="search" title="Coming soon">
+                <input type="checkbox" disabled>
+              </td>
+              <td class="search disabled" title="Coming soon">Secure search</td>
+            </tr>
+          </table>
+          <table id="dashboard">
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <td class="label">
+                      Time
+                      <br>
+                      saved
+                    </td>
+                    <td class="label">Bandwidth saved</td>
+                    <td class="label">Requests secured</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" id="data"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table class="sharing disconnect">
+            <tr>
+              <td class="text"></td>
+              <td>
+                <a
+                  title="Share Disconnect"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/facebook.png" alt="Facebook"></a>
+              </td>
+              <td>
+                <a
+                  title="Tweet about Disconnect"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/twitter.png" alt="Twitter"></a>
+              </td>
+            </tr>
+          </table>
+          <table class="sharing speed">
+            <tr>
+              <td class="text"></td>
+              <td>
+                <a
+                  title="Share speed"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/facebook.png" alt="Facebook"></a>
+              </td>
+              <td>
+                <a
+                  title="Tweet about speed"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/twitter.png" alt="Twitter"></a>
+              </td>
+            </tr>
+          </table>
+          <table class="sharing bandwidth">
+            <tr>
+              <td class="text"></td>
+              <td>
+                <a
+                  title="Share bandwidth"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/facebook.png" alt="Facebook"></a>
+              </td>
+              <td>
+                <a
+                  title="Tweet about bandwidth"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/twitter.png" alt="Twitter"></a>
+              </td>
+            </tr>
+          </table>
+          <table class="sharing security">
+            <tr>
+              <td class="text"></td>
+              <td>
+                <a
+                  title="Share security"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/facebook.png" alt="Facebook"></a>
+              </td>
+              <td>
+                <a
+                  title="Tweet about security"
+                  target="_blank"
+                  href="https://disconnect.me/"
+                ><img src="../images/twitter.png" alt="Twitter"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="graph">
+          <div class="notification" id="update" style="display: none">
+            <div class="close"></div>
+            &nbsp;<strong><span class="chrome">v2.0</span><span class="safari">v2.0</span></strong> • Click <strong>Hide inactive sites</strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
+            <div class="share" id="js-share-fb" style="display: none"></div>
+            <div class="share" id="js-share-tweet" style="display: none"></div>
+          </div>
+          <div class="notification" id="recommends" style="display: none">
+            <div class="close"></div>
+            <span id='recommender-message'></span>
+          </div>
+          <div id="page">
+          <div id="sidebar" style="display: none;">
+            <h1></h1>
+            <img id="logo">
+            <hr/>
+
+            <div id="sidebar-content">
+            <div class="live-data">
+              <p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</p>
+              <p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</p>
+              <p><span class="tracker">Red</span> circles are known tracking sites. <span class="site">Gray</span> circles aren’t but may still track you.</p>
+              <p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</p>
+            </div> <!-- end of live-data -->
+            <div id="domain-infos"></div> <!-- Templates are copied into here -->
+            <div class="settings-menu">
+              <ul>
+                <li id="unblock-tracking"></li>
+                <li id="disable-wifi"></li>
+                <li id="hide-sidebar">Hide sidebar</li>
+                <li class="invisible" id="show-instructions">Show instructions</li>
+              </ul>
+            </div> <!-- end of settingsmenu -->
+            </div> <!-- End of #sidebar-content -->
+          </div> <!-- End of #sidebar -->
+          <div id="chart"></div><!-- The d3 layout graph will go inside this div -->
+          <div class="settings-menu collapsed" id="show-sidebar">+</div>
+          <div class="settings-menu collapsed" id="show-list">Show list view</div>
+          </div>
+          <div id="addon-installation-detected" style="display: none;">
+            Collusion add-on detected! Reload this page to see your graph.
+          </div>
+          <div id="templates">
+            <div class="info" style="display: none;">
+              <h2 class="domain"><a class="domain"></a></h2>
+
+              <div class="referrees">
+                <p>When you visit this site, the following sites are informed:</p>
+                <ul></ul>
+              </div>
+              <div class="referrers">
+                <p>This site is informed when you visit the following sites:</p>
+                <ul></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Start Social Sharing Stuff -->
+          <div id="social_share">
+            <!-- Start Twitter Stuff-->
+            <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</a>
+            <!-- End Twitter Stuff-->
+
+            <!-- Start Facebook Stuff-->
+            <a name="fb_share" share_url="https://blog.disconnect.me/collusion-for-safari"></a>
+            <!-- End Facebook Stuff-->
+          </div>
+          <!-- End Social Sharing Stuff -->
+        </div>
+        <!-- ... Disconnect. -->
       </div>
     </div>
-      <div id="content"> 
-        <img alt="Disconnect Hero" src="../images/d2/hero.png">
-      <div class="info-boxes">
-        <div class="info-box">
-          <img alt="Disconnect Is Private" src="../images/d2/key.png">
-          <p class="headline">Privacy<p>
-          <p class="text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
-          </p>
-        </div>
-        <div class="info-box">
-          <img alt="Disconnect Is Secure" src="../images/d2/lock.png">
-          <p class="headline">Security<p>
-          <p class="text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
-          </p>
-        </div>
-        <div class="info-box">
-          <img alt="Disconnect Is Fast" src="../images/d2/speedometer.png">
-          <p class="headline">Speed<p>
-          <p class="text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
+    <div id="features">
+      <div class="feature">
+        <img src="../images/d2/speed.png" alt="Speed">
+        <div class="text">
+          <h2>Speed</h2>
+          <p>
+            Load the pages you
+            <br>
+            go to 27% faster.
           </p>
         </div>
       </div>
-      <div id="demo-box">
-        <div id="screenshot">
-          <img alt="Disconnect Screenshot" src="../images/d2/screenshot.png">
-        </div>
-        <div class="screenshot-text">
-          <div class="green">1,000,000 users deserve a 2.0</div>
-          <div class="large-title">Larger title goes here, please</div>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
-        </div>
-        <div class="screenshot-text">
-          <div class="green">1,000,000 users deserve a 2.0</div>
-          <div class="large-title">Another title here. kthxbye</div>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
+      <div class="feature">
+        <img src="../images/d2/privacy.png" alt="Privacy">
+        <div class="text">
+          <h2>Privacy</h2>
+          <p>
+            Stop 2,000+ third-party
+            <br>
+            sites from tracking you.
+          </p>
         </div>
       </div>
-      <div id="video-box">
-        <div id="video-text">
-          <div class="green">1,000,000 users deserve a 2.0</div>
-          <div class="large-title">Another title here.</div>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
-        </div>
-        <div id="video">
-          <img alt="Video" src="../images/d2/video.png">
+      <div class="feature">
+        <img src="../images/d2/security.png" alt="Security">
+        <div class="text">
+          <h2>Security</h2>
+          <p>
+            Encrypt the data you
+            <br>
+            share with popular sites.
+          </p>
         </div>
       </div>
-      <div id="payment-box">
-        <div id="payment-headlines">
-          <div class="green">something something</div>
-          <div class="large-title">Payment title here</div>
+    </div>
+    <div id="video-box">
+      <div id="video-text">
+        <div class="green">1,000,000 users deserve a 2.0</div>
+        <div class="large-title">Another title here.</div>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
+      </div>
+      <div id="video">
+        <img alt="Video" src="../images/d2/video.png">
+      </div>
+    </div>
+    <div id="payment-box">
+      <div id="payment-headlines">
+        <div class="green">something something</div>
+        <div class="large-title">Payment title here</div>
+      </div>
+      <div id="choose-amount" class="border-top">
+        <div class="number">1</div>
+        <div class="instruction">Choose any amount of money, in USD</div>
+        <div class="content">
+          <form id="payment-total">
+            <div class="payment-selection">
+              <input type="radio" name="payment-group" value="100" class="payment-radio"> $100
+            </div>
+            <div class="payment-selection">
+              <input type="radio" name="payment-group" value="50" class="payment-radio"> $50
+            </div>
+            <div class="payment-selection">
+              <input type="radio" name="payment-group" value="25" class="payment-radio"> $25
+            </div>
+            <div class="payment-selection">
+              <input type="radio" name="payment-group" value="15" class="payment-radio"> $15
+            </div>
+            <div class="payment-selection">
+              <input id="custom-radio" type="radio" name="payment-group" value="0" class="payment-radio"> 
+              Custom Amount: 
+              $ <input id="custom-amount" name="custom-amount" placeholder="8.00">
+            </div>
+          </form>
         </div>
-        <div id="choose-amount" class="border-top">
-          <div class="number">1</div>
-          <div class="instruction">Choose any amount of money, in USD</div>
-          <div class="content">
-            <form id="payment-total">
-              <div class="payment-selection">
-                <input type="radio" name="payment-group" value="100" class="payment-radio"> $100
-              </div>
-              <div class="payment-selection">
-                <input type="radio" name="payment-group" value="50" class="payment-radio"> $50
-              </div>
-              <div class="payment-selection">
-                <input type="radio" name="payment-group" value="25" class="payment-radio"> $25
-              </div>
-              <div class="payment-selection">
-                <input type="radio" name="payment-group" value="15" class="payment-radio"> $15
-              </div>
-              <div class="payment-selection">
-                <input id="custom-radio" type="radio" name="payment-group" value="0" class="payment-radio"> 
-                Custom Amount: 
-                $ <input id="custom-amount" name="custom-amount" placeholder="8.00">
-              </div>
-            </form>
+      <div id="choose-division" class="border-top">
+        <div class="number">2</div>
+        <div class="instruction">
+          Choose how you would like to divide up your contribution
+        </div>
+        <div class="content">
+          <div class="slider-values">
+            <input id="disconnect-amount" name="custom-amount">
+            <input id="charity-amount" name="custom-amount">
           </div>
-        <div id="choose-division" class="border-top">
-          <div class="number">2</div>
-          <div class="instruction">
-            Choose how you would like to divide up your contribution
+          <div class="slider-container">
+            <div id="disconnect-slider" class="slider slider-holder"></div>
+            <div id="charity-slider" class="slider slider-holder"></div>
           </div>
-          <div class="content">
-            <div class="slider-values">
-              <input id="disconnect-amount" name="custom-amount">
-              <input id="charity-amount" name="custom-amount">
-            </div>
-            <div class="slider-container">
-              <div id="disconnect-slider" class="slider slider-holder"></div>
-              <div id="charity-slider" class="slider slider-holder"></div>
-            </div>
-            <div id="slider-descriptions">
-              <div class="description">Disconnect</div>
-              <div class="description">Charity</div>
-            </div>
+          <div id="slider-descriptions">
+            <div class="description">Disconnect</div>
+            <div class="description">Charity</div>
           </div>
         </div>
-        <div id="email" class="border-top">
-          <div class="number">2</div>
-          <div class="instruction">
-            Enter your email address (double check)
-          </div>
-          <div class="content">
-            <input name="email">
-            <input type="checkbox" name = "subscribe"> Subscribe me to the newsletter.
-          </div>
+      </div>
+      <div id="email" class="border-top">
+        <div class="number">2</div>
+        <div class="instruction">
+          Enter your email address (double check)
         </div>
-        <div id="payment-buttons" class="border-top">
-          <div class="number">3</div>
-          <div class="instruction">Select your payment method below</div>
-          <div class="content">
-            <div style = "float: left; margin-right: 30px;">
-              <a href="#" id="stripe" class="stripe-connect"><span>Pay with Credit Card</span></a>
-            </div>
-            <div style = "float: left;">
-              <a class="coinbase-button" data-code="4d4b84bbad4508b64b61d372ea394dad" href="https://coinbase.com/checkouts/4d4b84bbad4508b64b61d372ea394dad">Pay With Bitcoin</a>
-              <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
-            </div>
+        <div class="content">
+          <input name="email">
+          <input type="checkbox" name = "subscribe"> Subscribe me to the newsletter.
+        </div>
+      </div>
+      <div id="payment-buttons" class="border-top">
+        <div class="number">3</div>
+        <div class="instruction">Select your payment method below</div>
+        <div class="content">
+          <div style = "float: left; margin-right: 30px;">
+            <a href="#" id="stripe" class="stripe-connect"><span>Pay with Credit Card</span></a>
+          </div>
+          <div style = "float: left;">
+            <a class="coinbase-button" data-code="4d4b84bbad4508b64b61d372ea394dad" href="https://coinbase.com/checkouts/4d4b84bbad4508b64b61d372ea394dad">Pay With Bitcoin</a>
+            <!--script src="https://coinbase.com/assets/button.js" type="text/javascript"--></script>
           </div>
         </div>
       </div>

@@ -19,22 +19,22 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-body { margin: 100px }
-
 #list {
   display: none;
+  margin-top: 138px;
+  margin-right: 102px;
+  margin-left: auto;
   box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
   border: 1px solid #2b2b2b;
+  background: white;
   padding: 1px;
   width: 200px;
   font-family:
       'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
           sans-serif;
   color: #333;
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
   -webkit-user-select: none;
-  -moz-user-select: none
+  -moz-user-select: none
 }
 
 table {
@@ -276,11 +276,12 @@ td { padding: 0 }
   margin: -129px -163px;
   box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
   border: 1px solid #2b2b2b;
+  background: white;
   padding: 1px;
   width: 706px;
   height: 490px;
   -webkit-transform: scale(.6);
-  -moz-transform: scale(.6)
+  -moz-transform: scale(.6)
 }
 
 .t_Tooltip {
@@ -288,7 +289,7 @@ td { padding: 0 }
       'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
           sans-serif;
   -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
+  -moz-transform: scale(1.2);
   -webkit-user-select: none;
-  -moz-user-select: none
+  -moz-user-select: none
 }
