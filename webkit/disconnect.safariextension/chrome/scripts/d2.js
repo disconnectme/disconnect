@@ -77,7 +77,7 @@ $(function() {
     }
   });
 
-  $('#stripe').click(function() {
+  $('#cc').click(function() {
     var total = $('#one :checked').val();
 
     var token = function(result) {

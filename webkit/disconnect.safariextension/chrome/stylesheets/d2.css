@@ -161,17 +161,17 @@ h2 {
 
 #more-action:hover { color: #009548 }
 
-#try {
-  position: absolute;
-  top: 320px;
-  left: -200px
-}
-
 #embed {
   display: inline-block;
   width: 33%;
   -webkit-transform: scale(1.2);
   -moz-transform: scale(1.2)
+}
+
+#try {
+  position: relative;
+  margin-top: -120px;
+  margin-left: 40%
 }
 
 #features {
@@ -226,7 +226,7 @@ p { overflow: auto }
   margin-top: 45px;
   margin-right: 5%;
   margin-left: 10%;
-  width: 50%;
+  width: 55%;
   min-width: 600px
 }
 
@@ -267,7 +267,7 @@ input[type=radio] {
   vertical-align: middle
 }
 
-input:checked {
+input[type=radio]:checked {
   background: -webkit-linear-gradient(#60d490 38%, #68b789)
 }
 
@@ -321,7 +321,10 @@ hr {
   outline: none
 }
 
-#two input { background: -webkit-linear-gradient(#60d490 38%, #68b789) }
+#two input {
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .25);
+  background: -webkit-linear-gradient(#8dc9a6 38%, #87dfab)
+}
 
 #two img {
   margin-left: -3px;
@@ -353,6 +356,10 @@ input[type=checkbox] {
   height: 12px
 }
 
+input[type=checkbox]:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
 input[type=checkbox]:before {
   display: inline-block;
   width: 100%;
@@ -365,9 +372,19 @@ input[type=checkbox]:checked:before {
   background-size: contain
 }
 
-#stripe {
-  margin-top: 2px;
-  margin-right: 10px;
-  vertical-align: top;
-  text-decoration: none
+#four div {
+  display: inline-block;
+  margin-top: 15px;
+  margin-right: 15px;
+  width: 210px;
+  height: 45px;
+  cursor: pointer
 }
+
+#four div:hover { background-position: 0 -45px }
+
+#cc { background: url(../images/d2/cc.png) }
+
+#bitcoin { background: url(../images/d2/bitcoin.png) }
+
+#zero { background: url(../images/d2/zero.png) }
