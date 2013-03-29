@@ -21,7 +21,7 @@
     Brian Kennish <byoogle@gmail.com>
 */
 body {
-  margin: 0;
+  margin: 0 0 45px;
   min-width: 980px;
   font:
       small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
@@ -54,12 +54,29 @@ body {
 }
 
 #description h1 {
-  background: -webkit-gradient(radial, center center, 0, center center, 100%, color-stop(0%, white), color-stop(100%, rgba(255, 255, 255, 0)));
-  background: -webkit-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -moz-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff');
-  background: -ms-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -o-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%)
+  background: -webkit-gradient(
+    radial,
+    center center,
+    0,
+    center center,
+    100%,
+    color-stop(0%, white), color-stop(100%, rgba(255, 255, 255, 0))
+  );
+  background: -webkit-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -moz-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.Gradient(
+    GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff'
+  );
+  background: -ms-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -o-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  )
 }
 
 h2 {
@@ -68,25 +85,60 @@ h2 {
 }
 
 #description h2 {
-  background: -webkit-gradient(radial, center center, 0, center center, 100%, color-stop(0%, white), color-stop(100%, rgba(255, 255, 255, 0)));
-  background: -webkit-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -moz-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff');
-  background: -ms-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -o-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%)
+  background: -webkit-gradient(
+    radial,
+    center center,
+    0,
+    center center,
+    100%,
+    color-stop(0%, white), color-stop(100%, rgba(255, 255, 255, 0))
+  );
+  background: -webkit-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -moz-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.Gradient(
+    GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff'
+  );
+  background: -ms-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -o-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  )
 }
 
 #cta {
   margin-top: 60px;
-  background: -webkit-gradient(radial, center center, 0, center center, 100%, color-stop(0%, white), color-stop(100%, rgba(255, 255, 255, 0)));
-  background: -webkit-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -moz-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff');
-  background: -ms-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%);
-  background: -o-radial-gradient(center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%)
+  background: -webkit-gradient(
+    radial,
+    center center,
+    0,
+    center center,
+    100%,
+    color-stop(0%, white),
+    color-stop(100%, rgba(255, 255, 255, 0))
+  );
+  background: -webkit-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -moz-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.Gradient(
+    GradientType=1, startColorstr='#ffffffff', endColorstr='#00ffffff'
+  );
+  background: -ms-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  );
+  background: -o-radial-gradient(
+    center, ellipse cover, white 0%, rgba(255, 255, 255, 0) 100%
+  )
 }
 
-#pwyw {
+#pwyw-action {
   display: inline-block;
   float: left;
   margin-right: 15px;
@@ -96,9 +148,9 @@ h2 {
   cursor: pointer
 }
 
-#pwyw:hover { background-position: 0 -56px }
+#pwyw-action:hover { background-position: 0 -56px }
 
-#more {
+#more-action {
   display: table-cell;
   height: 56px;
   vertical-align: middle;
@@ -107,12 +159,12 @@ h2 {
   cursor: pointer
 }
 
-#more:hover { text-decoration: underline }
+#more-action:hover { text-decoration: underline }
 
 #try {
   position: absolute;
-  left: -150px;
-  top: 300px
+  top: 320px;
+  left: -200px
 }
 
 #embed {
@@ -128,135 +180,193 @@ h2 {
   margin-left: 10%
 }
 
-.feature {
+#features .feature {
   display: inline-block;
   width: 33%
 }
 
-.feature img {
+#features img {
   float: left;
   margin-right: 15px
 }
 
-.feature .text {
+#features .text {
   display: table-cell;
   height: 80px;
   vertical-align: middle
 }
 
-.feature h2 {
+#features h2 {
   margin-top: 0;
   color: #2b2b2b
 }
 
-.feature p { margin-bottom: 0 }
+#features p { margin-bottom: 0 }
 
-.green {
-  color: #5baf4d;
-}
-
-.large-title {
+#more {
   margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: 150%;
-}
-
-#video-box {
-  margin-top: 50px;
-  margin-left: 182px;
-  margin-bottom: 60px;
   background-color: #ebebeb;
+  padding: 60px 5% 60px 10%;
+  min-height: 312px
 }
 
-#video-box #video-text {
-  float: right;
-  margin-right: 74px;
-  width: 376px;
-  text-align: right;
-}
-
-#payment-box {
-  margin-left: 182px;
-}
-
-#payment-box #payment-headlines {
-  border-bottom: #d5d5d5;
-}
-
-#payment-box .number {
+#more img {
   float: left;
-  font-size: 150%;
-  font-weight: bold;
+  margin-right: 20px
 }
 
-#payment-box .content {
-  margin-top: 15px;
-  margin-left: 40px;
-  margin-bottom: 25px;
+#more h2 {
+  margin-top: 0;
+  color: #5baf4d
 }
 
-#payment-box .instruction {
-  margin-top: 5px;
-  margin-left: 20px;
+p { overflow: auto }
+
+#pwyw {
+  margin-top: 45px;
+  margin-right: 5%;
+  margin-left: 10%;
+  width: 50%;
+  min-width: 600px
 }
 
-#payment-box .border-top {
-  border-top: 1px solid #d5d5d5;
-  padding-top: 29px;
+#pwyw h2 {
+  padding-bottom: 5px;
+  color: #5baf4d
 }
 
-#payment-box .payment-selection {
-  margin-left: -26px;
+#pwyw .count {
+  float: left;
+  font-size: 20px;
+  font-weight: bold
 }
 
-#payment-box #custom-amount {
-  width: 80px;
+#pwyw .step {
+  margin-top: 20px;
+  margin-left: 20px
 }
 
-#payment-box #choose-division {
-  width: 640px;
+input {
+  font:
+      small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
+          Arial, sans-serif;
+  outline-color: #009548
 }
 
-#payment-box #payment-buttons {
-  margin-bottom: 50px;
-}
-
-#payment-box .description {
-  margin-bottom: 10px;
-}
-
-#payment-box #slider {
+input[type=radio] {
   position: relative;
-  height: 11px;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  -webkit-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 100%;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 13px;
+  height: 13px;
+  vertical-align: middle
 }
 
-#payment-box .ui-slider-handle {
-  background: url(../images/d2/slider-handle.png) no-repeat;
-  height: 11px;
-  width: 11px;
+input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+input[type=radio]:checked:before {
   position: absolute;
-  margin-left: -6px;
-  top: -4px;
+  top: 3px;
+  right: 3px;
+  bottom: 3px;
+  left: 3px;
+  border-radius: 100%;
+  background-color: #666;
+  content: ''
 }
 
-#payment-box .slider-holder {
-  height: 5px;
+input[type=text] {
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  padding: 3px
+}
+
+hr {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: #d5d5d5
+}
+
+#two label {
+  display: inline-block;
+  margin-right: 5px;
+  width: 80px
+}
+
+#pwyw .slider {
+  display: inline-block;
   position: relative;
-  background: url(../images/d2/slider.png) no-repeat;
+  top: -2px;
+  margin-right: 10px;
+  background: url(../images/d2/slider.png);
   width: 359px;
-  top: 7px;
-  margin-bottom: 20px;
+  height: 5px
 }
 
-#payment-box .slider-container {
-  float: right;
+#pwyw .ui-slider-handle {
+  position: absolute;
+  top: -3px;
+  margin-left: -6px;
+  background: url(../images/d2/slider-handle.png);
+  width: 11px;
+  height: 11px;
+  outline: none
 }
 
-#payment-box .slider-values {
-  float: right;
-  margin-left: 10px;
+#two input { background: -webkit-linear-gradient(#60d490 38%, #68b789) }
+
+#two img {
+  margin-left: -3px;
+  vertical-align: top
 }
-#payment-box .slider-values input{
-  display: block;
-  width: 80px;
+
+#pwyw .note {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #a9a9a9
+}
+
+a {
+  text-decoration: none;
+  color: #5baf4d
+}
+
+a:hover { text-decoration: underline }
+
+input[type=checkbox] {
+  margin-left: 2px;
+  -webkit-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+input[type=checkbox]:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+input[type=checkbox]:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
+}
+
+#stripe {
+  margin-top: 2px;
+  margin-right: 10px;
+  vertical-align: top;
+  text-decoration: none
 }

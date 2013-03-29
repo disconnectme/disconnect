@@ -49,6 +49,10 @@
       type="text/javascript"
       src="../scripts/vendor/stripe/checkout.js"
     ></script>
+    <script
+      type="text/javascript"
+      src="../scripts/vendor/coinbase/button.js"
+    ></script>
     <script type="text/javascript" src="../scripts/d2.js"></script>
     <!-- Additional Disconnect dependencies. ... -->
     <link rel="stylesheet" href="../stylesheets/vendor/tipped/tipped.css">
@@ -111,8 +115,8 @@
           faster, more private, &amp; more secure.
         </h2>
         <div id="cta">
-          <div id="pwyw"></div>
-          <div id="more">Or learn more</div>
+          <div id="pwyw-action"></div>
+          <div id="more-action">Or learn more</div>
         </div>
       </div>
       <div id="embed">
@@ -413,88 +417,104 @@
         </div>
       </div>
     </div>
-    <div id="video-box">
-      <div id="video-text">
-        <div class="green">1,000,000 users deserve a 2.0</div>
-        <div class="large-title">Another title here.</div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.
-      </div>
-      <div id="video">
-        <img alt="Video" src="../images/d2/video.png">
-      </div>
+    <div id="more">
+      <img src="../images/d2/video.png" alt="Video">
+      <h2></h2>
+      <p></p>
+      <p></p>
     </div>
-    <div id="payment-box">
-      <div id="payment-headlines">
-        <div class="green">something something</div>
-        <div class="large-title">Payment title here</div>
+    <form id="pwyw">
+      <h2>Pay what you want ($0 or more) to start Disconnect</h2>
+      <div class="count">1</div>
+      <div class="step" id="one">
+        <p>Name a fair price (in USD):</p>
+        <input type="radio" name="price" value="100">
+        <label>$100</label>
+        <br>
+        <input type="radio" name="price" value="50">
+        <label>$50</label>
+        <br>
+        <input type="radio" name="price" value="20" checked>
+        <label>$20</label>
+        <br>
+        <input type="radio" name="price" value="10">
+        <label>$10</label>
+        <br>
+        <input type="radio" name="price" value="0">
+        $<input type="text" name="price-override" size="7" placeholder="20.00">
       </div>
-      <div id="choose-amount" class="border-top">
-        <div class="number">1</div>
-        <div class="instruction">Choose any amount of money, in USD</div>
-        <div class="content">
-          <form id="payment-total">
-            <div class="payment-selection">
-              <input type="radio" name="payment-group" value="100" class="payment-radio"> $100
-            </div>
-            <div class="payment-selection">
-              <input type="radio" name="payment-group" value="50" class="payment-radio"> $50
-            </div>
-            <div class="payment-selection">
-              <input type="radio" name="payment-group" value="25" class="payment-radio"> $25
-            </div>
-            <div class="payment-selection">
-              <input type="radio" name="payment-group" value="15" class="payment-radio"> $15
-            </div>
-            <div class="payment-selection">
-              <input id="custom-radio" type="radio" name="payment-group" value="0" class="payment-radio"> 
-              Custom Amount: 
-              $ <input id="custom-amount" name="custom-amount" placeholder="8.00">
-            </div>
-          </form>
-        </div>
-      <div id="choose-division" class="border-top">
-        <div class="number">2</div>
-        <div class="instruction">
-          Choose how you would like to divide up your contribution
-        </div>
-        <div class="content">
-          <div class="slider-values">
-            <input id="disconnect-amount" name="custom-amount">
-            <input id="charity-amount" name="custom-amount">
+      <hr>
+      <div class="count">2</div>
+      <div class="step" id="two">
+        <p>Choose how to split up your contribution:</p>
+        <label>Disconnect</label>
+        <div class="slider" id="disconnect-slider"></div>
+        $<input
+          type="text"
+          name="split"
+          id="disconnect-split"
+          size="7"
+          disabled
+        >
+        <br>
+        <label>
+          <img src="../images/d2/arrow.png" alt="Expand">
+          Charity
+        </label>
+        <div class="slider" id="charity-slider"></div>
+        $<input
+          type="text"
+          name="split"
+          id="charity-split"
+          size="7"
+          disabled
+        >
+        <p>
+          <div class="note">
+            <a target="_blank" href="http://www.propublica.org/">ProPublica</a>
+            publishes independent investigative journalism in the public
+            interest.
           </div>
-          <div class="slider-container">
-            <div id="disconnect-slider" class="slider slider-holder"></div>
-            <div id="charity-slider" class="slider slider-holder"></div>
+          <div class="note">
+            The
+            <a
+              target="_blank" href="https://www.cdt.org/"
+            >Center for Democracy and Technology</a>
+            promotes democratic values in the digital age.
           </div>
-          <div id="slider-descriptions">
-            <div class="description">Disconnect</div>
-            <div class="description">Charity</div>
+          <div class="note">
+            The
+            <a
+              target="_blank" href="https://www.torproject.org/"
+            >Tor Project</a>
+            helps users communicate anonymously on the Internet.
           </div>
-        </div>
+        </p>
       </div>
-      <div id="email" class="border-top">
-        <div class="number">2</div>
-        <div class="instruction">
-          Enter your email address (double check)
-        </div>
-        <div class="content">
-          <input name="email">
-          <input type="checkbox" name = "subscribe"> Subscribe me to the newsletter.
-        </div>
+      <hr>
+      <div class="count">3</div>
+      <div class="step" id="three">
+        <p>Tell us your email address to get a receipt (optional):</p>
+        <input type="text" name="email" size="30" placeholder="Email address">
+        <p>
+          <input type="checkbox" name="subscribe">
+          Also subscribe to Disconnect’s newsletter (one message a month or
+          less)
+        </p>
       </div>
-      <div id="payment-buttons" class="border-top">
-        <div class="number">3</div>
-        <div class="instruction">Select your payment method below</div>
-        <div class="content">
-          <div style = "float: left; margin-right: 30px;">
-            <a href="#" id="stripe" class="stripe-connect"><span>Pay with Credit Card</span></a>
-          </div>
-          <div style = "float: left;">
-            <a class="coinbase-button" data-code="4d4b84bbad4508b64b61d372ea394dad" href="https://coinbase.com/checkouts/4d4b84bbad4508b64b61d372ea394dad">Pay With Bitcoin</a>
-            <!--script src="https://coinbase.com/assets/button.js" type="text/javascript"--></script>
-          </div>
-        </div>
+      <hr>
+      <div class="count">4</div>
+      <div class="step" id="four">
+        <p>Pick a payment method:</p>
+        <a class="stripe-connect" id="stripe">
+          <span>Pay by credit card</span>
+        </a>
+        <a
+          class="coinbase-button"
+          href="https://coinbase.com/checkouts/4d4b84bbad4508b64b61d372ea394dad"
+          data-code="4d4b84bbad4508b64b61d372ea394dad"
+        >Pay with Bitcoin</a>
       </div>
-    </div>
+    </form>
   </body>
 </html>
