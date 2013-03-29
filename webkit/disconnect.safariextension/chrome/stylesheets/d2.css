@@ -159,7 +159,7 @@ h2 {
   cursor: pointer
 }
 
-#more-action:hover { text-decoration: underline }
+#more-action:hover { color: #009548 }
 
 #try {
   position: absolute;
@@ -331,6 +331,7 @@ hr {
 #pwyw .note {
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-left: 15px;
   color: #a9a9a9
 }
 
@@ -339,7 +340,7 @@ a {
   color: #5baf4d
 }
 
-a:hover { text-decoration: underline }
+a:hover { color: #009548 }
 
 input[type=checkbox] {
   margin-left: 2px;

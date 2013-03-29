@@ -440,8 +440,8 @@
         <input type="radio" name="price" value="10">
         <label>$10</label>
         <br>
-        <input type="radio" name="price" value="0">
-        $<input type="text" name="price-override" size="7" placeholder="20.00">
+        <input type="radio" name="price" id="override" value="20">
+        $<input type="text" id="override-price" size="7" placeholder="20.00">
       </div>
       <hr>
       <div class="count">2</div>
@@ -449,26 +449,14 @@
         <p>Choose how to split up your contribution:</p>
         <label>Disconnect</label>
         <div class="slider" id="disconnect-slider"></div>
-        $<input
-          type="text"
-          name="split"
-          id="disconnect-split"
-          size="7"
-          disabled
-        >
+        <input type="text" id="disconnect-split" size="8" disabled>
         <br>
         <label>
           <img src="../images/d2/arrow.png" alt="Expand">
           Charity
         </label>
         <div class="slider" id="charity-slider"></div>
-        $<input
-          type="text"
-          name="split"
-          id="charity-split"
-          size="7"
-          disabled
-        >
+        <input type="text" id="charity-split" size="8" disabled>
         <p>
           <div class="note">
             <a target="_blank" href="http://www.propublica.org/">ProPublica</a>
@@ -479,8 +467,15 @@
             The
             <a
               target="_blank" href="https://www.cdt.org/"
-            >Center for Democracy and Technology</a>
+            >Center for Democracy &amp; Technology</a>
             promotes democratic values in the digital age.
+          </div>
+          <div class="note">
+            The
+            <a
+              target="_blank" href="https://www.eff.org/"
+            >Electronic Frontier Foundation</a>
+            defends fundamental rights in the networked world.
           </div>
           <div class="note">
             The
@@ -495,9 +490,9 @@
       <div class="count">3</div>
       <div class="step" id="three">
         <p>Tell us your email address to get a receipt (optional):</p>
-        <input type="text" name="email" size="30" placeholder="Email address">
+        <input type="text" id="email" size="30" placeholder="Email address">
         <p>
-          <input type="checkbox" name="subscribe">
+          <input type="checkbox" id="subscribe">
           Also subscribe to Disconnect’s newsletter (one message a month or
           less)
         </p>
