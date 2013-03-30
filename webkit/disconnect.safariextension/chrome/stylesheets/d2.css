@@ -36,6 +36,15 @@ body {
   background: #f9f9f9
 }
 
+#logo {
+  display: inline-block;
+  background: url(../images/d2/disconnect.png);
+  width: 221px;
+  height: 33px
+}
+
+#logo:hover { background-position: 0 -33px }
+
 #hero {
   margin-top: -45px;
   margin-right: 5%;
@@ -45,7 +54,7 @@ body {
   overflow: visible
 }
 
-#description {
+#cta {
   display: inline-block;
   margin-top: 120px;
   margin-left: 6%;
@@ -53,7 +62,7 @@ body {
   vertical-align: top
 }
 
-#description h1 {
+#headline {
   background: -webkit-gradient(
     radial,
     center center,
@@ -79,12 +88,8 @@ body {
   )
 }
 
-h2 {
-  font-weight: normal;
-  color: #999
-}
-
-#description h2 {
+#description {
+  margin-top: 20px;
   background: -webkit-gradient(
     radial,
     center center,
@@ -110,7 +115,7 @@ h2 {
   )
 }
 
-#cta {
+#actions {
   margin-top: 60px;
   background: -webkit-gradient(
     radial,
@@ -169,9 +174,9 @@ h2 {
 }
 
 #try {
-  position: relative;
-  margin-top: -120px;
-  margin-left: 40%
+  position: absolute;
+  top: 360px;
+  left: 43%
 }
 
 #features {
@@ -196,10 +201,12 @@ h2 {
   vertical-align: middle
 }
 
-#features h2 {
-  margin-top: 0;
-  color: #2b2b2b
+h2 {
+  font-weight: normal;
+  color: #5baf4d
 }
+
+#features h2 { margin-top: 0 }
 
 #features p { margin-bottom: 0 }
 
@@ -212,13 +219,14 @@ h2 {
 
 #more img {
   float: left;
-  margin-right: 20px
+  margin-right: 20px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  cursor: pointer
 }
 
-#more h2 {
-  margin-top: 0;
-  color: #5baf4d
-}
+#more img:hover { border: 1px solid #2b2b2b }
+
+#more h2 { margin-top: 0 }
 
 p { overflow: auto }
 
@@ -230,10 +238,7 @@ p { overflow: auto }
   min-width: 600px
 }
 
-#pwyw h2 {
-  padding-bottom: 5px;
-  color: #5baf4d
-}
+#pwyw h2 { padding-bottom: 5px }
 
 #pwyw .count {
   float: left;
@@ -328,7 +333,8 @@ hr {
 
 #two img {
   margin-left: -3px;
-  vertical-align: top
+  vertical-align: top;
+  cursor: pointer
 }
 
 #pwyw .note {
