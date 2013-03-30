@@ -21,7 +21,7 @@
     Brian Kennish <byoogle@gmail.com>
 */
 body {
-  margin: 0 0 45px;
+  margin: 0;
   min-width: 980px;
   font:
       small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
@@ -30,7 +30,9 @@ body {
 }
 
 #header {
-  padding: 15px 10%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10%;
   background: #f9f9f9
 }
 
@@ -44,7 +46,7 @@ body {
 #logo:hover { background-position: 0 -33px }
 
 #hero {
-  margin-top: -45px;
+  margin-top: -15px;
   margin-right: 5%;
   margin-left: 10%;
   background: url(../images/d2/browser.png) no-repeat top right;
@@ -55,8 +57,7 @@ body {
 #cta {
   display: inline-block;
   margin-top: 120px;
-  margin-left: 6%;
-  width: 60%;
+  width: 66%;
   vertical-align: top
 }
 
@@ -196,7 +197,7 @@ body {
 
 #links {
   position: absolute;
-  top: 25px;
+  top: 30px;
   right: 10%;
   text-transform: uppercase
 }
@@ -210,12 +211,12 @@ body {
 
 #try {
   position: absolute;
-  top: 360px;
+  top: 410px;
   left: 45%
 }
 
 #features {
-  margin-top: -120px;
+  margin-top: -60px;
   margin-right: 5%;
   margin-left: 10%
 }
@@ -243,9 +244,9 @@ h2 { font-weight: normal }
 #features p { margin-bottom: 0 }
 
 #more {
-  margin-top: 20px;
+  margin-top: 60px;
   background-color: #ebebeb;
-  padding: 60px 5% 60px 10%;
+  padding: 75px 5% 75px 10%;
   min-height: 312px
 }
 
@@ -260,15 +261,20 @@ h2 { font-weight: normal }
 
 #more h2 {
   margin-top: 0;
+  margin-bottom: 30px;
   color: #5baf4d
 }
 
 p { overflow: auto }
 
+#more p {
+  margin-top: 24px;
+  font-size: medium;
+  color: #909090
+}
+
 #pwyw {
-  margin-top: 45px;
-  margin-right: 5%;
-  margin-left: 10%;
+  margin: 45px 5% 45px 10%;
   width: 55%;
   min-width: 600px
 }
