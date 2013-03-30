@@ -29,8 +29,8 @@ $(function() {
     var charityTotal =
         (total * (charitySlider.slider('option', 'value') / 100)).toFixed(2);
 
-    disconnectSplit.val('$' + disconnectTotal);
-    charitySplit.val('$' + charityTotal);
+    disconnectSplit.val(disconnectTotal);
+    charitySplit.val(charityTotal);
   }
 
   $('#pwyw-action').click(function() {
