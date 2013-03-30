@@ -166,17 +166,6 @@ body {
 
 #pwyw-action:hover { background-position: 0 -56px }
 
-#video-action {
-  display: table-cell;
-  height: 56px;
-  vertical-align: middle;
-  font-size: medium;
-  color: #5baf4d;
-  cursor: pointer
-}
-
-#video-action:hover { color: #009548 }
-
 #more-action {
   display: table-cell;
   height: 56px;

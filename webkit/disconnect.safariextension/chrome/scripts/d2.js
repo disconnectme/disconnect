@@ -33,6 +33,13 @@ $(function() {
     charitySplit.val('$' + charityTotal);
   }
 
+  $('#pwyw-action').click(function() {
+    $('html, body').animate({scrollTop: $('#pwyw').offset().top - 45});
+  });
+  $('#more-action').click(function() {
+    $('html, body').animate({scrollTop: $('#more').offset().top});
+  });
+  
   var disconnectSlider = $('#disconnect-slider');
   var charitySlider = $('#charity-slider');
   var disconnectSplit = $('#disconnect-split');
