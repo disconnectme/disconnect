@@ -35,8 +35,7 @@
     <em:developer>Gary Teh</em:developer>
     <em:developer>Dan Kwon</em:developer>
     <em:description>
-      Stop third parties and search engines from tracking the webpages you go to
-      and searches you do.
+      Stop third parties and search engines from tracking the webpages you go to and searches you do.
     </em:description>
     <em:iconURL>chrome://disconnect/skin/icon.png</em:iconURL>
     <em:icon64URL>chrome://disconnect/skin/icon64.png</em:icon64URL>
