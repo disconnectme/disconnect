@@ -35,8 +35,8 @@
     <em:description>
       Make the web faster, more private, and more secure.
     </em:description>
-    <em:iconURL>chrome://disconnect/skin/48.png</em:iconURL>
-    <em:icon64URL>chrome://disconnect/skin/64.png</em:icon64URL>
+    <em:iconURL>chrome://disconnect/skin/images/48.png</em:iconURL>
+    <em:icon64URL>chrome://disconnect/skin/images/64.png</em:icon64URL>
     <em:homepageURL>https://disconnect.me/</em:homepageURL>
     <!-- Firefox. -->
     <em:targetApplication>

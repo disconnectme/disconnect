@@ -20,6 +20,16 @@
 
     Brian Kennish <byoogle@gmail.com>
 -->
+<?xml-stylesheet
+  href="chrome://disconnect/skin/stylesheets/vendor/typography/typography.css"
+?>
+<?xml-stylesheet
+  href="chrome://disconnect/skin/stylesheets/vendor/tipped/tipped.css"
+?>
+<?xml-stylesheet
+  href="chrome://disconnect/skin/stylesheets/chrollusion/index.css"
+?>
+<?xml-stylesheet href="chrome://disconnect/skin/stylesheets/popup.css"?>
 <?xml-stylesheet href="overlay.css"?>
 <overlay
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -45,7 +55,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/disconnect.png" alt="Disconnect"
+                  src="chrome://disconnect/skin/images/disconnect.png"
+                  alt="Disconnect"
                 /></html:a>
               </html:td>
               <html:td class="text">
@@ -90,7 +101,7 @@
                   </html:table>
                 </html:td>
                 <html:td class="action">
-                  <html:img src="chrome://disconnect/skin/expand/1.png"/>
+                  <html:img src="chrome://disconnect/skin/images/expand/1.png"/>
                 </html:td>
               </html:tr>
               <html:tr class="border">
@@ -120,7 +131,7 @@
           <html:table id="options">
             <html:tr>
               <html:td class="whitelisting badge">
-                <html:img src="chrome://disconnect/skin/list/1.png"/>
+                <html:img src="chrome://disconnect/skin/images/list/1.png"/>
               </html:td>
               <html:td class="whitelisting text"></html:td>
               <html:td class="visualization badge"><html:img/></html:td>
@@ -166,7 +177,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/facebook.png" alt="Facebook"
+                  src="chrome://disconnect/skin/images/facebook.png"
+                  alt="Facebook"
                 /></html:a>
               </html:td>
               <html:td>
@@ -175,7 +187,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/twitter.png" alt="Twitter"
+                  src="chrome://disconnect/skin/images/twitter.png"
+                  alt="Twitter"
                 /></html:a>
               </html:td>
             </html:tr>
@@ -189,7 +202,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/facebook.png" alt="Facebook"
+                  src="chrome://disconnect/skin/images/facebook.png"
+                  alt="Facebook"
                 /></html:a>
               </html:td>
               <html:td>
@@ -198,7 +212,7 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/twitter.png"
+                  src="chrome://disconnect/skin/images/twitter.png"
                   alt="Twitter"
                 /></html:a>
               </html:td>
@@ -213,7 +227,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/facebook.png" alt="Facebook"
+                  src="chrome://disconnect/skin/images/facebook.png"
+                  alt="Facebook"
                 /></html:a>
               </html:td>
               <html:td>
@@ -222,7 +237,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/twitter.png" alt="Twitter"
+                  src="chrome://disconnect/skin/images/twitter.png"
+                  alt="Twitter"
                 /></html:a>
               </html:td>
             </html:tr>
@@ -236,7 +252,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/facebook.png" alt="Facebook"
+                  src="chrome://disconnect/skin/images/facebook.png"
+                  alt="Facebook"
                 /></html:a>
               </html:td>
               <html:td>
@@ -245,7 +262,8 @@
                   target="_blank"
                   href="https://disconnect.me/"
                 ><html:img
-                  src="chrome://disconnect/skin/twitter.png" alt="Twitter"
+                  src="chrome://disconnect/skin/images/twitter.png"
+                  alt="Twitter"
                 /></html:a>
               </html:td>
             </html:tr>
