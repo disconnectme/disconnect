@@ -157,7 +157,11 @@ function reduceCookies(url, service, name) {
 
 /* Preps the browser action. */
 function initializeToolbar() {
-  BROWSER_ACTION.setBadgeBackgroundColor({color: [0, 186, 77, 255]});
+  BROWSER_ACTION.setBadgeBackgroundColor({
+    color:
+        localStorage.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
+            [0, 186, 77, 255]
+  });
   const DETAILS = {popup: (SAFARI ? 'chrome' : '') + '/markup/popup.html'};
 
   if (SAFARI) {
@@ -187,7 +191,10 @@ function updateCounter(tabId, count, deactivated) {
         deserialize(localStorage.blogOpened)
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
-      tabId: tabId, color: [93, 93, 93, 255]
+      tabId: tabId,
+      color:
+          localStorage.displayMode == LEGACY_NAME ? [136, 136, 136, 255] :
+              [93, 93, 93, 255]
     });
 
     setTimeout(function() {
@@ -272,6 +279,9 @@ const CONTENT_NAME = 'Content';
 
 /* The graph value. */
 const GRAPH_NAME = 'graph';
+
+/* The legacy value. */
+const LEGACY_NAME = 'legacy';
 
 /* The "extension" API. */
 const EXTENSION = chrome.extension;
@@ -358,18 +368,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 
   localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
   localStorage.blacklist = JSON.stringify(BLACKLIST);
-
-  if (!PREVIOUS_BUILD) localStorage.displayMode = 'list';
-  else {
-    downgradeServices(true);
-    localStorage.displayMode = 'legacy';
-  }
-
+  localStorage.displayMode = PREVIOUS_BUILD ? LEGACY_NAME : 'list';
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
   localStorage.build = CURRENT_BUILD;
 }
 
+localStorage.displayMode == LEGACY_NAME && downgradeServices(true);
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
@@ -437,7 +442,9 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   var day = date.getDate();
   day = (day < 10 ? '0' : '') + day;
   date = date.getFullYear() + '-' + month + '-' + day;
-  const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+  const POPUP =
+      EXTENSION.getViews({type: 'popup'})[0] &&
+          localStorage.displayMode != LEGACY_NAME;
 
   if (CHILD_SERVICE) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
@@ -565,7 +572,9 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
     delete REQUEST_COUNTS[TAB_ID];
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
-    const POPUP = EXTENSION.getViews({type: 'popup'})[0];
+    const POPUP =
+        EXTENSION.getViews({type: 'popup'})[0] &&
+            localStorage.displayMode != LEGACY_NAME;
     POPUP && POPUP.clearServices(TAB_ID);
   }
 });

@@ -953,7 +953,9 @@ var whitelistingClicked = 0;
           renderService(
             name,
             lowercaseName,
-            !((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {})[name],
+            !(((
+              (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {}
+            ).Disconnect || {}).services || {})[name],
             requestCount,
             control,
             badge,
@@ -971,10 +973,17 @@ var whitelistingClicked = 0;
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            const DISCONNECT_WHITELIST =
+                SITE_WHITELIST.Disconnect ||
+                    (SITE_WHITELIST.Disconnect =
+                        {whitelisted: false, services: {}});
             renderService(
               name,
               lowercaseName,
-              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
+              !(
+                DISCONNECT_WHITELIST.services[name] =
+                    !DISCONNECT_WHITELIST.services[name]
+              ),
               requestCount,
               control,
               badge,
