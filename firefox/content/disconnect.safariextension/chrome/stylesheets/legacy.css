@@ -1,0 +1,71 @@
+/*
+  The style sheet for a popup that displays and drives the blocking of requests.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+*/
+#legacy, #legacy .services td { text-align: center }
+
+#legacy, #minioptions { font-size: x-small }
+
+#legacy {
+  margin: 3px;
+  width: 140px
+}
+
+#legacy table {
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse
+}
+
+#legacy input, #legacy :link, #legacy :visited { outline: none }
+
+#legacy :link, #legacy :visited {
+  text-decoration: none;
+  color: #003ea8
+}
+
+#legacy :hover { text-decoration: underline }
+
+#legacy .deactivated { color: #7f7f7f }
+
+#legacy .mouseover { background: #f4f6fc }
+
+#legacy .services {
+  margin-bottom: 3px;
+  background: white;
+  font-size: small
+}
+
+#legacy .services tr {
+  border: solid #edeff5;
+  border-width: thin 0;
+  cursor: pointer
+}
+
+#legacy .services tr:first-child, #legacy .search, #upgrade { display: none }
+
+#legacy .services td { padding: 3px 0 3px 6px }
+
+#legacy .services td:last-child {
+  padding-right: 6px;
+  width: 100%
+}
+
+#legacy .shown.search { display: table-row }

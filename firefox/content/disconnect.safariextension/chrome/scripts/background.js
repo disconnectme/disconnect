@@ -358,7 +358,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 
   localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
   localStorage.blacklist = JSON.stringify(BLACKLIST);
-  localStorage.displayMode = 'list';
+
+  if (!PREVIOUS_BUILD) localStorage.displayMode = 'list';
+  else {
+    downgradeServices(true);
+    localStorage.displayMode = 'legacy';
+  }
+
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
   localStorage.build = CURRENT_BUILD;

@@ -389,6 +389,23 @@ function updateCategory(
   });
 }
 
+/* Outputs third-party details as per the blocking state. */
+function renderService(
+  name, lowercaseName, blocked, requestCount, control, badge, text
+) {
+  if (blocked) {
+    control.title = 'Unblock ' + name;
+    badge.src = IMAGES + LEGACY + '/' + lowercaseName + '-activated.png';
+    text.removeAttribute('class');
+    text.textContent = requestCount + ' blocked';
+  } else {
+    control.title = 'Block ' + name;
+    badge.src = IMAGES + LEGACY + '/' + lowercaseName + '-deactivated.png';
+    text.className = 'deactivated';
+    text.textContent = requestCount + ' unblocked';
+  }
+}
+
 /* Resets third-party details. */
 function clearServices(id) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
@@ -795,6 +812,12 @@ const CATEGORIES = ['Advertising', 'Analytics', 'Social', 'Content'];
 /* The number of other types of third parties. */
 const CATEGORY_COUNT = CATEGORIES.length;
 
+/* The third parties. */
+const SERVICES = ['Facebook', 'Google', 'LinkedIn', 'Twitter', 'Yahoo'];
+
+/* The number of third parties. */
+const SERVICE_COUNT = SERVICES.length;
+
 /* The "tabs" API. */
 const TABS = BACKGROUND.TABS;
 
@@ -806,6 +829,9 @@ const LIST = 'list';
 
 /* The graph keyword. */
 const GRAPH = 'graph';
+
+/* The legacy keyword. */
+const LEGACY = 'legacy';
 
 /* The deactivated keyword. */
 const DEACTIVATED = 'deactivated';
@@ -873,6 +899,9 @@ const RESOURCE_SIZE = 10.4957370842049;
 /* The ratio of mean file sizes. */
 const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
 
+/* The active UI. */
+var displayMode = localStorage.displayMode;
+
 /* The service scaffolding. */
 var serviceTemplate;
 
@@ -893,83 +922,169 @@ var whitelistingClicked = 0;
   SAFARI ? 'popover' : 'load', function() {
     const BODY = $('body');
     if (SAFARI) BODY.addClass('safari');
+    const VIEWPORT = $('html').add(BODY);
 
-    $('#navbar img').mouseenter(function() {
-      this.src = this.src.replace('.', HIGHLIGHTED);
-    }).mouseleave(function() {
-      this.src = this.src.replace(HIGHLIGHTED, '.');
-    });
+    if (displayMode == LEGACY) {
+      VIEWPORT.height(230);
+      const WRAPPED_THEME = $('#' + LEGACY);
+      WRAPPED_THEME.show();
+      const THEME = WRAPPED_THEME[0];
 
-    Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
-      skin: 'tiny',
-      shadow: {color: '#fff', opacity: .1},
-      stem: {spacing: -1},
-      background: {color: '#333', opacity: .9},
-      onShow: function() {
-        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-        $('.sharing.disconnect .text').text(
-          BLOCKED_COUNT + ' blocked' + REQUEST + (BLOCKED_COUNT - 1 ? 's' : '')
-        );
-      },
-      fadeIn: 400,
-      fadeOut: 400
-    });
+      TABS.query({currentWindow: true, active: true}, function(tabs) {
+        const TAB = tabs[0];
+        const ID = TAB.id;
+        const CATEGORY_REQUESTS =
+            (BACKGROUND.REQUEST_COUNTS[ID] || {}).Disconnect || {};
+        const SURFACE = THEME.getElementsByTagName('tbody')[0];
+        const TEMPLATE = SURFACE.getElementsByTagName('tr')[0];
+        var expiredControl;
+        while (expiredControl = TEMPLATE.nextSibling)
+            SURFACE.removeChild(expiredControl);
+        const DOMAIN = GET(TAB.url);
 
-    var activeServices = $();
+        for (var i = 0; i < SERVICE_COUNT; i++) {
+          var name = SERVICES[i];
+          var lowercaseName = name.toLowerCase();
+          var serviceRequests = CATEGORY_REQUESTS[name];
+          var requestCount = serviceRequests ? serviceRequests.count : 0;
+          var control = SURFACE.appendChild(TEMPLATE.cloneNode(true));
+          var badge = control.getElementsByTagName('img')[0];
+          var text = control.getElementsByTagName('td')[1];
+          renderService(
+            name,
+            lowercaseName,
+            !((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {})[name],
+            requestCount,
+            control,
+            badge,
+            text
+          );
+          badge.alt = name;
 
-    TABS.query({currentWindow: true, active: true}, function(tabs) {
-      const TAB = tabs[0];
-      const DOMAIN = domain = GET(TAB.url);
-      const ID = tabId = TAB.id;
-      const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
-      const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
-      const SHORTCUT_SURFACE =
-          document.getElementById('shortcuts').getElementsByTagName('td')[0];
-      const SHORTCUT_TEMPLATE =
-          SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-      const SITE_WHITELIST =
-          (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
-      const SHORTCUT_WHITELIST =
-          (SITE_WHITELIST.Disconnect || {}).services || {};
+          control.onmouseover = function() { this.className = 'mouseover'; };
 
-      for (var i = 0; i < SHORTCUT_COUNT; i++) {
-        var name = SHORTCUTS[i];
-        var lowercaseName = name.toLowerCase();
-        var shortcutRequests = DISCONNECT_REQUESTS[name];
-        var requestCount = shortcutRequests ? shortcutRequests.count : 0;
-        var control =
-            SHORTCUT_SURFACE.appendChild(SHORTCUT_TEMPLATE.cloneNode(true));
-        var wrappedControl = $(control);
-        var badge =
-            control.
-              getElementsByClassName('badge')[0].
-              getElementsByTagName('img')[0];
-        var text = control.getElementsByClassName('text')[0];
-        renderShortcut(
-          name,
-          lowercaseName,
-          !SHORTCUT_WHITELIST[name],
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text,
-          1
-        );
-        badge.alt = name;
+          control.onmouseout = function() { this.removeAttribute('class'); };
 
-        wrappedControl.click(function(
-          name,
-          lowercaseName,
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text
-        ) {
-          handleShortcut(
-            DOMAIN,
-            ID,
+          control.onclick = function(
+            name, lowercaseName, requestCount, control, badge, text
+          ) {
+            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const SITE_WHITELIST =
+                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+            renderService(
+              name,
+              lowercaseName,
+              !(SITE_WHITELIST[name] = !SITE_WHITELIST[name]),
+              requestCount,
+              control,
+              badge,
+              text
+            );
+            localStorage.whitelist = JSON.stringify(WHITELIST);
+            TABS.reload(ID);
+          }.bind(null, name, lowercaseName, requestCount, control, badge, text);
+        }
+      });
+
+      if (DESERIALIZE(localStorage.searchHardenable)) {
+        const LEGACY_SEARCH = THEME.getElementsByClassName('search')[0];
+        LEGACY_SEARCH.className = 'shown';
+        const SEARCHBOX = LEGACY_SEARCH.getElementsByTagName('input')[0];
+        SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
+
+        SEARCHBOX.onclick = function() {
+          SEARCHBOX.checked =
+              localStorage.searchHardened =
+                  !DESERIALIZE(localStorage.searchHardened);
+        };
+      }
+
+      const WIFIBOX =
+          THEME.
+            getElementsByClassName('wifi')[0].
+            getElementsByTagName('input')[0];
+      WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
+
+      WIFIBOX.onclick = function() {
+        WIFIBOX.checked =
+            localStorage.browsingHardened =
+                !DESERIALIZE(localStorage.browsingHardened);
+      };
+
+      const LINKS = THEME.getElementsByTagName('a');
+      const LINK_COUNT = LINKS.length;
+
+      for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
+        TABS.create({url: this.getAttribute('href')});
+        return false;
+      };
+    } else {
+      $('#navbar img').mouseenter(function() {
+        this.src = this.src.replace('.', HIGHLIGHTED);
+      }).mouseleave(function() {
+        this.src = this.src.replace(HIGHLIGHTED, '.');
+      });
+
+      Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
+        skin: 'tiny',
+        shadow: {color: '#fff', opacity: .1},
+        stem: {spacing: -1},
+        background: {color: '#333', opacity: .9},
+        onShow: function() {
+          const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+          $('.sharing.disconnect .text').text(
+            BLOCKED_COUNT + ' blocked' + REQUEST +
+                (BLOCKED_COUNT - 1 ? 's' : '')
+          );
+        },
+        fadeIn: 400,
+        fadeOut: 400
+      });
+
+      var activeServices = $();
+
+      TABS.query({currentWindow: true, active: true}, function(tabs) {
+        const TAB = tabs[0];
+        const DOMAIN = domain = GET(TAB.url);
+        const ID = tabId = TAB.id;
+        const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
+        const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
+        const SHORTCUT_SURFACE =
+            document.getElementById('shortcuts').getElementsByTagName('td')[0];
+        const SHORTCUT_TEMPLATE =
+            SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
+        const SITE_WHITELIST =
+            (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
+        const SHORTCUT_WHITELIST =
+            (SITE_WHITELIST.Disconnect || {}).services || {};
+
+        for (var i = 0; i < SHORTCUT_COUNT; i++) {
+          var name = SHORTCUTS[i];
+          var lowercaseName = name.toLowerCase();
+          var shortcutRequests = DISCONNECT_REQUESTS[name];
+          var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+          var control =
+              SHORTCUT_SURFACE.appendChild(SHORTCUT_TEMPLATE.cloneNode(true));
+          var wrappedControl = $(control);
+          var badge =
+              control.
+                getElementsByClassName('badge')[0].
+                getElementsByTagName('img')[0];
+          var text = control.getElementsByClassName('text')[0];
+          renderShortcut(
+            name,
+            lowercaseName,
+            !SHORTCUT_WHITELIST[name],
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text,
+            1
+          );
+          badge.alt = name;
+
+          wrappedControl.click(function(
             name,
             lowercaseName,
             requestCount,
@@ -977,127 +1092,125 @@ var whitelistingClicked = 0;
             wrappedControl,
             badge,
             text
-          );
-        }.bind(
-          null,
-          name,
-          lowercaseName,
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text
-        ));
-      }
-
-      const CATEGORY_SURFACE = $('#categories');
-      const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
-      const SITE_BLACKLIST =
-          (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
-      serviceTemplate = CATEGORY_TEMPLATE.find('.service');
-
-      for (i = 0; i < CATEGORY_COUNT; i++) {
-        var name = CATEGORIES[i];
-        var lowercaseName = name.toLowerCase();
-        var categoryRequests = TAB_REQUESTS[name];
-        var requestCount = 0;
-        var categoryControls = CATEGORY_TEMPLATE.clone(true);
-        var wrappedCategoryControl = categoryControls.filter('.category');
-        var categoryControl = wrappedCategoryControl[0];
-        var serviceContainer = categoryControls.filter('.services').find('div');
-        var serviceSurface = serviceContainer.find('tbody');
-        var wrappedBadge = wrappedCategoryControl.find('.badge');
-        var badge = wrappedBadge[0];
-        var badgeIcon = wrappedBadge.find('img')[0];
-        var wrappedText = wrappedCategoryControl.find('.text');
-        var text = wrappedText[0];
-        var textName = wrappedText.find('.name');
-        var textCount = wrappedText.find('.count');
-        var categoryWhitelist = SITE_WHITELIST[name] || {};
-        var whitelisted = categoryWhitelist.whitelisted;
-        whitelisted =
-            whitelisted || name == CONTENT_NAME && whitelisted !== false;
-        var categoryBlacklist = SITE_BLACKLIST[name] || {};
-
-        for (var serviceName in categoryRequests) {
-          var serviceControl = serviceTemplate.clone(true);
-          var checkbox = serviceControl.find(INPUT)[0];
-          checkbox.checked =
-              !whitelisted && !(categoryWhitelist.services || {})[serviceName]
-                  || categoryBlacklist[serviceName];
-
-          checkbox.onclick = function(name, serviceName) {
-            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
-            const LOCAL_SITE_WHITELIST =
-                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const CONTENT = name == CONTENT_NAME;
-            const CATEGORY_WHITELIST =
-                LOCAL_SITE_WHITELIST[name] ||
-                    (LOCAL_SITE_WHITELIST[name] =
-                        {whitelisted: CONTENT, services: {}});
-            const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-            const WHITELISTED = SERVICE_WHITELIST[serviceName];
-            const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
-            const LOCAL_SITE_BLACKLIST =
-                BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-            const CATEGORY_BLACKLIST =
-                LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
-            this.checked =
-                SERVICE_WHITELIST[serviceName] =
-                    !(CATEGORY_BLACKLIST[serviceName] =
-                        WHITELISTED ||
-                            CONTENT && CATEGORY_WHITELIST.whitelisted &&
-                                WHITELISTED !== false);
-            localStorage.whitelist = JSON.stringify(WHITELIST);
-            localStorage.blacklist = JSON.stringify(BLACKLIST);
-            TABS.reload(ID);
-          }.bind(null, name, serviceName);
-
-          var link = serviceControl.find('a')[0];
-          link.title += serviceName;
-          var service = categoryRequests[serviceName];
-          link.href = service.url;
-          $(link).text(serviceName);
-          var serviceCount = service.count;
-          serviceControl.
-            find('.text').
-            text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
-          serviceSurface.append(serviceControl);
-          requestCount += serviceCount;
+          ) {
+            handleShortcut(
+              DOMAIN,
+              ID,
+              name,
+              lowercaseName,
+              requestCount,
+              control,
+              wrappedControl,
+              badge,
+              text
+            );
+          }.bind(
+            null,
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          ));
         }
 
-        renderCategory(
-          name,
-          lowercaseName,
-          !whitelisted,
-          requestCount,
-          categoryControl,
-          wrappedCategoryControl,
-          badge,
-          badgeIcon,
-          text,
-          textName,
-          textCount,
-          1
-        );
-        badge.alt = name;
+        const CATEGORY_SURFACE = $('#categories');
+        const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
+        const SITE_BLACKLIST =
+            (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
+        serviceTemplate = CATEGORY_TEMPLATE.find('.service');
 
-        wrappedBadge.click(function(
-          name,
-          lowercaseName,
-          requestCount,
-          categoryControl,
-          wrappedCategoryControl,
-          badge,
-          badgeIcon,
-          text,
-          textName,
-          textCount,
-          serviceSurface
-        ) {
-          handleCategory(
-            DOMAIN,
-            ID,
+        for (i = 0; i < CATEGORY_COUNT; i++) {
+          var name = CATEGORIES[i];
+          var lowercaseName = name.toLowerCase();
+          var categoryRequests = TAB_REQUESTS[name];
+          var requestCount = 0;
+          var categoryControls = CATEGORY_TEMPLATE.clone(true);
+          var wrappedCategoryControl = categoryControls.filter('.category');
+          var categoryControl = wrappedCategoryControl[0];
+          var serviceContainer =
+              categoryControls.filter('.services').find('div');
+          var serviceSurface = serviceContainer.find('tbody');
+          var wrappedBadge = wrappedCategoryControl.find('.badge');
+          var badge = wrappedBadge[0];
+          var badgeIcon = wrappedBadge.find('img')[0];
+          var wrappedText = wrappedCategoryControl.find('.text');
+          var text = wrappedText[0];
+          var textName = wrappedText.find('.name');
+          var textCount = wrappedText.find('.count');
+          var categoryWhitelist = SITE_WHITELIST[name] || {};
+          var whitelisted = categoryWhitelist.whitelisted;
+          whitelisted =
+              whitelisted || name == CONTENT_NAME && whitelisted !== false;
+          var categoryBlacklist = SITE_BLACKLIST[name] || {};
+
+          for (var serviceName in categoryRequests) {
+            var serviceControl = serviceTemplate.clone(true);
+            var checkbox = serviceControl.find(INPUT)[0];
+            checkbox.checked =
+                !whitelisted && !(categoryWhitelist.services || {})[serviceName]
+                    || categoryBlacklist[serviceName];
+
+            checkbox.onclick = function(name, serviceName) {
+              const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+              const LOCAL_SITE_WHITELIST =
+                  WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
+              const CONTENT = name == CONTENT_NAME;
+              const CATEGORY_WHITELIST =
+                  LOCAL_SITE_WHITELIST[name] ||
+                      (LOCAL_SITE_WHITELIST[name] =
+                          {whitelisted: CONTENT, services: {}});
+              const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+              const WHITELISTED = SERVICE_WHITELIST[serviceName];
+              const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+              const LOCAL_SITE_BLACKLIST =
+                  BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
+              const CATEGORY_BLACKLIST =
+                  LOCAL_SITE_BLACKLIST[name] ||
+                      (LOCAL_SITE_BLACKLIST[name] = {});
+              this.checked =
+                  SERVICE_WHITELIST[serviceName] =
+                      !(CATEGORY_BLACKLIST[serviceName] =
+                          WHITELISTED ||
+                              CONTENT && CATEGORY_WHITELIST.whitelisted &&
+                                  WHITELISTED !== false);
+              localStorage.whitelist = JSON.stringify(WHITELIST);
+              localStorage.blacklist = JSON.stringify(BLACKLIST);
+              TABS.reload(ID);
+            }.bind(null, name, serviceName);
+
+            var link = serviceControl.find('a')[0];
+            link.title += serviceName;
+            var service = categoryRequests[serviceName];
+            link.href = service.url;
+            $(link).text(serviceName);
+            var serviceCount = service.count;
+            serviceControl.
+              find('.text').
+              text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
+            serviceSurface.append(serviceControl);
+            requestCount += serviceCount;
+          }
+
+          renderCategory(
+            name,
+            lowercaseName,
+            !whitelisted,
+            requestCount,
+            categoryControl,
+            wrappedCategoryControl,
+            badge,
+            badgeIcon,
+            text,
+            textName,
+            textCount,
+            1
+          );
+          badge.alt = name;
+
+          wrappedBadge.click(function(
             name,
             lowercaseName,
             requestCount,
@@ -1109,146 +1222,164 @@ var whitelistingClicked = 0;
             textName,
             textCount,
             serviceSurface
-          );
-        }.bind(
-          null,
-          name,
-          lowercaseName,
-          requestCount,
-          categoryControl,
-          wrappedCategoryControl,
-          badge,
-          badgeIcon,
-          text,
-          textName,
-          textCount,
-          serviceSurface
-        ));
-
-        var wrappedAction = wrappedCategoryControl.find('.action');
-        var action = wrappedAction[0];
-        action.title = text.title = EXPAND + ' ' + lowercaseName;
-        var button = wrappedAction.find('img')[0];
-
-        wrappedText.add(wrappedAction).mouseenter(function(button) {
-          button.src = button.src.replace('.', HIGHLIGHTED);
-        }.bind(null, button)).mouseleave(function(button) {
-          button.src = button.src.replace(HIGHLIGHTED, '.');
-        }.bind(null, button)).click(function(
-          serviceContainer, action, button, name
-        ) {
-          const EXPANDED_SERVICES = activeServices.filter(':visible');
-          if (EXPANDED_SERVICES.length && serviceContainer != activeServices) {
-            animateAction(
-              action,
-              EXPANDED_SERVICES.
-                parent().
-                parent().
-                prev().
-                prev().
-                find('.action img')[0],
-              name
+          ) {
+            handleCategory(
+              DOMAIN,
+              ID,
+              name,
+              lowercaseName,
+              requestCount,
+              categoryControl,
+              wrappedCategoryControl,
+              badge,
+              badgeIcon,
+              text,
+              textName,
+              textCount,
+              serviceSurface
             );
-            EXPANDED_SERVICES.slideUp('fast', function() {
+          }.bind(
+            null,
+            name,
+            lowercaseName,
+            requestCount,
+            categoryControl,
+            wrappedCategoryControl,
+            badge,
+            badgeIcon,
+            text,
+            textName,
+            textCount,
+            serviceSurface
+          ));
+
+          var wrappedAction = wrappedCategoryControl.find('.action');
+          var action = wrappedAction[0];
+          action.title = text.title = EXPAND + ' ' + lowercaseName;
+          var button = wrappedAction.find('img')[0];
+
+          wrappedText.add(wrappedAction).mouseenter(function(button) {
+            button.src = button.src.replace('.', HIGHLIGHTED);
+          }.bind(null, button)).mouseleave(function(button) {
+            button.src = button.src.replace(HIGHLIGHTED, '.');
+          }.bind(null, button)).click(function(
+            serviceContainer, action, button, name
+          ) {
+            const EXPANDED_SERVICES = activeServices.filter(':visible');
+            if (
+              EXPANDED_SERVICES.length && serviceContainer != activeServices
+            ) {
+              animateAction(
+                action,
+                EXPANDED_SERVICES.
+                  parent().
+                  parent().
+                  prev().
+                  prev().
+                  find('.action img')[0],
+                name
+              );
+              EXPANDED_SERVICES.slideUp('fast', function() {
+                animateAction(action, button, name);
+                activeServices = serviceContainer.slideToggle('fast');
+              });
+            } else {
               animateAction(action, button, name);
               activeServices = serviceContainer.slideToggle('fast');
-            });
-          } else {
-            animateAction(action, button, name);
-            activeServices = serviceContainer.slideToggle('fast');
-          }
-        }.bind(null, serviceContainer, action, button, lowercaseName));
+            }
+          }.bind(null, serviceContainer, action, button, lowercaseName));
 
-        CATEGORY_SURFACE.append(categoryControls);
-      }
-
-      const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
-      const WHITELISTING = WHITELISTING_ELEMENTS.control;
-      const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
-      const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
-      WHITELISTING.mouseenter(handleWhitelisting);
-
-      WHITELISTING.click(function() {
-        whitelistingClicked = 7;
-
-        if (whitelistSite()) {
-          WHITELISTING_ICON.alt = 'Whitelist';
-          WHITELISTING_TEXT.text('Whitelist site');
-        } else {
-          WHITELISTING_ICON.alt = 'Blacklist';
-          WHITELISTING_TEXT.text('Blacklist site');
+          CATEGORY_SURFACE.append(categoryControls);
         }
+
+        const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
+        const WHITELISTING = WHITELISTING_ELEMENTS.control;
+        const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
+        const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
+        WHITELISTING.mouseenter(handleWhitelisting);
+
+        WHITELISTING.click(function() {
+          whitelistingClicked = 7;
+
+          if (whitelistSite()) {
+            WHITELISTING_ICON.alt = 'Whitelist';
+            WHITELISTING_TEXT.text('Whitelist site');
+          } else {
+            WHITELISTING_ICON.alt = 'Blacklist';
+            WHITELISTING_TEXT.text('Blacklist site');
+          }
+        });
+
+        VIEWPORT.height($(window).height());
       });
 
-      $('html').add(BODY).height($(window).height());
-    });
-
-    $(document).on('click', 'a', function() {
-      TABS.create({url: $(this).attr('href')});
-      return false;
-    });
-
-    const VISUALIZATION = $('.visualization');
-    VISUALIZATION.mouseenter(handleVisualization);
-
-    VISUALIZATION.click(function() {
-      localStorage.displayMode = GRAPH;
-
-      $('#' + LIST).fadeOut('fast', function() {
-        const BUTTON =
-            activeServices.
-              parent().
-              parent().
-              prev().
-              prev().
-              find('.action img')[0];
-        if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
-        activeServices.hide();
-        $('.live-data').show();
-        renderGraph();
-        $('#' + GRAPH).fadeIn('slow');
+      $(document).on('click', 'a', function() {
+        TABS.create({url: $(this).attr('href')});
+        return false;
       });
-    });
 
-    const ICON = VISUALIZATION.find('img')[0];
-    ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
-    ICON.alt = 'Graph';
-    const WIFI = $('.wifi ' + INPUT)[0];
-    WIFI.checked = DESERIALIZE(localStorage.browsingHardened);
+      const VISUALIZATION = $('.visualization');
+      VISUALIZATION.mouseenter(handleVisualization);
 
-    WIFI.onclick = function() {
-      this.checked =
-          localStorage.browsingHardened =
-              !DESERIALIZE(localStorage.browsingHardened);
-    };
+      VISUALIZATION.click(function() {
+        localStorage.displayMode = GRAPH;
 
-    const SEARCH = $('.search ' + INPUT)[0];
-    SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
+        $('#' + LIST).fadeOut('fast', function() {
+          const BUTTON =
+              activeServices.
+                parent().
+                parent().
+                prev().
+                prev().
+                find('.action img')[0];
+          if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
+          activeServices.hide();
+          $('.live-data').show();
+          renderGraph();
+          $('#' + GRAPH).fadeIn('slow');
+        });
+      });
 
-    SEARCH.onclick = function() {
-      this.checked =
-          localStorage.searchHardened =
-              !DESERIALIZE(localStorage.searchHardened);
-    };
+      const ICON = VISUALIZATION.find('img')[0];
+      ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
+      ICON.alt = 'Graph';
+      const WIFI = $('.wifi ' + INPUT)[0];
+      WIFI.checked = DESERIALIZE(localStorage.browsingHardened);
 
-    dashboard =
-        d3.
-          select('#data').
-          append('svg:svg').
-          attr('width', 198).
-          attr('height', 40);
+      WIFI.onclick = function() {
+        this.checked =
+            localStorage.browsingHardened =
+                !DESERIALIZE(localStorage.browsingHardened);
+      };
 
-    $('.sharing img').mouseenter(function() {
-      this.src = this.src.replace('.', HIGHLIGHTED);
-    }).mouseleave(function() {
-      this.src = this.src.replace(HIGHLIGHTED, '.');
-    });
+      const SEARCH = $('.search ' + INPUT)[0];
+      SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
 
-    const DISPLAY_MODE = localStorage.displayMode || LIST;
-    DISPLAY_MODE == GRAPH && renderGraph();
+      SEARCH.onclick = function() {
+        this.checked =
+            localStorage.searchHardened =
+                !DESERIALIZE(localStorage.searchHardened);
+      };
 
-    $('#' + DISPLAY_MODE).fadeIn('slow', function() {
-      DISPLAY_MODE == LIST && renderGraphs();
-    });
+      dashboard =
+          d3.
+            select('#data').
+            append('svg:svg').
+            attr('width', 198).
+            attr('height', 40);
+
+      $('.sharing img').mouseenter(function() {
+        this.src = this.src.replace('.', HIGHLIGHTED);
+      }).mouseleave(function() {
+        this.src = this.src.replace(HIGHLIGHTED, '.');
+      });
+
+      displayMode = displayMode || LIST;
+      displayMode == GRAPH && renderGraph();
+
+      $('#' + displayMode).fadeIn('slow', function() {
+        displayMode == LIST && renderGraphs();
+      });
+    }
   }, true
 );

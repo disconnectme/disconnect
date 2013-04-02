@@ -272,3 +272,5 @@ td { padding: 0 }
 .sharing td:first-child { padding-left: 0 }
 
 #graph { display: none }
+
+#legacy { display: none }
