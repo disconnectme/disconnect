@@ -447,8 +447,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   day = (day < 10 ? '0' : '') + day;
   date = date.getFullYear() + '-' + month + '-' + day;
   const POPUP =
-      EXTENSION.getViews({type: 'popup'})[0] &&
-          localStorage.displayMode != LEGACY_NAME;
+      localStorage.displayMode != LEGACY_NAME &&
+          EXTENSION.getViews({type: 'popup'})[0];
 
   if (CHILD_SERVICE) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
@@ -577,8 +577,8 @@ chrome.webNavigation.onCommitted.addListener(function(details) {
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
     const POPUP =
-        EXTENSION.getViews({type: 'popup'})[0] &&
-            localStorage.displayMode != LEGACY_NAME;
+        localStorage.displayMode != LEGACY_NAME &&
+            EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
   }
 });
