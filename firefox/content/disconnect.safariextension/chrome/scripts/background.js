@@ -374,7 +374,11 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage.build = CURRENT_BUILD;
 }
 
-localStorage.displayMode == LEGACY_NAME && downgradeServices(true);
+if (localStorage.displayMode == LEGACY_NAME) {
+  downgradeServices(true);
+  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+} else BROWSER_ACTION.setIcon({path: 'images/19.png'});
+
 if (!deserialize(localStorage.blogOpened))
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
