@@ -4,7 +4,7 @@
  * <samp>byoogle.appspot.com</samp>).
  * <br />
  * <br />
- * Copyright 2012 Disconnect, Inc.
+ * Copyright 2012, 2013 Disconnect, Inc.
  * <br />
  * <br />
  * This Source Code Form is subject to the terms of the Mozilla Public License,
@@ -46,8 +46,10 @@ function Sitename() {
   var version = '1.4.0';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
-  var altTldList = 'chrome://disconnect/content/data/effective_tld_names.dat';
-  var tldPatch = 'chrome://disconnect/content/data/tldpatch.json';
+  var altTldList =
+    'chrome://disconnect/skin/scripts/vendor/sitename/data/effective_tld_names.dat';
+  var tldPatch =
+    'chrome://disconnect/skin/scripts/vendor/sitename/data/tldpatch.json';
   var initialized = false;
   var tlds = '{}';
 
@@ -71,6 +73,7 @@ function Sitename() {
     }
 
     xhr.open('GET', tldPatch);
+    xhr.overrideMimeType('application/json');
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4 && xhr.status == 0) {
