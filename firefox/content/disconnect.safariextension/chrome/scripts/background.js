@@ -436,6 +436,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
+  var blockedCount;
   const TAB_DASHBOARD =
       DASHBOARD[TAB_ID] ||
           (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
@@ -490,7 +491,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
                     : 'about:blank'
       };
-      const BLOCKED_COUNT = ++TAB_DASHBOARD.blocked;
+      blockedCount = ++TAB_DASHBOARD.blocked;
       const BLOCKED_REQUESTS = deserialize(localStorage.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
@@ -503,11 +504,12 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
   delete REDIRECTS[TAB_ID];
+  var securedCount;
 
   if (hardened) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     REDIRECTS[TAB_ID] = hardenedUrl;
-    const SECURED_COUNT = ++TAB_DASHBOARD.secured;
+    securedCount = ++TAB_DASHBOARD.secured;
     const HARDENED_REQUESTS = deserialize(localStorage.hardenedRequests) || {};
     HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
         HARDENED_REQUESTS[date] = 1;
@@ -550,18 +552,18 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       } else {
         const TIMEOUT = POPUP.timeout;
 
-        BLOCKED_COUNT && setTimeout(function() {
+        blockedCount && setTimeout(function() {
           POPUP.renderBlockedRequest(
             TAB_ID,
-            Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+            Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
             TOTAL_COUNT
           );
         }, TIMEOUT);
 
-        SECURED_COUNT && setTimeout(function() {
+        securedCount && setTimeout(function() {
           POPUP.renderSecuredRequest(
             TAB_ID,
-            Math.min(SECURED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+            Math.min(securedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
             TOTAL_COUNT
           );
         }, TIMEOUT);

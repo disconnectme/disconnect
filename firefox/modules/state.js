@@ -1,7 +1,7 @@
 /*
-  A script that persists the number of tracking requests.
+  A script that persists session data.
 
-  Copyright 2012 Disconnect, Inc.
+  Copyright 2012, 2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -19,9 +19,11 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-var EXPORTED_SYMBOLS = ['requestCounts'];
+var EXPORTED_SYMBOLS = ['requestCounts', 'dashboard', 'log'];
 
 /**
  * Constants.
  */
 var requestCounts = {};
+var dashboard = {};
+var log = {};

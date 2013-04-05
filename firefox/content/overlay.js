@@ -1,8 +1,7 @@
 /*
-  An overlay script that stops third parties and search engines from tracking
-  the webpages you go to and searches you do.
+  An overlay script that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -19,9 +18,8 @@
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
-    Gary Teh <garyjob@gmail.com>
 */
-Components.utils['import']('resource://modules/requests.js');
+Components.utils['import']('resource://modules/state.js');
 var loader =
     Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -48,16 +46,36 @@ if (typeof Disconnect == 'undefined') {
           Components.classes['@mozilla.org/preferences-service;1'].
             getService(Components.interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
-      var build = 'build';
-      var navbar = 'nav-bar';
-      var currentSet = 'currentset';
+      var buildName = 'build';
+      var whitelistName = 'whitelist';
+      var navbarName = 'nav-bar';
+      var currentSetName = 'currentset';
+      var currentBuild = 2;
+      var previousBuild = preferences.getIntPref(buildName);
+      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
 
-      if (!preferences.getIntPref(build)) {
-        var toolbar = document.getElementById(navbar);
+      if (!previousBuild) {
+        var toolbar = document.getElementById(navbarName);
         toolbar.insertItem('disconnect-button');
-        toolbar.setAttribute(currentSet, toolbar.currentSet);
-        document.persist(navbar, currentSet);
-        preferences.setIntPref(build, 1);
+        toolbar.setAttribute(currentSetName, toolbar.currentSet);
+        document.persist(navbarName, currentSetName);
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var migratedWhitelist = {};
+
+        for (var domain in whitelist) {
+          var siteWhitelist =
+              (migratedWhitelist[domain] = {}).Disconnect =
+                  {whitelisted: false, services: {}};
+          for (var service in whitelist[domain])
+              siteWhitelist.services[service] = true;
+        }
+
+        preferences.setCharPref(
+          whitelistName, JSON.stringify(whitelist = migratedWhitelist)
+        );
+        preferences.setIntPref(buildName, currentBuild);
       }
 
       var button = document.getElementById('disconnect-button');
@@ -75,7 +93,6 @@ if (typeof Disconnect == 'undefined') {
 
       button.addEventListener('click', function() {
         var url = gBrowser.contentWindow.location;
-        var whitelist = JSON.parse(preferences.getCharPref('whitelist'));
         var domain = get(url.hostname);
         var domainWhitelist = whitelist[domain] || (whitelist[domain] = {});
 
@@ -103,7 +120,7 @@ if (typeof Disconnect == 'undefined') {
 
           service.addEventListener(command, function(name, blocked) {
             domainWhitelist[name] = blocked;
-            preferences.setCharPref('whitelist', JSON.stringify(whitelist));
+            preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
             content.location.reload();
           }.bind(null, name, blocked), false);
         }

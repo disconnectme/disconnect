@@ -454,11 +454,12 @@ function clearServices(id) {
         );
       }
 
-      const BUTTON = $('.category .action img[src*=7]');
-      const ACTION = BUTTON.parent();
-      animateAction(
+      const WRAPPED_BUTTON = $('.category .action img[src*=7]');
+      const BUTTON = WRAPPED_BUTTON[0];
+      const ACTION = WRAPPED_BUTTON.parent();
+      BUTTON && animateAction(
         ACTION[0],
-        BUTTON[0],
+        BUTTON,
         ACTION.prev().find('.name').text().toLowerCase()
       );
       const CONTROL = $('.services');

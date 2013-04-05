@@ -1,7 +1,7 @@
 /*
   A script that sets the default preferences.
 
-  Copyright 2012 Disconnect, Inc.
+  Copyright 2012, 2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -28,5 +28,10 @@ pref(
   'extensions.disconnect.whitelist',
   '{"latimes.com":{"Google":true},"mediafire.com":{"Facebook":true},"salon.com":{"Google":true},"udacity.com":{"Twitter":true}}'
 );
+pref('extensions.disconnect.blacklist', '{}');
 pref('extensions.disconnect.searchHardened', false);
 pref('extensions.disconnect.browsingHardened', true);
+pref('extensions.disconnect.blockedRequests', '{}');
+pref('extensions.disconnect.hardenedRequests', '{}');
+pref('extensions.disconnect.blockingIndicated', true);
+pref('extensions.disconnect.displayMode', 'list');
