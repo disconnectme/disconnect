@@ -35,3 +35,5 @@
   color: #333;
   -moz-user-select: none
 }
+
+table { line-height: .8 }

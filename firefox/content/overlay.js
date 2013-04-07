@@ -19,14 +19,6 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-Components.utils['import']('resource://modules/state.js');
-var loader =
-    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader);
-loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
-loader.
-  loadSubScript('chrome://disconnect/skin/scripts/vendor/jquery/jquery.js');
-loader.loadSubScript('chrome://disconnect/content/debug.js');
 
 /**
  * The Disconnect namespace.
@@ -107,6 +99,64 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
+     * Restricts the animation of major third parties to 1x per click.
+     */
+    handleShortcut: function(
+      domain,
+      url,
+      name,
+      lowercaseName,
+      requestCount,
+      control,
+      wrappedControl,
+      badge,
+      text
+    ) {
+      wrappedControl.off('click');
+      var preferences = Disconnect.preferences;
+      var whitelistName = Disconnect.whitelistName;
+      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+      var disconnectWhitelist =
+          siteWhitelist.Disconnect ||
+              (siteWhitelist.Disconnect = {whitelisted: false, services: {}});
+      var shortcutWhitelist = disconnectWhitelist.services;
+      shortcutWhitelist[name] = !shortcutWhitelist[name];
+      preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      Disconnect.renderShortcut(
+        name,
+        lowercaseName,
+        !shortcutWhitelist[name],
+        requestCount,
+        control,
+        wrappedControl,
+        badge,
+        text,
+        2,
+        function() {
+          Disconnect.handleShortcut(
+            domain,
+            url,
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          );
+        }
+      );
+      Disconnect.renderWhitelisting(siteWhitelist);
+      content.location.reload();
+    },
+
+    /**
+     * Outputs the global blocking state.
+     */
+    renderWhitelisting: function(siteWhitelist) {},
+
+    /**
      * Navigates to a URL.
      */
     go: function(that) {
@@ -117,20 +167,31 @@ if (typeof Disconnect == 'undefined') {
      * Registers event handlers.
      */
     initialize: function() {
+      Components.utils['import']('resource://modules/state.js');
+      var loader =
+          Components.
+            classes['@mozilla.org/moz/jssubscript-loader;1'].
+            getService(Components.interfaces.mozIJSSubScriptLoader);
+      loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
+      );
+      loader.loadSubScript('chrome://disconnect/content/debug.js');
       var preferences =
           Components.classes['@mozilla.org/preferences-service;1'].
             getService(Components.interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
       var get = (new Sitename).get;
       var renderShortcut = this.renderShortcut;
+      var handleShortcut = this.handleShortcut;
       var shortcutNames = ['Facebook', 'Google', 'Twitter'];
       var shortcutCount = shortcutNames.length;
       var buildName = 'build';
-      var whitelistName = 'whitelist';
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
       var browsingHardenedName = 'browsingHardened';
       var clickName = 'click';
+      var whitelistName = this.whitelistName;
       var highlightedName = this.highlightedName;
       var currentBuild = 2;
       var previousBuild = preferences.getIntPref(buildName);
@@ -142,10 +203,12 @@ if (typeof Disconnect == 'undefined') {
             getElementById('shortcuts').getElementsByTagName('html:td')[0];
       var shortcutTemplate =
           shortcutSurface.getElementsByClassName('shortcut')[0];
+      var activeServices = [];
       var wifi =
           document.
             getElementsByClassName('wifi')[0].
             getElementsByTagName('html:input')[0];
+      this.preferences = preferences;
 
       if (!previousBuild) {
         var toolbar = document.getElementById(navbarName);
@@ -165,9 +228,8 @@ if (typeof Disconnect == 'undefined') {
               siteWhitelist.services[service] = true;
         }
 
-        preferences.setCharPref(
-          whitelistName, JSON.stringify(whitelist = migratedWhitelist)
-        );
+        preferences.
+          setCharPref(whitelistName, JSON.stringify(migratedWhitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
 
@@ -176,7 +238,7 @@ if (typeof Disconnect == 'undefined') {
           this.src = this.src.replace('.', highlightedName);
         }).
         mouseleave(function() {
-          this.src = this.src.replace(HIGHLIGHTED, '.');
+          this.src = this.src.replace(highlightedName, '.');
         });
 
       for (var i = 0; i < shortcutCount; i++)
@@ -197,6 +259,7 @@ if (typeof Disconnect == 'undefined') {
         var domain = get(url.hostname);
         var tabRequests = requestCounts[url] || {};
         var disconnectRequests = tabRequests.Disconnect || {};
+        whitelist = JSON.parse(preferences.getCharPref(whitelistName));
         var siteWhitelist = whitelist[domain] || {};
         var shortcutWhitelist =
             (siteWhitelist.Disconnect || {}).services || {};
@@ -221,6 +284,37 @@ if (typeof Disconnect == 'undefined') {
             text,
             1
           );
+
+          wrappedControl.click(function(
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          ) {
+            handleShortcut(
+              domain,
+              url,
+              name,
+              lowercaseName,
+              requestCount,
+              control,
+              wrappedControl,
+              badge,
+              text
+            );
+          }.bind(
+            null,
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          ));
         }
       }, false);
 
@@ -230,6 +324,8 @@ if (typeof Disconnect == 'undefined') {
     /**
      * Global variables.
      */
+    preferences: null,
+    whitelistName: 'whitelist',
     deactivatedName: 'deactivated',
     highlightedName: '-highlighted.',
     blockName: 'Block ',
