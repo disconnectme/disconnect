@@ -24,6 +24,8 @@ var loader =
     Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader);
 loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
+loader.
+  loadSubScript('chrome://disconnect/skin/scripts/vendor/jquery/jquery.js');
 loader.loadSubScript('chrome://disconnect/content/debug.js');
 
 /**
@@ -31,6 +33,79 @@ loader.loadSubScript('chrome://disconnect/content/debug.js');
  */
 if (typeof Disconnect == 'undefined') {
   var Disconnect = {
+    /**
+     * Outputs major third-party details as per the blocking state.
+     */
+    renderShortcut: function(
+      name,
+      lowercaseName,
+      blocked,
+      requestCount,
+      control,
+      wrappedControl,
+      badge,
+      text,
+      animation,
+      callback
+    ) {
+      var whitelistingClicked = 0;
+      var count =
+          animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
+              animation;
+      var imageDirectory = Disconnect.imageDirectory;
+      var deactivatedName = Disconnect.deactivatedName;
+      var imageExtension = Disconnect.imageExtension;
+      var highlightedName = Disconnect.highlightedName;
+
+      if (blocked) {
+        wrappedControl.removeClass(deactivatedName);
+        control.title = Disconnect.unblockName + name;
+        for (var i = 0; i < count; i++)
+            setTimeout(function(badge, lowercaseName, index) {
+              index || wrappedControl.off('mouseenter').off('mouseleave');
+              badge.src =
+                  imageDirectory + lowercaseName + '/' +
+                      (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                          (index < count - 7 ? '-' + deactivatedName : '') +
+                              imageExtension;
+
+              if (index > count - 2) {
+                wrappedControl.mouseenter(function() {
+                  badge.src = badge.src.replace('.', highlightedName);
+                }).mouseleave(function() {
+                  badge.src = badge.src.replace(highlightedName, '.');
+                });
+
+                callback && wrappedControl.click(callback);
+              }
+            }, i * 40, badge, lowercaseName, i);
+      } else {
+        wrappedControl.addClass(deactivatedName);
+        control.title = Disconnect.blockName + name;
+        for (var i = 0; i < count; i++)
+            setTimeout(function(badge, lowercaseName, index) {
+              index || wrappedControl.off('mouseenter').off('mouseleave');
+              badge.src =
+                  imageDirectory + lowercaseName + '/' +
+                      (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
+                          (index < count - 7 ? '' : '-' + deactivatedName) +
+                              imageExtension;
+
+              if (index > count - 2) {
+                wrappedControl.mouseenter(function() {
+                  badge.src = badge.src.replace('.', highlightedName);
+                }).mouseleave(function() {
+                  badge.src = badge.src.replace(highlightedName, '.');
+                });
+
+                callback && wrappedControl.click(callback);
+              }
+            }, i * 40, badge, lowercaseName, i);
+      }
+
+      text.textContent = requestCount;
+    },
+
     /**
      * Navigates to a URL.
      */
@@ -46,13 +121,31 @@ if (typeof Disconnect == 'undefined') {
           Components.classes['@mozilla.org/preferences-service;1'].
             getService(Components.interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
+      var get = (new Sitename).get;
+      var renderShortcut = this.renderShortcut;
+      var shortcutNames = ['Facebook', 'Google', 'Twitter'];
+      var shortcutCount = shortcutNames.length;
       var buildName = 'build';
       var whitelistName = 'whitelist';
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
+      var browsingHardenedName = 'browsingHardened';
+      var clickName = 'click';
+      var highlightedName = this.highlightedName;
       var currentBuild = 2;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+      var button = document.getElementById('disconnect-button');
+      var shortcutSurface =
+          document.
+            getElementById('shortcuts').getElementsByTagName('html:td')[0];
+      var shortcutTemplate =
+          shortcutSurface.getElementsByClassName('shortcut')[0];
+      var wifi =
+          document.
+            getElementsByClassName('wifi')[0].
+            getElementsByTagName('html:input')[0];
 
       if (!previousBuild) {
         var toolbar = document.getElementById(navbarName);
@@ -78,68 +171,71 @@ if (typeof Disconnect == 'undefined') {
         preferences.setIntPref(buildName, currentBuild);
       }
 
-      var button = document.getElementById('disconnect-button');
-      var get = (new Sitename).get;
-      var services =
-          document.
-            getElementById('disconnect-popup').
-            getElementsByTagName('menuitem');
-      var labelName = 'label';
-      var serviceLabel = ' request';
-      var command = 'command';
-      var browsingHardenedName = 'browsingHardened';
-      var wifi = document.getElementById('disconnect-wifi');
-      var wifiLabel = 'Secure Wi-Fi';
+      $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
+        mouseenter(function() {
+          this.src = this.src.replace('.', highlightedName);
+        }).
+        mouseleave(function() {
+          this.src = this.src.replace(HIGHLIGHTED, '.');
+        });
 
-      button.addEventListener('click', function() {
+      for (var i = 0; i < shortcutCount; i++)
+          shortcutSurface.
+            appendChild(shortcutTemplate.cloneNode(true)).
+            getElementsByTagName('html:img')[0].
+            alt = shortcutNames[i];
+      wifi.checked = browsingHardened;
+
+      wifi.addEventListener(clickName, function() {
+        browsingHardened = !browsingHardened;
+        preferences.setBoolPref(browsingHardenedName, browsingHardened);
+        this.checked = browsingHardened;
+      }, false);
+
+      button.addEventListener(clickName, function() {
         var url = gBrowser.contentWindow.location;
         var domain = get(url.hostname);
-        var domainWhitelist = whitelist[domain] || (whitelist[domain] = {});
+        var tabRequests = requestCounts[url] || {};
+        var disconnectRequests = tabRequests.Disconnect || {};
+        var siteWhitelist = whitelist[domain] || {};
+        var shortcutWhitelist =
+            (siteWhitelist.Disconnect || {}).services || {};
 
-        for (var i = 0; i < 5; i++) {
-          var service = services[i];
-          var name = service.getAttribute('value');
-          var blocked = !domainWhitelist[name];
-          var count =
-              (((requestCounts[url] || {}).Disconnect || {})[name] || {}).count
-                  || 0;
-
-          if (blocked) {
-            service.className = service.className.slice(0, 15);
-            service.setAttribute(
-              labelName,
-              count + serviceLabel + (count - 1 ? 's' : '') + ' blocked'
-            );
-          } else {
-            service.className += ' disabled';
-            service.setAttribute(
-              labelName,
-              count + serviceLabel + (count - 1 ? 's' : '') + ' unblocked'
-            );
-          }
-
-          service.addEventListener(command, function(name, blocked) {
-            domainWhitelist[name] = blocked;
-            preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-            content.location.reload();
-          }.bind(null, name, blocked), false);
+        for (var i = 0; i < shortcutCount; i++) {
+          var name = shortcutNames[i];
+          var lowercaseName = name.toLowerCase();
+          var shortcutRequests = disconnectRequests[name];
+          var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+          var control = document.getElementsByClassName('shortcut')[i + 1];
+          var wrappedControl = $(control);
+          var badge = control.getElementsByTagName('html:img')[0];
+          var text = control.getElementsByClassName('text')[0];
+          renderShortcut(
+            name,
+            lowercaseName,
+            !shortcutWhitelist[name],
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text,
+            1
+          );
         }
-
-        var browsingHardened = preferences.getBoolPref(browsingHardenedName);
-        browsingHardened && wifi.setAttribute(labelName, '✓ ' + wifiLabel);
-
-        wifi.addEventListener(command, function() {
-          preferences.setBoolPref(browsingHardenedName, !browsingHardened);
-          browsingHardened && this.setAttribute(labelName, wifiLabel);
-        }, false);
       }, false);
 
       var go = this.go;
+    },
 
-      document.
-        getElementById('disconnect-help').
-        addEventListener(command, function() { go(this); }, false);
-    }
+    /**
+     * Global variables.
+     */
+    deactivatedName: 'deactivated',
+    highlightedName: '-highlighted.',
+    blockName: 'Block ',
+    unblockName: 'Unblock ',
+    imageDirectory: 'chrome://disconnect/skin/images/',
+    imageExtension: '.png'
   };
 }
 

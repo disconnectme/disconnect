@@ -101,6 +101,7 @@ function Sitename() {
       if (xhr.status == 200) parseTldList(xhr.responseText);
       else {
         xhr.open('GET', altTldList);
+        xhr.overrideMimeType('text/plain');
 
         xhr.onreadystatechange = function() {
           xhr.readyState == 4 && xhr.status == 0 &&

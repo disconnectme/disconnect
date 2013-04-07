@@ -621,7 +621,7 @@ function renderGraphs() {
 
   Tipped.create('.control.speed', $('.sharing.speed')[0], {
     skin: 'tiny',
-    offset: {x: 29},
+    offset: {x: 23},
     shadow: {opacity: .1},
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
@@ -650,7 +650,7 @@ function renderGraphs() {
 
   Tipped.create('.control.bandwidth', $('.sharing.bandwidth')[0], {
     skin: 'tiny',
-    offset: {x: 29},
+    offset: {x: 23},
     shadow: {opacity: .1},
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
@@ -679,7 +679,7 @@ function renderGraphs() {
 
   Tipped.create('.control.security', $('.sharing.security')[0], {
     skin: 'tiny',
-    offset: {x: 29},
+    offset: {x: 23},
     shadow: {opacity: .1},
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
@@ -1166,7 +1166,6 @@ $.each(FRONT_IMAGES, function(index, value) {
 
     Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
       skin: 'tiny',
-      offset: {x: 4},
       shadow: {color: '#fff', opacity: .1},
       stem: {spacing: -1},
       background: {color: '#333', opacity: .9},
