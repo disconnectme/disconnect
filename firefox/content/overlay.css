@@ -28,12 +28,17 @@
 #list {
   display: block;
   margin: 1px;
-  height: 306px;
-  font-family:
-      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
-          sans-serif;
-  color: #333;
-  -moz-user-select: none
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  height: 306px
 }
 
 table { line-height: .8 }
+
+#graph {
+  margin: 1px;
+  box-shadow: none;
+  border: none;
+  padding: 0
+}

@@ -44,51 +44,40 @@ if (typeof Disconnect == 'undefined') {
       var count =
           animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
               animation;
-      var imageDirectory = Disconnect.imageDirectory;
       var deactivatedName = Disconnect.deactivatedName;
-      var imageExtension = Disconnect.imageExtension;
-      var highlightedName = Disconnect.highlightedName;
+      var offsetX = -Disconnect.shortcutNames.indexOf(name) * 24;
 
       if (blocked) {
-        wrappedControl.removeClass(deactivatedName);
+        wrappedControl[count < 2 ? 'removeClass' : 'addClass'](deactivatedName);
         control.title = Disconnect.unblockName + name;
         for (var i = 0; i < count; i++)
             setTimeout(function(badge, lowercaseName, index) {
               index || wrappedControl.off('mouseenter').off('mouseleave');
-              badge.src =
-                  imageDirectory + lowercaseName + '/' +
-                      (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
-                          (index < count - 7 ? '-' + deactivatedName : '') +
-                              imageExtension;
+              var offsetY = index < 18 ? index : 34 - index;
+              badge.css({top: -(offsetY * 24 + offsetY), left: offsetX});
 
               if (index > count - 2) {
-                wrappedControl.mouseenter(function() {
-                  badge.src = badge.src.replace('.', highlightedName);
-                }).mouseleave(function() {
-                  badge.src = badge.src.replace(highlightedName, '.');
-                });
+                wrappedControl.
+                  mouseenter(function() { badge.css('left', offsetX - 72); }).
+                  mouseleave(function() { badge.css('left', offsetX); });
 
                 callback && wrappedControl.click(callback);
               }
             }, i * 40, badge, lowercaseName, i);
       } else {
-        wrappedControl.addClass(deactivatedName);
+        wrappedControl[count < 2 ? 'addClass' : 'removeClass'](deactivatedName);
         control.title = Disconnect.blockName + name;
         for (var i = 0; i < count; i++)
             setTimeout(function(badge, lowercaseName, index) {
               index || wrappedControl.off('mouseenter').off('mouseleave');
-              badge.src =
-                  imageDirectory + lowercaseName + '/' +
-                      (index < 14 ? index + 1 : 4 - Math.abs(4 - index % 13)) +
-                          (index < count - 7 ? '' : '-' + deactivatedName) +
-                              imageExtension;
+              var offsetY =
+                  index < 14 ? index + 14 : 3 - Math.abs(3 - index % 14);
+              badge.css({top: -(offsetY * 24 + offsetY), left: offsetX});
 
               if (index > count - 2) {
-                wrappedControl.mouseenter(function() {
-                  badge.src = badge.src.replace('.', highlightedName);
-                }).mouseleave(function() {
-                  badge.src = badge.src.replace(highlightedName, '.');
-                });
+                wrappedControl.
+                  mouseenter(function() { badge.css('left', offsetX - 72); }).
+                  mouseleave(function() { badge.css('left', offsetX); });
 
                 callback && wrappedControl.click(callback);
               }
@@ -126,7 +115,7 @@ if (typeof Disconnect == 'undefined') {
       Disconnect.renderShortcut(
         name,
         lowercaseName,
-        !shortcutWhitelist[name],
+        shortcutWhitelist[name],
         requestCount,
         control,
         wrappedControl,
@@ -184,7 +173,7 @@ if (typeof Disconnect == 'undefined') {
       var get = (new Sitename).get;
       var renderShortcut = this.renderShortcut;
       var handleShortcut = this.handleShortcut;
-      var shortcutNames = ['Facebook', 'Google', 'Twitter'];
+      var shortcutNames = this.shortcutNames;
       var shortcutCount = shortcutNames.length;
       var buildName = 'build';
       var navbarName = 'nav-bar';
@@ -271,7 +260,7 @@ if (typeof Disconnect == 'undefined') {
           var requestCount = shortcutRequests ? shortcutRequests.count : 0;
           var control = document.getElementsByClassName('shortcut')[i + 1];
           var wrappedControl = $(control);
-          var badge = control.getElementsByTagName('html:img')[0];
+          var badge = $(control.getElementsByTagName('html:img')[0]);
           var text = control.getElementsByClassName('text')[0];
           renderShortcut(
             name,
@@ -325,6 +314,7 @@ if (typeof Disconnect == 'undefined') {
      * Global variables.
      */
     preferences: null,
+    shortcutNames: ['Facebook', 'Google', 'Twitter'],
     whitelistName: 'whitelist',
     deactivatedName: 'deactivated',
     highlightedName: '-highlighted.',
