@@ -51,7 +51,7 @@ if (typeof Disconnect == 'undefined') {
         wrappedControl[count < 2 ? 'removeClass' : 'addClass'](deactivatedName);
         control.title = Disconnect.unblockName + name;
         for (var i = 0; i < count; i++)
-            setTimeout(function(badge, lowercaseName, index) {
+            setTimeout(function(index) {
               index || wrappedControl.off('mouseenter').off('mouseleave');
               var offsetY = index < 18 ? index : 34 - index;
               badge.css({top: -(offsetY * 24 + offsetY), left: offsetX});
@@ -63,12 +63,12 @@ if (typeof Disconnect == 'undefined') {
 
                 callback && wrappedControl.click(callback);
               }
-            }, i * 40, badge, lowercaseName, i);
+            }, i * 40, i);
       } else {
         wrappedControl[count < 2 ? 'addClass' : 'removeClass'](deactivatedName);
         control.title = Disconnect.blockName + name;
         for (var i = 0; i < count; i++)
-            setTimeout(function(badge, lowercaseName, index) {
+            setTimeout(function(index) {
               index || wrappedControl.off('mouseenter').off('mouseleave');
               var offsetY =
                   index < 14 ? index + 14 : 3 - Math.abs(3 - index % 14);
@@ -81,7 +81,7 @@ if (typeof Disconnect == 'undefined') {
 
                 callback && wrappedControl.click(callback);
               }
-            }, i * 40, badge, lowercaseName, i);
+            }, i * 40, i);
       }
 
       text.textContent = requestCount;
@@ -101,7 +101,7 @@ if (typeof Disconnect == 'undefined') {
       badge,
       text
     ) {
-      wrappedControl.off('click');
+      wrappedControl.off(Disconnect.clickName);
       var preferences = Disconnect.preferences;
       var whitelistName = Disconnect.whitelistName;
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
@@ -179,14 +179,14 @@ if (typeof Disconnect == 'undefined') {
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
       var browsingHardenedName = 'browsingHardened';
-      var clickName = 'click';
       var whitelistName = this.whitelistName;
       var highlightedName = this.highlightedName;
+      var clickName = this.clickName;
       var currentBuild = 2;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
-      var button = document.getElementById('disconnect-button');
+      var popup = document.getElementById('disconnect-popup');
       var shortcutSurface =
           document.
             getElementById('shortcuts').getElementsByTagName('html:td')[0];
@@ -243,7 +243,7 @@ if (typeof Disconnect == 'undefined') {
         this.checked = browsingHardened;
       }, false);
 
-      button.addEventListener(clickName, function() {
+      popup.addEventListener('popupshowing', function() {
         var url = gBrowser.contentWindow.location;
         var domain = get(url.hostname);
         var tabRequests = requestCounts[url] || {};
@@ -254,14 +254,15 @@ if (typeof Disconnect == 'undefined') {
             (siteWhitelist.Disconnect || {}).services || {};
 
         for (var i = 0; i < shortcutCount; i++) {
+          var control = document.getElementsByClassName('shortcut')[i + 1];
+          var wrappedControl = $(control);
           var name = shortcutNames[i];
           var lowercaseName = name.toLowerCase();
           var shortcutRequests = disconnectRequests[name];
           var requestCount = shortcutRequests ? shortcutRequests.count : 0;
-          var control = document.getElementsByClassName('shortcut')[i + 1];
-          var wrappedControl = $(control);
           var badge = $(control.getElementsByTagName('html:img')[0]);
           var text = control.getElementsByClassName('text')[0];
+          wrappedControl.off(clickName);
           renderShortcut(
             name,
             lowercaseName,
@@ -271,21 +272,8 @@ if (typeof Disconnect == 'undefined') {
             wrappedControl,
             badge,
             text,
-            1
-          );
-
-          wrappedControl.click(function(
-            name,
-            lowercaseName,
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text
-          ) {
-            handleShortcut(
-              domain,
-              url,
+            1,
+            function(
               name,
               lowercaseName,
               requestCount,
@@ -293,17 +281,29 @@ if (typeof Disconnect == 'undefined') {
               wrappedControl,
               badge,
               text
-            );
-          }.bind(
-            null,
-            name,
-            lowercaseName,
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text
-          ));
+            ) {
+              handleShortcut(
+                domain,
+                url,
+                name,
+                lowercaseName,
+                requestCount,
+                control,
+                wrappedControl,
+                badge,
+                text
+              );
+            }.bind(
+              null,
+              name,
+              lowercaseName,
+              requestCount,
+              control,
+              wrappedControl,
+              badge,
+              text
+            )
+          );
         }
       }, false);
 
@@ -318,6 +318,7 @@ if (typeof Disconnect == 'undefined') {
     whitelistName: 'whitelist',
     deactivatedName: 'deactivated',
     highlightedName: '-highlighted.',
+    clickName: 'click',
     blockName: 'Block ',
     unblockName: 'Unblock ',
     imageDirectory: 'chrome://disconnect/skin/images/',
