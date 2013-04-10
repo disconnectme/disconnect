@@ -21,22 +21,29 @@
 */
 Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils['import']('resource://modules/state.js');
+var interfaces = Components.interfaces;
 var loader =
-    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader);
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(interfaces.mozIJSSubScriptLoader);
 loader.loadSubScript('chrome://disconnect/content/sjcl.js');
 loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
 loader.loadSubScript('chrome://disconnect/content/services-firefox.js');
 loader.loadSubScript('chrome://disconnect/content/debug.js');
+var observer =
+    Components.
+      classes['@mozilla.org/observer-service;1'].
+      getService(interfaces.nsIObserverService);
 
 /**
  * Constants.
  */
 var preferences =
-    Components.classes['@mozilla.org/preferences-service;1'].
-      getService(Components.interfaces.nsIPrefService).
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(interfaces.nsIPrefService).
       getBranch('extensions.disconnect.');
-var contentPolicy = Components.interfaces.nsIContentPolicy;
+var contentPolicy = interfaces.nsIContentPolicy;
 var accept = contentPolicy.ACCEPT;
 var get = (new Sitename).get;
 var requests = {};
@@ -165,6 +172,7 @@ Disconnect.prototype = {
                         {url: childService.url, count: 0, blocked: !whitelisted}
                   );
               serviceRequests.count++;
+              observer.notifyObservers(null, 'disconnect-increment', null);
             }
           }
 

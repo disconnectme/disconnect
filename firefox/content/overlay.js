@@ -146,6 +146,78 @@ if (typeof Disconnect == 'undefined') {
     renderWhitelisting: function(siteWhitelist) {},
 
     /**
+     * Outputs the UI.
+     */
+    renderPopup: function(
+      preferences, whitelistName, shortcutCount, shortcutNames, clickName
+    ) {
+      var get = (new Sitename).get;
+      var renderShortcut = Disconnect.renderShortcut;
+      var handleShortcut = Disconnect.handleShortcut;
+      var url = gBrowser.contentWindow.location;
+      var domain = get(url.hostname);
+      var tabRequests = requestCounts[url] || {};
+      var disconnectRequests = tabRequests.Disconnect || {};
+      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var siteWhitelist = whitelist[domain] || {};
+      var shortcutWhitelist =
+          (siteWhitelist.Disconnect || {}).services || {};
+
+      for (var i = 0; i < shortcutCount; i++) {
+        var control = document.getElementsByClassName('shortcut')[i + 1];
+        var wrappedControl = $(control);
+        var name = shortcutNames[i];
+        var lowercaseName = name.toLowerCase();
+        var shortcutRequests = disconnectRequests[name];
+        var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+        var badge = $(control.getElementsByTagName('html:img')[0]);
+        var text = control.getElementsByClassName('text')[0];
+        wrappedControl.off(clickName);
+        renderShortcut(
+          name,
+          lowercaseName,
+          !shortcutWhitelist[name],
+          requestCount,
+          control,
+          wrappedControl,
+          badge,
+          text,
+          1,
+          function(
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          ) {
+            handleShortcut(
+              domain,
+              url,
+              name,
+              lowercaseName,
+              requestCount,
+              control,
+              wrappedControl,
+              badge,
+              text
+            );
+          }.bind(
+            null,
+            name,
+            lowercaseName,
+            requestCount,
+            control,
+            wrappedControl,
+            badge,
+            text
+          )
+        );
+      }
+    },
+
+    /**
      * Navigates to a URL.
      */
     go: function(that) {
@@ -157,22 +229,22 @@ if (typeof Disconnect == 'undefined') {
      */
     initialize: function() {
       Components.utils['import']('resource://modules/state.js');
+      var interfaces = Components.interfaces;
       var loader =
           Components.
             classes['@mozilla.org/moz/jssubscript-loader;1'].
-            getService(Components.interfaces.mozIJSSubScriptLoader);
+            getService(interfaces.mozIJSSubScriptLoader);
       loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
       );
       loader.loadSubScript('chrome://disconnect/content/debug.js');
       var preferences =
-          Components.classes['@mozilla.org/preferences-service;1'].
-            getService(Components.interfaces.nsIPrefService).
+          Components.
+            classes['@mozilla.org/preferences-service;1'].
+            getService(interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
-      var get = (new Sitename).get;
-      var renderShortcut = this.renderShortcut;
-      var handleShortcut = this.handleShortcut;
+      var renderPopup = this.renderPopup;
       var shortcutNames = this.shortcutNames;
       var shortcutCount = shortcutNames.length;
       var buildName = 'build';
@@ -186,7 +258,6 @@ if (typeof Disconnect == 'undefined') {
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
-      var popup = document.getElementById('disconnect-popup');
       var shortcutSurface =
           document.
             getElementById('shortcuts').getElementsByTagName('html:td')[0];
@@ -222,6 +293,21 @@ if (typeof Disconnect == 'undefined') {
         preferences.setIntPref(buildName, currentBuild);
       }
 
+      Components.
+        classes['@mozilla.org/observer-service;1'].
+        getService(interfaces.nsIObserverService).
+        addObserver({observe: function() {
+          setTimeout(function() {
+            renderPopup(
+              preferences,
+              whitelistName,
+              shortcutCount,
+              shortcutNames,
+              clickName
+            );
+          }, 50);
+        }}, 'disconnect-increment', false);
+
       $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
         mouseenter(function() {
           this.src = this.src.replace('.', highlightedName);
@@ -243,69 +329,13 @@ if (typeof Disconnect == 'undefined') {
         this.checked = browsingHardened;
       }, false);
 
-      popup.addEventListener('popupshowing', function() {
-        var url = gBrowser.contentWindow.location;
-        var domain = get(url.hostname);
-        var tabRequests = requestCounts[url] || {};
-        var disconnectRequests = tabRequests.Disconnect || {};
-        whitelist = JSON.parse(preferences.getCharPref(whitelistName));
-        var siteWhitelist = whitelist[domain] || {};
-        var shortcutWhitelist =
-            (siteWhitelist.Disconnect || {}).services || {};
-
-        for (var i = 0; i < shortcutCount; i++) {
-          var control = document.getElementsByClassName('shortcut')[i + 1];
-          var wrappedControl = $(control);
-          var name = shortcutNames[i];
-          var lowercaseName = name.toLowerCase();
-          var shortcutRequests = disconnectRequests[name];
-          var requestCount = shortcutRequests ? shortcutRequests.count : 0;
-          var badge = $(control.getElementsByTagName('html:img')[0]);
-          var text = control.getElementsByClassName('text')[0];
-          wrappedControl.off(clickName);
-          renderShortcut(
-            name,
-            lowercaseName,
-            !shortcutWhitelist[name],
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text,
-            1,
-            function(
-              name,
-              lowercaseName,
-              requestCount,
-              control,
-              wrappedControl,
-              badge,
-              text
-            ) {
-              handleShortcut(
-                domain,
-                url,
-                name,
-                lowercaseName,
-                requestCount,
-                control,
-                wrappedControl,
-                badge,
-                text
-              );
-            }.bind(
-              null,
-              name,
-              lowercaseName,
-              requestCount,
-              control,
-              wrappedControl,
-              badge,
-              text
-            )
+      document.getElementById('disconnect-popup').addEventListener(
+        'popupshowing', function() {
+          renderPopup(
+            preferences, whitelistName, shortcutCount, shortcutNames, clickName
           );
-        }
-      }, false);
+        }, false
+      );
 
       var go = this.go;
     },
