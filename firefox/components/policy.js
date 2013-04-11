@@ -88,13 +88,13 @@ Disconnect.prototype = {
       var html = context.ownerDocument;
 
       if (html) {
-        var content = html.defaultView.content;
+        var view = html.defaultView;
 
-        if (content) {
+        if (view) {
           var childUrl = contentLocation.spec;
           var childDomain = get(contentLocation.host);
           var childService = getService(childDomain);
-          var parentUrl = content.top.location;
+          var parentUrl = view.top.location;
           var parent = contentType == contentPolicy.TYPE_DOCUMENT;
           var hardenedUrl;
           var hardened;
@@ -110,7 +110,7 @@ Disconnect.prototype = {
           var day = date.getDate();
           day = (day < 10 ? '0' : '') + day;
           date = date.getFullYear() + '-' + month + '-' + day;
-          parent && (requestCounts[parentUrl] = {});
+          parent && (requestCounts[childUrl] = {});
 
           if (childService) {
             var parentDomain = get(parentUrl.hostname);
