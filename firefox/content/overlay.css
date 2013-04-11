@@ -21,9 +21,35 @@
     Brian Kennish <byoogle@gmail.com>
 */
 #disconnect-button {
+  margin-right: 0;
   -moz-box-orient: horizontal;
-  list-style-image: url(chrome://disconnect/skin/images/16.png)
+  list-style-image: url(chrome://disconnect/content/button.png);
+  -moz-image-region: rect(0, 16px, 16px, 0)
 }
+
+.badge#disconnect-button { -moz-image-region: rect(16px, 16px, 32px, 0) }
+
+#disconnect-button .toolbarbutton-menu-dropmarker { display: none }
+
+#disconnect-item vbox { width: 4px }
+
+#disconnect-badge {
+  margin-top: 20px;
+  margin-right: 0;
+  margin-left: -14px;
+  background: #009548;
+  padding-right: 2px;
+  padding-left: 2px;
+  height: 12px;
+  text-align: center;
+  font:
+      xx-small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
+          Arial, sans-serif;
+  color: white;
+  visibility: hidden
+}
+
+.shown#disconnect-badge { visibility: visible }
 
 #list {
   display: block;

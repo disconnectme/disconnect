@@ -36,311 +36,316 @@
 >
   <script src="overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
-    <toolbarbutton
-      type="menu"
-      class="toolbarbutton-1"
-      id="disconnect-button"
-      label="Disconnect"
-      tooltiptext="View and manage requests"
-    >
-      <menupopup id="disconnect-popup">
-        <html:div id="list">
-          <html:table id="navbar">
-            <html:tr>
-              <html:td class="badge">
-                <html:a
-                  title="Visit Disconnect"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/disconnect.png"
-                  alt="Disconnect"
-                /></html:a>
-              </html:td>
-              <html:td class="text">
-                <html:a
-                  title="Get help"
-                  target="_blank"
-                  href="https://disconnect.me/help"
-                >Help</html:a><html:span
-                  title="Share Disconnect"
-                >Share</html:span><html:a
-                  title="Pay what you want"
-                  target="_blank"
-                  href="https://disconnect.me/pwyw"
-                >$</html:a>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table id="shortcuts">
-            <html:tr>
-              <html:td>
-                <html:table class="shortcut">
-                  <html:tr>
-                    <html:td class="badge"><html:img
-                      src="chrome://disconnect/skin/images/shortcuts.png"
-                    /></html:td>
-                    <html:td class="text"></html:td>
-                  </html:tr>
-                </html:table>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table>
-            <html:tbody id="categories">
-              <html:tr class="category">
-                <html:td class="badge"><html:img
-                  src="chrome://disconnect/skin/images/categories.png"
-                /></html:td>
+    <toolbaritem id="disconnect-item">
+      <toolbarbutton
+        type="menu"
+        id="disconnect-button"
+        class="toolbarbutton-1"
+        label="Disconnect"
+        tooltiptext="View and manage requests"
+      >
+        <menupopup id="disconnect-popup">
+          <html:div id="list">
+            <html:table id="navbar">
+              <html:tr>
+                <html:td class="badge">
+                  <html:a
+                    title="Visit Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/disconnect.png"
+                    alt="Disconnect"
+                  /></html:a>
+                </html:td>
                 <html:td class="text">
-                  <html:table>
+                  <html:a
+                    title="Get help"
+                    target="_blank"
+                    href="https://disconnect.me/help"
+                  >Help</html:a><html:span
+                    title="Share Disconnect"
+                  >Share</html:span><html:a
+                    title="Pay what you want"
+                    target="_blank"
+                    href="https://disconnect.me/pwyw"
+                  >$</html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table id="shortcuts">
+              <html:tr>
+                <html:td>
+                  <html:table class="shortcut">
                     <html:tr>
-                      <html:td class="name"></html:td>
-                    </html:tr>
-                    <html:tr>
-                      <html:td class="count"></html:td>
+                      <html:td class="badge"><html:img
+                        src="chrome://disconnect/skin/images/shortcuts.png"
+                      /></html:td>
+                      <html:td class="text"></html:td>
                     </html:tr>
                   </html:table>
                 </html:td>
-                <html:td class="action">
-                  <html:img src="chrome://disconnect/skin/images/expand/1.png"/>
-                </html:td>
               </html:tr>
-              <html:tr class="border">
-                <html:td colspan="3"></html:td>
-              </html:tr>
-              <html:tr class="services">
-                <html:td colspan="3">
-                  <html:div>
+            </html:table>
+            <html:table>
+              <html:tbody id="categories">
+                <html:tr class="category">
+                  <html:td class="badge"><html:img
+                    src="chrome://disconnect/skin/images/categories.png"
+                  /></html:td>
+                  <html:td class="text">
                     <html:table>
-                      <html:tbody>
-                        <html:tr class="service">
-                          <html:td class="control">
-                            <html:input type="checkbox"/>
-                          </html:td>
-                          <html:td class="link">
-                            <html:a title="Visit " target="_blank"></html:a>
-                          </html:td>
-                          <html:td class="text"></html:td>
-                        </html:tr>
-                      </html:tbody>
+                      <html:tr>
+                        <html:td class="name"></html:td>
+                      </html:tr>
+                      <html:tr>
+                        <html:td class="count"></html:td>
+                      </html:tr>
                     </html:table>
-                  </html:div>
+                  </html:td>
+                  <html:td class="action">
+                    <html:img
+                      src="chrome://disconnect/skin/images/expand/1.png"
+                    />
+                  </html:td>
+                </html:tr>
+                <html:tr class="border">
+                  <html:td colspan="3"></html:td>
+                </html:tr>
+                <html:tr class="services">
+                  <html:td colspan="3">
+                    <html:div>
+                      <html:table>
+                        <html:tbody>
+                          <html:tr class="service">
+                            <html:td class="control">
+                              <html:input type="checkbox"/>
+                            </html:td>
+                            <html:td class="link">
+                              <html:a title="Visit " target="_blank"></html:a>
+                            </html:td>
+                            <html:td class="text"></html:td>
+                          </html:tr>
+                        </html:tbody>
+                      </html:table>
+                    </html:div>
+                  </html:td>
+                </html:tr>
+              </html:tbody>
+            </html:table>
+            <html:table id="options">
+              <html:tr>
+                <html:td class="whitelisting badge">
+                  <html:img src="chrome://disconnect/skin/images/list/1.png"/>
+                </html:td>
+                <html:td class="whitelisting text"></html:td>
+                <html:td class="visualization badge"><html:img/></html:td>
+                <html:td class="visualization text">Visualize page</html:td>
+              </html:tr>
+              <html:tr>
+                <html:td class="wifi"><html:input type="checkbox"/></html:td>
+                <html:td class="wifi">Secure Wi-Fi</html:td>
+                <html:td class="search" title="Coming soon">
+                  <html:input type="checkbox" disabled="disabled"/>
+                </html:td>
+                <html:td class="search disabled" title="Coming soon">
+                  Secure search
                 </html:td>
               </html:tr>
-            </html:tbody>
-          </html:table>
-          <html:table id="options">
-            <html:tr>
-              <html:td class="whitelisting badge">
-                <html:img src="chrome://disconnect/skin/images/list/1.png"/>
-              </html:td>
-              <html:td class="whitelisting text"></html:td>
-              <html:td class="visualization badge"><html:img/></html:td>
-              <html:td class="visualization text">Visualize page</html:td>
-            </html:tr>
-            <html:tr>
-              <html:td class="wifi"><html:input type="checkbox"/></html:td>
-              <html:td class="wifi">Secure Wi-Fi</html:td>
-              <html:td class="search" title="Coming soon">
-                <html:input type="checkbox" disabled="disabled"/>
-              </html:td>
-              <html:td class="search disabled" title="Coming soon">
-                Secure search
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table id="dashboard">
-            <html:tr>
-              <html:td>
-                <html:table>
-                  <html:tr>
-                    <html:td class="label">
-                      Time
-                      <html:br/>
-                      saved
-                    </html:td>
-                    <html:td class="label">Bandwidth saved</html:td>
-                    <html:td class="label">Requests secured</html:td>
-                  </html:tr>
-                  <html:tr>
-                    <html:td colspan="3" id="data"></html:td>
-                  </html:tr>
-                </html:table>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table class="sharing disconnect">
-            <html:tr>
-              <html:td class="text"></html:td>
-              <html:td>
-                <html:a
-                  title="Share Disconnect"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/facebook.png"
-                  alt="Facebook"
-                /></html:a>
-              </html:td>
-              <html:td>
-                <html:a
-                  title="Tweet about Disconnect"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/twitter.png"
-                  alt="Twitter"
-                /></html:a>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table class="sharing speed">
-            <html:tr>
-              <html:td class="text"></html:td>
-              <html:td>
-                <html:a
-                  title="Share speed"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/facebook.png"
-                  alt="Facebook"
-                /></html:a>
-              </html:td>
-              <html:td>
-                <html:a
-                  title="Tweet about speed"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/twitter.png"
-                  alt="Twitter"
-                /></html:a>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table class="sharing bandwidth">
-            <html:tr>
-              <html:td class="text"></html:td>
-              <html:td>
-                <html:a
-                  title="Share bandwidth"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/facebook.png"
-                  alt="Facebook"
-                /></html:a>
-              </html:td>
-              <html:td>
-                <html:a
-                  title="Tweet about bandwidth"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/twitter.png"
-                  alt="Twitter"
-                /></html:a>
-              </html:td>
-            </html:tr>
-          </html:table>
-          <html:table class="sharing security">
-            <html:tr>
-              <html:td class="text"></html:td>
-              <html:td>
-                <html:a
-                  title="Share security"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/facebook.png"
-                  alt="Facebook"
-                /></html:a>
-              </html:td>
-              <html:td>
-                <html:a
-                  title="Tweet about security"
-                  target="_blank"
-                  href="https://disconnect.me/"
-                ><html:img
-                  src="chrome://disconnect/skin/images/twitter.png"
-                  alt="Twitter"
-                /></html:a>
-              </html:td>
-            </html:tr>
-          </html:table>
-        </html:div>
-        <html:div id="graph">
-          <html:div class="notification" id="update" style="display: none">
-            <html:div class="close"></html:div>
-            &#160;<html:strong><html:span class="chrome">v2.0</html:span><html:span class="safari">v2.0</html:span></html:strong> • Click <html:strong>Hide inactive sites</html:strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
-            <html:div class="share" id="js-share-fb" style="display: none"></html:div>
-            <html:div class="share" id="js-share-tweet" style="display: none"></html:div>
+            </html:table>
+            <html:table id="dashboard">
+              <html:tr>
+                <html:td>
+                  <html:table>
+                    <html:tr>
+                      <html:td class="label">
+                        Time
+                        <html:br/>
+                        saved
+                      </html:td>
+                      <html:td class="label">Bandwidth saved</html:td>
+                      <html:td class="label">Requests secured</html:td>
+                    </html:tr>
+                    <html:tr>
+                      <html:td colspan="3" id="data"></html:td>
+                    </html:tr>
+                  </html:table>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="sharing disconnect">
+              <html:tr>
+                <html:td class="text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="sharing speed">
+              <html:tr>
+                <html:td class="text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share speed"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about speed"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="sharing bandwidth">
+              <html:tr>
+                <html:td class="text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share bandwidth"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about bandwidth"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="sharing security">
+              <html:tr>
+                <html:td class="text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share security"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about security"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
           </html:div>
-          <html:div class="notification" id="recommends" style="display: none">
-            <html:div class="close"></html:div>
-            <html:span id='recommender-message'></html:span>
-          </html:div>
-          <html:div id="page">
-          <html:div id="sidebar" style="display: none;">
-            <html:h1></html:h1>
-            <html:img id="logo"/>
-            <html:hr/>
+          <html:div id="graph">
+            <html:div class="notification" id="update" style="display: none">
+              <html:div class="close"></html:div>
+              &#160;<html:strong><html:span class="chrome">v2.0</html:span><html:span class="safari">v2.0</html:span></html:strong> • Click <html:strong>Hide inactive sites</html:strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
+              <html:div class="share" id="js-share-fb" style="display: none"></html:div>
+              <html:div class="share" id="js-share-tweet" style="display: none"></html:div>
+            </html:div>
+            <html:div class="notification" id="recommends" style="display: none">
+              <html:div class="close"></html:div>
+              <html:span id='recommender-message'></html:span>
+            </html:div>
+            <html:div id="page">
+            <html:div id="sidebar" style="display: none;">
+              <html:h1></html:h1>
+              <html:img id="logo"/>
+              <html:hr/>
 
-            <html:div id="sidebar-content">
-            <html:div class="live-data">
-              <html:p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</html:p>
-              <html:p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</html:p>
-              <html:p><html:span class="tracker">Red</html:span> circles are known tracking sites. <html:span class="site">Gray</html:span> circles aren’t but may still track you.</html:p>
-              <html:p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</html:p>
-            </html:div> <!-- end of live-data -->
-            <html:div id="domain-infos"></html:div> <!-- Templates are copied into here -->
-            <html:div class="settings-menu">
-              <html:ul>
-                <html:li id="unblock-tracking"></html:li>
-                <html:li id="disable-wifi"></html:li>
-                <html:li id="hide-sidebar">Hide sidebar</html:li>
-                <html:li class="invisible" id="show-instructions">Show instructions</html:li>
-              </html:ul>
-            </html:div> <!-- end of settingsmenu -->
-            </html:div> <!-- End of #sidebar-content -->
-          </html:div> <!-- End of #sidebar -->
-          <html:div id="chart"></html:div><!-- The d3 layout graph will go inside this div -->
-          <html:div class="settings-menu collapsed" id="show-sidebar">+</html:div>
-          <html:div class="settings-menu collapsed" id="show-list">Show list view</html:div>
-          </html:div>
-          <html:div id="addon-installation-detected" style="display: none;">
-            Collusion add-on detected! Reload this page to see your graph.
-          </html:div>
-          <html:div id="templates">
-            <html:div class="info" style="display: none;">
-              <html:h2 class="domain"><html:a class="domain"></html:a></html:h2>
+              <html:div id="sidebar-content">
+              <html:div class="live-data">
+                <html:p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</html:p>
+                <html:p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</html:p>
+                <html:p><html:span class="tracker">Red</html:span> circles are known tracking sites. <html:span class="site">Gray</html:span> circles aren’t but may still track you.</html:p>
+                <html:p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</html:p>
+              </html:div> <!-- end of live-data -->
+              <html:div id="domain-infos"></html:div> <!-- Templates are copied into here -->
+              <html:div class="settings-menu">
+                <html:ul>
+                  <html:li id="unblock-tracking"></html:li>
+                  <html:li id="disable-wifi"></html:li>
+                  <html:li id="hide-sidebar">Hide sidebar</html:li>
+                  <html:li class="invisible" id="show-instructions">Show instructions</html:li>
+                </html:ul>
+              </html:div> <!-- end of settingsmenu -->
+              </html:div> <!-- End of #sidebar-content -->
+            </html:div> <!-- End of #sidebar -->
+            <html:div id="chart"></html:div><!-- The d3 layout graph will go inside this div -->
+            <html:div class="settings-menu collapsed" id="show-sidebar">+</html:div>
+            <html:div class="settings-menu collapsed" id="show-list">Show list view</html:div>
+            </html:div>
+            <html:div id="addon-installation-detected" style="display: none;">
+              Collusion add-on detected! Reload this page to see your graph.
+            </html:div>
+            <html:div id="templates">
+              <html:div class="info" style="display: none;">
+                <html:h2 class="domain"><html:a class="domain"></html:a></html:h2>
 
-              <html:div class="referrees">
-                <html:p>When you visit this site, the following sites are informed:</html:p>
-                <html:ul></html:ul>
-              </html:div>
-              <html:div class="referrers">
-                <html:p>This site is informed when you visit the following sites:</html:p>
-                <html:ul></html:ul>
+                <html:div class="referrees">
+                  <html:p>When you visit this site, the following sites are informed:</html:p>
+                  <html:ul></html:ul>
+                </html:div>
+                <html:div class="referrers">
+                  <html:p>This site is informed when you visit the following sites:</html:p>
+                  <html:ul></html:ul>
+                </html:div>
               </html:div>
             </html:div>
-          </html:div>
 
-          <!-- Start Social Sharing Stuff -->
-          <html:div id="social_share">
-            <!-- Start Twitter Stuff-->
-            <html:a href="https://twitter.com/share" class="twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</html:a>
-            <!-- End Twitter Stuff-->
+            <!-- Start Social Sharing Stuff -->
+            <html:div id="social_share">
+              <!-- Start Twitter Stuff-->
+              <html:a href="https://twitter.com/share" class="twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</html:a>
+              <!-- End Twitter Stuff-->
 
-            <!-- Start Facebook Stuff-->
-            <html:a name="fb_share" share_url="https://blog.disconnect.me/collusion-for-safari"></html:a>
-            <!-- End Facebook Stuff-->
+              <!-- Start Facebook Stuff-->
+              <html:a name="fb_share" share_url="https://blog.disconnect.me/collusion-for-safari"></html:a>
+              <!-- End Facebook Stuff-->
+            </html:div>
+            <!-- End Social Sharing Stuff -->
           </html:div>
-          <!-- End Social Sharing Stuff -->
-        </html:div>
-      </menupopup>
-    </toolbarbutton>
+        </menupopup>
+      </toolbarbutton>
+      <vbox><label id="disconnect-badge"/></vbox>
+    </toolbaritem>
   </toolbarpalette>
 </overlay>

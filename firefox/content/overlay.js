@@ -26,6 +26,37 @@
 if (typeof Disconnect == 'undefined') {
   var Disconnect = {
     /**
+     * Resets the number of tracking requests.
+     */
+    clearBadge: function(button, badge) {
+      button.removeClass(Disconnect.badgeName);
+      badge.removeClass(Disconnect.shownName);
+    },
+
+    /**
+     * Refreshes the number of tracking requests.
+     */
+    updateBadge: function(button, badge, referrerUrl) {
+      var currentUrl = gBrowser.contentWindow.location;
+
+      if (!referrerUrl || currentUrl == referrerUrl) {
+        var tabRequests = requestCounts[currentUrl] || {};
+        var count = 0;
+
+        for (var categoryName in tabRequests) {
+          var category = tabRequests[categoryName];
+          for (var serviceName in category)
+              count += category[serviceName].count;
+        }
+
+        if (count) {
+          button.addClass(Disconnect.badgeName);
+          badge.addClass(Disconnect.shownName).val(count);
+        } else Disconnect.clearBadge(button, badge);
+      }
+    },
+
+    /**
      * Outputs major third-party details as per the blocking state.
      */
     renderShortcut: function(
@@ -146,78 +177,6 @@ if (typeof Disconnect == 'undefined') {
     renderWhitelisting: function(siteWhitelist) {},
 
     /**
-     * Outputs the UI.
-     */
-    renderPopup: function(
-      preferences, whitelistName, shortcutCount, shortcutNames, clickName
-    ) {
-      var get = (new Sitename).get;
-      var renderShortcut = Disconnect.renderShortcut;
-      var handleShortcut = Disconnect.handleShortcut;
-      var url = gBrowser.contentWindow.location;
-      var domain = get(url.hostname);
-      var tabRequests = requestCounts[url] || {};
-      var disconnectRequests = tabRequests.Disconnect || {};
-      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
-      var siteWhitelist = whitelist[domain] || {};
-      var shortcutWhitelist =
-          (siteWhitelist.Disconnect || {}).services || {};
-
-      for (var i = 0; i < shortcutCount; i++) {
-        var control = document.getElementsByClassName('shortcut')[i + 1];
-        var wrappedControl = $(control);
-        var name = shortcutNames[i];
-        var lowercaseName = name.toLowerCase();
-        var shortcutRequests = disconnectRequests[name];
-        var requestCount = shortcutRequests ? shortcutRequests.count : 0;
-        var badge = $(control.getElementsByTagName('html:img')[0]);
-        var text = control.getElementsByClassName('text')[0];
-        wrappedControl.off(clickName);
-        renderShortcut(
-          name,
-          lowercaseName,
-          !shortcutWhitelist[name],
-          requestCount,
-          control,
-          wrappedControl,
-          badge,
-          text,
-          1,
-          function(
-            name,
-            lowercaseName,
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text
-          ) {
-            handleShortcut(
-              domain,
-              url,
-              name,
-              lowercaseName,
-              requestCount,
-              control,
-              wrappedControl,
-              badge,
-              text
-            );
-          }.bind(
-            null,
-            name,
-            lowercaseName,
-            requestCount,
-            control,
-            wrappedControl,
-            badge,
-            text
-          )
-        );
-      }
-    },
-
-    /**
      * Navigates to a URL.
      */
     go: function(that) {
@@ -244,7 +203,12 @@ if (typeof Disconnect == 'undefined') {
             classes['@mozilla.org/preferences-service;1'].
             getService(interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
-      var renderPopup = this.renderPopup;
+      var tabs = gBrowser.tabContainer;
+      var get = (new Sitename).get;
+      var clearBadge = this.clearBadge;
+      var updateBadge = this.updateBadge;
+      var renderShortcut = this.renderShortcut;
+      var handleShortcut = this.handleShortcut;
       var shortcutNames = this.shortcutNames;
       var shortcutCount = shortcutNames.length;
       var buildName = 'build';
@@ -258,21 +222,11 @@ if (typeof Disconnect == 'undefined') {
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
-      var shortcutSurface =
-          document.
-            getElementById('shortcuts').getElementsByTagName('html:td')[0];
-      var shortcutTemplate =
-          shortcutSurface.getElementsByClassName('shortcut')[0];
-      var activeServices = [];
-      var wifi =
-          document.
-            getElementsByClassName('wifi')[0].
-            getElementsByTagName('html:input')[0];
       this.preferences = preferences;
 
       if (!previousBuild) {
         var toolbar = document.getElementById(navbarName);
-        toolbar.insertItem('disconnect-button');
+        toolbar.insertItem('disconnect-item');
         toolbar.setAttribute(currentSetName, toolbar.currentSet);
         document.persist(navbarName, currentSetName);
       }
@@ -293,19 +247,38 @@ if (typeof Disconnect == 'undefined') {
         preferences.setIntPref(buildName, currentBuild);
       }
 
+      var button = $(document.getElementById('disconnect-button'));
+      var badge = $(document.getElementById('disconnect-badge'));
+      var shortcutSurface =
+          document.
+            getElementById('shortcuts').getElementsByTagName('html:td')[0];
+      var shortcutTemplate =
+          shortcutSurface.getElementsByClassName('shortcut')[0];
+      var activeServices = [];
+      var wifi =
+          document.
+            getElementsByClassName('wifi')[0].
+            getElementsByTagName('html:input')[0];
+
+      tabs.addEventListener('TabOpen', function() {
+        clearBadge(button, badge);
+      }, false);
+
+      tabs.addEventListener('TabClose', function(event) {
+        delete requestCounts[
+          gBrowser.getBrowserForTab(event.target).contentWindow.location
+        ];
+      }, false);
+
+      tabs.addEventListener('TabSelect', function() {
+        updateBadge(button, badge);
+      }, false);
+
       Components.
         classes['@mozilla.org/observer-service;1'].
         getService(interfaces.nsIObserverService).
-        addObserver({observe: function() {
-          setTimeout(function() {
-            renderPopup(
-              preferences,
-              whitelistName,
-              shortcutCount,
-              shortcutNames,
-              clickName
-            );
-          }, 50);
+        addObserver({observe: function(subject, topic, data) {
+          updateBadge(button, badge, data);
         }}, 'disconnect-increment', false);
 
       $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
@@ -331,11 +304,68 @@ if (typeof Disconnect == 'undefined') {
 
       document.getElementById('disconnect-popup').addEventListener(
         'popupshowing', function() {
-          renderPopup(
-            preferences, whitelistName, shortcutCount, shortcutNames, clickName
-          );
-        }, false
-      );
+          var url = gBrowser.contentWindow.location;
+          var domain = get(url.hostname);
+          var tabRequests = requestCounts[url] || {};
+          var disconnectRequests = tabRequests.Disconnect || {};
+          whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+          var siteWhitelist = whitelist[domain] || {};
+          var shortcutWhitelist =
+              (siteWhitelist.Disconnect || {}).services || {};
+
+          for (var i = 0; i < shortcutCount; i++) {
+            var control = document.getElementsByClassName('shortcut')[i + 1];
+            var wrappedControl = $(control);
+            var name = shortcutNames[i];
+            var lowercaseName = name.toLowerCase();
+            var shortcutRequests = disconnectRequests[name];
+            var requestCount = shortcutRequests ? shortcutRequests.count : 0;
+            var badge = $(control.getElementsByTagName('html:img')[0]);
+            var text = control.getElementsByClassName('text')[0];
+            wrappedControl.off(clickName);
+            renderShortcut(
+              name,
+              lowercaseName,
+              !shortcutWhitelist[name],
+              requestCount,
+              control,
+              wrappedControl,
+              badge,
+              text,
+              1,
+              function(
+                name,
+                lowercaseName,
+                requestCount,
+                control,
+                wrappedControl,
+                badge,
+                text
+              ) {
+                handleShortcut(
+                  domain,
+                  url,
+                  name,
+                  lowercaseName,
+                  requestCount,
+                  control,
+                  wrappedControl,
+                  badge,
+                  text
+                );
+              }.bind(
+                null,
+                name,
+                lowercaseName,
+                requestCount,
+                control,
+                wrappedControl,
+                badge,
+                text
+              )
+            );
+          }
+        }, false);
 
       var go = this.go;
     },
@@ -346,6 +376,8 @@ if (typeof Disconnect == 'undefined') {
     preferences: null,
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
     whitelistName: 'whitelist',
+    badgeName: 'badge',
+    shownName: 'shown',
     deactivatedName: 'deactivated',
     highlightedName: '-highlighted.',
     clickName: 'click',

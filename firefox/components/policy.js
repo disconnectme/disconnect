@@ -172,7 +172,7 @@ Disconnect.prototype = {
                         {url: childService.url, count: 0, blocked: !whitelisted}
                   );
               serviceRequests.count++;
-              observer.notifyObservers(null, 'disconnect-increment', null);
+              observer.notifyObservers(null, 'disconnect-increment', parentUrl);
             }
           }
 
