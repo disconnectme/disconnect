@@ -37,7 +37,6 @@
   margin-top: 20px;
   margin-right: 0;
   margin-left: -14px;
-  background: #009548;
   padding-right: 2px;
   padding-left: 2px;
   height: 12px;
@@ -49,7 +48,15 @@
   visibility: hidden
 }
 
-.shown#disconnect-badge { visibility: visible }
+.blocked#disconnect-badge {
+  background: #009548;
+  visibility: visible
+}
+
+.unblocked#disconnect-badge {
+  background: #787878;
+  visibility: visible
+}
 
 #list {
   display: block;

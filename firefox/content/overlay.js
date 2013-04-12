@@ -26,33 +26,47 @@
 if (typeof Disconnect == 'undefined') {
   var Disconnect = {
     /**
+     * Tallies the number of tracking requests.
+     */
+    getCount: function() {
+      var tabRequests = requestCounts[gBrowser.contentWindow.location] || {};
+      var count = 0;
+      var blocked = true;
+
+      for (var categoryName in tabRequests) {
+        var category = tabRequests[categoryName];
+
+        for (var serviceName in category) {
+          var service = category[serviceName]
+          count += service.count;
+          blocked = blocked && service.blocked;
+        }
+      }
+
+      return {count: count, blocked: blocked};
+    },
+
+    /**
      * Resets the number of tracking requests.
      */
     clearBadge: function(button, badge) {
       button.removeClass(Disconnect.badgeName);
-      badge.removeClass(Disconnect.shownName);
+      badge.removeClass(
+        Disconnect.blockedName + ' ' + Disconnect.unblockedName
+      );
     },
 
     /**
      * Refreshes the number of tracking requests.
      */
-    updateBadge: function(button, badge, referrerUrl) {
+    updateBadge: function(button, badge, count, blocked, referrerUrl) {
       var currentUrl = gBrowser.contentWindow.location;
 
       if (!referrerUrl || currentUrl == referrerUrl) {
-        var tabRequests = requestCounts[currentUrl] || {};
-        var count = 0;
-
-        for (var categoryName in tabRequests) {
-          var category = tabRequests[categoryName];
-          for (var serviceName in category)
-              count += category[serviceName].count;
-        }
-
-        if (count) {
-          button.addClass(Disconnect.badgeName);
-          badge.addClass(Disconnect.shownName).val(count);
-        } else Disconnect.clearBadge(button, badge);
+        button.addClass(Disconnect.badgeName);
+        badge.
+          addClass(blocked ? Disconnect.blockedName : Disconnect.unblockedName).
+          val(count);
       }
     },
 
@@ -205,6 +219,7 @@ if (typeof Disconnect == 'undefined') {
             getBranch('extensions.disconnect.');
       var tabs = gBrowser.tabContainer;
       var get = (new Sitename).get;
+      var getCount = this.getCount;
       var clearBadge = this.clearBadge;
       var updateBadge = this.updateBadge;
       var renderShortcut = this.renderShortcut;
@@ -271,14 +286,22 @@ if (typeof Disconnect == 'undefined') {
       }, false);
 
       tabs.addEventListener('TabSelect', function() {
-        updateBadge(button, badge);
+        var countReturn = getCount();
+        var count = countReturn.count;
+        count ? updateBadge(button, badge, count, countReturn.blocked) :
+            clearBadge(button, badge);
       }, false);
 
       Components.
         classes['@mozilla.org/observer-service;1'].
         getService(interfaces.nsIObserverService).
         addObserver({observe: function(subject, topic, data) {
-          updateBadge(button, badge, data);
+          var countReturn = getCount();
+          var count = countReturn.count;
+
+          setTimeout(function() {
+            updateBadge(button, badge, count, countReturn.blocked, data);
+          }, count * 100);
         }}, 'disconnect-increment', false);
 
       $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
@@ -377,14 +400,13 @@ if (typeof Disconnect == 'undefined') {
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
     whitelistName: 'whitelist',
     badgeName: 'badge',
-    shownName: 'shown',
+    blockedName: 'blocked',
+    unblockedName: 'unblocked',
     deactivatedName: 'deactivated',
     highlightedName: '-highlighted.',
     clickName: 'click',
     blockName: 'Block ',
-    unblockName: 'Unblock ',
-    imageDirectory: 'chrome://disconnect/skin/images/',
-    imageExtension: '.png'
+    unblockName: 'Unblock '
   };
 }
 
