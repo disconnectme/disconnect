@@ -101,8 +101,9 @@ Disconnect.prototype = {
           var whitelisted;
           var blockedCount;
           var tabDashboard =
-              dashboard[parentUrl] ||
-                  (dashboard[parentUrl] = {total: 0, blocked: 0, secured: 0});
+              dashboardCounts[parentUrl] || (
+                dashboardCounts[parentUrl] = {total: 0, blocked: 0, secured: 0}
+              );
           var totalCount = ++tabDashboard.total;
           var date = new Date();
           var month = date.getMonth() + 1;

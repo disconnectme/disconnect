@@ -576,8 +576,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
   if (id == tabId) {
     d3.select('.subtotal.speed').remove();
     const HEIGHT = (blockedCount / totalCount || 0) * 35;
-    const SPEED_HEIGHT =
-        Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
+    const SPEED_HEIGHT = Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
     const BANDWIDTH_HEIGHT =
         Math.round(HEIGHT * (weighted ? 1 : SIZE_CONSTANT));
     dashboard.

@@ -192,6 +192,152 @@ if (typeof Disconnect == 'undefined') {
     renderWhitelisting: function(siteWhitelist) {},
 
     /**
+     * Outputs a blocked request.
+     */
+    renderBlockedRequest: function(url, blockedCount, totalCount, weighted) {
+      if (gBrowser.contentWindow.location == url) {
+        d3.select('.subtotal.speed').remove();
+        var dashboard = Disconnect.dashboard;
+        var height = (blockedCount / totalCount || 0) * 35;
+        var speedHeight =
+            Math.round(
+              height *
+                  (weighted ? 1 :
+                      Disconnect.trackingResourceTime / Disconnect.resourceTime)
+            );
+        var bandwidthHeight =
+            Math.round(
+              height *
+                  (weighted ? 1 :
+                      Disconnect.trackingResourceSize / Disconnect.resourceSize)
+            );
+        dashboard.
+          insert('svg:rect', '.control.speed').
+          attr('class', 'subtotal speed').
+          attr('x', 29).
+          attr('y', 38 - speedHeight).
+          attr('width', 8).
+          attr('height', speedHeight).
+          attr('fill', '#ff7f00');
+        d3.select('.subtotal.bandwidth').remove();
+        dashboard.
+          insert('svg:rect', '.control.bandwidth').
+          attr('class', 'subtotal bandwidth').
+          attr('x', 95).
+          attr('y', 38 - bandwidthHeight).
+          attr('width', 8).
+          attr('height', bandwidthHeight).
+          attr('fill', '#ffbf3f');
+      }
+    },
+
+    /**
+     * Outputs a secured request.
+     */
+    renderSecuredRequest: function(url, securedCount, totalCount) {
+      if (gBrowser.contentWindow.location == url) {
+        d3.select('.subtotal.security').remove();
+        var height = Math.round((securedCount / totalCount || 0) * 35);
+        Disconnect.
+          dashboard.
+          insert('svg:rect', '.control.security').
+          attr('class', 'subtotal security').
+          attr('x', 161).
+          attr('y', 38 - height).
+          attr('width', 8).
+          attr('height', height).
+          attr('fill', '#00bfff');
+      }
+    },
+
+    /**
+     * Outputs total, blocked, and secured requests.
+     */
+    renderGraphs: function(url) {
+      d3.select('.subtotal.speed').remove();
+      d3.select('.total.speed').remove();
+      d3.select('.subtotal.bandwidth').remove();
+      d3.select('.total.bandwidth').remove();
+      d3.select('.subtotal.security').remove();
+      d3.select('.total.security').remove();
+      var tabDashboard = dashboardCounts[url] || {};
+      var blockedCount = tabDashboard.blocked || 0;
+      var totalCount = tabDashboard.total || 0;
+      var securedCount = tabDashboard.secured || 0;
+      var iterations = Math.round(Math.max(
+        (blockedCount / totalCount || 0) *
+            Disconnect.trackingResourceTime / Disconnect.resourceTime,
+        securedCount / totalCount || 0
+      ) * 13) + 23;
+      var dashboard = Disconnect.dashboard;
+      var dummyCount = totalCount || 1;
+      var renderBlockedRequest = Disconnect.renderBlockedRequest;
+      var weighted = iterations == 23;
+      var renderSecuredRequest = Disconnect.renderSecuredRequest;
+
+      for (var i = 1; i < iterations; i++) {
+        setTimeout(function(index, delay) {
+          if (index < 21) {
+            d3.select('.total.speed').remove();
+            var height = (index > 19 ? 19 - index % 19 : index) * 2;
+            var y = 38 - height;
+            dashboard.
+              insert('svg:rect', '.subtotal.speed').
+              attr('class', 'total speed').
+              attr('x', 28).
+              attr('y', y).
+              attr('width', 10).
+              attr('height', height).
+              attr('fill', '#ff3f00');
+            d3.select('.total.bandwidth').remove();
+            dashboard.
+              insert('svg:rect', '.subtotal.bandwidth').
+              attr('class', 'total bandwidth').
+              attr('x', 94).
+              attr('y', y).
+              attr('width', 10).
+              attr('height', height).
+              attr('fill', '#ff7f00');
+            d3.select('.total.security').remove();
+            dashboard.
+              insert('svg:rect', '.subtotal.security').
+              attr('class', 'total security').
+              attr('x', 160).
+              attr('y', y).
+              attr('width', 10).
+              attr('height', height).
+              attr('fill', '#007fff');
+          }
+
+          if (index > 15) {
+            var defaultCount = dummyCount * .28;
+            var offsetIndex = index - 15;
+            var modulus = iterations - 17;
+            var fraction = (
+              offsetIndex > modulus ? modulus - offsetIndex % modulus :
+                  offsetIndex
+            ) / (iterations - 18);
+            renderBlockedRequest(
+              url,
+              Math.min(blockedCount + defaultCount, dummyCount) * fraction,
+              dummyCount,
+              weighted
+            );
+            renderSecuredRequest(
+              url,
+              Math.min(securedCount + defaultCount, dummyCount) * fraction,
+              dummyCount
+            );
+          }
+
+          Disconnect.timeouts[url] =
+              Disconnect.timeouts[url] == null ? 1600 :
+                  (iterations - index - 1) * 25;
+        }, i * 25, i);
+      }
+    },
+
+    /**
      * Navigates to a URL.
      */
     go: function(that) {
@@ -212,6 +358,13 @@ if (typeof Disconnect == 'undefined') {
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
       );
+      loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/d3/d3.js');
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js'
+      );
       loader.loadSubScript('chrome://disconnect/content/debug.js');
       var preferences =
           Components.
@@ -225,6 +378,9 @@ if (typeof Disconnect == 'undefined') {
       var updateBadge = this.updateBadge;
       var renderShortcut = this.renderShortcut;
       var handleShortcut = this.handleShortcut;
+      var renderBlockedRequest = this.renderBlockedRequest;
+      var renderSecuredRequest = this.renderSecuredRequest;
+      var renderGraphs = this.renderGraphs;
       var shortcutNames = this.shortcutNames;
       var shortcutCount = shortcutNames.length;
       var buildName = 'build';
@@ -303,6 +459,28 @@ if (typeof Disconnect == 'undefined') {
           setTimeout(function() {
             updateBadge(button, badge, count, countReturn.blocked, data);
           }, count * 100);
+
+          var tabDashboard = dashboardCounts[data] || {};
+          var blockedCount = tabDashboard.blocked || 0;
+          var totalCount = tabDashboard.total || 0;
+          var timeout = Disconnect.timeouts[data] || 0;
+          var securedCount = tabDashboard.secured || 0;
+
+          blockedCount && setTimeout(function() {
+            renderBlockedRequest(
+              data,
+              Math.min(blockedCount + totalCount * .28, totalCount),
+              totalCount
+            );
+          }, timeout);
+
+          securedCount && setTimeout(function() {
+            renderSecuredRequest(
+              data,
+              Math.min(securedCount + totalCount * .28, totalCount),
+              totalCount
+            );
+          }, timeout);
         }}, 'disconnect-increment', false);
 
       $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
@@ -325,6 +503,40 @@ if (typeof Disconnect == 'undefined') {
         preferences.setBoolPref(browsingHardenedName, browsingHardened);
         this.checked = browsingHardened;
       }, false);
+
+      this.dashboard =
+          d3.
+            select('#data').
+            append('svg:svg').
+            attr('width', 198).
+            attr('height', 40);
+      this.
+        dashboard.
+        append('svg:rect').
+        attr('class', 'control speed').
+        attr('x', 10).
+        attr('y', 0).
+        attr('width', 46).
+        attr('height', 40).
+        attr('fill', 'transparent');
+      this.
+        dashboard.
+        append('svg:rect').
+        attr('class', 'control bandwidth').
+        attr('x', 76).
+        attr('y', 0).
+        attr('width', 46).
+        attr('height', 40).
+        attr('fill', 'transparent');
+      this.
+        dashboard.
+        append('svg:rect').
+        attr('class', 'control security').
+        attr('x', 142).
+        attr('y', 0).
+        attr('width', 46).
+        attr('height', 40).
+        attr('fill', 'transparent');
 
       document.getElementById('disconnect-popup').addEventListener(
         'popupshowing', function() {
@@ -389,6 +601,8 @@ if (typeof Disconnect == 'undefined') {
               )
             );
           }
+
+          renderGraphs(url);
         }, false);
 
       var go = this.go;
@@ -399,6 +613,7 @@ if (typeof Disconnect == 'undefined') {
      */
     preferences: null,
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
+    timeouts: {},
     whitelistName: 'whitelist',
     badgeName: 'badge',
     blockedName: 'blocked',
@@ -407,7 +622,12 @@ if (typeof Disconnect == 'undefined') {
     highlightedName: '-highlighted.',
     clickName: 'click',
     blockName: 'Block ',
-    unblockName: 'Unblock '
+    unblockName: 'Unblock ',
+    trackingResourceTime: 72.6141083689391,
+    resourceTime: 55.787731003361,
+    trackingResourceSize: 8.51145760261889,
+    resourceSize: 10.4957370842049,
+    dashboard: {}
   };
 }
 

@@ -19,11 +19,11 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-var EXPORTED_SYMBOLS = ['requestCounts', 'dashboard', 'log'];
+var EXPORTED_SYMBOLS = ['requestCounts', 'dashboardCounts', 'log'];
 
 /**
  * Constants.
  */
 var requestCounts = {};
-var dashboard = {};
+var dashboardCounts = {};
 var log = {};
