@@ -64,4 +64,10 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       EXTENSION.sendRequest({serviceIndex: serviceIndex, blocked: BLOCKED});
     }
   }, true);
+
+  if (location.href == 'https://disconnect.me/d2/thanks')
+      EXTENSION.sendRequest({
+        pwyw: true,
+        bucket: document.getElementById('input-type').getAttribute('value')
+      });
 });

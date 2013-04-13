@@ -925,7 +925,7 @@ var whitelistingClicked = 0;
     if (SAFARI) BODY.addClass('safari');
     const VIEWPORT = $('html').add(BODY);
 
-    if (displayMode == LEGACY) {
+    if (!displayMode || displayMode == LEGACY) {
       VIEWPORT.height(230);
       const WRAPPED_THEME = $('#' + LEGACY);
       WRAPPED_THEME.show();
@@ -1384,7 +1384,6 @@ var whitelistingClicked = 0;
         this.src = this.src.replace(HIGHLIGHTED, '.');
       });
 
-      displayMode = displayMode || LIST;
       displayMode == GRAPH && renderGraph();
 
       $('#' + displayMode).fadeIn('slow', function() {

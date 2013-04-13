@@ -188,7 +188,8 @@ function getCount(tabRequests) {
 function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(localStorage.blockingIndicated) &&
-        deserialize(localStorage.blogOpened)
+        deserialize(localStorage.blogOpened) &&
+            (deserialize(localStorage.pwyw) || {}).bucket != 'pending'
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -276,6 +277,9 @@ const LOG = {};
 
 /* The content key. */
 const CONTENT_NAME = 'Content';
+
+/* The list value. */
+const LIST_NAME = 'list';
 
 /* The graph value. */
 const GRAPH_NAME = 'graph';
@@ -366,21 +370,52 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
         siteWhitelist.services[service] = true;
   }
 
+  localStorage.displayMode = LEGACY_NAME;
+  var date = new Date();
+  var month = date.getMonth() + 1;
+  month = (month < 10 ? '0' : '') + month;
+  var day = date.getDate();
+  day = (day < 10 ? '0' : '') + day;
+  date = date.getFullYear() + '-' + month + '-' + day;
+
+  if (PREVIOUS_BUILD) {
+    $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
+      if (data.goldenticket === 'true') {
+        localStorage.displayMode = LIST_NAME;
+        localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+        BROWSER_ACTION.setIcon({path: 'images/19.png'});
+        BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+        BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+        BROWSER_ACTION.setPopup({popup: ''});
+      } else {
+        localStorage.displayMode = LEGACY_NAME;
+        downgradeServices(true);
+        BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+      }
+    });
+  } else {
+    localStorage.displayMode = LIST_NAME;
+    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    BROWSER_ACTION.setIcon({path: 'images/19.png'});
+    TABS.create({url: 'https://disconnect.me/d2/welcome'});
+  }
+
   localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
   localStorage.blacklist = JSON.stringify(BLACKLIST);
-  localStorage.displayMode = PREVIOUS_BUILD ? LEGACY_NAME : 'list';
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
   localStorage.build = CURRENT_BUILD;
 }
 
-if (localStorage.displayMode == LEGACY_NAME) {
-  downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
-} else BROWSER_ACTION.setIcon({path: 'images/19.png'});
-
-if (!deserialize(localStorage.blogOpened))
-    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+BROWSER_ACTION.setIcon({
+  path:
+      localStorage.displayMode == LEGACY_NAME ? 'images/legacy/19.png' :
+          'images/19.png'
+});
+if (
+  !deserialize(localStorage.blogOpened) ||
+      (deserialize(localStorage.pwyw) || {}).bucket == 'pending'
+) BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 localStorage.displayMode == GRAPH_NAME &&
     parseInt(localStorage.sidebarCollapsed, 10) &&
@@ -611,6 +646,11 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     }
 
     sendResponse({url: URL, blacklist: BLACKLIST});
+  } else if (request.pwyw) {
+    const PWYW = deserialize(localStorage.pwyw);
+    PWYW.bucket = request.bucket;
+    localStorage.pwyw = JSON.stringify(PWYW);
+    sendResponse({});
   } else {
     SAFARI && incrementCounter(TAB.id, request.serviceIndex, request.blocked);
     sendResponse({});
@@ -619,11 +659,15 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-  if (!deserialize(localStorage.blogOpened)) {
-    TABS.create({url: 'https://disconnect.me/security'});
+  const PWYW = deserialize(localStorage.pwyw) || {};
+
+  if (!deserialize(localStorage.blogOpened) || PWYW.bucket == 'pending') {
+    TABS.create({url: 'https://disconnect.me/d2/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;
+    PWYW.bucket = 'viewed';
+    localStorage.pwyw = JSON.stringify(PWYW);
   }
 });
 
