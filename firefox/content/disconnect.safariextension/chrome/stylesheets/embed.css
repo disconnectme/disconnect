@@ -283,7 +283,12 @@ td { padding: 0 }
   font-size: 8px
 }
 
-#dashboard .label { width: 66px }
+#dashboard .label {
+  width: 66px;
+  height: 16px
+}
+
+#data { height: 44px }
 
 .sharing {
   display: none;
