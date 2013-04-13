@@ -168,8 +168,11 @@ Disconnect.prototype = {
                       (tabRequests[childCategory] = {});
               var serviceRequests =
                   categoryRequests[childName] || (
-                    categoryRequests[childName] =
-                        {url: childService.url, count: 0, blocked: !whitelisted}
+                    categoryRequests[childName] = {
+                      url: childService.url,
+                      count: 0,
+                      blocked: !whitelisted || content
+                    }
                   );
               serviceRequests.count++;
               observer.notifyObservers(null, 'disconnect-increment', parentUrl);

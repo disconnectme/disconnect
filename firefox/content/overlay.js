@@ -63,6 +63,7 @@ if (typeof Disconnect == 'undefined') {
       var currentUrl = gBrowser.contentWindow.location;
 
       if (!referrerUrl || currentUrl == referrerUrl) {
+        count == 1 && Disconnect.clearBadge(button, badge);
         button.addClass(Disconnect.badgeName);
         badge.
           addClass(blocked ? Disconnect.blockedName : Disconnect.unblockedName).
