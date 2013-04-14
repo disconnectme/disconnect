@@ -63,6 +63,8 @@ if (typeof Disconnect == 'undefined') {
       var currentUrl = gBrowser.contentWindow.location;
 
       if (!referrerUrl || currentUrl == referrerUrl) {
+        (Disconnect.previousUpdates[currentUrl] ||
+            (Disconnect.previousUpdates[currentUrl] = {})).badge = Date.now();
         count == 1 && Disconnect.clearBadge(button, badge);
         button.addClass(Disconnect.badgeName);
         badge.
@@ -453,12 +455,16 @@ if (typeof Disconnect == 'undefined') {
         classes['@mozilla.org/observer-service;1'].
         getService(interfaces.nsIObserverService).
         addObserver({observe: function(subject, topic, data) {
+          var currentTime = Date.now();
+          var previousTimes = Disconnect.previousUpdates[data] || {};
+          var badgeTime = previousTimes.badge || 0;
           var countReturn = getCount();
-          var count = countReturn.count;
 
           setTimeout(function() {
-            updateBadge(button, badge, count, countReturn.blocked, data);
-          }, count * 100);
+            updateBadge(
+              button, badge, countReturn.count, countReturn.blocked, data
+            );
+          }, Math.max(50 - (currentTime - badgeTime), 0));
 
           var tabDashboard = dashboardCounts[data] || {};
           var blockedCount = tabDashboard.blocked || 0;
@@ -613,6 +619,7 @@ if (typeof Disconnect == 'undefined') {
      */
     preferences: null,
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
+    previousUpdates: {},
     timeouts: {},
     whitelistName: 'whitelist',
     badgeName: 'badge',
