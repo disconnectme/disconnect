@@ -215,6 +215,19 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
+     * Resets third-party details.
+     */
+    clearServices: function(url, shortcutCount) {
+      if (gBrowser.contentWindow.location == url)
+          for (var i = 0; i < shortcutCount; i++)
+              $(
+                document.
+                  getElementsByClassName('shortcut')[i + 1].
+                  getElementsByClassName('text')[0]
+              ).text(0);
+    },
+
+    /**
      * Outputs the global blocking state.
      */
     renderWhitelisting: function(siteWhitelist) {},
@@ -399,6 +412,10 @@ if (typeof Disconnect == 'undefined') {
             classes['@mozilla.org/preferences-service;1'].
             getService(interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
+      var observer =
+          Components.
+            classes['@mozilla.org/observer-service;1'].
+            getService(interfaces.nsIObserverService);
       var tabs = gBrowser.tabContainer;
       var get = (new Sitename).get;
       var getCount = this.getCount;
@@ -478,40 +495,41 @@ if (typeof Disconnect == 'undefined') {
             clearBadge(button, badge);
       }, false);
 
-      Components.
-        classes['@mozilla.org/observer-service;1'].
-        getService(interfaces.nsIObserverService).
-        addObserver({observe: function(subject, topic, data) {
-          var countReturn = getCount();
-          var count = countReturn.count;
+      observer.addObserver({observe: function(subject, topic, data) {
+        var countReturn = getCount();
+        var count = countReturn.count;
 
-          setTimeout(function() {
-            updateBadge(button, badge, count, countReturn.blocked, data);
-          }, count * 100);
+        setTimeout(function() {
+          updateBadge(button, badge, count, countReturn.blocked, data);
+        }, count * 100);
 
-          updateServices(data, get(data));
-          var tabDashboard = dashboardCounts[data] || {};
-          var blockedCount = tabDashboard.blocked || 0;
-          var totalCount = tabDashboard.total || 0;
-          var timeout = Disconnect.timeouts[data] || 0;
-          var securedCount = tabDashboard.secured || 0;
+        updateServices(data, get(data));
+        var tabDashboard = dashboardCounts[data] || {};
+        var blockedCount = tabDashboard.blocked || 0;
+        var totalCount = tabDashboard.total || 0;
+        var timeout = Disconnect.timeouts[data] || 0;
+        var securedCount = tabDashboard.secured || 0;
 
-          blockedCount && setTimeout(function() {
-            renderBlockedRequest(
-              data,
-              Math.min(blockedCount + totalCount * .28, totalCount),
-              totalCount
-            );
-          }, timeout);
+        blockedCount && setTimeout(function() {
+          renderBlockedRequest(
+            data,
+            Math.min(blockedCount + totalCount * .28, totalCount),
+            totalCount
+          );
+        }, timeout);
 
-          securedCount && setTimeout(function() {
-            renderSecuredRequest(
-              data,
-              Math.min(securedCount + totalCount * .28, totalCount),
-              totalCount
-            );
-          }, timeout);
-        }}, 'disconnect-increment', false);
+        securedCount && setTimeout(function() {
+          renderSecuredRequest(
+            data,
+            Math.min(securedCount + totalCount * .28, totalCount),
+            totalCount
+          );
+        }, timeout);
+      }}, 'disconnect-request', false);
+
+      observer.addObserver({observe: function(subject, topic, data) {
+        clearServices(data, get(data));
+      }}, 'disconnect-load', false);
 
       $(document.getElementById('navbar').getElementsByTagName('html:img')[0]).
         mouseenter(function() {

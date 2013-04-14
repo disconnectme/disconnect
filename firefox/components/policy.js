@@ -111,7 +111,11 @@ Disconnect.prototype = {
           var day = date.getDate();
           day = (day < 10 ? '0' : '') + day;
           date = date.getFullYear() + '-' + month + '-' + day;
-          parent && (requestCounts[childUrl] = {});
+
+          if (parent) {
+            requestCounts[childUrl] = {};
+            observer.notifyObservers(null, 'disconnect-load', childUrl);
+          }
 
           if (childService) {
             var parentDomain = get(parentUrl.hostname);
@@ -176,7 +180,7 @@ Disconnect.prototype = {
                     }
                   );
               serviceRequests.count++;
-              observer.notifyObservers(null, 'disconnect-increment', parentUrl);
+              observer.notifyObservers(null, 'disconnect-request', parentUrl);
             }
           }
 
