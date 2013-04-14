@@ -63,8 +63,6 @@ if (typeof Disconnect == 'undefined') {
       var currentUrl = gBrowser.contentWindow.location;
 
       if (!referrerUrl || currentUrl == referrerUrl) {
-        (Disconnect.previousUpdates[currentUrl] ||
-            (Disconnect.previousUpdates[currentUrl] = {})).badge = Date.now();
         count == 1 && Disconnect.clearBadge(button, badge);
         button.addClass(Disconnect.badgeName);
         badge.
@@ -186,6 +184,34 @@ if (typeof Disconnect == 'undefined') {
       );
       Disconnect.renderWhitelisting(siteWhitelist);
       content.location.reload();
+    },
+
+    /**
+     * Refreshes third-party details.
+     */
+    updateServices: function(url, domain) {
+      var tabRequests = requestCounts[url] || {};
+      var shortcutRequests = tabRequests.Disconnect || {};
+      var shortcutNames = Disconnect.shortcutNames;
+      var preferences = Disconnect.preferences;
+      var whitelist =
+          JSON.parse(preferences.getCharPref(Disconnect.whitelistName));
+      var siteWhitelist = whitelist[domain] || {};
+      var shortcutWhitelist =
+          (siteWhitelist.Disconnect || {}).services || {};
+      for (var name in shortcutRequests)
+          if (gBrowser.contentWindow.location == url) {
+            var count = shortcutRequests[name].count;
+
+            setTimeout(function(name, count) {
+              $(
+                document.
+                  getElementsByClassName('shortcut')[
+                    shortcutNames.indexOf(name) + 1
+                  ].getElementsByClassName('text')[0]
+              ).text(count);
+            }, count * 100, name, count);
+          }
     },
 
     /**
@@ -380,6 +406,7 @@ if (typeof Disconnect == 'undefined') {
       var updateBadge = this.updateBadge;
       var renderShortcut = this.renderShortcut;
       var handleShortcut = this.handleShortcut;
+      var updateServices = this.updateServices;
       var renderBlockedRequest = this.renderBlockedRequest;
       var renderSecuredRequest = this.renderSecuredRequest;
       var renderGraphs = this.renderGraphs;
@@ -455,17 +482,14 @@ if (typeof Disconnect == 'undefined') {
         classes['@mozilla.org/observer-service;1'].
         getService(interfaces.nsIObserverService).
         addObserver({observe: function(subject, topic, data) {
-          var currentTime = Date.now();
-          var previousTimes = Disconnect.previousUpdates[data] || {};
-          var badgeTime = previousTimes.badge || 0;
           var countReturn = getCount();
+          var count = countReturn.count;
 
           setTimeout(function() {
-            updateBadge(
-              button, badge, countReturn.count, countReturn.blocked, data
-            );
-          }, Math.max(50 - (currentTime - badgeTime), 0));
+            updateBadge(button, badge, count, countReturn.blocked, data);
+          }, count * 100);
 
+          updateServices(data, get(data));
           var tabDashboard = dashboardCounts[data] || {};
           var blockedCount = tabDashboard.blocked || 0;
           var totalCount = tabDashboard.total || 0;
@@ -618,9 +642,8 @@ if (typeof Disconnect == 'undefined') {
      * Global variables.
      */
     preferences: null,
-    shortcutNames: ['Facebook', 'Google', 'Twitter'],
-    previousUpdates: {},
     timeouts: {},
+    shortcutNames: ['Facebook', 'Google', 'Twitter'],
     whitelistName: 'whitelist',
     badgeName: 'badge',
     blockedName: 'blocked',
