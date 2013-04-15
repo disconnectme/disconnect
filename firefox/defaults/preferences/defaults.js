@@ -29,6 +29,7 @@ pref(
   '{"latimes.com":{"Google":true},"mediafire.com":{"Facebook":true},"salon.com":{"Google":true},"udacity.com":{"Twitter":true}}'
 );
 pref('extensions.disconnect.blacklist', '{}');
+pref('extensions.disconnect.pwyw', '{}');
 pref('extensions.disconnect.searchHardened', false);
 pref('extensions.disconnect.browsingHardened', true);
 pref('extensions.disconnect.blockedRequests', '{}');

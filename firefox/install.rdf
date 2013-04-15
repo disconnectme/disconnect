@@ -38,6 +38,7 @@
     <em:iconURL>chrome://disconnect/skin/images/48.png</em:iconURL>
     <em:icon64URL>chrome://disconnect/skin/images/64.png</em:icon64URL>
     <em:homepageURL>https://disconnect.me/</em:homepageURL>
+    <em:updateURL>https://disconnect.me/disconnect.rdf</em:updateURL>
     <!-- Firefox. -->
     <em:targetApplication>
       <Description>

@@ -86,10 +86,10 @@ if (typeof Disconnect == 'undefined') {
       animation,
       callback
     ) {
-      var whitelistingClicked = 0;
       var count =
-          animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
-              animation;
+          animation > 1 ||
+              Disconnect.whitelistingClicked && Disconnect.whitelistingClicked--
+                  ? 21 : animation;
       var deactivatedName = Disconnect.deactivatedName;
       var offsetX = -Disconnect.shortcutNames.indexOf(name) * 24;
 
@@ -158,6 +158,7 @@ if (typeof Disconnect == 'undefined') {
       var shortcutWhitelist = disconnectWhitelist.services;
       shortcutWhitelist[name] = !shortcutWhitelist[name];
       preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+
       Disconnect.renderShortcut(
         name,
         lowercaseName,
@@ -182,6 +183,7 @@ if (typeof Disconnect == 'undefined') {
           );
         }
       );
+
       Disconnect.renderWhitelisting(siteWhitelist);
       content.location.reload();
     },
@@ -285,7 +287,72 @@ if (typeof Disconnect == 'undefined') {
       textName,
       textCount,
       serviceSurface
-    ) {},
+    ) {
+      $(badge).off(Disconnect.clickName);
+      var preferences = Disconnect.preferences;
+      var whitelistName = Disconnect.whitelistName;
+      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+      var contentCategory = name == Disconnect.contentName;
+      var categoryWhitelist =
+          siteWhitelist[name] ||
+              (siteWhitelist[name] =
+                  {whitelisted: contentCategory, services: {}});
+      var serviceWhitelist = categoryWhitelist.services;
+      var whitelisted = categoryWhitelist.whitelisted;
+      whitelisted =
+          categoryWhitelist.whitelisted =
+              !(whitelisted || contentCategory && whitelisted !== false);
+      var blacklistName = Disconnect.blacklistName;
+      var blacklist = JSON.parse(preferences.getCharPref(blacklistName));
+      var siteBlacklist = blacklist[domain] || (blacklist[domain] = {});
+      var categoryBlacklist = siteBlacklist[name] || (siteBlacklist[name] = {});
+      for (var serviceName in serviceWhitelist)
+          serviceWhitelist[serviceName] = whitelisted;
+      for (var serviceName in categoryBlacklist)
+          categoryBlacklist[serviceName] = !whitelisted;
+      preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      preferences.setCharPref(blacklistName, JSON.stringify(blacklist));
+      Disconnect.renderCategory(
+        name,
+        lowercaseName,
+        whitelisted,
+        requestCount,
+        categoryControl,
+        wrappedCategoryControl,
+        badge,
+        badgeIcon,
+        text,
+        textName,
+        textCount,
+        2,
+        function() {
+          Disconnect.handleCategory(
+            domain,
+            url,
+            name,
+            lowercaseName,
+            requestCount,
+            categoryControl,
+            wrappedCategoryControl,
+            badge,
+            badgeIcon,
+            text,
+            textName,
+            textCount,
+            serviceSurface
+          );
+        }
+      );
+
+      $(serviceSurface[0].getElementsByTagName('html:input')).
+        each(function(index) {
+          if (index) this.checked = !whitelisted;
+        });
+
+      Disconnect.renderWhitelisting(siteWhitelist);
+      content.location.reload();
+    },
 
     /**
      * Refreshes third-party details.
@@ -576,7 +643,15 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < currentBuild) {
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        month = (month < 10 ? '0' : '') + month;
+        var day = date.getDate();
+        day = (day < 10 ? '0' : '') + day;
+        date = date.getFullYear() + '-' + month + '-' + day;
         var migratedWhitelist = {};
+        preferences.
+          setCharPref('pwyw', JSON.stringify({date: date, bucket: 'trying'}));
 
         for (var domain in whitelist) {
           var siteWhitelist =
@@ -790,6 +865,17 @@ if (typeof Disconnect == 'undefined') {
               )
             );
           }
+
+          $('.services').each(function() {
+            $(this.getElementsByTagName('html:div')).
+              removeClass('i ii iii iv v vi vii viii ix x');
+          });
+
+          $('#list').height(318);
+
+          $('.category .action').each(function() {
+            $(this.getElementsByTagName('html:img')).css('top', -28);
+          });
 
           $('.service').not(':first-child').remove();
           var siteBlacklist =

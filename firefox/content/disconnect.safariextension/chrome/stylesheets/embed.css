@@ -65,6 +65,7 @@ td { padding: 0 }
 #navbar .text a:hover { color: #333 }
 
 #navbar span {
+  display: none;
   margin-left: 10px;
   color: #999;
   cursor: default
@@ -249,21 +250,13 @@ td { padding: 0 }
   cursor: default
 }
 
-#options .badge {
-  width: 25px;
-  cursor: pointer
-}
-
-#options .text { cursor: pointer }
+#options .badge { width: 25px }
 
 #options .whitelisting.text { width: 65px }
 
 #options .visualization.text { width: 75px }
 
-#options .disabled {
-  color: #ccc;
-  cursor: default
-}
+#options .disabled { color: #ccc }
 
 #options input {
   -webkit-appearance: none;

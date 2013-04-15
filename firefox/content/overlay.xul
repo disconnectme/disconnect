@@ -32,7 +32,6 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:html="http://www.w3.org/1999/xhtml"
   id="disconnect"
-  disablehistory="true"
 >
   <script src="overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
@@ -135,14 +134,18 @@
             </html:table>
             <html:table id="options">
               <html:tr>
-                <html:td class="whitelisting badge">
+                <html:td class="whitelisting badge" title="Coming soon">
                   <html:img src="chrome://disconnect/skin/images/list/1.png"/>
                 </html:td>
-                <html:td class="whitelisting text"></html:td>
-                <html:td class="visualization badge"><html:img/></html:td>
-                <html:td class="visualization text disabled">
-                  Visualize page
+                <html:td class="whitelisting text disabled" title="Coming soon">
+                  Whitelist site
                 </html:td>
+                <html:td class="visualization badge" title="Coming soon">
+                  <html:img src="chrome://disconnect/skin/images/1/1.png"/>
+                </html:td>
+                <html:td
+                  class="visualization text disabled" title="Coming soon"
+                >Visualize page</html:td>
               </html:tr>
               <html:tr>
                 <html:td class="wifi"><html:input type="checkbox"/></html:td>
