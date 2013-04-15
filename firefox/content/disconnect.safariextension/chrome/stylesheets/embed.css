@@ -164,7 +164,31 @@ td { padding: 0 }
 
 .services { background: #f3f3f3 }
 
-.services div { display: none }
+.services div {
+  height: 0;
+  overflow: hidden;
+  -moz-transition: height .4s cubic-bezier(.175, .885, .32, 1.275)
+}
+
+.services div.i { height: 18px }
+
+.services div.ii { height: 36px }
+
+.services div.iii { height: 54px }
+
+.services div.iv { height: 72px }
+
+.services div.v { height: 88px }
+
+.services div.vi { height: 104px }
+
+.services div.vii { height: 122px }
+
+.services div.viii { height: 140px }
+
+.services div.ix { height: 158px }
+
+.services div.x { height: 176px }
 
 .service { height: 15px }
 
@@ -236,6 +260,11 @@ td { padding: 0 }
 
 #options .visualization.text { width: 75px }
 
+#options .disabled {
+  color: #ccc;
+  cursor: default
+}
+
 #options input {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -266,8 +295,6 @@ td { padding: 0 }
 }
 
 #options input:disabled { opacity: .5 }
-
-#options .search.disabled { color: #ccc }
 
 #dashboard {
   border-top: thin solid gainsboro;

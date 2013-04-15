@@ -1383,6 +1383,98 @@ var whitelistingClicked = 0;
         this.src = this.src.replace(HIGHLIGHTED, '.');
       });
 
+      $($('.sharing a')[0]).click(function() {
+        open(
+          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          null,
+          'width=500,height=316'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[1]).click(function() {
+        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+        open(
+          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 blocks '
+          + BLOCKED_COUNT + ' tracking request' + (BLOCKED_COUNT - 1 ? 's' : '')
+          + ' on ' + domain + ':',
+          null,
+          'width=500,height=257'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[2]).click(function() {
+        open(
+          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          null,
+          'width=500,height=316'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[3]).click(function() {
+        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        open(
+          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 makes '
+          + domain + ' ' +
+          ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100).toFixed() +
+          '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000).toFixed(1) +
+          's) faster:',
+          null,
+          'width=500,height=257'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[4]).click(function() {
+        open(
+          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          null,
+          'width=500,height=316'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[5]).click(function() {
+        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        open(
+          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 makes '
+          + domain + ' use ' +
+          ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100).toFixed() +
+          '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_SIZE).toFixed() +
+          'K) less bandwidth:',
+          null,
+          'width=500,height=257'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[6]).click(function() {
+        open(
+          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          null,
+          'width=500,height=316'
+        );
+        return false;
+      });
+
+      $($('.sharing a')[7]).click(function() {
+        const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+        open(
+          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 secures '
+          + SECURED_COUNT + ' vulnerable request' +
+          (SECURED_COUNT - 1 ? 's' : '') + ' on ' + domain + ':',
+          null,
+          'width=500,height=257'
+        );
+        return false;
+      });
+
       displayMode == GRAPH && renderGraph();
 
       $('#' + displayMode).fadeIn('slow', function() {

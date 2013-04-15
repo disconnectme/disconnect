@@ -60,11 +60,12 @@
 
 #list {
   display: block;
-  margin: 1px;
+  margin-right: 1px;
+  margin-left: 1px;
   box-shadow: none;
   border: none;
   padding: 0;
-  height: 306px
+  height: 318px
 }
 
 #graph {

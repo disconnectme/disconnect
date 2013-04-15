@@ -105,7 +105,7 @@
                   </html:td>
                   <html:td class="action">
                     <html:img
-                      src="chrome://disconnect/skin/images/expand/1.png"
+                      src="chrome://disconnect/skin/images/expand.png"
                     />
                   </html:td>
                 </html:tr>
@@ -140,7 +140,9 @@
                 </html:td>
                 <html:td class="whitelisting text"></html:td>
                 <html:td class="visualization badge"><html:img/></html:td>
-                <html:td class="visualization text">Visualize page</html:td>
+                <html:td class="visualization text disabled">
+                  Visualize page
+                </html:td>
               </html:tr>
               <html:tr>
                 <html:td class="wifi"><html:input type="checkbox"/></html:td>

@@ -379,24 +379,11 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   date = date.getFullYear() + '-' + month + '-' + day;
 
   if (PREVIOUS_BUILD) {
-    $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
-      if (data.goldenticket === 'true') {
-        localStorage.displayMode = LIST_NAME;
-        localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-        BROWSER_ACTION.setIcon({path: 'images/19.png'});
-        BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-        BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-        BROWSER_ACTION.setPopup({popup: ''});
-      } else {
-        localStorage.displayMode = LEGACY_NAME;
-        downgradeServices(true);
-        BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
-      }
-    });
+    localStorage.displayMode = LEGACY_NAME;
+    localStorage.pwyw = JSON.stringify({});
   } else {
     localStorage.displayMode = LIST_NAME;
     localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-    BROWSER_ACTION.setIcon({path: 'images/19.png'});
     TABS.create({url: 'https://disconnect.me/d2/welcome'});
   }
 
@@ -407,11 +394,27 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   localStorage.build = CURRENT_BUILD;
 }
 
-BROWSER_ACTION.setIcon({
-  path:
-      localStorage.displayMode == LEGACY_NAME ? 'images/legacy/19.png' :
-          'images/19.png'
-});
+if (!deserialize(localStorage.pwyw).date) {
+  downgradeServices(true);
+  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+
+  $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
+    if (data.goldenticket === 'true') {
+      localStorage.displayMode = LIST_NAME;
+      localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+      downgradeServices();
+      BROWSER_ACTION.setIcon({path: 'images/19.png'});
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+      BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
+} else if (deserialize(localStorage.pwyw).bucket == 'postponed') {
+  localStorage.displayMode = LEGACY_NAME;
+  downgradeServices(true);
+  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+} else BROWSER_ACTION.setIcon({path: 'images/19.png'});
+
 if (
   !deserialize(localStorage.blogOpened) ||
       (deserialize(localStorage.pwyw) || {}).bucket == 'pending'
