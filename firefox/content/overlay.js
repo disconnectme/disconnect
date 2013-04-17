@@ -386,87 +386,8 @@ if (typeof Disconnect == 'undefined') {
         var categoryName = categoryNames[i];
         var categoryRequests = tabRequests[categoryName] || {};
         var requestCount = 0;
-
-        for (var serviceName in categoryRequests) {
-          var service = categoryRequests[serviceName];
-          var serviceCount = service.count;
-
-          setTimeout(function(index, serviceName, count, categoryName) {
-            if (gBrowser.contentWindow.location == url) {
-              var control = $($('.disconnect-services')[index]);
-              var serviceControl =
-                  control.find('.service:contains(' + serviceName + ')');
-
-              if (serviceControl[0])
-                  serviceControl.
-                    find('.text').
-                    text(count + ' request' + (count - 1 ? 's' : ''));
-              else {
-                serviceControl = $($('.disconnect-service')[0]).clone(true);
-                var checkbox =
-                    serviceControl[0].getElementsByTagName('html:input')[0];
-                var categoryWhitelist = (
-                  JSON.parse(preferences.getCharPref(whitelistName))[domain] ||
-                      {}
-                )[categoryName] || {};
-                var whitelisted = categoryWhitelist.whitelisted;
-                checkbox.checked = !(
-                  whitelisted ||
-                      categoryName == contentName && whitelisted !== false
-                ) && !(categoryWhitelist.services || {})[serviceName] || ((
-                  JSON.parse(preferences.getCharPref(blacklistName))[domain] ||
-                      {}
-                )[categoryName] || {})[serviceName];
-
-                checkbox.onclick = function(name, serviceName) {
-                  var whitelist =
-                      JSON.parse(preferences.getCharPref(whitelistName));
-                  var siteWhitelist =
-                      whitelist[domain] || (whitelist[domain] = {});
-                  var contentCategory = name == contentName;
-                  var categoryWhitelist =
-                      siteWhitelist[name] ||
-                          (siteWhitelist[name] =
-                              {whitelisted: contentCategory, services: {}});
-                  var serviceWhitelist = categoryWhitelist.services;
-                  var whitelisted = serviceWhitelist[serviceName];
-                  var blacklist =
-                      JSON.parse(preferences.getCharPref(blacklistName));
-                  var siteBlacklist =
-                      blacklist[domain] || (blacklist[domain] = {});
-                  var categoryBlacklist =
-                      siteBlacklist[name] || (siteBlacklist[name] = {});
-                  this.checked =
-                      serviceWhitelist[serviceName] =
-                          !(categoryBlacklist[serviceName] =
-                              whitelisted ||
-                                  contentCategory &&
-                                      categoryWhitelist.whitelisted &&
-                                          whitelisted !== false);
-                  preferences.setCharPref(
-                    whitelistName, JSON.stringify(whitelist)
-                  );
-                  preferences.setCharPref(
-                    blacklistName, JSON.stringify(blacklist)
-                  );
-                  content.location.reload();
-                }.bind(null, categoryName, serviceName);
-
-                var link = serviceControl[0].getElementsByTagName('html:a')[0];
-                link.title += serviceName;
-                link.href = service.url;
-                $(link).text(serviceName);
-                serviceControl.
-                  find('.disconnect-text').
-                  text(count + ' request' + (count - 1 ? 's' : ''));
-                $(control[0].getElementsByTagName('html:tbody')[0]).
-                  append(serviceControl);
-              }
-            }
-          }, serviceCount * 100, i, serviceName, serviceCount, categoryName);
-
-          requestCount += serviceCount;
-        }
+        for (var serviceName in categoryRequests)
+            requestCount += categoryRequests[serviceName].count;
 
         setTimeout(function(index, count) {
           if (gBrowser.contentWindow.location == url)
