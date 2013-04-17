@@ -19,7 +19,7 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-#list {
+#disconnect-list {
   display: none;
   box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
   border: 1px solid #2b2b2b;
@@ -39,7 +39,7 @@ table {
   font-size: xx-small
 }
 
-#navbar {
+#disconnect-navbar {
   margin-right: auto;
   margin-left: auto;
   height: 30px
@@ -47,40 +47,40 @@ table {
 
 td { padding: 0 }
 
-#navbar .badge { width: 110px }
+#disconnect-navbar .disconnect-badge { width: 110px }
 
-#navbar a { outline: none }
+#disconnect-navbar a { outline: none }
 
-#navbar .text {
+#disconnect-navbar .disconnect-text {
   width: 70px;
   text-align: right
 }
 
-#navbar .text a {
+#disconnect-navbar .disconnect-text a {
   margin-left: 10px;
   text-decoration: none;
   color: #999
 }
 
-#navbar .text a:hover { color: #333 }
+#disconnect-navbar .disconnect-text a:hover { color: #333 }
 
-#navbar span {
+#disconnect-navbar span {
   display: none;
   margin-left: 10px;
   color: #999;
   cursor: default
 }
 
-#navbar .text a:last-child { display: none }
+#disconnect-navbar .disconnect-text a:last-child { display: none }
 
-#shortcuts {
+#disconnect-shortcuts {
   background: #2b2b2b;
   width: 200px;
   height: 45px;
   text-align: center
 }
 
-.shortcut {
+.disconnect-shortcut {
   display: inline-block;
   margin-right: 7px;
   margin-left: 7px;
@@ -90,35 +90,35 @@ td { padding: 0 }
   cursor: pointer
 }
 
-.shortcut:first-child { display: none }
+.disconnect-shortcut:first-child { display: none }
 
-.shortcut.deactivated { background: #4f4f4f }
+.disconnect-shortcut.disconnect-deactivated { background: #4f4f4f }
 
-.shortcut td {
+.disconnect-shortcut td {
   width: 24px;
   height: 24px
 }
 
-.shortcut .badge {
+.disconnect-shortcut .disconnect-badge {
   display: inline-block;
   position: relative;
   overflow: hidden
 }
 
-.shortcut .badge img { position: absolute }
+.disconnect-shortcut .disconnect-badge img { position: absolute }
 
-.shortcut .text { color: white }
+.disconnect-shortcut .disconnect-text { color: white }
 
-.category {
+.disconnect-category {
   height: 30px;
   cursor: pointer
 }
 
-.category:first-child { display: none }
+.disconnect-category:first-child { display: none }
 
-.category:hover { background: gainsboro }
+.disconnect-category:hover { background: gainsboro }
 
-.category .badge {
+.disconnect-category .disconnect-badge {
   display: inline-block;
   position: relative;
   margin-top: 3px;
@@ -129,19 +129,19 @@ td { padding: 0 }
   overflow: hidden
 }
 
-.category .badge img { position: absolute }
+.disconnect-category .disconnect-badge img { position: absolute }
 
-.category .text { width: 130px }
+.disconnect-category .disconnect-text { width: 130px }
 
-.category .text table {
+.disconnect-category .disconnect-text table {
   border-collapse: separate;
   border-spacing: 2px;
   font-size: x-small
 }
 
-.category .count { color: #999 }
+.disconnect-category .disconnect-count { color: #999 }
 
-.category .action {
+.disconnect-category .disconnect-action {
   display: inline-block;
   position: relative;
   margin-top: 3px;
@@ -151,53 +151,53 @@ td { padding: 0 }
   overflow: hidden
 }
 
-.category .action img {
+.disconnect-category .disconnect-action img {
   position: relative;
   top: -28px
 }
 
-.border {
+.disconnect-border {
   background: gainsboro;
   height: 1px
 }
 
-.border:first-child { display: none }
+.disconnect-border:first-child { display: none }
 
-.services { background: #f3f3f3 }
+.disconnect-services { background: #f3f3f3 }
 
-.services div {
+.disconnect-services div {
   height: 0;
   overflow: hidden;
   -moz-transition: height .4s cubic-bezier(.175, .885, .32, 1.275)
 }
 
-.services div.i { height: 18px }
+.disconnect-services div.disconnect-i { height: 18px }
 
-.services div.ii { height: 36px }
+.disconnect-services div.disconnect-ii { height: 36px }
 
-.services div.iii { height: 54px }
+.disconnect-services div.disconnect-iii { height: 54px }
 
-.services div.iv { height: 72px }
+.disconnect-services div.disconnect-iv { height: 72px }
 
-.services div.v { height: 88px }
+.disconnect-services div.disconnect-v { height: 88px }
 
-.services div.vi { height: 104px }
+.disconnect-services div.disconnect-vi { height: 104px }
 
-.services div.vii { height: 122px }
+.disconnect-services div.disconnect-vii { height: 122px }
 
-.services div.viii { height: 140px }
+.disconnect-services div.disconnect-viii { height: 140px }
 
-.services div.ix { height: 158px }
+.disconnect-services div.disconnect-ix { height: 158px }
 
-.services div.x { height: 176px }
+.disconnect-services div.disconnect-x { height: 176px }
 
-.service { height: 15px }
+.disconnect-service { height: 15px }
 
-.service:first-child { display: none }
+.disconnect-service:first-child { display: none }
 
-.service .control { padding-left: 10px }
+.disconnect-service .disconnect-control { padding-left: 10px }
 
-.service input {
+.disconnect-service input {
   margin-left: 0;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -209,40 +209,40 @@ td { padding: 0 }
   height: 12px
 }
 
-.service input:hover { border-color: rgba(0, 0, 0, .5) }
+.disconnect-service input:hover { border-color: rgba(0, 0, 0, .5) }
 
-.service input:checked {
+.disconnect-service input:checked {
   background: -webkit-linear-gradient(#60d490 38%, #68b789)
 }
 
-.service input:before {
+.disconnect-service input:before {
   display: inline-block;
   width: 100%;
   height: 100%;
   content: ''
 }
 
-.service input:checked:before {
+.disconnect-service input:checked:before {
   background: url(../images/check.png);
   background-size: contain
 }
 
-.service .link { padding-left: 5px }
+.disconnect-service .disconnect-link { padding-left: 5px }
 
-.service a {
+.disconnect-service a {
   text-decoration: none;
   color: #666
 }
 
-.service :hover { color: #191919 }
+.disconnect-service :hover { color: #191919 }
 
-.service .text {
+.disconnect-service .disconnect-text {
   padding-left: 10px;
   color: #b3b3b3;
   cursor: default
 }
 
-#options {
+#disconnect-options {
   margin-right: auto;
   margin-left: auto;
   height: 45px;
@@ -250,15 +250,15 @@ td { padding: 0 }
   cursor: default
 }
 
-#options .badge { width: 25px }
+#disconnect-options .disconnect-badge { width: 25px }
 
-#options .whitelisting.text { width: 65px }
+#disconnect-options .disconnect-whitelisting.disconnect-text { width: 65px }
 
-#options .visualization.text { width: 75px }
+#disconnect-options .disconnect-visualization.disconnect-text { width: 75px }
 
-#options .disabled { color: #ccc }
+#disconnect-options .disconnect-disabled { color: #ccc }
 
-#options input {
+#disconnect-options input {
   -webkit-appearance: none;
   -moz-appearance: none;
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
@@ -269,59 +269,61 @@ td { padding: 0 }
   height: 12px
 }
 
-#options input:not(:disabled):hover { border-color: rgba(0, 0, 0, .5) }
+#disconnect-options input:not(:disabled):hover {
+  border-color: rgba(0, 0, 0, .5)
+}
 
-#options input:checked {
+#disconnect-options input:checked {
   background: -webkit-linear-gradient(#60d490 38%, #68b789)
 }
 
-#options input:before {
+#disconnect-options input:before {
   display: inline-block;
   width: 100%;
   height: 100%;
   content: ''
 }
 
-#options input:checked:before {
+#disconnect-options input:checked:before {
   background: url(../images/check.png);
   background-size: contain
 }
 
-#options input:disabled { opacity: .5 }
+#disconnect-options input:disabled { opacity: .5 }
 
-#dashboard {
+#disconnect-dashboard {
   border-top: thin solid gainsboro;
   background: url(../images/dashboard.png);
   width: 200px;
   cursor: default
 }
 
-#dashboard table {
+#disconnect-dashboard table {
   margin-right: auto;
   margin-left: auto;
   text-align: center;
   font-size: 8px
 }
 
-#dashboard .label {
+#disconnect-dashboard .disconnect-label {
   width: 66px;
   height: 16px
 }
 
-#data { height: 44px }
+#disconnect-data { height: 44px }
 
-.sharing {
+.disconnect-sharing {
   display: none;
   color: #efefef;
   white-space: nowrap;
   cursor: default
 }
 
-.sharing td { padding-left: 10px }
+.disconnect-sharing td { padding-left: 10px }
 
-.sharing td:first-child { padding-left: 0 }
+.disconnect-sharing td:first-child { padding-left: 0 }
 
-#graph {
+#disconnect-graph {
   display: none;
   box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
   border: 1px solid #2b2b2b;

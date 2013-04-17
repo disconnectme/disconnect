@@ -212,8 +212,8 @@ if (typeof Disconnect == 'undefined') {
               Disconnect.whitelistingClicked && Disconnect.whitelistingClicked--
                   && !(
                     contentCategory &&
-                        $('.whitelisting').filter('.text').text() ==
-                            'Blacklist site'
+                        $('.disconnect-whitelisting').
+                          filter('.disconnect-text').text() == 'Blacklist site'
                   ) ? 21 : animation;
       var deactivatedName = Disconnect.deactivatedName;
       var wrappedBadge = $(badge);
@@ -374,9 +374,9 @@ if (typeof Disconnect == 'undefined') {
             setTimeout(function(name, count) {
               $(
                 document.
-                  getElementsByClassName('shortcut')[
+                  getElementsByClassName('disconnect-shortcut')[
                     shortcutNames.indexOf(name) + 1
-                  ].getElementsByClassName('text')[0]
+                  ].getElementsByClassName('disconnect-text')[0]
               ).text(count);
             }, count * 100, name, count);
           }
@@ -390,8 +390,8 @@ if (typeof Disconnect == 'undefined') {
         for (var i = 0; i < shortcutCount; i++)
             $(
               document.
-                getElementsByClassName('shortcut')[i + 1].
-                getElementsByClassName('text')[0]
+                getElementsByClassName('disconnect-shortcut')[i + 1].
+                getElementsByClassName('disconnect-text')[0]
             ).text(0);
       }
     },
@@ -406,7 +406,7 @@ if (typeof Disconnect == 'undefined') {
      */
     renderBlockedRequest: function(url, blockedCount, totalCount, weighted) {
       if (gBrowser.contentWindow.location == url) {
-        d3.select('.subtotal.speed').remove();
+        d3.select('.disconnect-subtotal.disconnect-speed').remove();
         var dashboard = Disconnect.dashboard;
         var height = (blockedCount / totalCount || 0) * 35;
         var speedHeight =
@@ -422,17 +422,17 @@ if (typeof Disconnect == 'undefined') {
                       Disconnect.trackingResourceSize / Disconnect.resourceSize)
             );
         dashboard.
-          insert('svg:rect', '.control.speed').
-          attr('class', 'subtotal speed').
+          insert('svg:rect', '.disconnect-control.disconnect-speed').
+          attr('class', 'disconnect-subtotal disconnect-speed').
           attr('x', 29).
           attr('y', 38 - speedHeight).
           attr('width', 8).
           attr('height', speedHeight).
           attr('fill', '#ff7f00');
-        d3.select('.subtotal.bandwidth').remove();
+        d3.select('.disconnect-subtotal.disconnect-bandwidth').remove();
         dashboard.
-          insert('svg:rect', '.control.bandwidth').
-          attr('class', 'subtotal bandwidth').
+          insert('svg:rect', '.disconnect-control.disconnect-bandwidth').
+          attr('class', 'disconnect-subtotal disconnect-bandwidth').
           attr('x', 95).
           attr('y', 38 - bandwidthHeight).
           attr('width', 8).
@@ -446,12 +446,12 @@ if (typeof Disconnect == 'undefined') {
      */
     renderSecuredRequest: function(url, securedCount, totalCount) {
       if (gBrowser.contentWindow.location == url) {
-        d3.select('.subtotal.security').remove();
+        d3.select('.disconnect-subtotal.disconnect-security').remove();
         var height = Math.round((securedCount / totalCount || 0) * 35);
         Disconnect.
           dashboard.
-          insert('svg:rect', '.control.security').
-          attr('class', 'subtotal security').
+          insert('svg:rect', '.disconnect-control.disconnect-security').
+          attr('class', 'disconnect-subtotal disconnect-security').
           attr('x', 161).
           attr('y', 38 - height).
           attr('width', 8).
@@ -464,12 +464,12 @@ if (typeof Disconnect == 'undefined') {
      * Outputs total, blocked, and secured requests.
      */
     renderGraphs: function(url) {
-      d3.select('.subtotal.speed').remove();
-      d3.select('.total.speed').remove();
-      d3.select('.subtotal.bandwidth').remove();
-      d3.select('.total.bandwidth').remove();
-      d3.select('.subtotal.security').remove();
-      d3.select('.total.security').remove();
+      d3.select('.disconnect-subtotal.disconnect-speed').remove();
+      d3.select('.disconnect-total.disconnect-speed').remove();
+      d3.select('.disconnect-subtotal.disconnect-bandwidth').remove();
+      d3.select('.disconnect-total.disconnect-bandwidth').remove();
+      d3.select('.disconnect-subtotal.disconnect-security').remove();
+      d3.select('.disconnect-total.disconnect-security').remove();
       var tabDashboard = dashboardCounts[url] || {};
       var blockedCount = tabDashboard.blocked || 0;
       var totalCount = tabDashboard.total || 0;
@@ -488,30 +488,30 @@ if (typeof Disconnect == 'undefined') {
       for (var i = 1; i < iterations; i++) {
         setTimeout(function(index, delay) {
           if (index < 21) {
-            d3.select('.total.speed').remove();
+            d3.select('.disconnect-total.disconnect-speed').remove();
             var height = (index > 19 ? 19 - index % 19 : index) * 2;
             var y = 38 - height;
             dashboard.
-              insert('svg:rect', '.subtotal.speed').
-              attr('class', 'total speed').
+              insert('svg:rect', '.disconnect-subtotal.disconnect-speed').
+              attr('class', 'disconnect-total disconnect-speed').
               attr('x', 28).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
               attr('fill', '#ff3f00');
-            d3.select('.total.bandwidth').remove();
+            d3.select('.disconnect-total.disconnect-bandwidth').remove();
             dashboard.
-              insert('svg:rect', '.subtotal.bandwidth').
-              attr('class', 'total bandwidth').
+              insert('svg:rect', '.disconnect-subtotal.disconnect-bandwidth').
+              attr('class', 'disconnect-total disconnect-bandwidth').
               attr('x', 94).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
               attr('fill', '#ff7f00');
-            d3.select('.total.security').remove();
+            d3.select('.disconnect-total.disconnect-security').remove();
             dashboard.
-              insert('svg:rect', '.subtotal.security').
-              attr('class', 'total security').
+              insert('svg:rect', '.disconnect-subtotal.disconnect-security').
+              attr('class', 'disconnect-total disconnect-security').
               attr('x', 160).
               attr('y', y).
               attr('width', 10).
@@ -622,6 +622,7 @@ if (typeof Disconnect == 'undefined') {
       var buildName = 'build';
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
+      var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
@@ -629,20 +630,20 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 2;
+      var currentBuild = 3;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+      var toolbar = document.getElementById(navbarName);
       this.preferences = preferences;
 
       if (!previousBuild) {
-        var toolbar = document.getElementById(navbarName);
-        toolbar.insertItem('disconnect-item');
+        toolbar.insertItem(buttonName);
         toolbar.setAttribute(currentSetName, toolbar.currentSet);
         document.persist(navbarName, currentSetName);
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 2) {
         var date = new Date();
         var month = date.getMonth() + 1;
         month = (month < 10 ? '0' : '') + month;
@@ -663,26 +664,41 @@ if (typeof Disconnect == 'undefined') {
 
         preferences.
           setCharPref(whitelistName, JSON.stringify(migratedWhitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var currentSet = toolbar.getAttribute(currentSetName);
+        var items = currentSet.split(',');
+        var itemCount = items.length;
+        for (var i = 0; i < itemCount; i++)
+            if (items[i] == buttonName) delete items[i];
+        toolbar.setAttribute(currentSetName, items.join(','));
+        document.persist(navbarName, currentSetName);
+        toolbar.insertItem('disconnect-item');
+        toolbar.setAttribute(currentSetName, toolbar.currentSet);
+        document.persist(navbarName, currentSetName);
         preferences.setIntPref(buildName, currentBuild);
       }
 
-      var button = $(document.getElementById('disconnect-button'));
+      var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
       var shortcutSurface =
           document.
-            getElementById('shortcuts').getElementsByTagName('html:td')[0];
+            getElementById('disconnect-shortcuts').
+            getElementsByTagName('html:td')[0];
       var shortcutTemplate =
-          shortcutSurface.getElementsByClassName('shortcut')[0];
+          shortcutSurface.getElementsByClassName('disconnect-shortcut')[0];
       var shortcutSurface =
           document.
-            getElementById('shortcuts').getElementsByTagName('html:td')[0];
+            getElementById('disconnect-shortcuts').
+            getElementsByTagName('html:td')[0];
       var shortcutTemplate =
-          shortcutSurface.getElementsByClassName('shortcut')[0];
-      var categorySurface = $(document.getElementById('categories'));
+          shortcutSurface.getElementsByClassName('disconnect-shortcut')[0];
+      var categorySurface = $(document.getElementById('disconnect-categories'));
       var categoryTemplate = categorySurface.children();
       var wifi =
           document.
-            getElementsByClassName('wifi')[0].
+            getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
 
       tabs.addEventListener('TabOpen', function() {
@@ -738,7 +754,10 @@ if (typeof Disconnect == 'undefined') {
         clearServices(data, get(data));
       }}, 'disconnect-load', false);
 
-      $(document.getElementById('navbar').getElementsByTagName('html:img')).
+      $(
+        document.
+          getElementById('disconnect-navbar').getElementsByTagName('html:img')
+      ).
         mouseenter(function() {
           this.src = this.src.replace('.', highlightedName);
         }).
@@ -758,8 +777,10 @@ if (typeof Disconnect == 'undefined') {
             alt = shortcutNames[i];
       for (i = 0; i < categoryCount; i++)
           categoryTemplate.
-            clone(true).appendTo(categorySurface).find('.badge')[0].alt =
-                categoryNames[i];
+            clone(true).
+            appendTo(categorySurface).
+            find('.disconnect-badge')[0].
+            alt = categoryNames[i];
       wifi.checked = browsingHardened;
 
       wifi.addEventListener(clickName, function() {
@@ -770,14 +791,14 @@ if (typeof Disconnect == 'undefined') {
 
       this.dashboard =
           d3.
-            select('#data').
+            select('#disconnect-data').
             append('svg:svg').
             attr('width', 198).
             attr('height', 40);
       this.
         dashboard.
         append('svg:rect').
-        attr('class', 'control speed').
+        attr('class', 'disconnect-control disconnect-speed').
         attr('x', 10).
         attr('y', 0).
         attr('width', 46).
@@ -786,7 +807,7 @@ if (typeof Disconnect == 'undefined') {
       this.
         dashboard.
         append('svg:rect').
-        attr('class', 'control bandwidth').
+        attr('class', 'disconnect-control disconnect-bandwidth').
         attr('x', 76).
         attr('y', 0).
         attr('width', 46).
@@ -795,7 +816,7 @@ if (typeof Disconnect == 'undefined') {
       this.
         dashboard.
         append('svg:rect').
-        attr('class', 'control security').
+        attr('class', 'disconnect-control disconnect-security').
         attr('x', 142).
         attr('y', 0).
         attr('width', 46).
@@ -814,14 +835,15 @@ if (typeof Disconnect == 'undefined') {
               (siteWhitelist.Disconnect || {}).services || {};
 
           for (var i = 0; i < shortcutCount; i++) {
-            var control = document.getElementsByClassName('shortcut')[i + 1];
+            var control =
+                document.getElementsByClassName('disconnect-shortcut')[i + 1];
             var wrappedControl = $(control);
             var name = shortcutNames[i];
             var lowercaseName = name.toLowerCase();
             var shortcutRequests = disconnectRequests[name];
             var requestCount = shortcutRequests ? shortcutRequests.count : 0;
             var badge = $(control.getElementsByTagName('html:img'));
-            var text = control.getElementsByClassName('text')[0];
+            var text = control.getElementsByClassName('disconnect-text')[0];
             wrappedControl.off(clickName);
             renderShortcut(
               name,
@@ -866,21 +888,23 @@ if (typeof Disconnect == 'undefined') {
             );
           }
 
-          $('.services').each(function() {
+          $('.disconnect-services').each(function() {
             $(this.getElementsByTagName('html:div')).
-              removeClass('i ii iii iv v vi vii viii ix x');
+              removeClass(
+                'disconnect-i disconnect-ii disconnect-iii disconnect-iv disconnect-v disconnect-vi disconnect-vii disconnect-viii disconnect-ix disconnect-x'
+              );
           });
 
-          $('#list').height(318);
+          $('#disconnect-list').height(318);
 
-          $('.category .action').each(function() {
+          $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
           });
 
-          $('.service').not(':first-child').remove();
+          $('.disconnect-service').not(':first-child').remove();
           var siteBlacklist =
               JSON.parse(preferences.getCharPref(blacklistName))[domain] || {};
-          var serviceTemplate = categoryTemplate.find('.service');
+          var serviceTemplate = categoryTemplate.find('.disconnect-service');
           var activeServices = $();
 
           for (i = 0; i < categoryCount; i++) {
@@ -890,27 +914,33 @@ if (typeof Disconnect == 'undefined') {
             var requestCount = 0;
             var countingIndex = i + 1;
             var categoryControls =
-                $(document.getElementsByClassName('category')[countingIndex]).
-                  add(document.getElementsByClassName('border')[countingIndex]).
-                  add(
-                    document.getElementsByClassName('services')[countingIndex]
-                  );
-            var wrappedCategoryControl = categoryControls.filter('.category');
+                $(
+                  document.
+                    getElementsByClassName('disconnect-category')[countingIndex]
+                ).add(
+                  document.
+                    getElementsByClassName('disconnect-border')[countingIndex]
+                ).add(
+                  document.
+                    getElementsByClassName('disconnect-services')[countingIndex]
+                );
+            var wrappedCategoryControl =
+                categoryControls.filter('.disconnect-category');
             var categoryControl = wrappedCategoryControl[0];
             var serviceContainer = $(
               categoryControls.
-                filter('.services')[0].getElementsByTagName('html:div')
+                filter('.disconnect-services')[0].getElementsByTagName('html:div')
             );
             var serviceSurface = $(
               serviceContainer[0].getElementsByTagName('html:tbody')
             );
-            var wrappedBadge = wrappedCategoryControl.find('.badge');
+            var wrappedBadge = wrappedCategoryControl.find('.disconnect-badge');
             var badge = wrappedBadge[0];
             var badgeIcon = wrappedBadge[0].getElementsByTagName('html:img')[0];
-            var wrappedText = wrappedCategoryControl.find('.text');
+            var wrappedText = wrappedCategoryControl.find('.disconnect-text');
             var text = wrappedText[0];
-            var textName = wrappedText.find('.name');
-            var textCount = wrappedText.find('.count');
+            var textName = wrappedText.find('.disconnect-name');
+            var textCount = wrappedText.find('.disconnect-count');
             var categoryWhitelist = siteWhitelist[name] || {};
             var whitelisted = categoryWhitelist.whitelisted;
             whitelisted =
@@ -966,7 +996,7 @@ if (typeof Disconnect == 'undefined') {
               $(link).text(serviceName);
               var serviceRequestCount = service.count;
               serviceControl.
-                find('.text').
+                find('.disconnect-text').
                 text(
                   serviceRequestCount + ' request' +
                       (serviceRequestCount - 1 ? 's' : '')
@@ -1034,7 +1064,8 @@ if (typeof Disconnect == 'undefined') {
               serviceSurface
             ));
 
-            var wrappedAction = wrappedCategoryControl.find('.action');
+            var wrappedAction =
+                wrappedCategoryControl.find('.disconnect-action');
             var action = wrappedAction[0];
             action.title = text.title = 'Expand ' + lowercaseName;
             var button = wrappedAction[0].getElementsByTagName('html:img')[0];
@@ -1072,30 +1103,35 @@ if (typeof Disconnect == 'undefined') {
                     parent().
                     prev().
                     prev().
-                    find('.action')[0].
+                    find('.disconnect-action')[0].
                     getElementsByTagName('html:img')[0],
                   name
                 );
-                expandedServices.removeClass('i ii iii iv v vi vii viii ix x');
+                expandedServices.removeClass(
+                  'disconnect-i disconnect-ii disconnect-iii disconnect-iv disconnect-v disconnect-vi disconnect-vii disconnect-viii disconnect-ix disconnect-x'
+                );
 
                 setTimeout(function() {
                   animateAction(action, button, name);
                   var serviceCount =
                       Math.min(
-                        serviceContainer.find('.service').length - 1, 10
+                        serviceContainer.find('.disconnect-service').length - 1, 10
                       );
-                  $('#list').height(serviceCount * 18 + 325);
+                  $('#disconnect-list').height(serviceCount * 18 + 325);
                   activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#list').height() == 318;
+                var collapsed = $('#disconnect-list').height() == 318;
                 var serviceCount =
-                    Math.min(serviceContainer.find('.service').length - 1, 10);
+                    Math.min(
+                      serviceContainer.find('.disconnect-service').length - 1,
+                      10
+                    );
 
                 setTimeout(function() {
-                  $('#list').height(function() {
+                  $('#disconnect-list').height(function() {
                     return collapsed ? serviceCount * 18 + 325 : 318;
                   });
                 }, collapsed ? 0 : 200);
@@ -1117,15 +1153,26 @@ if (typeof Disconnect == 'undefined') {
     timeouts: {},
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
     categoryNames: ['Advertising', 'Analytics', 'Social', 'Content'],
-    categoryClasses:
-        ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'],
+    categoryClasses: [
+      '',
+      'disconnect-i',
+      'disconnect-ii',
+      'disconnect-iii',
+      'disconnect-iv',
+      'disconnect-v',
+      'disconnect-vi',
+      'disconnect-vii',
+      'disconnect-viii',
+      'disconnect-ix',
+      'disconnect-x'
+    ],
     whitelistName: 'whitelist',
     blacklistName: 'blacklist',
     contentName: 'Content',
-    badgeName: 'badge',
-    blockedName: 'blocked',
-    unblockedName: 'unblocked',
-    deactivatedName: 'deactivated',
+    badgeName: 'disconnect-badge',
+    blockedName: 'disconnect-blocked',
+    unblockedName: 'disconnect-unblocked',
+    deactivatedName: 'disconnect-deactivated',
     highlightedName: '-highlighted.',
     clickName: 'click',
     blockName: 'Block ',

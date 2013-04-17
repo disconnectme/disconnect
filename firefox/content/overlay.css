@@ -27,7 +27,9 @@
   -moz-image-region: rect(0, 16px, 16px, 0)
 }
 
-.badge#disconnect-button { -moz-image-region: rect(16px, 16px, 32px, 0) }
+.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
 
 #disconnect-button .toolbarbutton-menu-dropmarker { display: none }
 
@@ -48,17 +50,17 @@
   visibility: hidden
 }
 
-.blocked#disconnect-badge {
+.disconnect-blocked#disconnect-badge {
   background: #009548;
   visibility: visible
 }
 
-.unblocked#disconnect-badge {
+.disconnect-unblocked#disconnect-badge {
   background: #787878;
   visibility: visible
 }
 
-#list {
+#disconnect-list {
   display: block;
   margin-right: 1px;
   margin-left: 1px;
@@ -68,7 +70,7 @@
   height: 318px
 }
 
-#graph {
+#disconnect-graph {
   margin: 1px;
   box-shadow: none;
   border: none;
