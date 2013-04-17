@@ -250,13 +250,25 @@ td { padding: 0 }
   cursor: default
 }
 
-#disconnect-options .disconnect-badge { width: 25px }
+#disconnect-options .disconnect-badge {
+  width: 25px;
+  cursor: pointer
+}
+
+#disconnect-options .disconnect-badge.disconnect-disabled { cursor: default }
+
+#disconnect-options .disconnect-text { cursor: pointer }
 
 #disconnect-options .disconnect-whitelisting.disconnect-text { width: 65px }
 
+#disconnect-options .disconnect-visualization.disconnect-badge { opacity: .5 }
+
 #disconnect-options .disconnect-visualization.disconnect-text { width: 75px }
 
-#disconnect-options .disconnect-disabled { color: #ccc }
+#disconnect-options .disconnect-text.disconnect-disabled {
+  color: #ccc;
+  cursor: default
+}
 
 #disconnect-options input {
   -webkit-appearance: none;

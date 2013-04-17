@@ -414,7 +414,159 @@ if (typeof Disconnect == 'undefined') {
     /**
      * Outputs the global blocking state.
      */
-    renderWhitelisting: function(siteWhitelist) {},
+    renderWhitelisting: function(siteWhitelist) {
+      var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
+      var whitelisting = $('.disconnect-whitelisting');
+      var whitelistingIcon =
+          whitelisting[0].getElementsByTagName('html:img')[0];
+      var whitelistingText = whitelisting.filter('.disconnect-text');
+
+      if (
+        serviceWhitelist.Facebook && serviceWhitelist.Google &&
+            serviceWhitelist.Twitter &&
+                (siteWhitelist.Advertising || {}).whitelisted &&
+                    (siteWhitelist.Analytics || {}).whitelisted &&
+                        (siteWhitelist.Social || {}).whitelisted &&
+                            (siteWhitelist.Content || {}).whitelisted !== false
+      ) {
+        whitelistingIcon.alt = 'Blacklist';
+        whitelistingText.text('Blacklist site');
+      } else {
+        whitelistingIcon.alt = 'Whitelist';
+        whitelistingText.text('Whitelist site');
+      }
+
+      return {
+        control: whitelisting, icon: whitelistingIcon, text: whitelistingText
+      };
+    },
+
+    /**
+     * Plays a whitelist animation.
+     */
+    animateWhitelisting: function(icon, callback) {
+      var imageExtension = Disconnect.imageExtension;
+      var imageDirectory = Disconnect.imageDirectory;
+      for (var i = 1; i < 21; i++)
+          setTimeout(function(index) {
+            icon.src =
+                imageDirectory + 'list/' + (index % 20 + 1) + imageExtension;
+            index == 20 && callback && callback();
+          }, (i - 1) * 50, i);
+    },
+
+    /**
+     * Restricts the whitelist animation to 1x per mouseover.
+     */
+    handleWhitelisting: function() {
+      var target = $('.' + this.className.split(' ', 1));
+      target.off('mouseenter');
+
+      Disconnect.animateWhitelisting(
+        target[0].getElementsByTagName('html:img')[0], function() {
+          target.mouseenter(Disconnect.handleWhitelisting);
+        }
+      );
+    },
+
+    /**
+     * Toggles the blocking state globally.
+     */
+    whitelistSite: function(domain) {
+      var preferences = Disconnect.preferences;
+      var whitelistName = Disconnect.whitelistName;
+      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+      var disconnectWhitelist =
+          siteWhitelist.Disconnect || (siteWhitelist.Disconnect = {});
+      var serviceWhitelist =
+          disconnectWhitelist.services || (disconnectWhitelist.services = {});
+      var advertisingWhitelist =
+          siteWhitelist.Advertising || (siteWhitelist.Advertising = {});
+      var analyticsWhitelist =
+          siteWhitelist.Analytics || (siteWhitelist.Analytics = {});
+      var socialWhitelist = siteWhitelist.Social || (siteWhitelist.Social = {});
+      var trackingUnblocked =
+          serviceWhitelist.Facebook && serviceWhitelist.Google &&
+              serviceWhitelist.Twitter && advertisingWhitelist.whitelisted &&
+                  analyticsWhitelist.whitelisted && socialWhitelist.whitelisted
+                      && (siteWhitelist.Content || {}).whitelisted !== false;
+      serviceWhitelist.Facebook =
+          serviceWhitelist.Google =
+              serviceWhitelist.Twitter =
+                  advertisingWhitelist.whitelisted =
+                      analyticsWhitelist.whitelisted =
+                          socialWhitelist.whitelisted = !trackingUnblocked;
+      advertisingWhitelist.services = analyticsWhitelist.services =
+          socialWhitelist.services = {};
+      !trackingUnblocked &&
+          (siteWhitelist.Content = {whitelisted: true, services: {}});
+      preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      var blacklistName = Disconnect.blacklistName;
+      var blacklist = JSON.parse(preferences.getCharPref(blacklistName));
+      delete blacklist[domain];
+      preferences.setCharPref(blacklistName, JSON.stringify(blacklist));
+      var shortcutNames = Disconnect.shortcutNames;
+      var shortcutCount = shortcutNames.length;
+      var renderShortcut = Disconnect.renderShortcut;
+
+      for (var i = 0; i < shortcutCount; i++) {
+        var name = shortcutNames[i];
+        var control = $('.disconnect-shortcut')[i + 1];
+        renderShortcut(
+          name,
+          name.toLowerCase(),
+          serviceWhitelist[name],
+          0,
+          control,
+          $(control),
+          $(control.
+            getElementsByClassName('disconnect-badge')[0].
+            getElementsByTagName('html:img')[0]),
+          control.getElementsByClassName('disconnect-text')[0],
+          0
+        );
+      }
+
+      var categoryNames = Disconnect.categoryNames;
+      var categoryCount = categoryNames.length;
+      var contentCategory = Disconnect.contentCategory;
+      var renderCategory = Disconnect.renderCategory;
+
+      for (i = 0; i < categoryCount; i++) {
+        var name = categoryNames[i];
+        var whitelisted = (siteWhitelist[name] || {}).whitelisted;
+        whitelisted =
+            whitelisted || name == contentCategory && whitelisted !== false;
+        var countingIndex = i + 1;
+        var control = $('.disconnect-category')[countingIndex];
+        var wrappedControl = $(control);
+        var wrappedBadge = wrappedControl.find('.disconnect-badge');
+        var wrappedText = wrappedControl.find('.disconnect-text');
+        renderCategory(
+          name,
+          name.toLowerCase(),
+          whitelisted,
+          0,
+          control,
+          wrappedControl,
+          wrappedBadge[0],
+          wrappedBadge[0].getElementsByTagName('html:img')[0],
+          wrappedText[0],
+          wrappedText.find('.disconnect-name'),
+          wrappedText.find('.disconnect-count'),
+          0
+        );
+
+        $(
+          $('.disconnect-services')[countingIndex].
+            getElementsByTagName('html:input')
+        ).each(function(index) { if (index) this.checked = !whitelisted; });
+      }
+
+      content.location.reload();
+      return trackingUnblocked;
+    },
 
     /**
      * Outputs a blocked request.
@@ -625,6 +777,9 @@ if (typeof Disconnect == 'undefined') {
       var handleCategory = this.handleCategory;
       var updateServices = this.updateServices;
       var clearServices = this.clearServices;
+      var renderWhitelisting = this.renderWhitelisting;
+      var handleWhitelisting = this.handleWhitelisting;
+      var whitelistSite = this.whitelistSite;
       var renderBlockedRequest = this.renderBlockedRequest;
       var renderSecuredRequest = this.renderSecuredRequest;
       var renderGraphs = this.renderGraphs;
@@ -1157,6 +1312,25 @@ if (typeof Disconnect == 'undefined') {
             }.bind(null, serviceContainer, action, button, lowercaseName));
           }
 
+          var whitelistingElements = renderWhitelisting(siteWhitelist);
+          var whitelisting = whitelistingElements.control;
+          var whitelistingIcon = whitelistingElements.icon;
+          var whitelistingText = whitelistingElements.text;
+          whitelisting.mouseenter(handleWhitelisting);
+          whitelisting.off(clickName);
+
+          whitelisting.click(function() {
+            Disconnect.whitelistingClicked = 7;
+
+            if (whitelistSite(domain)) {
+              whitelistingIcon.alt = 'Whitelist';
+              whitelistingText.text('Whitelist site');
+            } else {
+              whitelistingIcon.alt = 'Blacklist';
+              whitelistingText.text('Blacklist site');
+            }
+          });
+
           renderGraphs(url);
         }, false);
     },
@@ -1192,6 +1366,7 @@ if (typeof Disconnect == 'undefined') {
     clickName: 'click',
     blockName: 'Block ',
     unblockName: 'Unblock ',
+    imageDirectory: 'chrome://disconnect/skin/images/',
     imageExtension: '.png',
     trackingResourceTime: 72.6141083689391,
     resourceTime: 55.787731003361,

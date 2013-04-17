@@ -131,18 +131,14 @@
             </html:table>
             <html:table id="disconnect-options">
               <html:tr>
-                <html:td
-                  class="disconnect-whitelisting disconnect-badge"
-                  title="Coming soon"
-                >
+                <html:td class="disconnect-whitelisting disconnect-badge">
                   <html:img src="chrome://disconnect/skin/images/list/1.png"/>
                 </html:td>
+                <html:td class="disconnect-whitelisting disconnect-text">
+                  Whitelist site
+                </html:td>
                 <html:td
-                  class="disconnect-whitelisting disconnect-text disconnect-disabled"
-                  title="Coming soon"
-                >Whitelist site</html:td>
-                <html:td
-                  class="disconnect-visualization disconnect-badge"
+                  class="disconnect-visualization disconnect-badge disconnect-disabled"
                   title="Coming soon"
                 >
                   <html:img src="chrome://disconnect/skin/images/1/1.png"/>
