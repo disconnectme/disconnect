@@ -463,7 +463,7 @@ if (typeof Disconnect == 'undefined') {
                   append(serviceControl);
               }
             }
-          }, serviceCount * 100, i, serviceName, serviceCount);
+          }, serviceCount * 100, i, serviceName, serviceCount, categoryName);
 
           requestCount += serviceCount;
         }
