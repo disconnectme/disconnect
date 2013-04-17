@@ -58,7 +58,7 @@
                   <html:a
                     title="Get help"
                     target="_blank"
-                    href="https://disconnect.me/help"
+                    href="https://disconnect.me/d2/help"
                   >Help</html:a><html:span
                     title="Share Disconnect"
                   >Share</html:span><html:a
