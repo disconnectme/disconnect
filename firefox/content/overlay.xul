@@ -23,9 +23,6 @@
 <?xml-stylesheet
   href="chrome://disconnect/skin/stylesheets/vendor/typography/typography.css"
 ?>
-<?xml-stylesheet
-  href="chrome://disconnect/skin/stylesheets/chrollusion/index.css"
-?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
 <overlay
