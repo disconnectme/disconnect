@@ -762,6 +762,11 @@ if (typeof Disconnect == 'undefined') {
             classes['@mozilla.org/preferences-service;1'].
             getService(interfaces.nsIPrefService).
             getBranch('extensions.disconnect.');
+      var os =
+          Components.
+            classes['@mozilla.org/xre/app-info;1'].
+            getService(Components.interfaces.nsIXULRuntime).
+            OS;
       var observer =
           Components.
             classes['@mozilla.org/observer-service;1'].
@@ -870,6 +875,7 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
+      os == 'WINNT' && button.add(badge).addClass('windows');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);

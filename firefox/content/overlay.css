@@ -27,6 +27,8 @@
   -moz-image-region: rect(0, 16px, 16px, 0)
 }
 
+.windows#disconnect-button { margin-right: -7px }
+
 .disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
@@ -48,6 +50,12 @@
           Arial, sans-serif;
   color: white;
   visibility: hidden
+}
+
+.windows#disconnect-badge {
+  margin-top: 21px;
+  margin-right: 11px;
+  margin-left: -24px
 }
 
 .disconnect-blocked#disconnect-badge {
