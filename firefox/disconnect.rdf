@@ -39,9 +39,6 @@
                 <em:updateLink>
                   https://disconnect.me/extensions/disconnect.xpi
                 </em:updateLink>
-                <em:updateInfoURL>
-                  https://disconnect.me/disconnect/changelog
-                </em:updateInfoURL>
               </Description>
             </em:targetApplication>
             <!-- Flock. -->
@@ -53,9 +50,6 @@
                 <em:updateLink>
                   https://disconnect.me/extensions/disconnect.xpi
                 </em:updateLink>
-                <em:updateInfoURL>
-                  https://disconnect.me/disconnect/changelog
-                </em:updateInfoURL>
               </Description>
             </em:targetApplication>
           </Description>
