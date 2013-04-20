@@ -29,13 +29,14 @@ or [trying the extension](https://disconnect.me/).
 
 3. Go to [your Mozilla profile
    folder](http://kb.mozillazine.org/Profile_folder).
-4. Under `extensions`, enter the path to your working directory followed by a
-   closing slash in a new file.
-5. Save the file as `2.0@disconnect.me`.
-6. (Re)start Firefox.
-7. To test after you make a change, be sure to restart Firefox.
-8. Push your changes.
-9. Send us pull requests.
+4. Under `extensions`, create a new text file.
+5. Enter the path to your working directory followed by `firefox` then a closing
+   slash in the file.
+6. Save the file as `2.0@disconnect.me`.
+7. (Re)start Firefox.
+8. To test after you make a change, be sure to restart Firefox.
+9. Push your changes.
+10. Send us pull requests.
 
 ### In Safari
 
@@ -84,7 +85,7 @@ The following, temporary, portions of this program aren’t free software:
 * [services.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/chrome/scripts/services.js)
   and
   [services-firefox.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/services-firefox.js)
-  determine whether a domain name belongs to a third party. They can be replaced
+  determine whether a domain name belongs to a third party and can be replaced
   by implementing a single method:
 
 ### {Object} getService({string} domain)
