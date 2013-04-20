@@ -1,0 +1,42 @@
+{
+  "manifest_version": 2,
+  "name": "Disconnect",
+  "version": "5.0.0",
+  "description": "Make the web faster, more private, and more secure.",
+  "icons": {"48": "images/48.png", "128": "images/128.png"},
+  "permissions": [
+    "chrome://favicon/",
+    "contextMenus",
+    "cookies",
+    "history",
+    "idle",
+    "notifications",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_security_policy":
+      "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "scripts": [
+      "scripts/vendor/port/port.js",
+      "scripts/vendor/jquery/jquery.js",
+      "scripts/vendor/sitename/sitename.js",
+      "scripts/vendor/sjcl/sjcl.js",
+      "scripts/services.js",
+      "scripts/background.js"
+    ]
+  },
+  "browser_action": {"default_title": "View and manage requests"},
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "css": ["stylesheets/content.css"],
+    "js": ["scripts/vendor/port/port.js", "scripts/content.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }]
+}

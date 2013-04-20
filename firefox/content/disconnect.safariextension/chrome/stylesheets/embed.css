@@ -1,0 +1,354 @@
+/*
+  The style sheet for an embedded Disconnect UX.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+*/
+#disconnect-list {
+  display: none;
+  box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
+  border: 1px solid #2b2b2b;
+  background: white;
+  padding: 1px;
+  width: 200px;
+  font-family:
+      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
+          sans-serif;
+  color: #333;
+  -webkit-user-select: none;
+  -moz-user-select: none
+}
+
+table {
+  border-collapse: collapse;
+  font-size: xx-small
+}
+
+#disconnect-navbar {
+  margin-right: auto;
+  margin-left: auto;
+  height: 30px
+}
+
+td { padding: 0 }
+
+#disconnect-navbar .disconnect-badge { width: 110px }
+
+#disconnect-navbar a { outline: none }
+
+#disconnect-navbar .disconnect-text {
+  width: 70px;
+  text-align: right
+}
+
+#disconnect-navbar .disconnect-text a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: #999
+}
+
+#disconnect-navbar .disconnect-text a:hover { color: #333 }
+
+#disconnect-navbar span {
+  display: none;
+  margin-left: 10px;
+  color: #999;
+  cursor: default
+}
+
+#disconnect-navbar .disconnect-text a:last-child { display: none }
+
+#disconnect-shortcuts {
+  background: #2b2b2b;
+  width: 200px;
+  height: 45px;
+  text-align: center
+}
+
+.disconnect-shortcut {
+  display: inline-block;
+  margin-right: 7px;
+  margin-left: 7px;
+  background: #1c7045;
+  text-align: center;
+  font-size: x-small;
+  cursor: pointer
+}
+
+.disconnect-shortcut:first-child { display: none }
+
+.disconnect-shortcut.disconnect-deactivated { background: #4f4f4f }
+
+.disconnect-shortcut td {
+  width: 24px;
+  height: 24px
+}
+
+.disconnect-shortcut .disconnect-badge {
+  display: inline-block;
+  position: relative;
+  overflow: hidden
+}
+
+.disconnect-shortcut .disconnect-badge img { position: absolute }
+
+.disconnect-shortcut .disconnect-text { color: white }
+
+.disconnect-category {
+  height: 30px;
+  cursor: pointer
+}
+
+.disconnect-category:first-child { display: none }
+
+.disconnect-category:hover { background: gainsboro }
+
+.disconnect-category .disconnect-badge {
+  display: inline-block;
+  position: relative;
+  margin-top: 3px;
+  margin-right: 8px;
+  margin-left: 3px;
+  width: 24px;
+  height: 24px;
+  overflow: hidden
+}
+
+.disconnect-category .disconnect-badge img { position: absolute }
+
+.disconnect-category .disconnect-text { width: 130px }
+
+.disconnect-category .disconnect-text table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: x-small
+}
+
+.disconnect-category .disconnect-count { color: #999 }
+
+.disconnect-category .disconnect-action {
+  display: inline-block;
+  position: relative;
+  margin-top: 3px;
+  width: 35px;
+  height: 14px;
+  text-align: center;
+  overflow: hidden
+}
+
+.disconnect-category .disconnect-action img {
+  position: relative;
+  top: -28px
+}
+
+.disconnect-border {
+  background: gainsboro;
+  height: 1px
+}
+
+.disconnect-border:first-child { display: none }
+
+.disconnect-services { background: #f3f3f3 }
+
+.disconnect-services div {
+  height: 0;
+  overflow: hidden;
+  -moz-transition: height .4s cubic-bezier(.175, .885, .32, 1.275)
+}
+
+.disconnect-services div.disconnect-i { height: 18px }
+
+.disconnect-services div.disconnect-ii { height: 36px }
+
+.disconnect-services div.disconnect-iii { height: 54px }
+
+.disconnect-services div.disconnect-iv { height: 72px }
+
+.disconnect-services div.disconnect-v { height: 88px }
+
+.disconnect-services div.disconnect-vi { height: 104px }
+
+.disconnect-services div.disconnect-vii { height: 122px }
+
+.disconnect-services div.disconnect-viii { height: 140px }
+
+.disconnect-services div.disconnect-ix { height: 158px }
+
+.disconnect-services div.disconnect-x { height: 176px }
+
+.disconnect-service { height: 15px }
+
+.disconnect-service:first-child { display: none }
+
+.disconnect-service .disconnect-control { padding-left: 10px }
+
+.disconnect-service input {
+  margin-left: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+.disconnect-service input:hover { border-color: rgba(0, 0, 0, .5) }
+
+.disconnect-service input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+.disconnect-service input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+.disconnect-service input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
+}
+
+.disconnect-service .disconnect-link { padding-left: 5px }
+
+.disconnect-service a {
+  text-decoration: none;
+  color: #666
+}
+
+.disconnect-service :hover { color: #191919 }
+
+.disconnect-service .disconnect-text {
+  padding-left: 10px;
+  color: #b3b3b3;
+  cursor: default
+}
+
+#disconnect-options {
+  margin-right: auto;
+  margin-left: auto;
+  height: 45px;
+  text-align: center;
+  cursor: default
+}
+
+#disconnect-options .disconnect-badge {
+  width: 25px;
+  cursor: pointer
+}
+
+#disconnect-options .disconnect-badge.disconnect-disabled { cursor: default }
+
+#disconnect-options .disconnect-text { cursor: pointer }
+
+#disconnect-options .disconnect-whitelisting.disconnect-text { width: 65px }
+
+#disconnect-options .disconnect-visualization.disconnect-badge { opacity: .5 }
+
+#disconnect-options .disconnect-visualization.disconnect-text { width: 75px }
+
+#disconnect-options .disconnect-text.disconnect-disabled {
+  color: #ccc;
+  cursor: default
+}
+
+#disconnect-options input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+#disconnect-options input:not(:disabled):hover {
+  border-color: rgba(0, 0, 0, .5)
+}
+
+#disconnect-options input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+#disconnect-options input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+#disconnect-options input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
+}
+
+#disconnect-options input:disabled { opacity: .5 }
+
+#disconnect-dashboard {
+  border-top: thin solid gainsboro;
+  background: url(../images/dashboard.png);
+  width: 200px;
+  cursor: default
+}
+
+#disconnect-dashboard table {
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  font-size: 8px
+}
+
+#disconnect-dashboard .disconnect-label {
+  width: 66px;
+  height: 16px
+}
+
+#disconnect-data { height: 44px }
+
+.disconnect-sharing {
+  display: none;
+  color: #efefef;
+  white-space: nowrap;
+  cursor: default
+}
+
+.disconnect-sharing td { padding-left: 10px }
+
+.disconnect-sharing td:first-child { padding-left: 0 }
+
+#disconnect-graph {
+  display: none;
+  box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
+  border: 1px solid #2b2b2b;
+  background: white;
+  padding: 1px;
+  width: 706px;
+  height: 490px
+}
+
+.t_Tooltip {
+  font-family:
+      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
+          sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none
+}

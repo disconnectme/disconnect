@@ -1,8 +1,7 @@
 /*
-  An XPCOM component that stops third parties and search engines from tracking
-  the webpages you go to and searches you do.
+  An XPCOM component that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2012 Disconnect, Inc.
+  Copyright 2010-2013 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -19,32 +18,38 @@
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
-    Gary Teh <garyjob@gmail.com>
 */
 Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils['import']('resource://modules/requests.js');
+Components.utils['import']('resource://modules/state.js');
+var interfaces = Components.interfaces;
 var loader =
-    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader);
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(interfaces.mozIJSSubScriptLoader);
 loader.loadSubScript('chrome://disconnect/content/sjcl.js');
 loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
 loader.loadSubScript('chrome://disconnect/content/services-firefox.js');
 loader.loadSubScript('chrome://disconnect/content/debug.js');
+var observer =
+    Components.
+      classes['@mozilla.org/observer-service;1'].
+      getService(interfaces.nsIObserverService);
 
 /**
  * Constants.
  */
 var preferences =
-    Components.classes['@mozilla.org/preferences-service;1'].
-      getService(Components.interfaces.nsIPrefService).
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(interfaces.nsIPrefService).
       getBranch('extensions.disconnect.');
-var contentPolicy = Components.interfaces.nsIContentPolicy;
+var contentPolicy = interfaces.nsIContentPolicy;
 var accept = contentPolicy.ACCEPT;
-var sitename = new Sitename;
-var get = sitename.get;
+var get = (new Sitename).get;
 var requests = {};
 var redirects = {};
 var contentName = 'Content';
+var startTime = new Date();
 
 /**
  * Creates the component.
@@ -52,8 +57,7 @@ var contentName = 'Content';
 function Disconnect() { this.wrappedJSObject = this; }
 
 /**
- * A content policy that stops third parties and search engines from tracking
- * the webpages you go to and searches you do.
+ * A content policy that makes the web faster, more private, and more secure.
  */
 Disconnect.prototype = {
   /**
@@ -61,7 +65,7 @@ Disconnect.prototype = {
    */
   classID: Components.ID('{3f722c5d-555d-4fbc-9444-c5e0d963de8f}'),
   classDescription:
-      'A content policy that stops third parties and search engines from tracking the webpages you go to and searches you do.',
+      'A content policy that makes the web faster, more private, and more secure.',
   contractID: '@disconnect.me/d2;1',
 
   /**
@@ -75,7 +79,7 @@ Disconnect.prototype = {
   QueryInterface: XPCOMUtils.generateQI([contentPolicy]),
 
   /**
-   * Traps and selectively cancels a request.
+   * Traps and selectively cancels or redirects a request.
    */
   shouldLoad: function(contentType, contentLocation, requestOrigin, context) {
     var result = accept;
@@ -84,29 +88,49 @@ Disconnect.prototype = {
       var html = context.ownerDocument;
 
       if (html) {
-        var content = html.defaultView.content;
+        var view = html.defaultView;
 
-        if (content) {
+        if (view) {
           var childUrl = contentLocation.spec;
           var childDomain = get(contentLocation.host);
           var childService = getService(childDomain);
-          var parentUrl = content.top.location;
+          var parentUrl = view.top.location;
           var parent = contentType == contentPolicy.TYPE_DOCUMENT;
           var hardenedUrl;
           var hardened;
           var whitelisted;
-          parent && (requestCounts[parentUrl] = {});
+          var blockedCount;
+          var tabDashboard =
+              dashboardCounts[parentUrl] || (
+                dashboardCounts[parentUrl] = {total: 0, blocked: 0, secured: 0}
+              );
+          var totalCount = ++tabDashboard.total;
+          var date = new Date();
+          var month = date.getMonth() + 1;
+          month = (month < 10 ? '0' : '') + month;
+          var day = date.getDate();
+          day = (day < 10 ? '0' : '') + day;
+          date = date.getFullYear() + '-' + month + '-' + day;
+
+          if (parent) {
+            requestCounts[childUrl] = {};
+            observer.notifyObservers(null, 'disconnect-load', childUrl);
+          }
 
           if (childService) {
             var parentDomain = get(parentUrl.hostname);
             var parentService = getService(parentDomain);
             var childName = childService.name;
             var redirectSafe = childUrl != requests[parentUrl];
+            var childCategory = childService.category;
+            var content = childCategory == contentName;
+            var categoryWhitelist =
+                (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
+                    || {})[childCategory] || {};
 
             if (
               parent || childDomain == parentDomain ||
-                  parentService && childName == parentService.name ||
-                      childService.category == contentName
+                  parentService && childName == parentService.name
             ) { // The request is allowed: the top frame has the same origin.
               if (redirectSafe) {
                 hardenedUrl = harden(childUrl);
@@ -115,9 +139,12 @@ Disconnect.prototype = {
                 if (hardened) contentLocation.spec = hardenedUrl;
               }
             } else if (
-              (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain] ||
-                  {})[childName]
-            ) { // The request is allowed: the service is whitelisted.
+              (content || categoryWhitelist.whitelisted ||
+                  (categoryWhitelist.services || {})[childName]) &&
+                      !((JSON.parse(preferences.getCharPref(
+                        'blacklist'
+                      ))[parentDomain] || {})[childCategory] || {})[childName]
+            ) { // The request is allowed: the category or service is unblocked.
               if (redirectSafe) {
                 hardenedUrl = harden(childUrl);
                 hardened = hardenedUrl.hardened;
@@ -125,31 +152,75 @@ Disconnect.prototype = {
                 if (hardened) contentLocation.spec = hardenedUrl;
                 else whitelisted = true;
               }
-            } else result = contentPolicy.REJECT_SERVER;
-                // The request is denied.
+            } else {
+              result = contentPolicy.REJECT_SERVER;
+              blockedCount = ++tabDashboard.blocked;
+              var blockedRequestName = 'blockedRequests';
+              var blockedRequests =
+                  JSON.parse(preferences.getCharPref(blockedRequestName));
+              blockedRequests[date] ? blockedRequests[date]++ :
+                  blockedRequests[date] = 1;
+              preferences.setCharPref(
+                blockedRequestName, JSON.stringify(blockedRequests)
+              );
+            } // The request is denied.
 
             if (hardened || whitelisted || result != accept) {
               var tabRequests =
                   requestCounts[parentUrl] || (requestCounts[parentUrl] = {});
-              var category = childService.category;
               var categoryRequests =
-                  tabRequests[category] || (tabRequests[category] = {});
-              var service = childService.name;
+                  tabRequests[childCategory] ||
+                      (tabRequests[childCategory] = {});
               var serviceRequests =
-                  categoryRequests[service] || (
-                    categoryRequests[service] =
-                        {url: childService.url, count: 0, blocked: !whitelisted}
+                  categoryRequests[childName] || (
+                    categoryRequests[childName] = {
+                      url: childService.url,
+                      count: 0,
+                      blocked: !whitelisted || content
+                    }
                   );
               serviceRequests.count++;
+              observer.notifyObservers(null, 'disconnect-request', parentUrl);
             }
           }
 
           childUrl != redirects[parentUrl] && delete requests[parentUrl];
           delete redirects[parentUrl];
+          var securedCount;
 
           if (hardened) {
             requests[parentUrl] = childUrl;
             redirects[parentUrl] = hardenedUrl;
+            securedCount = ++tabDashboard.secured;
+            var hardenedRequestName = 'hardenedRequests';
+            var hardenedRequests =
+                JSON.parse(preferences.getCharPref(hardenedRequestName));
+            hardenedRequests[date] ? hardenedRequests[date]++ :
+                hardenedRequests[date] = 1;
+            preferences.setCharPref(
+              hardenedRequestName, JSON.stringify(hardenedRequests)
+            );
+          }
+
+          // The Collusion data structure.
+          if (!(childDomain in log))
+              log[childDomain] = {
+                host: childDomain, referrers: {}, visited: false
+              };
+          if (!(parentDomain in log))
+              log[parentDomain] = {host: parentDomain, referrers: {}};
+          log[parentDomain].visited = true;
+          var referrers = log[childDomain].referrers;
+          if (childDomain != parentDomain && !(parentDomain in referrers))
+              referrers[parentDomain] = {
+                host: parentDomain,
+                types: [new Date() - startTime]
+              };
+          var parentReferrers = referrers[parentDomain];
+
+          if (parentReferrers) {
+            var types = parentReferrers.types;
+            types.indexOf(contentType) == -1 && types.push(contentType);
           }
         }
       }

@@ -1,2 +1,2 @@
-A [browser extension](http://disconnect.me/) that stops third parties and search
-engines from tracking the webpages you go to and searches you do.
+A [browser extension](https://disconnect.me/) that makes the web faster, more
+private, and more secure.

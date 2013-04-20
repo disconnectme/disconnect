@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+<!--
+  Overlay markup that makes the web faster, more private, and more secure.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+-->
+<?xml-stylesheet
+  href="chrome://disconnect/skin/stylesheets/vendor/typography/typography.css"
+?>
+<?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
+<?xml-stylesheet href="overlay.css"?>
+<overlay
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  id="disconnect"
+>
+  <script src="overlay.js"/>
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbaritem id="disconnect-item">
+      <toolbarbutton
+        type="menu"
+        id="disconnect-button"
+        class="toolbarbutton-1"
+        label="Disconnect"
+        tooltiptext="View and manage requests"
+      >
+        <menupopup id="disconnect-popup">
+          <html:div id="disconnect-list">
+            <html:table id="disconnect-navbar">
+              <html:tr>
+                <html:td class="disconnect-badge">
+                  <html:a
+                    title="Visit Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/disconnect.png"
+                    alt="Disconnect"
+                  /></html:a>
+                </html:td>
+                <html:td class="disconnect-text">
+                  <html:a
+                    title="Get help"
+                    target="_blank"
+                    href="https://disconnect.me/d2/help"
+                  >Help</html:a><html:span
+                    title="Share Disconnect"
+                  >Share</html:span><html:a
+                    title="Pay what you want"
+                    target="_blank"
+                    href="https://disconnect.me/pwyw"
+                  >$</html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table id="disconnect-shortcuts">
+              <html:tr>
+                <html:td>
+                  <html:table class="disconnect-shortcut">
+                    <html:tr>
+                      <html:td class="disconnect-badge"><html:img
+                        src="chrome://disconnect/skin/images/shortcuts.png"
+                      /></html:td>
+                      <html:td class="disconnect-text"></html:td>
+                    </html:tr>
+                  </html:table>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table>
+              <html:tbody id="disconnect-categories">
+                <html:tr class="disconnect-category">
+                  <html:td class="disconnect-badge"><html:img
+                    src="chrome://disconnect/skin/images/categories.png"
+                  /></html:td>
+                  <html:td class="disconnect-text">
+                    <html:table>
+                      <html:tr>
+                        <html:td class="disconnect-name"></html:td>
+                      </html:tr>
+                      <html:tr>
+                        <html:td class="disconnect-count"></html:td>
+                      </html:tr>
+                    </html:table>
+                  </html:td>
+                  <html:td class="disconnect-action">
+                    <html:img
+                      src="chrome://disconnect/skin/images/expand.png"
+                    />
+                  </html:td>
+                </html:tr>
+                <html:tr class="disconnect-border">
+                  <html:td colspan="3"></html:td>
+                </html:tr>
+                <html:tr class="disconnect-services">
+                  <html:td colspan="3">
+                    <html:div>
+                      <html:table>
+                        <html:tbody>
+                          <html:tr class="disconnect-service">
+                            <html:td class="disconnect-control">
+                              <html:input type="checkbox"/>
+                            </html:td>
+                            <html:td class="disconnect-link">
+                              <html:a title="Visit " target="_blank"></html:a>
+                            </html:td>
+                            <html:td class="disconnect-text"></html:td>
+                          </html:tr>
+                        </html:tbody>
+                      </html:table>
+                    </html:div>
+                  </html:td>
+                </html:tr>
+              </html:tbody>
+            </html:table>
+            <html:table id="disconnect-options">
+              <html:tr>
+                <html:td class="disconnect-whitelisting disconnect-badge">
+                  <html:img src="chrome://disconnect/skin/images/list/1.png"/>
+                </html:td>
+                <html:td class="disconnect-whitelisting disconnect-text">
+                  Whitelist site
+                </html:td>
+                <html:td
+                  class="disconnect-visualization disconnect-badge disconnect-disabled"
+                  title="Coming soon"
+                >
+                  <html:img src="chrome://disconnect/skin/images/1/1.png"/>
+                </html:td>
+                <html:td
+                  class="disconnect-visualization disconnect-text disconnect-disabled"
+                  title="Coming soon"
+                >Visualize page</html:td>
+              </html:tr>
+              <html:tr>
+                <html:td class="disconnect-wifi">
+                  <html:input type="checkbox"/>
+                </html:td>
+                <html:td class="disconnect-wifi">Secure Wi-Fi</html:td>
+                <html:td class="disconnect-search" title="Coming soon">
+                  <html:input type="checkbox" disabled="disabled"/>
+                </html:td>
+                <html:td
+                  class="disconnect-search disconnect-disabled"
+                  title="Coming soon"
+                >Secure search</html:td>
+              </html:tr>
+            </html:table>
+            <html:table id="disconnect-dashboard">
+              <html:tr>
+                <html:td>
+                  <html:table>
+                    <html:tr>
+                      <html:td class="disconnect-label">
+                        Time
+                        <html:br/>
+                        saved
+                      </html:td>
+                      <html:td class="disconnect-label">
+                        Bandwidth saved
+                      </html:td>
+                      <html:td class="disconnect-label">
+                        Requests secured
+                      </html:td>
+                    </html:tr>
+                    <html:tr>
+                      <html:td colspan="3" id="disconnect-data"></html:td>
+                    </html:tr>
+                  </html:table>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="disconnect-sharing disconnect">
+              <html:tr>
+                <html:td class="disconnect-text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about Disconnect"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="disconnect-sharing disconnect-speed">
+              <html:tr>
+                <html:td class="disconnect-text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share speed"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about speed"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="disconnect-sharing disconnect-bandwidth">
+              <html:tr>
+                <html:td class="disconnect-text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share bandwidth"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about bandwidth"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+            <html:table class="disconnect-sharing disconnect-security">
+              <html:tr>
+                <html:td class="disconnect-text"></html:td>
+                <html:td>
+                  <html:a
+                    title="Share security"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/facebook.png"
+                    alt="Facebook"
+                  /></html:a>
+                </html:td>
+                <html:td>
+                  <html:a
+                    title="Tweet about security"
+                    target="_blank"
+                    href="https://disconnect.me/"
+                  ><html:img
+                    src="chrome://disconnect/skin/images/twitter.png"
+                    alt="Twitter"
+                  /></html:a>
+                </html:td>
+              </html:tr>
+            </html:table>
+          </html:div>
+          <html:div id="disconnect-graph">
+            <html:div class="disconnect-notification" id="disconnect-update" style="display: none">
+              <html:div class="disconnect-close"></html:div>
+              &#160;<html:strong><html:span class="disconnect-chrome">v2.0</html:span><html:span class="disconnect-safari">v2.0</html:span></html:strong> • Click <html:strong>Hide inactive sites</html:strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
+              <html:div class="disconnect-share" id="disconnect-js-share-fb" style="display: none"></html:div>
+              <html:div class="disconnect-share" id="disconnect-js-share-tweet" style="display: none"></html:div>
+            </html:div>
+            <html:div class="disconnect-notification" id="disconnect-recommends" style="display: none">
+              <html:div class="disconnect-close"></html:div>
+              <html:span id='disconnect-recommender-message'></html:span>
+            </html:div>
+            <html:div id="disconnect-page">
+            <html:div id="disconnect-sidebar" style="display: none;">
+              <html:h1></html:h1>
+              <html:img id="disconnect-logo"/>
+              <html:hr/>
+
+              <html:div id="disconnect-sidebar-content">
+              <html:div class="disconnect-live-data">
+                <html:p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</html:p>
+                <html:p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</html:p>
+                <html:p><html:span class="disconnect-tracker">Red</html:span> circles are known tracking sites. <html:span class="disconnect-site">Gray</html:span> circles aren’t but may still track you.</html:p>
+                <html:p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</html:p>
+              </html:div> <!-- end of live-data -->
+              <html:div id="disconnect-domain-infos"></html:div> <!-- Templates are copied into here -->
+              <html:div class="disconnect-settings-menu">
+                <html:ul>
+                  <html:li id="disconnect-unblock-tracking"></html:li>
+                  <html:li id="disconnect-disable-wifi"></html:li>
+                  <html:li id="disconnect-hide-sidebar">Hide sidebar</html:li>
+                  <html:li class="disconnect-invisible" id="disconnect-show-instructions">Show instructions</html:li>
+                </html:ul>
+              </html:div> <!-- end of settingsmenu -->
+              </html:div> <!-- End of #sidebar-content -->
+            </html:div> <!-- End of #sidebar -->
+            <html:div id="disconnect-chart"></html:div><!-- The d3 layout graph will go inside this div -->
+            <html:div class="disconnect-settings-menu disconnect-collapsed" id="disconnect-show-sidebar">+</html:div>
+            <html:div class="disconnect-settings-menu disconnect-collapsed" id="disconnect-show-list">Show list view</html:div>
+            </html:div>
+            <html:div id="disconnect-addon-installation-detected" style="display: none;">
+              Collusion add-on detected! Reload this page to see your graph.
+            </html:div>
+            <html:div id="disconnect-templates">
+              <html:div class="disconnect-info" style="display: none;">
+                <html:h2 class="disconnect-domain"><html:a class="disconnect-domain"></html:a></html:h2>
+
+                <html:div class="disconnect-referrees">
+                  <html:p>When you visit this site, the following sites are informed:</html:p>
+                  <html:ul></html:ul>
+                </html:div>
+                <html:div class="disconnect-referrers">
+                  <html:p>This site is informed when you visit the following sites:</html:p>
+                  <html:ul></html:ul>
+                </html:div>
+              </html:div>
+            </html:div>
+
+            <!-- Start Social Sharing Stuff -->
+            <html:div id="disconnect-social_share">
+              <!-- Start Twitter Stuff-->
+              <html:a href="https://twitter.com/share" class="disconnect-twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</html:a>
+              <!-- End Twitter Stuff-->
+
+              <!-- Start Facebook Stuff-->
+              <html:a name="fb_share" share_url="https://blog.disconnect.me/collusion-for-safari"></html:a>
+              <!-- End Facebook Stuff-->
+            </html:div>
+            <!-- End Social Sharing Stuff -->
+          </html:div>
+        </menupopup>
+      </toolbarbutton>
+      <vbox><label id="disconnect-badge"/></vbox>
+    </toolbaritem>
+  </toolbarpalette>
+</overlay>

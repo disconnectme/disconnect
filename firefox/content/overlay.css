@@ -1,0 +1,86 @@
+/*
+  An overlay style sheet that makes the web faster, more private, and more
+  secure.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+*/
+#disconnect-button {
+  margin-right: 0;
+  -moz-box-orient: horizontal;
+  list-style-image: url(chrome://disconnect/content/button.png);
+  -moz-image-region: rect(0, 16px, 16px, 0)
+}
+
+.windows#disconnect-button { margin-right: -7px }
+
+.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#disconnect-button .toolbarbutton-menu-dropmarker { display: none }
+
+#disconnect-item vbox { width: 4px }
+
+#disconnect-badge {
+  margin-top: 20px;
+  margin-right: 0;
+  margin-left: -14px;
+  padding-right: 2px;
+  padding-left: 2px;
+  height: 12px;
+  text-align: center;
+  font:
+      xx-small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
+          Arial, sans-serif;
+  color: white;
+  visibility: hidden
+}
+
+.windows#disconnect-badge {
+  margin-top: 21px;
+  margin-right: 11px;
+  margin-left: -24px
+}
+
+.disconnect-blocked#disconnect-badge {
+  background: #009548;
+  visibility: visible
+}
+
+.disconnect-unblocked#disconnect-badge {
+  background: #787878;
+  visibility: visible
+}
+
+#disconnect-list {
+  display: block;
+  margin-right: 1px;
+  margin-left: 1px;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  height: 318px
+}
+
+#disconnect-graph {
+  margin: 1px;
+  box-shadow: none;
+  border: none;
+  padding: 0
+}

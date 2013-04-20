@@ -1,0 +1,276 @@
+/*
+  The style sheet for a popup that displays and drives the blocking of requests.
+
+  Copyright 2010-2013 Disconnect, Inc.
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+
+  Authors (one per line):
+
+    Brian Kennish <byoogle@gmail.com>
+*/
+html { height: 306px }
+
+body {
+  margin: 0;
+  height: 306px;
+  font-family:
+      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
+          sans-serif;
+  color: #333;
+  -webkit-user-select: none
+}
+
+body.safari { margin: 0 4px }
+
+#list { display: none }
+
+table {
+  border-collapse: collapse;
+  font-size: xx-small
+}
+
+#navbar {
+  margin-right: auto;
+  margin-left: auto;
+  height: 30px
+}
+
+td { padding: 0 }
+
+#navbar .badge { width: 110px }
+
+#navbar a { outline: none }
+
+#navbar .text {
+  width: 70px;
+  text-align: right
+}
+
+#navbar .text a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: #999
+}
+
+#navbar .text a:hover { color: #333 }
+
+#navbar span {
+  margin-left: 10px;
+  color: #999;
+  cursor: default
+}
+
+#navbar .text a:last-child { display: none }
+
+#shortcuts {
+  background: #2b2b2b;
+  width: 200px;
+  height: 45px;
+  text-align: center
+}
+
+.shortcut {
+  display: inline-block;
+  margin-right: 7px;
+  margin-left: 7px;
+  text-align: center;
+  font-size: x-small;
+  cursor: pointer
+}
+
+.shortcut:first-child { display: none }
+
+.shortcut td { background: #1c7045 }
+
+.shortcut.deactivated td { background: #4f4f4f }
+
+.shortcut .text {
+  width: 24px;
+  height: 24px;
+  color: white
+}
+
+.category {
+  height: 30px;
+  cursor: pointer
+}
+
+.category:first-child { display: none }
+
+.category:hover { background: gainsboro }
+
+.category .badge {
+  padding-right: 8px;
+  padding-left: 3px
+}
+
+.category .text { width: 130px }
+
+.category .text table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: x-small
+}
+
+.category .count { color: #999 }
+
+.category .action {
+  width: 35px;
+  text-align: center
+}
+
+.border {
+  background: gainsboro;
+  height: 1px
+}
+
+.border:first-child { display: none }
+
+.services { background: #f3f3f3 }
+
+.services div { display: none }
+
+.service { height: 15px }
+
+.service:first-child { display: none }
+
+.service .control { padding-left: 10px }
+
+.service input {
+  margin-left: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+.service input:hover { border-color: rgba(0, 0, 0, .5) }
+
+.service input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+.service input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+.service input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
+}
+
+.service .link { padding-left: 5px }
+
+.service a {
+  text-decoration: none;
+  color: #666
+}
+
+.service :hover { color: #191919 }
+
+.service .text {
+  padding-left: 10px;
+  color: #b3b3b3;
+  cursor: default
+}
+
+#options {
+  margin-right: auto;
+  margin-left: auto;
+  height: 45px;
+  text-align: center;
+  cursor: default
+}
+
+#options .badge {
+  width: 25px;
+  cursor: pointer
+}
+
+#options .text { cursor: pointer }
+
+#options .whitelisting.text { width: 65px }
+
+#options .visualization.text { width: 75px }
+
+#options input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .75);
+  border: 1px solid rgba(0, 0, 0, .25);
+  border-radius: 2px;
+  background: -webkit-linear-gradient(#ededed 38%, #dedede);
+  width: 12px;
+  height: 12px
+}
+
+#options input:not(:disabled):hover { border-color: rgba(0, 0, 0, .5) }
+
+#options input:checked {
+  background: -webkit-linear-gradient(#60d490 38%, #68b789)
+}
+
+#options input:before {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  content: ''
+}
+
+#options input:checked:before {
+  background: url(../images/check.png);
+  background-size: contain
+}
+
+#options input:disabled { opacity: .5 }
+
+#options .search.disabled { color: #ccc }
+
+#dashboard {
+  border-top: thin solid gainsboro;
+  background: url(../images/dashboard.png);
+  width: 200px;
+  cursor: default
+}
+
+#dashboard table {
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  font-size: 8px
+}
+
+#dashboard .label { width: 66px }
+
+.sharing {
+  display: none;
+  color: #efefef;
+  white-space: nowrap;
+  cursor: default
+}
+
+.sharing td { padding-left: 10px }
+
+.sharing td:first-child { padding-left: 0 }
+
+#graph { display: none }
+
+#legacy { display: none }
