@@ -1,6 +1,5 @@
 /*
-  A script that determines whether a domain name belongs to a third party. TODO:
-  Document the API so other third-party lists can be plugged in.
+  A script that determines whether a domain name belongs to a third party.
 
   Copyright 2012, 2013 Disconnect, Inc.
 
