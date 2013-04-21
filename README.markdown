@@ -23,7 +23,7 @@ or [trying the extension](https://disconnect.me/).
 7. To test after you make a change, be sure to expand the extension listing then
    press **Reload**.
 8. Push your changes.
-9. Send us pull requests.
+9. Send us pull requests!
 
 ### In Firefox
 
@@ -36,7 +36,7 @@ or [trying the extension](https://disconnect.me/).
 7. (Re)start Firefox.
 8. To test after you make a change, be sure to restart Firefox.
 9. Push your changes.
-10. Send us pull requests.
+10. Send us pull requests!
 
 ### In Safari
 
@@ -47,7 +47,7 @@ or [trying the extension](https://disconnect.me/).
 7. Click **Install** then **Allow**.
 8. To test after you make a change, be sure to click **Reload** then **Allow**.
 9. Push your changes.
-10. Send us pull requests.
+10. Send us pull requests!
 
 ## Software used
 
@@ -88,7 +88,7 @@ portions of the program cannot be reused either:
   and
   [services-firefox.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/services-firefox.js)
   determine whether a domain name belongs to a third party and can be replaced
-  by implementing a single method:
+  by implementing a single function:
 
 ### {Object} getService({string} domain)
 
