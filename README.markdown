@@ -3,6 +3,8 @@
 A [browser extension](https://disconnect.me/) that makes the web faster, more
 private, and more secure.
 
+![Disconnect](https://raw.github.com/disconnectme/disconnect/master/collateral/disconnect/d2-faster-transparent.png)
+
 You might fancy [watching a demo](https://www.youtube.com/watch?v=Lvem1Z66C7Q)
 or [trying the extension](https://disconnect.me/).
 
