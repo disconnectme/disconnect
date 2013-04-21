@@ -62,7 +62,7 @@ These libraries are bundled with the project and needn’t be updated manually:
 
 ## License
 
-Copyright 2010-2013 Disconnect, Inc.
+Copyright 2010–2013 Disconnect, Inc.
 
 This program, except as noted below, is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public License as published
@@ -76,7 +76,9 @@ License](https://www.gnu.org/licenses/gpl.html) for more details.
 
 ## Exceptions
 
-The following, temporary, portions of this program aren’t free software:
+The Disconnect logos, trademarks, domain names, and other brand features used in
+this program cannot be reused without permission. The following, temporary,
+portions of the program cannot be reused either:
 
 * [tipped.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/chrome/scripts/vendor/tipped/tipped.js)
   provides tooltips and can be replaced with a library such as [jQuery
