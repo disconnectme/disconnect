@@ -246,16 +246,13 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 43;
+const CURRENT_BUILD = 44;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
 
 /* The domain name of the tabs. */
 const DOMAINS = {};
-
-/* The whitelisted services per domain name. */
-const WHITELIST = deserialize(localStorage.whitelist) || {};
 
 /* The blacklisted services per domain name. */
 const BLACKLIST = deserialize(localStorage.blacklist) || {};
@@ -323,6 +320,9 @@ const GET = SITENAME.get;
 /* The Shadow Web. */
 const PLAYBACK = [];
 
+/* The whitelisted services per domain name. */
+var whitelist = deserialize(localStorage.whitelist) || {};
+
 /* T-0. */
 var startTime;
 
@@ -336,37 +336,37 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
   const MEDIAFIRE_DOMAIN = 'mediafire.com';
-  (WHITELIST[MEDIAFIRE_DOMAIN] || (WHITELIST[MEDIAFIRE_DOMAIN] = {})).Facebook =
+  (whitelist[MEDIAFIRE_DOMAIN] || (whitelist[MEDIAFIRE_DOMAIN] = {})).Facebook =
       true;
   const SALON_DOMAIN = 'salon.com';
-  (WHITELIST[SALON_DOMAIN] || (WHITELIST[SALON_DOMAIN] = {})).Google = true;
-  localStorage.whitelist = JSON.stringify(WHITELIST);
+  (whitelist[SALON_DOMAIN] || (whitelist[SALON_DOMAIN] = {})).Google = true;
+  localStorage.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
   const LATIMES_DOMAIN = 'latimes.com';
-  (WHITELIST[LATIMES_DOMAIN] || (WHITELIST[LATIMES_DOMAIN] = {})).Google = true;
-  localStorage.whitelist = JSON.stringify(WHITELIST);
+  (whitelist[LATIMES_DOMAIN] || (whitelist[LATIMES_DOMAIN] = {})).Google = true;
+  localStorage.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
   const UDACITY_DOMAIN = 'udacity.com';
-  (WHITELIST[UDACITY_DOMAIN] || (WHITELIST[UDACITY_DOMAIN] = {})).Twitter =
+  (whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {})).Twitter =
       true;
-  localStorage.whitelist = JSON.stringify(WHITELIST);
+  localStorage.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) localStorage.blogOpened = true;
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   const MIGRATED_WHITELIST = {};
 
-  for (var domain in WHITELIST) {
+  for (var domain in whitelist) {
     var siteWhitelist =
         (MIGRATED_WHITELIST[domain] = {}).Disconnect =
             {whitelisted: false, services: {}};
-    for (var service in WHITELIST[domain])
+    for (var service in whitelist[domain])
         siteWhitelist.services[service] = true;
   }
 
@@ -387,10 +387,21 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
     TABS.create({url: 'https://disconnect.me/d2/welcome'});
   }
 
-  localStorage.whitelist = JSON.stringify(WHITELIST = MIGRATED_WHITELIST);
+  localStorage.whitelist = JSON.stringify(whitelist = MIGRATED_WHITELIST);
   localStorage.blacklist = JSON.stringify(BLACKLIST);
   localStorage.updateClosed = true;
   localStorage.sitesHidden = true;
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const FEEDLY_DOMAIN = 'feedly.com';
+  const DOMAIN_WHITELIST =
+      whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
+  const DISCONNECT_WHITELIST =
+      DOMAIN_WHITELIST.Disconnect ||
+          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
+  DISCONNECT_WHITELIST.services.Google = true;
+  localStorage.whitelist = JSON.stringify(whitelist);
   localStorage.build = CURRENT_BUILD;
 }
 
