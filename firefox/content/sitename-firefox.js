@@ -76,7 +76,7 @@ function Sitename() {
     xhr.overrideMimeType('application/json');
 
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && xhr.status == 0) {
+      if (xhr.readyState == 4 && (xhr.status == 0 || xhr.status == 200)) {
         var data = JSON.parse(xhr.responseText);
         var tldCount = data.length;
         for (var i = 0; i < tldCount; i++) tlds[data[i]] = true;
@@ -104,7 +104,7 @@ function Sitename() {
         xhr.overrideMimeType('text/plain');
 
         xhr.onreadystatechange = function() {
-          xhr.readyState == 4 && xhr.status == 0 &&
+          xhr.readyState == 4 && (xhr.status == 0 || xhr.status == 200) &&
               parseTldList(xhr.responseText);
         };
 
