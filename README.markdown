@@ -1,7 +1,7 @@
 # Disconnect
 
-A [browser extension](https://disconnect.me/) that makes the web faster, more
-private, and more secure.
+[Disconnect](https://disconnect.me/) is a browser extension that makes the web
+faster, more private, and more secure.
 
 ![Disconnect](https://raw.github.com/disconnectme/disconnect/master/collateral/disconnect/d2-faster-transparent.png)  
 You might fancy [watching a demo](https://www.youtube.com/watch?v=Lvem1Z66C7Q)
@@ -20,7 +20,7 @@ or [trying the extension](https://disconnect.me/).
 3. Go to the Chrome menu > **Tools** > **Extensions**.
 4. Check **Developer mode** then press **Load unpacked extension...** .
 5. Find your working directory.
-6. Under `chrollusion.safariextension`, select `chrome`.
+6. Under `disconnect.safariextension`, select `chrome`.
 7. To test after you make a change, be sure to expand the extension listing then
    press **Reload**.
 8. Push your changes.
@@ -44,7 +44,7 @@ or [trying the extension](https://disconnect.me/).
 3. Go to **Develop** > **Show Extension Builder**.
 4. Click **+** then select **Add Extension...** .
 5. Find your working directory.
-6. Select `chrollusion.safariextension`.
+6. Select `disconnect.safariextension`.
 7. Click **Install** then **Allow**.
 8. To test after you make a change, be sure to click **Reload** then **Allow**.
 9. Push your changes.
