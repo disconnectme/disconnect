@@ -383,8 +383,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
     localStorage.pwyw = JSON.stringify({});
   } else {
     localStorage.displayMode = LIST_NAME;
-    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-    TABS.create({url: 'https://disconnect.me/d2/welcome'});
+
+    if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1)
+        localStorage.pwyw = JSON.stringify({date: date, bucket: 'trying'});
+    else {
+      localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+      TABS.create({url: 'https://disconnect.me/d2/welcome'});
+    }
   }
 
   localStorage.whitelist = JSON.stringify(whitelist = MIGRATED_WHITELIST);
