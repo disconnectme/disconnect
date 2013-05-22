@@ -246,7 +246,7 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 44;
+const CURRENT_BUILD = 45;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -323,6 +323,14 @@ const PLAYBACK = [];
 /* The whitelisted services per domain name. */
 var whitelist = deserialize(localStorage.whitelist) || {};
 
+/* Today. */
+var date = new Date();
+var month = date.getMonth() + 1;
+month = (month < 10 ? '0' : '') + month;
+var day = date.getDate();
+day = (day < 10 ? '0' : '') + day;
+date = date.getFullYear() + '-' + month + '-' + day;
+
 /* T-0. */
 var startTime;
 
@@ -371,12 +379,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   }
 
   localStorage.displayMode = LEGACY_NAME;
-  var date = new Date();
-  var month = date.getMonth() + 1;
-  month = (month < 10 ? '0' : '') + month;
-  var day = date.getDate();
-  day = (day < 10 ? '0' : '') + day;
-  date = date.getFullYear() + '-' + month + '-' + day;
 
   if (PREVIOUS_BUILD) {
     localStorage.displayMode = LEGACY_NAME;
@@ -429,7 +431,25 @@ if (!deserialize(localStorage.pwyw).date) {
   localStorage.displayMode = LEGACY_NAME;
   downgradeServices(true);
   BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
-} else BROWSER_ACTION.setIcon({path: 'images/19.png'});
+} else {
+  const PWYW = deserialize(localStorage.pwyw);
+  if (PWYW.bucket == 'later')
+      localStorage.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
+          // "later" was accidentally live for a bit.
+  BROWSER_ACTION.setIcon({path: 'images/19.png'});
+
+  if (deserialize(localStorage.pwyw).bucket == 'trying') {
+    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+      if (data.goldenticket === 'true') {
+        localStorage.pwyw =
+            JSON.stringify({date: date, bucket: 'pending-trial'});
+        BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+        BROWSER_ACTION.setBadgeText({text: 'PSST!'});
+        BROWSER_ACTION.setPopup({popup: ''});
+      }
+    });
+  }
+}
 
 if (
   !deserialize(localStorage.blogOpened) ||
@@ -495,12 +515,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       DASHBOARD[TAB_ID] ||
           (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
   const TOTAL_COUNT = ++TAB_DASHBOARD.total;
-  var date = new Date();
-  var month = date.getMonth() + 1;
-  month = (month < 10 ? '0' : '') + month;
-  var day = date.getDate();
-  day = (day < 10 ? '0' : '') + day;
-  date = date.getFullYear() + '-' + month + '-' + day;
   const POPUP =
       localStorage.displayMode != LEGACY_NAME &&
           EXTENSION.getViews({type: 'popup'})[0];
@@ -685,8 +699,14 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     localStorage.blogOpened = true;
-    PWYW.bucket = 'viewed';
-    localStorage.pwyw = JSON.stringify(PWYW);
+    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+  }
+
+  if (PWYW.bucket == 'pending-trial') {
+    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
 });
 
