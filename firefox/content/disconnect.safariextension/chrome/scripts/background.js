@@ -189,7 +189,8 @@ function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(localStorage.blockingIndicated) &&
         deserialize(localStorage.blogOpened) &&
-            (deserialize(localStorage.pwyw) || {}).bucket != 'pending'
+            (deserialize(localStorage.pwyw) || {}).bucket != 'pending' &&
+                (deserialize(localStorage.pwyw) || {}).bucket != 'pending-trial'
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -246,7 +247,7 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 45;
+const CURRENT_BUILD = 46;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -706,6 +707,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
+    localStorage.blogOpened = true;
     localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
 });
