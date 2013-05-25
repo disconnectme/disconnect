@@ -188,9 +188,8 @@ function getCount(tabRequests) {
 function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(localStorage.blockingIndicated) &&
-        deserialize(localStorage.blogOpened) &&
-            (deserialize(localStorage.pwyw) || {}).bucket != 'pending' &&
-                (deserialize(localStorage.pwyw) || {}).bucket != 'pending-trial'
+        (deserialize(localStorage.pwyw) || {}).bucket != 'pending' &&
+            (deserialize(localStorage.pwyw) || {}).bucket != 'pending-trial'
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -247,7 +246,7 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 46;
+const CURRENT_BUILD = 48;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -401,7 +400,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   localStorage.sitesHidden = true;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   const FEEDLY_DOMAIN = 'feedly.com';
   const DOMAIN_WHITELIST =
       whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
@@ -410,8 +409,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
   DISCONNECT_WHITELIST.services.Google = true;
   localStorage.whitelist = JSON.stringify(whitelist);
-  localStorage.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    localStorage.build = CURRENT_BUILD;
 
 if (!deserialize(localStorage.pwyw).date) {
   downgradeServices(true);
@@ -452,10 +453,8 @@ if (!deserialize(localStorage.pwyw).date) {
   }
 }
 
-if (
-  !deserialize(localStorage.blogOpened) ||
-      (deserialize(localStorage.pwyw) || {}).bucket == 'pending'
-) BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+if ((deserialize(localStorage.pwyw) || {}).bucket == 'pending')
+    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 localStorage.displayMode == GRAPH_NAME &&
     parseInt(localStorage.sidebarCollapsed, 10) &&
@@ -695,11 +694,10 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   const PWYW = deserialize(localStorage.pwyw) || {};
 
-  if (!deserialize(localStorage.blogOpened) || PWYW.bucket == 'pending') {
+  if (PWYW.bucket == 'pending') {
     TABS.create({url: 'https://disconnect.me/d2/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    localStorage.blogOpened = true;
     localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 
@@ -707,7 +705,6 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    localStorage.blogOpened = true;
     localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
 });
