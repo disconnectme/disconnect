@@ -1384,8 +1384,12 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[0]).click(function() {
+        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
         open(
-          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 blocks '
+          + BLOCKED_COUNT + ' tracking request' + (BLOCKED_COUNT - 1 ? 's' : '')
+          + ' on ' + domain +
+          '. How many tracking requests will Disconnect block on the sites you go to?',
           null,
           'width=500,height=316'
         );
@@ -1395,7 +1399,7 @@ var whitelistingClicked = 0;
       $($('.sharing a')[1]).click(function() {
         const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
         open(
-          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 blocks '
+          'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 blocks '
           + BLOCKED_COUNT + ' tracking request' + (BLOCKED_COUNT - 1 ? 's' : '')
           + ' on ' + domain + ':',
           null,
@@ -1405,8 +1409,15 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[2]).click(function() {
+        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
         open(
-          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 makes '
+          + domain + ' ' +
+          ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100).toFixed() +
+          '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000).toFixed(1) +
+          's) faster. How much faster will Disconnect make the sites you go to?',
           null,
           'width=500,height=316'
         );
@@ -1418,7 +1429,7 @@ var whitelistingClicked = 0;
         const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
         const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
         open(
-          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 makes '
+          'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 makes '
           + domain + ' ' +
           ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100).toFixed() +
           '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000).toFixed(1) +
@@ -1430,8 +1441,15 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[4]).click(function() {
+        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
         open(
-          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 makes '
+          + domain + ' use ' +
+          ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100).toFixed() +
+          '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_SIZE).toFixed() +
+          'K) less bandwidth. How much less bandwidth will Disconnect make the sites you go to use?',
           null,
           'width=500,height=316'
         );
@@ -1443,7 +1461,7 @@ var whitelistingClicked = 0;
         const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
         const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
         open(
-          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 makes '
+          'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 makes '
           + domain + ' use ' +
           ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100).toFixed() +
           '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_SIZE).toFixed() +
@@ -1455,8 +1473,12 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[6]).click(function() {
+        const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
         open(
-          'https://www.facebook.com/sharer/sharer.php?u=https://disconnect.me/',
+          'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 secures '
+          + SECURED_COUNT + ' vulnerable request' +
+          (SECURED_COUNT - 1 ? 's' : '') + ' on ' + domain +
+          '. How many vulnerable requests will Disconnect secure on the sites you go to?',
           null,
           'width=500,height=316'
         );
@@ -1466,7 +1488,7 @@ var whitelistingClicked = 0;
       $($('.sharing a')[7]).click(function() {
         const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
         open(
-          'https://twitter.com/share?url=https://disconnect.me/&text=Disconnect 2 secures '
+          'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 secures '
           + SECURED_COUNT + ' vulnerable request' +
           (SECURED_COUNT - 1 ? 's' : '') + ' on ' + domain + ':',
           null,

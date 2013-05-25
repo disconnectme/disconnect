@@ -246,7 +246,7 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 48;
+const CURRENT_BUILD = 49;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
