@@ -7,10 +7,13 @@
   "permissions": [
     "chrome://favicon/",
     "contextMenus",
+    "cookies",
+    "history",
     "idle",
     "notifications",
     "tabs",
     "unlimitedStorage",
+    "webNavigation",
     "webRequest",
     "webRequestBlocking",
     "http://*/*",

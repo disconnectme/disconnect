@@ -640,18 +640,19 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of tracking requests and services for a tab. */
-chrome.webNavigation.onCommitted.addListener(function(details) {
-  if (!details.frameId) {
-    const TAB_ID = details.tabId;
-    delete REQUEST_COUNTS[TAB_ID];
-    delete DASHBOARD[TAB_ID];
-    safelyUpdateCounter(TAB_ID, 0);
-    const POPUP =
-        localStorage.displayMode != LEGACY_NAME &&
-            EXTENSION.getViews({type: 'popup'})[0];
-    POPUP && POPUP.clearServices(TAB_ID);
-  }
-});
+!(navigator.userAgent.indexOf('OPR') + 1) &&
+    chrome.webNavigation.onCommitted.addListener(function(details) {
+      if (!details.frameId) {
+        const TAB_ID = details.tabId;
+        delete REQUEST_COUNTS[TAB_ID];
+        delete DASHBOARD[TAB_ID];
+        safelyUpdateCounter(TAB_ID, 0);
+        const POPUP =
+            localStorage.displayMode != LEGACY_NAME &&
+                EXTENSION.getViews({type: 'popup'})[0];
+        POPUP && POPUP.clearServices(TAB_ID);
+      }
+    });
 
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
