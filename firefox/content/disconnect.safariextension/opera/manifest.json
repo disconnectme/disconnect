@@ -3,7 +3,7 @@
   "name": "Disconnect",
   "version": "5.3.0",
   "description": "Make the web faster, more private, and more secure.",
-  "icons": {"48": "images/48.png", "128": "images/128.png"},
+  "icons": {"48": "chrome/images/48.png", "128": "chrome/images/128.png"},
   "permissions": [
     "chrome://favicon/",
     "contextMenus",
@@ -20,19 +20,19 @@
       "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": [
-      "scripts/vendor/port/port.js",
-      "scripts/vendor/jquery/jquery.js",
-      "scripts/vendor/sitename/sitename.js",
-      "scripts/vendor/sjcl/sjcl.js",
-      "scripts/services.js",
-      "scripts/background.js"
+      "chrome/scripts/vendor/port/port.js",
+      "chrome/scripts/vendor/jquery/jquery.js",
+      "chrome/scripts/vendor/sitename/sitename.js",
+      "chrome/scripts/vendor/sjcl/sjcl.js",
+      "chrome/scripts/services.js",
+      "chrome/scripts/background.js"
     ]
   },
   "browser_action": {"default_title": "View and manage requests"},
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "css": ["stylesheets/content.css"],
-    "js": ["scripts/vendor/port/port.js", "scripts/content.js"],
+    "css": ["chrome/stylesheets/content.css"],
+    "js": ["chrome/scripts/vendor/port/port.js", "chrome/scripts/content.js"],
     "run_at": "document_start",
     "all_frames": true
   }]
