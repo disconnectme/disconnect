@@ -162,7 +162,8 @@ function initializeToolbar() {
         localStorage.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
             [0, 186, 77, 255]
   });
-  const DETAILS = {popup: (SAFARI ? 'chrome' : '') + '/markup/popup.html'};
+  const DETAILS =
+      {popup: (SAFARI ? 'opera/chrome' : '') + '/markup/popup.html'};
 
   if (SAFARI) {
     DETAILS.width = 148;

@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Disconnect</string>
 	<key>Builder Version</key>
-	<string>6534.57.2</string>
+	<string>8536.30.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>Disconnect</string>
 	<key>CFBundleIdentifier</key>
@@ -13,22 +13,22 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.4</string>
+	<string>3.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>7</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
 		<real>104857600</real>
 		<key>Global Page</key>
-		<string>chrome/markup/background.html</string>
+		<string>opera/chrome/markup/background.html</string>
 		<key>Toolbar Items</key>
 		<array>
 			<dict>
 				<key>Identifier</key>
 				<string>browser_action</string>
 				<key>Image</key>
-				<string>chrome/images/19.png</string>
+				<string>opera/chrome/images/19.png</string>
 				<key>Label</key>
 				<string>Disconnect</string>
 				<key>Popover</key>
@@ -44,13 +44,17 @@
 		<dict>
 			<key>Start</key>
 			<array>
-				<string>chrome/scripts/vendor/port/port.js</string>
-				<string>chrome/scripts/content.js</string>
+				<string>opera/chrome/scripts/vendor/port/port.js</string>
+				<string>opera/chrome/scripts/content.js</string>
 			</array>
 		</dict>
+		<key>Stylesheets</key>
+		<array>
+			<string>opera/chrome/stylesheets/content.css</string>
+		</array>
 	</dict>
 	<key>Description</key>
-	<string>Stop third parties and search engines from tracking the webpages you go to and searches you do.</string>
+	<string>Make the web faster, more private, and more secure.</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>

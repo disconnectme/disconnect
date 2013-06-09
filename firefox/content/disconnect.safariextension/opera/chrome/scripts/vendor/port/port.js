@@ -1,7 +1,8 @@
 // Chrome to Safari port
 // Author: Michael Gundlach (gundlach@gmail.com)
-//         "cookies", "tabs", "browserAction", and additional "extension" API
-//         support by Brian Kennish <byoogle@gmail.com>
+//         "cookies", "tabs", "browserAction", "webRequest", "webNavigation",
+//         and additional "extension" API support by
+//         Brian Kennish <byoogle@gmail.com>
 // License: GPLv3 as part of adblockforchrome.googlecode.com
 //          or MIT if GPLv3 conflicts with your code's license.
 //
@@ -399,6 +400,22 @@ if (SAFARI) {
               details.handled = true;
               chrome.browserAction.setPopup(details);
             }, true);
+      }
+    },
+
+    webRequest: {
+      onBeforeRequest: {
+        addListener: function() {
+          // No-op.
+        }
+      }
+    },
+
+    webNavigation: {
+      onCommitted: {
+        addListener: function() {
+          // No-op.
+        }
       }
     },
 
