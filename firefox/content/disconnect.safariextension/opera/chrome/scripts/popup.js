@@ -1066,6 +1066,9 @@ var whitelistingClicked = 0;
             (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
         const SHORTCUT_WHITELIST =
             (SITE_WHITELIST.Disconnect || {}).services || {};
+        var expiredShortcuts;
+        while (expiredShortcuts = SHORTCUT_TEMPLATE.nextSibling)
+            SHORTCUT_SURFACE.removeChild(expiredShortcuts);
 
         for (var i = 0; i < SHORTCUT_COUNT; i++) {
           var name = SHORTCUTS[i];
@@ -1126,6 +1129,7 @@ var whitelistingClicked = 0;
         }
 
         const CATEGORY_SURFACE = $('#categories');
+        CATEGORY_SURFACE.children().slice(3).remove();
         const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
         const SITE_BLACKLIST =
             (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
@@ -1370,6 +1374,7 @@ var whitelistingClicked = 0;
                 !DESERIALIZE(localStorage.searchHardened);
       };
 
+      d3.select('#data svg').remove();
       dashboard =
           d3.
             select('#data').
