@@ -162,8 +162,7 @@ function initializeToolbar() {
         localStorage.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
             [0, 186, 77, 255]
   });
-  const DETAILS =
-      {popup: (SAFARI ? 'opera/chrome' : '') + '/markup/popup.html'};
+  const DETAILS = {popup: PATH + 'markup/popup.html'};
 
   if (SAFARI) {
     DETAILS.width = 148;
@@ -321,6 +320,12 @@ const GET = SITENAME.get;
 /* The Shadow Web. */
 const PLAYBACK = [];
 
+/* Whether or not the browser is Opera. */
+const OPERA = navigator.userAgent.indexOf('OPR') + 1;
+
+/* The path to the Chrome directory. */
+const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
+
 /* The whitelisted services per domain name. */
 var whitelist = deserialize(localStorage.whitelist) || {};
 
@@ -417,14 +422,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
 
 if (!deserialize(localStorage.pwyw).date) {
   downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/19.png'});
 
   $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
     if (data.goldenticket === 'true') {
       localStorage.displayMode = LIST_NAME;
       localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
       downgradeServices();
-      BROWSER_ACTION.setIcon({path: 'images/19.png'});
+      BROWSER_ACTION.setIcon({path: PATH + 'images/19.png'});
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
@@ -433,13 +438,13 @@ if (!deserialize(localStorage.pwyw).date) {
 } else if (deserialize(localStorage.pwyw).bucket == 'postponed') {
   localStorage.displayMode = LEGACY_NAME;
   downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: 'images/legacy/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/19.png'});
 } else {
   const PWYW = deserialize(localStorage.pwyw);
   if (PWYW.bucket == 'later')
       localStorage.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
           // "later" was accidentally live for a bit.
-  BROWSER_ACTION.setIcon({path: 'images/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/19.png'});
 
   if (deserialize(localStorage.pwyw).bucket == 'trying') {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
@@ -641,19 +646,18 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, {urls: ['http://*/*', 'https://*/*']}, ['blocking']);
 
 /* Resets the number of tracking requests and services for a tab. */
-!(navigator.userAgent.indexOf('OPR') + 1) &&
-    chrome.webNavigation.onCommitted.addListener(function(details) {
-      if (!details.frameId) {
-        const TAB_ID = details.tabId;
-        delete REQUEST_COUNTS[TAB_ID];
-        delete DASHBOARD[TAB_ID];
-        safelyUpdateCounter(TAB_ID, 0);
-        const POPUP =
-            localStorage.displayMode != LEGACY_NAME &&
-                EXTENSION.getViews({type: 'popup'})[0];
-        POPUP && POPUP.clearServices(TAB_ID);
-      }
-    });
+!OPERA && chrome.webNavigation.onCommitted.addListener(function(details) {
+  if (!details.frameId) {
+    const TAB_ID = details.tabId;
+    delete REQUEST_COUNTS[TAB_ID];
+    delete DASHBOARD[TAB_ID];
+    safelyUpdateCounter(TAB_ID, 0);
+    const POPUP =
+        localStorage.displayMode != LEGACY_NAME &&
+            EXTENSION.getViews({type: 'popup'})[0];
+    POPUP && POPUP.clearServices(TAB_ID);
+  }
+});
 
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {

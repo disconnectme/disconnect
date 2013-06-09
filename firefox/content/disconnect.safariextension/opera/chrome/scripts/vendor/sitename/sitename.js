@@ -45,10 +45,12 @@ function Sitename() {
   };
 
   var version = '1.4.0';
+  var path = navigator.userAgent.indexOf('OPR') + 1 ? 'chrome/' : '../';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
-  var altTldList = '../scripts/vendor/sitename/data/effective_tld_names.dat';
-  var tldPatch = '../scripts/vendor/sitename/data/tldpatch.json';
+  var altTldList =
+      path + 'scripts/vendor/sitename/data/effective_tld_names.dat';
+  var tldPatch = path + 'scripts/vendor/sitename/data/tldpatch.json';
   var undeclared = 'undefined';
   var initialized = false;
   var anchor = document.createElement('a');
