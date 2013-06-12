@@ -45,12 +45,18 @@ function Sitename() {
   };
 
   var version = '1.4.0';
-  var path = navigator.userAgent.indexOf('OPR') + 1 ? 'chrome/' : '../';
+  var extension = chrome.extension;
+  var path =
+      SAFARI ? 'opera/chrome/' :
+          navigator.userAgent.indexOf('OPR') + 1 ? 'chrome/' : '../';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
   var altTldList =
-      path + 'scripts/vendor/sitename/data/effective_tld_names.dat';
-  var tldPatch = path + 'scripts/vendor/sitename/data/tldpatch.json';
+      extension.getURL(
+        path + 'scripts/vendor/sitename/data/effective_tld_names.dat'
+      );
+  var tldPatch =
+      extension.getURL(path + 'scripts/vendor/sitename/data/tldpatch.json');
   var undeclared = 'undefined';
   var initialized = false;
   var anchor = document.createElement('a');
@@ -86,7 +92,9 @@ function Sitename() {
   if (typeof jQuery == undeclared) {
     var script = document.createElement('script');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', '../scripts/vendor/jquery.js');
+    script.setAttribute(
+      'src', extension.getURL(path + 'scripts/vendor/jquery.js')
+    );
     script.onload = function() { jQuery.noConflict(); };
     document.head.appendChild(script);
   }
