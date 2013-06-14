@@ -1,4 +1,4 @@
-[
+var tldPatch = [
   "com.ar",
   "edu.ar",
   "gob.ar",
@@ -296,4 +296,4 @@
   "ac.zw",
   "co.zw",
   "org.zw"
-]
+];

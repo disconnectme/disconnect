@@ -45,6 +45,10 @@
 			<key>Start</key>
 			<array>
 				<string>opera/chrome/scripts/vendor/port/port.js</string>
+				<string>opera/chrome/scripts/vendor/jquery/jquery.js</string>
+				<string>opera/chrome/scripts/vendor/sitename/alttlds.js</string>
+				<string>opera/chrome/scripts/vendor/sitename/tldpatch.js</string>
+				<string>opera/chrome/scripts/vendor/sitename/sitename.js</string>
 				<string>opera/chrome/scripts/content.js</string>
 			</array>
 		</dict>

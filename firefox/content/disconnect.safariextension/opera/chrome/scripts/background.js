@@ -246,7 +246,7 @@ function incrementCounter(tabId, service, blocked, popup) {
 }
 
 /* The current build number. */
-const CURRENT_BUILD = 49;
+const CURRENT_BUILD = 50;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = localStorage.build;
@@ -659,39 +659,47 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   }
 });
 
+/* Resets the number of tracking requests and services for a tab. */
+SAFARI && safari.application.addEventListener(
+  'beforeNavigate', function(event) {
+    const TAB_ID = event.target.id;
+    delete REQUEST_COUNTS[TAB_ID];
+    delete DASHBOARD[TAB_ID];
+    safelyUpdateCounter(TAB_ID, 0);
+    const POPUP =
+        localStorage.displayMode != LEGACY_NAME &&
+            EXTENSION.getViews({type: 'popup'})[0];
+    POPUP && POPUP.clearServices(TAB_ID);
+  }, true
+);
+
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
-  
-  if (request.sendEvent) {
-    if (request.sendEvent == 'blimp-change-state' && request.data.hardenedState) {
-      atr.triggerEvent('blimp-enabled', {});
-    } else if (request.sendEvent == 'blimp-change-state' && !request.data.hardenedState) {
-      atr.triggerEvent('blimp-disabled', {});
-    }
-    sendResponse({});
-    return;
-  }
-  
+
   if (request.initialized) {
-    const URL = TAB.url;
-    const BLACKLIST = [];
-    const SITE_WHITELIST =
-        (deserialize(localStorage.whitelist) || {})[GET(URL)] || {};
-
-    for (var i = 0; i < 0; i++) {
-      var service = [];
-      BLACKLIST[i] = [service[1], !!service[2], !SITE_WHITELIST[service[0]]];
-    }
-
-    sendResponse({url: URL, blacklist: BLACKLIST});
+    const DOMAIN = GET(TAB.url);
+    sendResponse({
+      i18n: chrome.i18n,
+      domain: DOMAIN,
+      whitelist: (deserialize(localStorage.whitelist) || {})[DOMAIN] || {},
+      blacklist: (deserialize(localStorage.blacklist) || {})[DOMAIN] || {}
+    });
   } else if (request.pwyw) {
     const PWYW = deserialize(localStorage.pwyw);
     PWYW.bucket = request.bucket;
     localStorage.pwyw = JSON.stringify(PWYW);
     sendResponse({});
   } else {
-    SAFARI && incrementCounter(TAB.id, request.serviceIndex, request.blocked);
+    if (SAFARI) {
+      const WHITELISTED = request.whitelisted;
+      const POPUP =
+          localStorage.displayMode != LEGACY_NAME &&
+              EXTENSION.getViews({type: 'popup'})[0];
+      if (request.blocked || WHITELISTED)
+          incrementCounter(TAB.id, request.childService, !WHITELISTED, POPUP);
+    }
+
     sendResponse({});
   }
 });

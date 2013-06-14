@@ -330,7 +330,22 @@ if (SAFARI) {
           tab.id = getTabId(tab);
           callback([tab]);
         } else {
-          // No-op.
+          var massagedTabs = [];
+          var windows = safari.application.browserWindows;
+          var windowCount = windows.length;
+
+          for (var i = 0; i < windowCount; i++) {
+            var tabs = windows[i].tabs;
+            var tabCount = tabs.length;
+
+            for (var j = 0; j < tabCount; j++) {
+              var tab = tabs[j];
+              tab.id = getTabId(tab);
+              massagedTabs.push(tab);
+            }
+          }
+
+          callback(massagedTabs);
         }
       },
 

@@ -45,19 +45,8 @@ function Sitename() {
   };
 
   var version = '1.4.0';
-  var extension = chrome.extension;
-  var path =
-      SAFARI ? 'opera/chrome/' :
-          navigator.userAgent.indexOf('OPR') + 1 ? 'chrome/' : '../';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
-  var altTldList =
-      extension.getURL(
-        path + 'scripts/vendor/sitename/data/effective_tld_names.dat'
-      );
-  var tldPatch =
-      extension.getURL(path + 'scripts/vendor/sitename/data/tldpatch.json');
-  var undeclared = 'undefined';
   var initialized = false;
   var anchor = document.createElement('a');
   var tlds = localStorage.tlds;
@@ -66,10 +55,10 @@ function Sitename() {
     data = data.split('\n');
     var lineCount = data.length;
     initialized = false;
-    tlds = {};
+    tlds = altTlds;
 
     for (var i = 0; i < lineCount; i++) {
-      var line = jQuery.trim(data[i]);
+      var line = $.trim(data[i]);
 
       if (line && line.slice(0, 2) != '//') {
         // Fancy syntax is fancy.
@@ -81,22 +70,10 @@ function Sitename() {
       }
     }
 
-    jQuery.getJSON(tldPatch, function(data) {
-      var tldCount = data.length;
-      for (var i = 0; i < tldCount; i++) tlds[data[i]] = true;
-      initialized = true;
-      localStorage.tlds = JSON.stringify(tlds);
-    });
-  }
-
-  if (typeof jQuery == undeclared) {
-    var script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute(
-      'src', extension.getURL(path + 'scripts/vendor/jquery.js')
-    );
-    script.onload = function() { jQuery.noConflict(); };
-    document.head.appendChild(script);
+    var tldCount = tldPatch.length;
+    for (var i = 0; i < tldCount; i++) tlds[tldPatch[i]] = true;
+    initialized = true;
+    localStorage.tlds = JSON.stringify(tlds);
   }
 
   if (tlds) {
@@ -104,16 +81,7 @@ function Sitename() {
     initialized = true;
   } else tlds = {};
 
-  var id = setInterval(function() {
-    if (typeof jQuery != undeclared) {
-      clearInterval(id);
-      var fetch = jQuery.get;
-
-      fetch(tldList, function(data) { parseTldList(data); }).fail(function() {
-        fetch(altTldList, function(data) { parseTldList(data); });
-      });
-    }
-  }, 100);
+  $.get(tldList, function(data) { parseTldList(data); });
 
   return this;
 }
