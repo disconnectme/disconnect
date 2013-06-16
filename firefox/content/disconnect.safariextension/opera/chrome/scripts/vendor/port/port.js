@@ -349,8 +349,23 @@ if (SAFARI) {
         }
       },
 
-      reload: function() {
-        // No-op.
+      reload: function(tabId) {
+        var windows = safari.application.browserWindows;
+        var windowCount = windows.length;
+
+        windows: for (var i = 0; i < windowCount; i++) {
+          var tabs = windows[i].tabs;
+          var tabCount = tabs.length;
+
+          for (var j = 0; j < tabCount; j++) {
+            var tab = tabs[j];
+
+            if (getTabId(tab) == tabId) {
+              tab.url = tab.url;
+              break windows;
+            }
+          }
+        }
       }
     },
 

@@ -482,7 +482,7 @@ function clearServices(id) {
 
 /* Plays an expanding or collapsing animation. */
 function animateAction(action, button, name) {
-  const COLLAPSED = button.src.indexOf(1) + 1;
+  const COLLAPSED = button.src.indexOf(1 + HIGHLIGHTED) + 1;
 
   if (COLLAPSED) {
     action.title = COLLAPSE + ' ' + name;
