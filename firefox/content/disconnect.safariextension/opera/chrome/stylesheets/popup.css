@@ -31,8 +31,6 @@ body {
   -webkit-user-select: none
 }
 
-body.safari { margin: 0 4px }
-
 #list { display: none }
 
 table {
@@ -242,7 +240,7 @@ td { padding: 0 }
 
 #options input:disabled { opacity: .5 }
 
-#options .search.disabled { color: #ccc }
+#options .disabled { color: #ccc }
 
 #dashboard {
   border-top: thin solid gainsboro;

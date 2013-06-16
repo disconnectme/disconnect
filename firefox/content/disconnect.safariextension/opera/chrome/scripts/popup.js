@@ -920,9 +920,7 @@ var whitelistingClicked = 0;
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
-    const BODY = $('body');
-    if (SAFARI) BODY.addClass('safari');
-    const VIEWPORT = $('html').add(BODY);
+    const VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
       VIEWPORT.height(230);
@@ -1357,7 +1355,15 @@ var whitelistingClicked = 0;
       ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
       ICON.alt = 'Graph';
       const WIFI = $('.wifi ' + INPUT)[0];
-      WIFI.checked = DESERIALIZE(localStorage.browsingHardened);
+
+      if (SAFARI) {
+        const WRAPPED_WIFI = $(WIFI);
+        WRAPPED_WIFI.
+          parent().next().addClass('disabled').attr('title', 'Coming soon');
+        WRAPPED_WIFI.prop('disabled', true);
+      }
+
+      WIFI.checked = !SAFARI && DESERIALIZE(localStorage.browsingHardened);
 
       WIFI.onclick = function() {
         this.checked =

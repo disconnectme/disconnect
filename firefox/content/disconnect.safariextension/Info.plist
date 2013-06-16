@@ -28,7 +28,7 @@
 				<key>Identifier</key>
 				<string>browser_action</string>
 				<key>Image</key>
-				<string>opera/chrome/images/19.png</string>
+				<string>opera/chrome/images/32-placeholder.png</string>
 				<key>Label</key>
 				<string>Disconnect</string>
 				<key>Popover</key>

@@ -165,8 +165,8 @@ function initializeToolbar() {
   const DETAILS = {popup: PATH + 'markup/popup.html'};
 
   if (SAFARI) {
-    DETAILS.width = 148;
-    DETAILS.height = 210;
+    DETAILS.width = 200;
+    DETAILS.height = 306;
   }
 
   BROWSER_ACTION.setPopup(DETAILS);
@@ -326,6 +326,9 @@ const OPERA = navigator.userAgent.indexOf('OPR') + 1;
 /* The path to the Chrome directory. */
 const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 
+/* The pixel width and height of the toolbar icon. */
+const SIZE = SAFARI ? 32 : 19;
+
 /* The whitelisted services per domain name. */
 var whitelist = deserialize(localStorage.whitelist) || {};
 
@@ -422,14 +425,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
 
 if (!deserialize(localStorage.pwyw).date) {
   downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 
   $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
     if (data.goldenticket === 'true') {
       localStorage.displayMode = LIST_NAME;
       localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
       downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/19.png'});
+      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
@@ -438,13 +441,13 @@ if (!deserialize(localStorage.pwyw).date) {
 } else if (deserialize(localStorage.pwyw).bucket == 'postponed') {
   localStorage.displayMode = LEGACY_NAME;
   downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 } else {
   const PWYW = deserialize(localStorage.pwyw);
   if (PWYW.bucket == 'later')
       localStorage.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
           // "later" was accidentally live for a bit.
-  BROWSER_ACTION.setIcon({path: PATH + 'images/19.png'});
+  BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
   if (deserialize(localStorage.pwyw).bucket == 'trying') {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
@@ -676,6 +679,11 @@ SAFARI && safari.application.addEventListener(
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
+  const TAB_ID = TAB.id;
+  const TAB_DASHBOARD =
+      DASHBOARD[TAB_ID] ||
+          (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
+  const TOTAL_COUNT = ++TAB_DASHBOARD.total;
 
   if (request.initialized) {
     const DOMAIN = GET(TAB.url);
@@ -692,12 +700,68 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     sendResponse({});
   } else {
     if (SAFARI) {
+      const BLOCKED = request.blocked;
       const WHITELISTED = request.whitelisted;
       const POPUP =
           localStorage.displayMode != LEGACY_NAME &&
               EXTENSION.getViews({type: 'popup'})[0];
-      if (request.blocked || WHITELISTED)
-          incrementCounter(TAB.id, request.childService, !WHITELISTED, POPUP);
+      if (BLOCKED || WHITELISTED)
+          incrementCounter(TAB_ID, request.childService, !WHITELISTED, POPUP);
+      const BLOCKED_COUNT = ++TAB_DASHBOARD.blocked;
+
+      if (BLOCKED) {
+        const BLOCKED_REQUESTS =
+            deserialize(localStorage.blockedRequests) || {};
+        BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
+            BLOCKED_REQUESTS[date] = 1;
+        localStorage.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+      }
+
+      // The Collusion data structure.
+      const CHILD_DOMAIN = request.childDomain;
+      if (!(CHILD_DOMAIN in LOG))
+          LOG[CHILD_DOMAIN] = {
+            host: CHILD_DOMAIN, referrers: {}, visited: false
+          };
+      const PARENT_DOMAIN = request.parentDomain;
+      if (!(PARENT_DOMAIN in LOG))
+          LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
+      LOG[PARENT_DOMAIN].visited = true;
+      const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+      if (!startTime) startTime = new Date();
+      const ELAPSED_TIME = new Date() - startTime;
+      if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
+          REFERRERS[PARENT_DOMAIN] = {
+            host: PARENT_DOMAIN,
+            types: [ELAPSED_TIME]
+          };
+      const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+
+      if (PARENT_REFERRERS) {
+        const TYPES = PARENT_REFERRERS.types;
+        const TYPE = request.type;
+        TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+      }
+
+      // A live update.
+      const POPUP =
+          localStorage.displayMode != LEGACY_NAME &&
+              EXTENSION.getViews({type: 'popup'})[0];
+      if (POPUP)
+          if (localStorage.displayMode == GRAPH_NAME) {
+            const GRAPH = POPUP.graph;
+            GRAPH && GRAPH.update(LOG);
+          } else {
+            const TIMEOUT = POPUP.timeout;
+
+            BLOCKED_COUNT && setTimeout(function() {
+              POPUP.renderBlockedRequest(
+                TAB_ID,
+                Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+                TOTAL_COUNT
+              );
+            }, TIMEOUT);
+          }
     }
 
     sendResponse({});
