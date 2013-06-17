@@ -58,6 +58,10 @@ var siteBlacklist;
 /* Paints the graph UI. */
 function renderGraph() {
   if (SAFARI) {
+    $("#list").hide();
+    $("#chart svg").remove();
+    safari.self.width = 706;
+    safari.self.height = 490;
     $("body").add("#update").add("#chart").addClass("safari");
     $("#update .safari").show();
     $("#logo").attr({
@@ -211,6 +215,12 @@ function renderGraph() {
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
+
+          if (SAFARI) {
+            safari.self.width = 200;
+            safari.self.height = 306;
+          }
+
           var previousScene = currentScene;
           currentScene = getScene();
           SCENES.push(previousScene);

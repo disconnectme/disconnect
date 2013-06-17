@@ -913,9 +913,6 @@ const RESOURCE_SIZE = 10.4957370842049;
 /* The ratio of mean file sizes. */
 const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
 
-/* The active UI. */
-var displayMode = localStorage.displayMode;
-
 /* The service scaffolding. */
 var serviceTemplate;
 
@@ -934,6 +931,7 @@ var whitelistingClicked = 0;
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
+    var displayMode = localStorage.displayMode;
     const VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
@@ -1047,6 +1045,11 @@ var whitelistingClicked = 0;
         };
       }
     } else {
+      if (SAFARI) {
+        safari.self.width = 200;
+        safari.self.height = 306;
+      }
+
       $('#navbar img').off('mouseenter').mouseenter(function() {
         this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
       }).off('mouseleave').mouseleave(function() {
@@ -1378,6 +1381,12 @@ var whitelistingClicked = 0;
                 find('.action img')[0];
           if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
           activeServices.hide();
+
+          if (SAFARI) {
+            safari.self.width = 706;
+            safari.self.height = 490;
+          }
+
           $('.live-data').show();
           renderGraph();
           $('#' + GRAPH).fadeIn('slow');
@@ -1548,7 +1557,10 @@ var whitelistingClicked = 0;
       displayMode == GRAPH && renderGraph();
 
       $('#' + displayMode).fadeIn('slow', function() {
-        displayMode == LIST && renderGraphs();
+        if (displayMode == LIST) {
+          $('#' + GRAPH).hide();
+          renderGraphs();
+        }
       });
     }
   }, true
