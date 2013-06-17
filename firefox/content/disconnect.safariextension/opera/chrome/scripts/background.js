@@ -166,7 +166,7 @@ function initializeToolbar() {
 
   if (SAFARI) {
     DETAILS.width = 148;
-    DETAILS.height = 210;
+    DETAILS.height = 217;
   }
 
   BROWSER_ACTION.setPopup(DETAILS);
@@ -389,10 +389,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
   localStorage.displayMode = LEGACY_NAME;
 
-  if (PREVIOUS_BUILD) {
-    localStorage.displayMode = LEGACY_NAME;
-    localStorage.pwyw = JSON.stringify({});
-  } else {
+  if (PREVIOUS_BUILD || localStorage.initialized)
+      localStorage.pwyw = JSON.stringify({});
+  else {
     localStorage.displayMode = LIST_NAME;
 
     if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1)

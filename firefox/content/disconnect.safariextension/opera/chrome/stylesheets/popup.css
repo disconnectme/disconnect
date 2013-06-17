@@ -23,6 +23,7 @@ html { height: 306px }
 
 body {
   margin: 0;
+  background: white;
   height: 306px;
   font-family:
       'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,

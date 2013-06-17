@@ -935,7 +935,7 @@ var whitelistingClicked = 0;
     const VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
-      SAFARI ? safari.self.height = 230 : VIEWPORT.height(230);
+      VIEWPORT.height(SAFARI ? 217 : 230);
       const WRAPPED_THEME = $('#' + LEGACY);
       WRAPPED_THEME.show();
       const THEME = WRAPPED_THEME[0];
@@ -1005,6 +1005,8 @@ var whitelistingClicked = 0;
           }.bind(null, name, lowercaseName, requestCount, control, badge, text);
         }
       });
+
+      SAFARI && $('#minioptions').hide();
 
       if (DESERIALIZE(localStorage.searchHardenable)) {
         const LEGACY_SEARCH = THEME.getElementsByClassName('search')[0];
