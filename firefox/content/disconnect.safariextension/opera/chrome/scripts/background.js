@@ -707,9 +707,10 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
               EXTENSION.getViews({type: 'popup'})[0];
       if (BLOCKED || WHITELISTED)
           incrementCounter(TAB_ID, request.childService, !WHITELISTED, POPUP);
-      const BLOCKED_COUNT = ++TAB_DASHBOARD.blocked;
+      var blockedCount;
 
       if (BLOCKED) {
+        blockedCount = ++TAB_DASHBOARD.blocked;
         const BLOCKED_REQUESTS =
             deserialize(localStorage.blockedRequests) || {};
         BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
@@ -754,10 +755,10 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
           } else {
             const TIMEOUT = POPUP.timeout;
 
-            BLOCKED_COUNT && setTimeout(function() {
+            blockedCount && setTimeout(function() {
               POPUP.renderBlockedRequest(
                 TAB_ID,
-                Math.min(BLOCKED_COUNT + TOTAL_COUNT * .28, TOTAL_COUNT),
+                Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
                 TOTAL_COUNT
               );
             }, TIMEOUT);

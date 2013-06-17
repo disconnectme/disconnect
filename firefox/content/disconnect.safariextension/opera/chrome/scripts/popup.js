@@ -55,7 +55,7 @@ function renderShortcut(
               badge.src = badge.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
-            callback && wrappedControl.click(callback);
+            callback && wrappedControl.off('click').click(callback);
           }
         }, i * 40, badge, lowercaseName, i);
   } else {
@@ -76,7 +76,7 @@ function renderShortcut(
               badge.src = badge.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
-            callback && wrappedControl.click(callback);
+            callback && wrappedControl.off('click').click(callback);
           }
         }, i * 40, badge, lowercaseName, i);
   }
@@ -197,7 +197,7 @@ function renderCategory(
                   badgeIcon.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
-            callback && WRAPPED_BADGE.click(callback);
+            callback && WRAPPED_BADGE.off('click').click(callback);
           }
         }, i * 40, badgeIcon, lowercaseName, i);
   } else {
@@ -221,7 +221,7 @@ function renderCategory(
                   badgeIcon.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
             });
 
-            callback && WRAPPED_BADGE.click(callback);
+            callback && WRAPPED_BADGE.off('click').click(callback);
           }
         }, i * 40, badgeIcon, lowercaseName, i);
   }
@@ -349,6 +349,7 @@ function updateCategory(
           ) && !(CATEGORY_WHITELIST.services || {})[serviceName] ||
               (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
                   {})[categoryName] || {})[serviceName];
+          $(CHECKBOX).off('click');
 
           CHECKBOX.onclick = function(categoryName, serviceName) {
             const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
@@ -621,6 +622,7 @@ function renderSecuredRequest(id, securedCount, totalCount) {
 
 /* Outputs total, blocked, and secured requests. */
 function renderGraphs() {
+  d3.select('.control.speed').remove();
   dashboard.
     append('svg:rect').
     attr('class', 'control speed').
@@ -629,6 +631,8 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.speed');
+  $('#' + LIST).append($($('.sharing.speed')[0]).clone(true));
 
   Tipped.create('.control.speed', $('.sharing.speed')[0], {
     skin: 'tiny',
@@ -650,6 +654,7 @@ function renderGraphs() {
     fadeOut: 400
   });
 
+  d3.select('.control.bandwidth').remove();
   dashboard.
     append('svg:rect').
     attr('class', 'control bandwidth').
@@ -658,6 +663,8 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.bandwidth');
+  $('#' + LIST).append($($('.sharing.bandwidth')[0]).clone(true));
 
   Tipped.create('.control.bandwidth', $('.sharing.bandwidth')[0], {
     skin: 'tiny',
@@ -679,6 +686,7 @@ function renderGraphs() {
     fadeOut: 400
   });
 
+  d3.select('.control.security').remove();
   dashboard.
     append('svg:rect').
     attr('class', 'control security').
@@ -687,6 +695,8 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.security');
+  $('#' + LIST).append($($('.sharing.security')[0]).clone(true));
 
   Tipped.create('.control.security', $('.sharing.security')[0], {
     skin: 'tiny',
@@ -927,7 +937,7 @@ var whitelistingClicked = 0;
     const VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
-      VIEWPORT.height(230);
+      SAFARI ? safari.self.height = 230 : VIEWPORT.height(230);
       const WRAPPED_THEME = $('#' + LEGACY);
       WRAPPED_THEME.show();
       const THEME = WRAPPED_THEME[0];
@@ -964,6 +974,7 @@ var whitelistingClicked = 0;
             text
           );
           badge.alt = name;
+          $(control).off('mouseover').off('mouseout').off('click');
 
           control.onmouseover = function() { this.className = 'mouseover'; };
 
@@ -1002,6 +1013,7 @@ var whitelistingClicked = 0;
         LEGACY_SEARCH.className = 'shown';
         const SEARCHBOX = LEGACY_SEARCH.getElementsByTagName('input')[0];
         SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
+        $(SEARCHBOX).off('click');
 
         SEARCHBOX.onclick = function() {
           SEARCHBOX.checked =
@@ -1015,6 +1027,7 @@ var whitelistingClicked = 0;
             getElementsByClassName('wifi')[0].
             getElementsByTagName('input')[0];
       WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
+      $(WIFIBOX).off('click');
 
       WIFIBOX.onclick = function() {
         WIFIBOX.checked =
@@ -1025,16 +1038,23 @@ var whitelistingClicked = 0;
       const LINKS = THEME.getElementsByTagName('a');
       const LINK_COUNT = LINKS.length;
 
-      for (var i = 0; i < LINK_COUNT; i++) LINKS[i].onclick = function() {
-        TABS.create({url: this.getAttribute('href')});
-        return false;
-      };
+      for (var i = 0; i < LINK_COUNT; i++) {
+        $(LINKS[i]).off('click');
+
+        LINKS[i].onclick = function() {
+          TABS.create({url: this.getAttribute('href')});
+          return false;
+        };
+      }
     } else {
-      $('#navbar img').mouseenter(function() {
+      $('#navbar img').off('mouseenter').mouseenter(function() {
         this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
-      }).mouseleave(function() {
+      }).off('mouseleave').mouseleave(function() {
         this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
       });
+
+      Tipped.remove('#navbar span');
+      $('#' + LIST).append($($('.sharing.disconnect')[0]).clone(true));
 
       Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
         skin: 'tiny',
@@ -1098,7 +1118,7 @@ var whitelistingClicked = 0;
           );
           badge.alt = name;
 
-          wrappedControl.click(function(
+          wrappedControl.off('click').click(function(
             name,
             lowercaseName,
             requestCount,
@@ -1167,6 +1187,7 @@ var whitelistingClicked = 0;
             checkbox.checked =
                 !whitelisted && !(categoryWhitelist.services || {})[serviceName]
                     || categoryBlacklist[serviceName];
+            $(checkbox).off('click');
 
             checkbox.onclick = function(name, serviceName) {
               const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
@@ -1225,7 +1246,7 @@ var whitelistingClicked = 0;
           );
           badge.alt = name;
 
-          wrappedBadge.click(function(
+          wrappedBadge.off('click').click(function(
             name,
             lowercaseName,
             requestCount,
@@ -1273,36 +1294,43 @@ var whitelistingClicked = 0;
           action.title = text.title = EXPAND + ' ' + lowercaseName;
           var button = wrappedAction.find('img')[0];
 
-          wrappedText.add(wrappedAction).mouseenter(function(button) {
-            button.src = button.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
-          }.bind(null, button)).mouseleave(function(button) {
-            button.src = button.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
-          }.bind(null, button)).click(function(
-            serviceContainer, action, button, name
-          ) {
-            const EXPANDED_SERVICES = activeServices.filter(':visible');
-            if (
-              EXPANDED_SERVICES.length && serviceContainer != activeServices
-            ) {
-              animateAction(
-                action,
-                EXPANDED_SERVICES.
-                  parent().
-                  parent().
-                  prev().
-                  prev().
-                  find('.action img')[0],
-                name
-              );
-              EXPANDED_SERVICES.slideUp('fast', function() {
+          wrappedText.
+            add(wrappedAction).
+            off('mouseenter').
+            mouseenter(function(button) {
+              button.src =
+                  button.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
+            }.bind(null, button)).
+            off('mouseleave').
+            mouseleave(function(button) {
+              button.src =
+                  button.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
+            }.bind(null, button)).
+            off('click').
+            click(function(serviceContainer, action, button, name) {
+              const EXPANDED_SERVICES = activeServices.filter(':visible');
+              if (
+                EXPANDED_SERVICES.length && serviceContainer != activeServices
+              ) {
+                animateAction(
+                  action,
+                  EXPANDED_SERVICES.
+                    parent().
+                    parent().
+                    prev().
+                    prev().
+                    find('.action img')[0],
+                  name
+                );
+                EXPANDED_SERVICES.slideUp('fast', function() {
+                  animateAction(action, button, name);
+                  activeServices = serviceContainer.slideToggle('fast');
+                });
+              } else {
                 animateAction(action, button, name);
                 activeServices = serviceContainer.slideToggle('fast');
-              });
-            } else {
-              animateAction(action, button, name);
-              activeServices = serviceContainer.slideToggle('fast');
-            }
-          }.bind(null, serviceContainer, action, button, lowercaseName));
+              }
+            }.bind(null, serviceContainer, action, button, lowercaseName));
 
           CATEGORY_SURFACE.append(categoryControls);
         }
@@ -1311,9 +1339,9 @@ var whitelistingClicked = 0;
         const WHITELISTING = WHITELISTING_ELEMENTS.control;
         const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
         const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
-        WHITELISTING.mouseenter(handleWhitelisting);
+        WHITELISTING.off('mouseenter').mouseenter(handleWhitelisting);
 
-        WHITELISTING.click(function() {
+        WHITELISTING.off('click').click(function() {
           whitelistingClicked = 7;
 
           if (whitelistSite()) {
@@ -1325,19 +1353,19 @@ var whitelistingClicked = 0;
           }
         });
 
-        VIEWPORT.height($(window).height());
+        const HEIGHT = $(window).height();
+        SAFARI ? safari.self.height = HEIGHT : VIEWPORT.height(HEIGHT);
       });
 
-      $(document).on('click', 'a', function() {
+      $(document).off('click', 'a').on('click', 'a', function() {
         TABS.create({url: $(this).attr('href')});
         return false;
       });
 
       const VISUALIZATION = $('.visualization');
-      VISUALIZATION.off('mouseenter');
-      VISUALIZATION.mouseenter(handleVisualization);
+      VISUALIZATION.off('mouseenter').mouseenter(handleVisualization);
 
-      VISUALIZATION.click(function() {
+      VISUALIZATION.off('click').click(function() {
         localStorage.displayMode = GRAPH;
 
         $('#' + LIST).fadeOut('fast', function() {
@@ -1360,15 +1388,16 @@ var whitelistingClicked = 0;
       ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
       ICON.alt = 'Graph';
       const WIFI = $('.wifi ' + INPUT)[0];
+      const WRAPPED_WIFI = $(WIFI);
 
       if (SAFARI) {
-        const WRAPPED_WIFI = $(WIFI);
         WRAPPED_WIFI.
           parent().next().addClass('disabled').attr('title', 'Coming soon');
         WRAPPED_WIFI.prop('disabled', true);
       }
 
       WIFI.checked = !SAFARI && DESERIALIZE(localStorage.browsingHardened);
+      WRAPPED_WIFI.off('click');
 
       WIFI.onclick = function() {
         this.checked =
@@ -1378,6 +1407,7 @@ var whitelistingClicked = 0;
 
       const SEARCH = $('.search ' + INPUT)[0];
       SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
+      $(SEARCH).off('click');
 
       SEARCH.onclick = function() {
         this.checked =
@@ -1393,9 +1423,9 @@ var whitelistingClicked = 0;
             attr('width', 198).
             attr('height', 40);
 
-      $('.sharing img').mouseenter(function() {
+      $('.sharing img').off('mouseenter').mouseenter(function() {
         this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
-      }).mouseleave(function() {
+      }).off('mouseleave').mouseleave(function() {
         this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
       });
 
