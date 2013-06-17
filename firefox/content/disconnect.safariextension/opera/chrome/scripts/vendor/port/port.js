@@ -403,12 +403,21 @@ if (SAFARI) {
       },
 
       setIcon: function(details) {
-        safari.extension.toolbarItems[0].image =
-            chrome.extension.getURL(details.path);
+        var buttons = safari.extension.toolbarItems;
+        var buttonCount = buttons.length;
+        var url = chrome.extension.getURL(details.path);
+        for (var i = 0; i < buttonCount; i++) buttons[i].image = url;
+
+        details.handled ||
+            safari.application.addEventListener('open', function() {
+              details.handled = true;
+              chrome.browserAction.setIcon(details);
+            }, true);
       },
 
       setPopup: function(details) {
-        var buttonCount = safari.extension.toolbarItems.length;
+        var buttons = safari.extension.toolbarItems;
+        var buttonCount = buttons.length;
         popup ||
             (popup =
                 safari.extension.createPopover(
@@ -420,7 +429,7 @@ if (SAFARI) {
             );
 
         for (var i = 0; i < buttonCount; i++) {
-          var button = safari.extension.toolbarItems[i];
+          var button = buttons[i];
           button.popover = popup;
           button.command = null;
         }
