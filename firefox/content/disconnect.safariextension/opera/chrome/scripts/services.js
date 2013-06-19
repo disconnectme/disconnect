@@ -19,4 +19,109 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-eval((function(r5){for(var X5="",B5=0,w5=function(r5,Y5){for(var n5=0,q5=0;q5<Y5;q5++){n5*=96;var A5=r5.charCodeAt(q5);if(A5>=32&&A5<=127){n5+=A5-32}}return n5};B5<r5.length;){if(r5.charAt(B5)!="`")X5+=r5.charAt(B5++);else{if(r5.charAt(B5+1)!="`"){var D5=w5(r5.charAt(B5+3),1)+5;X5+=X5.substr(X5.length-w5(r5.substr(B5+1,2),2)-D5,D5);B5+=4}else{X5+="`";B5+=2}}}return X5})("var S={\'l\':{},\'A7\':\"i\",\'P5\':\"1\",\'x5\':\"8\",\'a7\':\"n\",\'b8\':\"s\",\'O8\':\"e\",\'S8\':\"c\",\'T5\':\"P\",\'t5\':\"o\",\'W\':\"t\",\'L8\':\"r\",\'k7\':\"8n\",\'u7\':\"M\",\'j5\':\"v\",\'g8\':\"m\",\'X8\':\"d\",\'X7\':\"i1\",\'g5\':\"in\",\'t8\':0,\'E7\':\"w\",\'a` Q or\",\'R8\':\"ic\",\'M8\':\"R\",\'G8\':\"u\",\'M5\':\"i18n\",\'C5\':\"H\",\'n8\':\"K\",\'m8\':1000};function downgradeServices(X){var B=` ;$(` ,!d=\"ce\",g=\"erv\",C=\"ices\",t=\"S\",y=\"re\",V=\"ev\",m=\"rvi\";chrome[(S.A7+S.P5+S.x5+S.a7)][(S.b8+S.O8+m+S.S` %\"S.T5+S.t5+` P\"a7+S.W` 5#L8)]=X?chrome[(` =\"P5+S.k7)][(V` B#` S u7+S.t5+y+t` 0#L8+S.j5+C)]:chrome[(S.A7+S.P5+S.x5` X )][(S.g8` Z!` P\"O8+t+g+` J d+S.b8)];};B();}function getService(d){var g=\"nt\",C=\"ice\";return chrome[(S.A7+S.P5+S.x5+S.a7)][(S.b8+S.O8+S.L8+S.j5+C+S.T5+S.t5+` R g` 8%)][d];}function harden(g){var C=true,t=1,y=\"la\",V=\"p\",m=\"gRule\",X=\"nin\",B=\"ard\",Y=\"h\",f=\"concat\",h=\"ened\",U=\"gHar\",i=\"ws\",F=\"br\",s=\"moreRules\",Z=\"` Q J=\"arden\",a=\"hH\",p=\"arc\",T=[];if (deserialize(localStorage[(S.b8+S.O8+p+a+J` %!S.X8)]))T=T[(S.S8+S.t5+S.a7+Z)](chrom` X X7+S.x` 5!)][s]);if (deserialize(localStorage[(F+S.t5+i+S.g5+U+S.X8+h)]))T=T[f](chrome[(S.X7+S.k7)][(Y+B+S.O8+X+m+S.b8)]);var b=T.length,u=g,n;for (var A=S.t8;G[S.L8](A,b);A++){var D=T[A];u=g[(S.L8+S.O8+V+y+S.S` (!)](RegExp(D[S.t8]),D[t]);if (G[S.E7](u,g)){var O=function (d){n=d;};O(C);break ;}}return {url:u,hardened:n};}var G={\'x\':{},\'H\':function (){var d=\"es\",g=\"er\",C=\"eS\",t=\"18n\";chrome[(S.A7+t)][(S.a8+C+g+S.j5+S.R8+d)]={};},\'c\':function (){var d=\"evenMoreServices\";chrome[(S.A7+S.P5+S.x5+S.a7)][d]={};},\'P\':function (){var d=\"hardeningRules\";chrome[(S.X7+S.x5+S.a7)][d]=[];},\'K\':function (){var d=\"le\",g=\"ore\";chrome[(S.A7+S.P5+S.k7)][(S.g8+g+S.M8+S.G8+d+S.b8)]=[];},\'M\':function (d){var g=\"moreServices\",C=\"te\",t=\"cePo\";chrome[(S.X7+S.x5+S.a7)][(S.b8+S.O8+S.L8+S.j5+S.A7+t+` \" S.a7+C` 8 )]=d[S.M5][g];},\'r\':function (d,g){return d<g;},\'w` \'4!=` < q` (4=` ;!Q` (4>` ; L` \'4<` [ R` #8},index=S.t8,requestCount` ,!nextR` 0!` > ;G[S.C5]()` % S8` \"#T` +$n` +$u7](chrome);var id=setInterval(function (){var F8=\'so\',h8=\'j\',l8=\'p\',k=\'-\',I=\'c\',s8=\'vi\',z=\'r\',d8=\'s\',i8=\'\/\',j=\'e\',J8=\'m\',B8=\'.\',p8=\'t\',Z8=\'ec\',C8=\'n\',r8=\'o\',G7=\'sc\',w8=\'i\',v8=\'d\',o8=\':\/\/\',W8=\'tps\',E8=\'ht\',N8=\"et\",H8=\"g\",d7=\"q\";if (G[d7](index,nextRequest)){var x7=function (` -!d=6,g=2,C=\"po\";` I&=index+Math[(C+S.E7)](g,` +!S.g8+S.g5)](r` K!Count++,d));};$[(H8+N8)]((E8+W8+o8+v8+w8+G7+r8+C8+C8+Z8+p8+B8+J8+j+i8+d8+j+z+s8+I+j+d8+k+l8+z+r` A h8+F8+C8),function (f){var h=\"L\",U=\"Q\",i=\"ie\",F=\"go\",s=\"a\",Z=\"y\",J=\"f\",a=\"ng\",p=\'9\',T=\'6084\',b=\'6\',u=\'7\',n=\'1\',A=\'5\',D=\'4\',O=\'d4\',Y8=\'3\',q8=\'0\',N=\'a\',D8=\'1b\',E=\'b\',A8=\"yp\",Q8=\"ec\",c8=\"Ru\",o=\"l\",I8=function (d){chrome[(S.A7+S.P5+S.x5+S.a7)][(S.a8+S.O8+S.M8+S.G8+o` )#b8)]=d` 9\'c` \/*;},k8=function (d){var g=\"ul\";var C=\"de` %!t=\"en` 0!y=\"ha\";chrome[S.M5][(y+S.L8+S.X8+t+S.g5+H8+c8+o+S.O8+S.b8)]=d` A$C+S.a7+S.A7` $!H8+S.M8+g` E\';};clearInterval(id);f=deserialize(sjcl[(S.X8+Q8+S.L8+A8+S.W)]((E+j+D8+N+q8+E+Y8+k+I+I+O+k+D+A+E+n+k+N+I+D+u+k+b+u+T+p` - n+O),JSON[(S.b8+S.W+S.L8+S.A7+a+` \" J+Z)](f)));var K8=f[(S.S8+s` J\"O8+F` R!i+S.b8)];for (var e in K8){var P8=K8[e],e8=P8.length,y8=G[U](e` )#11);for (var v=0;G[h](v,e8);v++){var f8=P8[v]` @%j8 in f8` :!u8=f8[j8` 6&V` < u` :\"z8=function (` N!d=\"sl\",g=\'ic\',C=\'er\',t=\'reS\',y=\'mo\',V=\'ces\',m=\'Se\',X=\'Mo\',B=\'en\',Y=\'v\';chrome[(S.A7+S.P5+S.k7)][y8?(j+Y+B+X+z+j+m+z+Y+w8+V):(y+t+C+Y+g+j+d8)][T8[x8]]={category:y8?e[(d+S.R8+S.O8)](7):e,name:j8,url:V8};};var T8=u8[V8],U8=T8.length;for (var x8=0;G[S.M8](x8,U8);x8++)z8();}}}}k8(f);I8(f);});x7();}index++;},S.m8);"));
+
+/* Retrieves the third-party metadata, if any, associated with a domain name. */
+function getService(domain) { return servicePointer[domain]; }
+
+/* Rewrites a URL, if insecure. */
+function harden(url) {
+  var hardeningRules = [];
+  if (deserialize(localStorage.searchHardened))
+      hardeningRules = hardeningRules.concat(moreRules);
+  if (deserialize(localStorage.browsingHardened))
+      hardeningRules = hardeningRules.concat(hardeningRules);
+  var ruleCount = hardeningRules.length;
+  var hardenedUrl = url;
+  var hardened;
+
+  for (var i = 0; i < ruleCount; i++) {
+    var hardeningRule = hardeningRules[i];
+    hardenedUrl = url.replace(RegExp(hardeningRule[0]), hardeningRule[1]);
+
+    if (hardenedUrl != url) {
+      hardened = true;
+      break;
+    }
+  }
+
+  return {url: hardenedUrl, hardened: hardened};
+}
+
+/* Hot-swaps the blacklists. */
+function downgradeServices(downgraded) {
+  servicePointer = downgraded ? evenMoreServices : moreServices;
+}
+
+/* The number of iterations. */
+var index = 0;
+
+/* The number of requests. */
+var requestCount = 0;
+
+/* The next iteration to make a request. */
+var nextRequest = 0;
+
+/*
+  The categories and third parties, titlecased, and URL of their homepage and
+  domain names they phone home with, lowercased.
+*/
+moreServices = {};
+
+/* The categories et al. for Disconnect 1. */
+evenMoreServices = {};
+
+/* The matching regexes and replacement strings. */
+hardeningRules = [];
+
+/* The rest of the matching regexes and replacement strings. */
+moreRules = [];
+
+/* The active categories et al. */
+servicePointer = moreServices;
+
+/* Fetches the third-party metadata. */
+var id = setInterval(function() {
+  if (index == nextRequest) {
+    $.get('https://dev.disconnect.me/services-pro.json', function(data) {
+      clearInterval(id);
+      data =
+          deserialize(sjcl.decrypt(
+            'af81cb8d-3203-4925-b16d-0f59d03a4d11', JSON.stringify(data)
+          ));
+      var categories = data.categories;
+
+      for (var categoryName in categories) {
+        var category = categories[categoryName];
+        var serviceCount = category.length;
+        var legacy = categoryName.length > 11;
+
+        for (var i = 0; i < serviceCount; i++) {
+          var service = category[i];
+
+          for (var serviceName in service) {
+            var urls = service[serviceName];
+
+            for (var homepage in urls) {
+              var domains = urls[homepage];
+              var domainCount = domains.length;
+
+              for (var j = 0; j < domainCount; j++)
+                  (legacy ? 'evenMoreServices' : 'moreServices')[domains[j]] = {
+                    category: legacy ? categoryName.slice(7) : categoryName,
+                    name: serviceName,
+                    url: homepage
+                  };
+            }
+          }
+        }
+      }
+
+      hardeningRules = data.hardeningRules;
+      moreRules = data.moreRules;
+    });
+
+    nextRequest = index + Math.pow(2, Math.min(requestCount++, 6));
+  }
+
+  index++;
+}, 1000);
