@@ -20,7 +20,8 @@ or [trying the extension](https://disconnect.me/).
 3. Go to the Chrome menu > **Tools** > **Extensions**.
 4. Check **Developer mode** then press **Load unpacked extension...** .
 5. Find your working directory.
-6. Under `disconnect.safariextension`, select `chrome`.
+6. Under `firefox`, `content`, and `disconnect.safariextension`, select
+   `chrome`.
 7. To test after you make a change, be sure to expand the extension listing then
    press **Reload**.
 8. Push your changes.
@@ -44,7 +45,7 @@ or [trying the extension](https://disconnect.me/).
 3. Go to **Develop** > **Show Extension Builder**.
 4. Click **+** then select **Add Extension...** .
 5. Find your working directory.
-6. Select `disconnect.safariextension`.
+6. Under `firefox` and `content`, select `disconnect.safariextension`.
 7. Click **Install** then **Allow**.
 8. To test after you make a change, be sure to click **Reload** then **Allow**.
 9. Push your changes.
