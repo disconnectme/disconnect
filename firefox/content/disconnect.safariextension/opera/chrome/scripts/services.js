@@ -82,7 +82,7 @@ servicePointer = moreServices;
 /* Fetches the third-party metadata. */
 var id = setInterval(function() {
   if (index == nextRequest) {
-    $.get('https://dev.disconnect.me/services-pro.json', function(data) {
+    $.get('https://dev.disconnect.me/services.json', function(data) {
       clearInterval(id);
       data =
           deserialize(sjcl.decrypt(

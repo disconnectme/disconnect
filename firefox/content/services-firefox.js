@@ -83,7 +83,7 @@ hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 moreRules = [];
 
-xhr.open('GET', 'https://dev.disconnect.me/services-pro.json');
+xhr.open('GET', 'https://dev.disconnect.me/services.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {
