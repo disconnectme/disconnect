@@ -81,11 +81,11 @@ The Disconnect logos, trademarks, domain names, and other brand features used in
 this program cannot be reused without permission. The following, temporary,
 portions of the program cannot be reused either:
 
-* [tipped.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/chrome/scripts/vendor/tipped/tipped.js)
+* [tipped.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped/tipped.js)
   provides tooltips and can be replaced with a library such as [jQuery
   UI](http://jqueryui.com/).
 
-* [services.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/chrome/scripts/services.js)
+* [services.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/services.js)
   and
   [services-firefox.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/services-firefox.js)
   determine whether a domain name belongs to a third party and can be replaced
