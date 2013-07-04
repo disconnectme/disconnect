@@ -29,6 +29,9 @@ var EXTENSION = chrome.extension;
 /* The domain getter. */
 var GET = (new Sitename).get;
 
+/* The active categories et al. */
+var servicePointer;
+
 /* Traps and selectively cancels a request and messages such. */
 EXTENSION.sendRequest({initialized: true}, function(response) {
   servicePointer = response.servicePointer;

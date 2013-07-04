@@ -65,19 +65,19 @@ var nextRequest = 0;
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
 */
-moreServices = {};
+var moreServices = {};
 
 /* The categories et al. for Disconnect 1. */
-evenMoreServices = {};
+var evenMoreServices = {};
 
 /* The matching regexes and replacement strings. */
-hardeningRules = [];
+var hardeningRules = [];
 
 /* The rest of the matching regexes and replacement strings. */
-moreRules = [];
+var moreRules = [];
 
 /* The active categories et al. */
-servicePointer = moreServices;
+var servicePointer = moreServices;
 
 /* Fetches the third-party metadata. */
 var id = setInterval(function() {
@@ -106,7 +106,7 @@ var id = setInterval(function() {
               var domainCount = domains.length;
 
               for (var j = 0; j < domainCount; j++)
-                  (legacy ? 'evenMoreServices' : 'moreServices')[domains[j]] = {
+                  (legacy ? evenMoreServices : moreServices)[domains[j]] = {
                     category: legacy ? categoryName.slice(7) : categoryName,
                     name: serviceName,
                     url: homepage

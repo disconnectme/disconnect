@@ -687,7 +687,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   if (request.initialized) {
     const DOMAIN = GET(TAB.url);
     sendResponse({
-      i18n: chrome.i18n,
+      servicePointer: servicePointer,
       domain: DOMAIN,
       whitelist: (deserialize(localStorage.whitelist) || {})[DOMAIN] || {},
       blacklist: (deserialize(localStorage.blacklist) || {})[DOMAIN] || {}

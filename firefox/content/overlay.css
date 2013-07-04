@@ -21,15 +21,22 @@
     Brian Kennish <byoogle@gmail.com>
 */
 #disconnect-button {
+  list-style-image: url(chrome://disconnect/content/24.png);
+  -moz-image-region: rect(0, 24px, 24px, 0)
+}
+
+toolbar[iconsize=small] #disconnect-button {
   margin-right: 0;
   -moz-box-orient: horizontal;
-  list-style-image: url(chrome://disconnect/content/button.png);
+  list-style-image: url(chrome://disconnect/content/16.png);
   -moz-image-region: rect(0, 16px, 16px, 0)
 }
 
-.windows#disconnect-button { margin-right: -7px }
-
 .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(24px, 24px, 48px, 0)
+}
+
+toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
@@ -52,10 +59,138 @@
   visibility: hidden
 }
 
+#TabsToolbar[mode=icons] #disconnect-badge {
+  margin-top: 10px;
+  margin-right: 4px;
+  margin-left: -8px
+}
+
+#TabsToolbar[mode=icons] .windows#disconnect-badge {
+  margin-top: 12px;
+  margin-right: 4px;
+  margin-left: -8px
+}
+
+#nav-bar[mode=icons] .windows#disconnect-badge {
+  margin-top: 16px;
+  margin-right: 16px;
+  margin-left: -28px
+}
+
+#nav-bar[iconsize=large] #disconnect-badge {
+  margin-top: 24px;
+  margin-right: 18px;
+  margin-left: -30px
+}
+
+#nav-bar[iconsize=large] .windows#disconnect-badge {
+  margin-top: 24px;
+  margin-right: 18px;
+  margin-left: -30px
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
 .windows#disconnect-badge {
-  margin-top: 21px;
-  margin-right: 11px;
-  margin-left: -24px
+  margin-top: 12px;
+  margin-right: 0;
+  margin-left: -8px
+}
+
+#nav-bar[mode=text] #disconnect-badge {
+  margin-top: 3px;
+  margin-right: 0;
+  margin-left: -3px
+}
+
+#nav-bar[mode=text] .windows#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 0;
+  margin-left: -5px
+}
+
+#nav-bar[mode=full] #disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -30px
+}
+
+#nav-bar[mode=full] .windows#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -29px
+}
+
+#PersonalToolbar[mode=icons] #disconnect-badge {
+  margin-top: 11px;
+  margin-right: 16px;
+  margin-left: -14px
+}
+
+#PersonalToolbar[mode=icons] .windows#disconnect-badge {
+  margin-top: 12px;
+  margin-right: 0;
+  margin-left: -8px
+}
+
+#PersonalToolbar[mode=text] #disconnect-badge {
+  margin-top: 2px;
+  margin-right: 0;
+  margin-left: 0
+}
+
+#PersonalToolbar[mode=text] .windows#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 0;
+  margin-left: -5px
+}
+
+#PersonalToolbar[mode=full] #disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -29px
+}
+
+#PersonalToolbar[mode=full] .windows#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -29px
+}
+
+#addon-bar[mode=icons] #disconnect-badge {
+  margin-top: 8px;
+  margin-right: 16px;
+  margin-left: -11px
+}
+
+#addon-bar[mode=icons] .windows#disconnect-badge {
+  margin-top: 5px;
+  margin-right: 0;
+  margin-left: -8px
+}
+
+#addon-bar[mode=text] #disconnect-badge {
+  margin-top: 3px;
+  margin-right: 0;
+  margin-left: 2px
+}
+
+#addon-bar[mode=text] .windows#disconnect-badge {
+  margin-top: 6px;
+  margin-right: 0;
+  margin-left: -5px
+}
+
+#addon-bar[mode=full] #disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -25px
+}
+
+#addon-bar[mode=full] .windows#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 17px;
+  margin-left: -29px
 }
 
 .disconnect-blocked#disconnect-badge {

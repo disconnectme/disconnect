@@ -75,13 +75,13 @@ var nextRequest = 0;
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
 */
-moreServices = {};
+var moreServices = {};
 
 /* The matching regexes and replacement strings. */
-hardeningRules = [];
+var hardeningRules = [];
 
 /* The rest of the matching regexes and replacement strings. */
-moreRules = [];
+var moreRules = [];
 
 xhr.open('GET', 'https://dev.disconnect.me/services.json');
 
