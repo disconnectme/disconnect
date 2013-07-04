@@ -124,7 +124,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 #nav-bar[mode=full] #disconnect-badge {
   margin-top: 13px;
   margin-right: 14px;
-  margin-left: -28px
+  margin-left: -29px
 }
 
 #nav-bar[mode=full] .windows#disconnect-badge {
@@ -151,7 +151,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 #PersonalToolbar[mode=full] #disconnect-badge {
   margin-top: 13px;
   margin-right: 15px;
-  margin-left: -29px
+  margin-left: -30px
 }
 
 #PersonalToolbar[mode=full] .windows#disconnect-badge {
@@ -162,7 +162,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 
 #CustomizeToolbarWindow #disconnect-badge {
   margin-top: 33px;
-  margin-left: -13px
+  margin-left: -14px
 }
 
 #addon-bar[mode=icons] .windows#disconnect-badge {
@@ -184,7 +184,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 #addon-bar[mode=full] #disconnect-badge {
   margin-top: 13px;
   margin-right: 14px;
-  margin-left: -28px
+  margin-left: -29px
 }
 
 #addon-bar[mode=full] .windows#disconnect-badge {
