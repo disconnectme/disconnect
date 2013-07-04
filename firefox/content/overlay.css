@@ -21,23 +21,42 @@
     Brian Kennish <byoogle@gmail.com>
 */
 #disconnect-button {
+  margin-right: 0;
   list-style-image: url(chrome://disconnect/content/24.png);
   -moz-image-region: rect(0, 24px, 24px, 0)
 }
 
 toolbar[iconsize=small] #disconnect-button {
-  margin-right: 0;
-  -moz-box-orient: horizontal;
   list-style-image: url(chrome://disconnect/content/16.png);
   -moz-image-region: rect(0, 16px, 16px, 0)
 }
 
-.disconnect-badge#disconnect-button {
+#PersonalToolbar[mode=text] #disconnect-button { margin-top: -1px }
+
+#CustomizeToolbarWindow #disconnect-button {
+  list-style-image: url(chrome://disconnect/content/16.png);
+  -moz-image-region: rect(0, 16px, 16px, 0)
+}
+
+#TabsToolbar[mode=icons] .disconnect-badge#disconnect-button {
   -moz-image-region: rect(24px, 24px, 48px, 0)
 }
 
-toolbar[iconsize=small] .disconnect-badge#disconnect-button {
+toolbar[iconsize=small]#TabsToolbar[mode=icons]
+.disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(48px, 24px, 72px, 0)
+}
+
+toolbar[iconsize=small] .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(32px, 16px, 48px, 0)
+}
+
+#CustomizeToolbarWindow .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(32px, 16px, 48px, 0)
 }
 
 #disconnect-button .toolbarbutton-menu-dropmarker { display: none }
@@ -59,11 +78,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   visibility: hidden
 }
 
-#TabsToolbar[mode=icons] #disconnect-badge {
-  margin-top: 10px;
-  margin-right: 4px;
-  margin-left: -8px
-}
+#TabsToolbar[mode=icons] #disconnect-badge { margin-top: 10px }
 
 #TabsToolbar[mode=icons] .windows#disconnect-badge {
   margin-top: 12px;
@@ -93,26 +108,23 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 #nav-bar[mode=icons]
 .windows#disconnect-badge {
   margin-top: 12px;
-  margin-right: 0;
   margin-left: -8px
 }
 
 #nav-bar[mode=text] #disconnect-badge {
   margin-top: 3px;
-  margin-right: 0;
-  margin-left: -3px
+  margin-left: 3px
 }
 
 #nav-bar[mode=text] .windows#disconnect-badge {
   margin-top: 9px;
-  margin-right: 0;
   margin-left: -5px
 }
 
 #nav-bar[mode=full] #disconnect-badge {
-  margin-top: 9px;
-  margin-right: 17px;
-  margin-left: -30px
+  margin-top: 13px;
+  margin-right: 14px;
+  margin-left: -28px
 }
 
 #nav-bar[mode=full] .windows#disconnect-badge {
@@ -121,33 +133,24 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -29px
 }
 
-#PersonalToolbar[mode=icons] #disconnect-badge {
-  margin-top: 11px;
-  margin-right: 16px;
-  margin-left: -14px
-}
-
 #PersonalToolbar[mode=icons] .windows#disconnect-badge {
   margin-top: 12px;
-  margin-right: 0;
   margin-left: -8px
 }
 
 #PersonalToolbar[mode=text] #disconnect-badge {
-  margin-top: 2px;
-  margin-right: 0;
-  margin-left: 0
+  margin-top: 3px;
+  margin-left: 3px
 }
 
 #PersonalToolbar[mode=text] .windows#disconnect-badge {
   margin-top: 9px;
-  margin-right: 0;
   margin-left: -5px
 }
 
 #PersonalToolbar[mode=full] #disconnect-badge {
-  margin-top: 9px;
-  margin-right: 17px;
+  margin-top: 13px;
+  margin-right: 15px;
   margin-left: -29px
 }
 
@@ -157,34 +160,31 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -29px
 }
 
-#addon-bar[mode=icons] #disconnect-badge {
-  margin-top: 8px;
-  margin-right: 16px;
-  margin-left: -11px
+#CustomizeToolbarWindow #disconnect-badge {
+  margin-top: 33px;
+  margin-left: -13px
 }
 
 #addon-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 5px;
-  margin-right: 0;
   margin-left: -8px
 }
 
 #addon-bar[mode=text] #disconnect-badge {
   margin-top: 3px;
-  margin-right: 0;
+  margin-right: 1px;
   margin-left: 2px
 }
 
 #addon-bar[mode=text] .windows#disconnect-badge {
   margin-top: 6px;
-  margin-right: 0;
   margin-left: -5px
 }
 
 #addon-bar[mode=full] #disconnect-badge {
-  margin-top: 9px;
-  margin-right: 17px;
-  margin-left: -25px
+  margin-top: 13px;
+  margin-right: 14px;
+  margin-left: -28px
 }
 
 #addon-bar[mode=full] .windows#disconnect-badge {

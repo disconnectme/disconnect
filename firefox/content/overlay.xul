@@ -32,7 +32,7 @@
 >
   <script src="overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
-    <toolbaritem id="disconnect-item">
+    <toolbaritem id="disconnect-item" title="Disconnect">
       <toolbarbutton
         type="menu"
         id="disconnect-button"
