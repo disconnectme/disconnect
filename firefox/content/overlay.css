@@ -168,10 +168,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -32px
 }
 
-#CustomizeToolbarWindow #disconnect-badge {
-  margin-top: 33px;
-  margin-left: -14px
-}
+#CustomizeToolbarWindow #disconnect-badge { margin-top: 33px }
 
 #CustomizeToolbarWindow .windows#disconnect-badge {
   margin-top: 32px;
