@@ -31,11 +31,17 @@ toolbar[iconsize=small] #disconnect-button {
   -moz-image-region: rect(0, 16px, 16px, 0)
 }
 
+#nav-bar[mode=full] .windows#disconnect-button { padding-top: 5px }
+
 #PersonalToolbar[mode=text] #disconnect-button { margin-top: -1px }
 
 #CustomizeToolbarWindow #disconnect-button {
   list-style-image: url(chrome://disconnect/content/16.png);
   -moz-image-region: rect(0, 16px, 16px, 0)
+}
+
+#toolbar-menubar .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
 #TabsToolbar[mode=icons] .disconnect-badge#disconnect-button {
@@ -55,7 +61,25 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   -moz-image-region: rect(32px, 16px, 48px, 0)
 }
 
+#nav-bar[mode=full] .windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(24px, 24px, 48px, 0)
+}
+
+toolbar[iconsize=small]#nav-bar[mode=full]
+.windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
 #PersonalToolbar[mode=icons] .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#PersonalToolbar[mode=full] .windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(24px, 24px, 48px, 0)
+}
+
+toolbar[iconsize=small]#PersonalToolbar[mode=full]
+.windows.disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
@@ -64,6 +88,20 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 }
 
 #addon-bar[mode=icons] .disconnect-badge#disconnect-button {
+  -moz-image-region: rect(24px, 24px, 48px, 0)
+}
+
+toolbar[iconsize=small]#addon-bar[mode=icons]
+.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#addon-bar[mode=full] .windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(24px, 24px, 48px, 0)
+}
+
+toolbar[iconsize=small]#addon-bar[mode=full]
+.windows.disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
@@ -85,7 +123,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 }
 
 #navigator-toolbox[mode=icons] #toolbar-menubar #disconnect-badge {
-  margin-top: 21px;
+  margin-top: 9px;
   margin-right: -3px;
   margin-left: -11px
 }
@@ -97,20 +135,20 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 }
 
 #navigator-toolbox[mode=full] #toolbar-menubar #disconnect-badge {
-  margin-top: 14px;
+  margin-top: 9px;
   margin-right: 17px;
   margin-left: -32px
 }
 
 #TabsToolbar[mode=icons] #disconnect-badge { margin-top: 10px }
 
-#TabsToolbar[mode=icons] .windows #disconnect-badge {
+#TabsToolbar[mode=icons] .windows#disconnect-badge {
   margin-top: 12px;
   margin-right: -3px;
   margin-left: -11px
 }
 
-#nav-bar[mode=icons] .windows #disconnect-badge {
+#nav-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 21px;
   margin-right: 17px;
   margin-left: -31px
@@ -122,19 +160,14 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
-.windows
-#disconnect-badge {
-  margin-top: 21px;
-  margin-right: -3px;
-  margin-left: -11px
-}
+.windows#disconnect-badge { margin: 16px -3px -2px -11px }
 
 #nav-bar[mode=text] #disconnect-badge {
   margin-top: 3px;
   margin-left: 3px
 }
 
-#nav-bar[mode=text] .windows #disconnect-badge {
+#nav-bar[mode=text] .windows#disconnect-badge {
   margin-top: 9px;
   margin-left: -5px
 }
@@ -145,16 +178,16 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -30px
 }
 
-#nav-bar[mode=full] .windows #disconnect-badge {
-  margin-top: 14px;
+#nav-bar[mode=full] .windows#disconnect-badge {
+  margin-top: 11px;
   margin-right: 17px;
   margin-left: -32px
 }
 
 #PersonalToolbar[mode=icons] #disconnect-badge { margin-top: 9px }
 
-#PersonalToolbar[mode=icons] .windows #disconnect-badge {
-  margin-top: 21px;
+#PersonalToolbar[mode=icons] .windows#disconnect-badge {
+  margin-top: 9px;
   margin-right: -3px;
   margin-left: -11px
 }
@@ -164,7 +197,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: 3px
 }
 
-#PersonalToolbar[mode=text] .windows #disconnect-badge {
+#PersonalToolbar[mode=text] .windows#disconnect-badge {
   margin-top: 9px;
   margin-left: -5px
 }
@@ -175,15 +208,15 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -30px
 }
 
-#PersonalToolbar[mode=full] .windows #disconnect-badge {
-  margin-top: 14px;
+#PersonalToolbar[mode=full] .windows#disconnect-badge {
+  margin-top: 9px;
   margin-right: 17px;
   margin-left: -32px
 }
 
 #CustomizeToolbarWindow #disconnect-badge { margin-top: 33px }
 
-#CustomizeToolbarWindow .windows #disconnect-badge {
+#CustomizeToolbarWindow .windows#disconnect-badge {
   margin-top: 32px;
   margin-right: -3px;
   margin-left: -11px
@@ -191,8 +224,8 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
 
 #addon-bar[mode=icons] #disconnect-badge { margin-top: 9px }
 
-#addon-bar[mode=icons] .windows #disconnect-badge {
-  margin-top: 21px;
+#addon-bar[mode=icons] .windows#disconnect-badge {
+  margin-top: 8px;
   margin-right: -3px;
   margin-left: -11px
 }
@@ -203,7 +236,7 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: 2px
 }
 
-#addon-bar[mode=text] .windows #disconnect-badge {
+#addon-bar[mode=text] .windows#disconnect-badge {
   margin-top: 6px;
   margin-left: -5px
 }
@@ -214,8 +247,8 @@ toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   margin-left: -29px
 }
 
-#addon-bar[mode=full] .windows #disconnect-badge {
-  margin-top: 11px;
+#addon-bar[mode=full] .windows#disconnect-badge {
+  margin-top: 6px;
   margin-right: 17px;
   margin-left: -32px
 }
