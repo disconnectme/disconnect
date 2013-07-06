@@ -875,7 +875,7 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
-      os == 'WINNT' && button.add(badge).addClass('windows');
+      os == 'WINNT' && button.addClass('windows');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
