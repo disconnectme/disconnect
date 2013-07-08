@@ -49,7 +49,7 @@ function Sitename() {
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
   var initialized = false;
   var anchor = document.createElement('a');
-  var tlds = options.tlds;
+  var tlds = (options || localStorage).tlds;
 
   function parseTldList(data) {
     data = data.split('\n');
@@ -73,7 +73,7 @@ function Sitename() {
     var tldCount = tldPatch.length;
     for (var i = 0; i < tldCount; i++) tlds[tldPatch[i]] = true;
     initialized = true;
-    options.tlds = JSON.stringify(tlds);
+    (options || localStorage).tlds = JSON.stringify(tlds);
   }
 
   if (tlds) {

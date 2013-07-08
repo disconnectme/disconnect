@@ -85,7 +85,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
     });
   }, true);
 
-  if (location.href == 'https://disconnect.me/d2/thanks')
+  if (location.href.indexOf('https://disconnect.me/') + 1)
       EXTENSION.sendRequest({
         pwyw: true,
         bucket: document.getElementById('input-type').getAttribute('value')
