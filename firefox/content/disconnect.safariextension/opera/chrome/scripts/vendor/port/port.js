@@ -26,6 +26,9 @@ SAFARI = (typeof safari !== "undefined");
 // Safari 5.0 (533.x.x) with no menu support
 LEGACY_SAFARI = SAFARI && (navigator.appVersion.match(/\sSafari\/(\d+)\./) || [null,0])[1] < 534;
 
+// "localStorage" gets cleared too often in Safari to rely on.
+options = SAFARI ? safari.extension.settings : localStorage;
+
 if (SAFARI) {
 
   var isOnGlobalPage = !!safari.extension.bars;

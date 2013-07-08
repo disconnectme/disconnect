@@ -159,7 +159,7 @@ function reduceCookies(url, service, name) {
 function initializeToolbar() {
   BROWSER_ACTION.setBadgeBackgroundColor({
     color:
-        localStorage.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
+        options.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
             [0, 186, 77, 255]
   });
   const DETAILS = {popup: PATH + 'markup/popup.html'};
@@ -187,14 +187,14 @@ function getCount(tabRequests) {
 /* Indicates the number of tracking requests. */
 function updateCounter(tabId, count, deactivated) {
   if (
-    deserialize(localStorage.blockingIndicated) &&
-        (deserialize(localStorage.pwyw) || {}).bucket != 'pending' &&
-            (deserialize(localStorage.pwyw) || {}).bucket != 'pending-trial'
+    deserialize(options.blockingIndicated) &&
+        (deserialize(options.pwyw) || {}).bucket != 'pending' &&
+            (deserialize(options.pwyw) || {}).bucket != 'pending-trial'
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
       color:
-          localStorage.displayMode == LEGACY_NAME ? [136, 136, 136, 255] :
+          options.displayMode == LEGACY_NAME ? [136, 136, 136, 255] :
               [93, 93, 93, 255]
     });
 
@@ -245,17 +245,23 @@ function incrementCounter(tabId, service, blocked, popup) {
       }
 }
 
+if (SAFARI)
+    for (var key in localStorage) {
+      options[key] = localStorage[key];
+      delete localStorage[key];
+    }
+
 /* The current build number. */
-const CURRENT_BUILD = 50;
+const CURRENT_BUILD = 51;
 
 /* The previous build number. */
-const PREVIOUS_BUILD = localStorage.build;
+const PREVIOUS_BUILD = options.build;
 
 /* The domain name of the tabs. */
 const DOMAINS = {};
 
 /* The blacklisted services per domain name. */
-const BLACKLIST = deserialize(localStorage.blacklist) || {};
+const BLACKLIST = deserialize(options.blacklist) || {};
 
 /* The previous requested URL of the tabs. */
 const REQUESTS = {};
@@ -330,7 +336,7 @@ const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 const SIZE = SAFARI ? 32 : 19;
 
 /* The whitelisted services per domain name. */
-var whitelist = deserialize(localStorage.whitelist) || {};
+var whitelist = deserialize(options.whitelist) || {};
 
 /* Today. */
 var date = new Date();
@@ -343,12 +349,12 @@ date = date.getFullYear() + '-' + month + '-' + day;
 /* T-0. */
 var startTime;
 
-if (!PREVIOUS_BUILD) localStorage.blockingIndicated = true;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) localStorage.blogOpened = true;
+if (!PREVIOUS_BUILD) options.blockingIndicated = true;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) options.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
-  delete localStorage.settingsEditable;
-  localStorage.browsingHardened = true;
+  delete options.settingsEditable;
+  options.browsingHardened = true;
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
@@ -357,24 +363,24 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
       true;
   const SALON_DOMAIN = 'salon.com';
   (whitelist[SALON_DOMAIN] || (whitelist[SALON_DOMAIN] = {})).Google = true;
-  localStorage.whitelist = JSON.stringify(whitelist);
+  options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
   const LATIMES_DOMAIN = 'latimes.com';
   (whitelist[LATIMES_DOMAIN] || (whitelist[LATIMES_DOMAIN] = {})).Google = true;
-  localStorage.whitelist = JSON.stringify(whitelist);
+  options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
   const UDACITY_DOMAIN = 'udacity.com';
   (whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {})).Twitter =
       true;
-  localStorage.whitelist = JSON.stringify(whitelist);
+  options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete localStorage.blogOpened;
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) localStorage.blogOpened = true;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete options.blogOpened;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) options.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   const MIGRATED_WHITELIST = {};
@@ -387,25 +393,24 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
         siteWhitelist.services[service] = true;
   }
 
-  localStorage.displayMode = LEGACY_NAME;
+  options.displayMode = LEGACY_NAME;
 
-  if (PREVIOUS_BUILD || localStorage.initialized)
-      localStorage.pwyw = JSON.stringify({});
+  if (PREVIOUS_BUILD || options.initialized) options.pwyw = JSON.stringify({});
   else {
-    localStorage.displayMode = LIST_NAME;
+    options.displayMode = LIST_NAME;
 
     if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1)
-        localStorage.pwyw = JSON.stringify({date: date, bucket: 'trying'});
+        options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
     else {
-      localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
       TABS.create({url: 'https://disconnect.me/d2/welcome'});
     }
   }
 
-  localStorage.whitelist = JSON.stringify(whitelist = MIGRATED_WHITELIST);
-  localStorage.blacklist = JSON.stringify(BLACKLIST);
-  localStorage.updateClosed = true;
-  localStorage.sitesHidden = true;
+  options.whitelist = JSON.stringify(whitelist = MIGRATED_WHITELIST);
+  options.blacklist = JSON.stringify(BLACKLIST);
+  options.updateClosed = true;
+  options.sitesHidden = true;
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
@@ -416,20 +421,20 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
       DOMAIN_WHITELIST.Disconnect ||
           (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
   DISCONNECT_WHITELIST.services.Google = true;
-  localStorage.whitelist = JSON.stringify(whitelist);
+  options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    localStorage.build = CURRENT_BUILD;
+    options.build = CURRENT_BUILD;
 
-if (!deserialize(localStorage.pwyw).date) {
+if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
   BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 
   $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
     if (data.goldenticket === 'true') {
-      localStorage.displayMode = LIST_NAME;
-      localStorage.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+      options.displayMode = LIST_NAME;
+      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
       downgradeServices();
       BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
@@ -437,22 +442,21 @@ if (!deserialize(localStorage.pwyw).date) {
       BROWSER_ACTION.setPopup({popup: ''});
     }
   });
-} else if (deserialize(localStorage.pwyw).bucket == 'postponed') {
-  localStorage.displayMode = LEGACY_NAME;
+} else if (deserialize(options.pwyw).bucket == 'postponed') {
+  options.displayMode = LEGACY_NAME;
   downgradeServices(true);
   BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 } else {
-  const PWYW = deserialize(localStorage.pwyw);
+  const PWYW = deserialize(options.pwyw);
   if (PWYW.bucket == 'later')
-      localStorage.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
+      options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
           // "later" was accidentally live for a bit.
   BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
-  if (deserialize(localStorage.pwyw).bucket == 'trying') {
+  if (deserialize(options.pwyw).bucket == 'trying') {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
       if (data.goldenticket === 'true') {
-        localStorage.pwyw =
-            JSON.stringify({date: date, bucket: 'pending-trial'});
+        options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
         BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
         BROWSER_ACTION.setBadgeText({text: 'PSST!'});
         BROWSER_ACTION.setPopup({popup: ''});
@@ -461,21 +465,20 @@ if (!deserialize(localStorage.pwyw).date) {
   }
 }
 
-if ((deserialize(localStorage.pwyw) || {}).bucket == 'pending')
+if ((deserialize(options.pwyw) || {}).bucket == 'pending')
     BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
-localStorage.displayMode == GRAPH_NAME &&
-    parseInt(localStorage.sidebarCollapsed, 10) &&
-        localStorage.sidebarCollapsed--; // An experimental "semisticky" bit.
+options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
+    options.sidebarCollapsed--; // An experimental "semisticky" bit.
 
 /* Prepopulates the store of tab domain names. */
 const ID = setInterval(function() {
   if (IS_INITIALIZED()) {
     clearInterval(ID);
-    const TLDS = deserialize(localStorage.tlds);
+    const TLDS = deserialize(options.tlds);
     TLDS['google.com'] = true;
     TLDS['yahoo.com'] = true;
-    localStorage.tlds = JSON.stringify(TLDS);
+    options.tlds = JSON.stringify(TLDS);
 
     TABS.query({}, function(tabs) {
       const TAB_COUNT = tabs.length;
@@ -492,10 +495,9 @@ const ID = setInterval(function() {
 false && INSTANT_ENABLED.get({}, function(details) {
   details.levelOfControl == EDITABLE &&
       SUGGEST_ENABLED.get({}, function(details) {
-        if (details.levelOfControl == EDITABLE)
-            localStorage.settingsEditable = true;
-        deserialize(localStorage.settingsEditable) &&
-            deserialize(localStorage.searchHardened) && editSettings();
+        if (details.levelOfControl == EDITABLE) options.settingsEditable = true;
+        deserialize(options.settingsEditable) &&
+            deserialize(options.searchHardened) && editSettings();
       });
 });
 
@@ -524,7 +526,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
           (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
   const TOTAL_COUNT = ++TAB_DASHBOARD.total;
   const POPUP =
-      localStorage.displayMode != LEGACY_NAME &&
+      options.displayMode != LEGACY_NAME &&
           EXTENSION.getViews({type: 'popup'})[0];
 
   if (CHILD_SERVICE) {
@@ -534,7 +536,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const CHILD_CATEGORY = CHILD_SERVICE.category;
     const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
     const CATEGORY_WHITELIST =
-        ((deserialize(localStorage.whitelist) || {})[PARENT_DOMAIN] ||
+        ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||
             {})[CHILD_CATEGORY] || {};
 
     if (
@@ -550,7 +552,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     } else if (
       (CONTENT || CATEGORY_WHITELIST.whitelisted ||
           (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-              !(((deserialize(localStorage.blacklist) || {})[PARENT_DOMAIN] ||
+              !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
                   {})[CHILD_CATEGORY] || {})[CHILD_NAME]
     ) { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
@@ -568,10 +570,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                     : 'about:blank'
       };
       blockedCount = ++TAB_DASHBOARD.blocked;
-      const BLOCKED_REQUESTS = deserialize(localStorage.blockedRequests) || {};
+      const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
-      localStorage.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+      options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
@@ -586,10 +588,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     REDIRECTS[TAB_ID] = hardenedUrl;
     securedCount = ++TAB_DASHBOARD.secured;
-    const HARDENED_REQUESTS = deserialize(localStorage.hardenedRequests) || {};
+    const HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
     HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
         HARDENED_REQUESTS[date] = 1;
-    localStorage.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
+    options.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
   }
 
   // The Collusion data structure.
@@ -622,7 +624,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
   // A live update.
   if (POPUP)
-      if (localStorage.displayMode == GRAPH_NAME) {
+      if (options.displayMode == GRAPH_NAME) {
         const GRAPH = POPUP.graph;
         GRAPH && GRAPH.update(LOG);
       } else {
@@ -655,7 +657,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
     const POPUP =
-        localStorage.displayMode != LEGACY_NAME &&
+        options.displayMode != LEGACY_NAME &&
             EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
   }
@@ -669,7 +671,7 @@ SAFARI && safari.application.addEventListener(
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
     const POPUP =
-        localStorage.displayMode != LEGACY_NAME &&
+        options.displayMode != LEGACY_NAME &&
             EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
   }, true
@@ -689,20 +691,20 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     sendResponse({
       servicePointer: servicePointer,
       domain: DOMAIN,
-      whitelist: (deserialize(localStorage.whitelist) || {})[DOMAIN] || {},
-      blacklist: (deserialize(localStorage.blacklist) || {})[DOMAIN] || {}
+      whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
+      blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
     });
   } else if (request.pwyw) {
-    const PWYW = deserialize(localStorage.pwyw);
+    const PWYW = deserialize(options.pwyw);
     PWYW.bucket = request.bucket;
-    localStorage.pwyw = JSON.stringify(PWYW);
+    options.pwyw = JSON.stringify(PWYW);
     sendResponse({});
   } else {
     if (SAFARI) {
       const BLOCKED = request.blocked;
       const WHITELISTED = request.whitelisted;
       const POPUP =
-          localStorage.displayMode != LEGACY_NAME &&
+          options.displayMode != LEGACY_NAME &&
               EXTENSION.getViews({type: 'popup'})[0];
       if (BLOCKED || WHITELISTED)
           incrementCounter(TAB_ID, request.childService, !WHITELISTED, POPUP);
@@ -710,11 +712,10 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
       if (BLOCKED) {
         blockedCount = ++TAB_DASHBOARD.blocked;
-        const BLOCKED_REQUESTS =
-            deserialize(localStorage.blockedRequests) || {};
+        const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
         BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
             BLOCKED_REQUESTS[date] = 1;
-        localStorage.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+        options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
       }
 
       // The Collusion data structure.
@@ -745,10 +746,10 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
       // A live update.
       const POPUP =
-          localStorage.displayMode != LEGACY_NAME &&
+          options.displayMode != LEGACY_NAME &&
               EXTENSION.getViews({type: 'popup'})[0];
       if (POPUP)
-          if (localStorage.displayMode == GRAPH_NAME) {
+          if (options.displayMode == GRAPH_NAME) {
             const GRAPH = POPUP.graph;
             GRAPH && GRAPH.update(LOG);
           } else {
@@ -770,25 +771,25 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-  const PWYW = deserialize(localStorage.pwyw) || {};
+  const PWYW = deserialize(options.pwyw) || {};
 
   if (PWYW.bucket == 'pending') {
     TABS.create({url: 'https://disconnect.me/d2/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 
   if (PWYW.bucket == 'pending-trial') {
     TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    localStorage.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
 });
 
 /* The interface is English only for now. */
-if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.searchHardenable)) {
+if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHardenable)) {
 	chrome.cookies.getAll({url:'https://google.com', name:'PREF'}, function() {
 		if (arguments[0] && arguments[0][0] && arguments[0][0].value && /LD=en/.test(arguments[0][0].value)) {
 			var xhr = new XMLHttpRequest();
@@ -796,8 +797,8 @@ if (deserialize(localStorage.searchDepersonalized) && !deserialize(localStorage.
 			xhr.onreadystatechange = function() {
 			  if (xhr.readyState == 4 && xhr.status == 200) {
 					if (xhr.responseText == 'activate') {
-						localStorage.searchHardenable = true;
-            localStorage.searchHardened = true;
+						options.searchHardenable = true;
+            options.searchHardened = true;
 					}
 			  }
 			}
