@@ -97,7 +97,7 @@ function handleShortcut(
   text
 ) {
   wrappedControl.off('click');
-  const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+  const WHITELIST = DESERIALIZE(options.whitelist) || {};
   const LOCAL_SITE_WHITELIST =
       WHITELIST[domain] || (WHITELIST[domain] = {});
   const DISCONNECT_WHITELIST =
@@ -131,7 +131,7 @@ function handleShortcut(
       );
     }
   );
-  localStorage.whitelist = JSON.stringify(WHITELIST);
+  options.whitelist = JSON.stringify(WHITELIST);
   renderWhitelisting(LOCAL_SITE_WHITELIST);
   TABS.reload(id);
 }
@@ -247,7 +247,7 @@ function handleCategory(
   serviceSurface
 ) {
   $(badge).off('click');
-  const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+  const WHITELIST = DESERIALIZE(options.whitelist) || {};
   const LOCAL_SITE_WHITELIST =
       WHITELIST[domain] || (WHITELIST[domain] = {});
   const CONTENT = name == CONTENT_NAME;
@@ -259,7 +259,7 @@ function handleCategory(
   whitelisted =
       CATEGORY_WHITELIST.whitelisted =
           !(whitelisted || CONTENT && whitelisted !== false);
-  const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+  const BLACKLIST = DESERIALIZE(options.blacklist) || {};
   const LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
   const CATEGORY_BLACKLIST =
@@ -268,8 +268,8 @@ function handleCategory(
       SERVICE_WHITELIST[serviceName] = whitelisted;
   for (var serviceName in CATEGORY_BLACKLIST)
       CATEGORY_BLACKLIST[serviceName] = !whitelisted;
-  localStorage.whitelist = JSON.stringify(WHITELIST);
-  localStorage.blacklist = JSON.stringify(BLACKLIST);
+  options.whitelist = JSON.stringify(WHITELIST);
+  options.blacklist = JSON.stringify(BLACKLIST);
   renderCategory(
     name,
     lowercaseName,
@@ -341,18 +341,18 @@ function updateCategory(
           serviceControl = serviceTemplate.clone(true);
           const CHECKBOX = serviceControl.find(INPUT)[0];
           const CATEGORY_WHITELIST =
-              ((DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] ||
+              ((DESERIALIZE(options.whitelist) || {})[DOMAIN] ||
                   {})[categoryName] || {};
           const WHITELISTED = CATEGORY_WHITELIST.whitelisted;
           CHECKBOX.checked = !(
             WHITELISTED || categoryName == CONTENT_NAME && WHITELISTED !== false
           ) && !(CATEGORY_WHITELIST.services || {})[serviceName] ||
-              (((DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] ||
+              (((DESERIALIZE(options.blacklist) || {})[DOMAIN] ||
                   {})[categoryName] || {})[serviceName];
           $(CHECKBOX).off('click');
 
           CHECKBOX.onclick = function(categoryName, serviceName) {
-            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const WHITELIST = DESERIALIZE(options.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
             const CONTENT = categoryName == CONTENT_NAME;
@@ -363,7 +363,7 @@ function updateCategory(
                     });
             const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
             const WHITELISTED = SERVICE_WHITELIST[serviceName];
-            const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+            const BLACKLIST = DESERIALIZE(options.blacklist) || {};
             const SITE_BLACKLIST =
                 BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
             const CATEGORY_BLACKLIST =
@@ -375,8 +375,8 @@ function updateCategory(
                         WHITELISTED ||
                             CONTENT && LOCAL_CATEGORY_WHITELIST.whitelisted &&
                                 WHITELISTED !== false);
-            localStorage.whitelist = JSON.stringify(WHITELIST);
-            localStorage.blacklist = JSON.stringify(BLACKLIST);
+            options.whitelist = JSON.stringify(WHITELIST);
+            options.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);
           }.bind(null, categoryName, serviceName);
 
@@ -415,7 +415,7 @@ function renderService(
 function clearServices(id) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     if (id == tabs[0].id) {
-      whitelist = deserialize(localStorage.whitelist) || {};
+      whitelist = deserialize(options.whitelist) || {};
       siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
 
       for (var i = 0; i < SHORTCUT_COUNT; i++) {
@@ -931,7 +931,7 @@ var whitelistingClicked = 0;
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
-    var displayMode = localStorage.displayMode;
+    var displayMode = options.displayMode;
     const VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
@@ -964,7 +964,7 @@ var whitelistingClicked = 0;
             name,
             lowercaseName,
             !(((
-              (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {}
+              (DESERIALIZE(options.whitelist) || {})[DOMAIN] || {}
             ).Disconnect || {}).services || {})[name],
             requestCount,
             control,
@@ -981,7 +981,7 @@ var whitelistingClicked = 0;
           control.onclick = function(
             name, lowercaseName, requestCount, control, badge, text
           ) {
-            const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+            const WHITELIST = DESERIALIZE(options.whitelist) || {};
             const SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
             const DISCONNECT_WHITELIST =
@@ -1000,7 +1000,7 @@ var whitelistingClicked = 0;
               badge,
               text
             );
-            localStorage.whitelist = JSON.stringify(WHITELIST);
+            options.whitelist = JSON.stringify(WHITELIST);
             TABS.reload(ID);
           }.bind(null, name, lowercaseName, requestCount, control, badge, text);
         }
@@ -1008,17 +1008,16 @@ var whitelistingClicked = 0;
 
       SAFARI && $('#minioptions').hide();
 
-      if (DESERIALIZE(localStorage.searchHardenable)) {
+      if (DESERIALIZE(options.searchHardenable)) {
         const LEGACY_SEARCH = THEME.getElementsByClassName('search')[0];
         LEGACY_SEARCH.className = 'shown';
         const SEARCHBOX = LEGACY_SEARCH.getElementsByTagName('input')[0];
-        SEARCHBOX.checked = DESERIALIZE(localStorage.searchHardened);
+        SEARCHBOX.checked = DESERIALIZE(options.searchHardened);
         $(SEARCHBOX).off('click');
 
         SEARCHBOX.onclick = function() {
           SEARCHBOX.checked =
-              localStorage.searchHardened =
-                  !DESERIALIZE(localStorage.searchHardened);
+              options.searchHardened = !DESERIALIZE(options.searchHardened);
         };
       }
 
@@ -1026,13 +1025,12 @@ var whitelistingClicked = 0;
           THEME.
             getElementsByClassName('wifi')[0].
             getElementsByTagName('input')[0];
-      WIFIBOX.checked = DESERIALIZE(localStorage.browsingHardened);
+      WIFIBOX.checked = DESERIALIZE(options.browsingHardened);
       $(WIFIBOX).off('click');
 
       WIFIBOX.onclick = function() {
         WIFIBOX.checked =
-            localStorage.browsingHardened =
-                !DESERIALIZE(localStorage.browsingHardened);
+            options.browsingHardened = !DESERIALIZE(options.browsingHardened);
       };
 
       const LINKS = THEME.getElementsByTagName('a');
@@ -1090,7 +1088,7 @@ var whitelistingClicked = 0;
         const SHORTCUT_TEMPLATE =
             SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
         const SITE_WHITELIST =
-            (DESERIALIZE(localStorage.whitelist) || {})[DOMAIN] || {};
+            (DESERIALIZE(options.whitelist) || {})[DOMAIN] || {};
         const SHORTCUT_WHITELIST =
             (SITE_WHITELIST.Disconnect || {}).services || {};
         var expiredShortcuts;
@@ -1159,7 +1157,7 @@ var whitelistingClicked = 0;
         CATEGORY_SURFACE.children().slice(3).remove();
         const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
         const SITE_BLACKLIST =
-            (DESERIALIZE(localStorage.blacklist) || {})[DOMAIN] || {};
+            (DESERIALIZE(options.blacklist) || {})[DOMAIN] || {};
         serviceTemplate = CATEGORY_TEMPLATE.find('.service');
 
         for (i = 0; i < CATEGORY_COUNT; i++) {
@@ -1195,7 +1193,7 @@ var whitelistingClicked = 0;
             $(checkbox).off('click');
 
             checkbox.onclick = function(name, serviceName) {
-              const WHITELIST = DESERIALIZE(localStorage.whitelist) || {};
+              const WHITELIST = DESERIALIZE(options.whitelist) || {};
               const LOCAL_SITE_WHITELIST =
                   WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
               const CONTENT = name == CONTENT_NAME;
@@ -1205,7 +1203,7 @@ var whitelistingClicked = 0;
                           {whitelisted: CONTENT, services: {}});
               const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
               const WHITELISTED = SERVICE_WHITELIST[serviceName];
-              const BLACKLIST = DESERIALIZE(localStorage.blacklist) || {};
+              const BLACKLIST = DESERIALIZE(options.blacklist) || {};
               const LOCAL_SITE_BLACKLIST =
                   BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
               const CATEGORY_BLACKLIST =
@@ -1217,8 +1215,8 @@ var whitelistingClicked = 0;
                           WHITELISTED ||
                               CONTENT && CATEGORY_WHITELIST.whitelisted &&
                                   WHITELISTED !== false);
-              localStorage.whitelist = JSON.stringify(WHITELIST);
-              localStorage.blacklist = JSON.stringify(BLACKLIST);
+              options.whitelist = JSON.stringify(WHITELIST);
+              options.blacklist = JSON.stringify(BLACKLIST);
               TABS.reload(ID);
             }.bind(null, name, serviceName);
 
@@ -1371,7 +1369,7 @@ var whitelistingClicked = 0;
       VISUALIZATION.off('mouseenter').mouseenter(handleVisualization);
 
       VISUALIZATION.off('click').click(function() {
-        localStorage.displayMode = GRAPH;
+        options.displayMode = GRAPH;
 
         $('#' + LIST).fadeOut('fast', function() {
           const BUTTON =
@@ -1407,23 +1405,21 @@ var whitelistingClicked = 0;
         WRAPPED_WIFI.prop('disabled', true);
       }
 
-      WIFI.checked = !SAFARI && DESERIALIZE(localStorage.browsingHardened);
+      WIFI.checked = !SAFARI && DESERIALIZE(options.browsingHardened);
       WRAPPED_WIFI.off('click');
 
       WIFI.onclick = function() {
         this.checked =
-            localStorage.browsingHardened =
-                !DESERIALIZE(localStorage.browsingHardened);
+            options.browsingHardened = !DESERIALIZE(options.browsingHardened);
       };
 
       const SEARCH = $('.search ' + INPUT)[0];
-      SEARCH.checked = DESERIALIZE(localStorage.searchHardened);
+      SEARCH.checked = DESERIALIZE(options.searchHardened);
       $(SEARCH).off('click');
 
       SEARCH.onclick = function() {
         this.checked =
-            localStorage.searchHardened =
-                !DESERIALIZE(localStorage.searchHardened);
+            options.searchHardened = !DESERIALIZE(options.searchHardened);
       };
 
       d3.select('#data svg').remove();
