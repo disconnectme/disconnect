@@ -1552,7 +1552,10 @@ var whitelistingClicked = 0;
         return false;
       });
 
-      displayMode == GRAPH && renderGraph();
+      if (displayMode == GRAPH) {
+        $('.live-data').show();
+        renderGraph();
+      }
 
       $('#' + displayMode).fadeIn('slow', function() {
         if (displayMode == LIST) {

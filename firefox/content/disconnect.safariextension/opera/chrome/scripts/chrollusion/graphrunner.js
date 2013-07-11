@@ -324,8 +324,8 @@ var GraphRunner = (function(jQuery, d3) {
                 categoryBlacklist[name] = true;
                 header.addClass("blocked");
               }
-              localStorage.whitelist = JSON.stringify(whitelist);
-              localStorage.blacklist = JSON.stringify(blacklist);
+              options.whitelist = JSON.stringify(whitelist);
+              options.blacklist = JSON.stringify(blacklist);
               d3.select(this).select("line").classed("hidden", blocked);
               tabApi.reload(tabId);
             }
@@ -529,9 +529,9 @@ var GraphRunner = (function(jQuery, d3) {
             drawing.force.links(links);
             drawing.force.start();
             createLinks(links);
-            whitelist = deserialize(localStorage.whitelist) || {};
+            whitelist = deserialize(options.whitelist) || {};
             siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
-            blacklist = deserialize(localStorage.blacklist) || {};
+            blacklist = deserialize(options.blacklist) || {};
             siteBlacklist = blacklist[domain] || (blacklist[domain] = {});
             createNodes(nodes, drawing.force);
           });

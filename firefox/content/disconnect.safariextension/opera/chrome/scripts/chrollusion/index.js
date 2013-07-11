@@ -1,6 +1,6 @@
 /* Toggles the blocking state globally. */
 function whitelistSite() {
-  whitelist = deserialize(localStorage.whitelist) || {};
+  whitelist = deserialize(options.whitelist) || {};
   siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
   var disconnectWhitelist =
       siteWhitelist.Disconnect || (siteWhitelist.Disconnect = {});
@@ -26,10 +26,10 @@ function whitelistSite() {
       socialWhitelist.services = {};
   !trackingUnblocked &&
       (siteWhitelist.Content = {whitelisted: true, services: {}});
-  localStorage.whitelist = JSON.stringify(whitelist);
-  blacklist = deserialize(localStorage.blacklist);
+  options.whitelist = JSON.stringify(whitelist);
+  blacklist = deserialize(options.blacklist);
   blacklist && delete blacklist[domain];
-  localStorage.blacklist = JSON.stringify(blacklist || {});
+  options.blacklist = JSON.stringify(blacklist || {});
   tabApi.reload(tabId);
   return trackingUnblocked;
 }
@@ -37,10 +37,10 @@ function whitelistSite() {
 /* Constants. */
 var backgroundPage = chrome.extension.getBackgroundPage();
 var deserialize = backgroundPage.deserialize;
-var updateClosed = deserialize(localStorage.updateClosed);
+var updateClosed = deserialize(options.updateClosed);
 var recommendsActivated =
-    deserialize(localStorage.recommendsExperiment) &&
-        !deserialize(localStorage.recommendsClosed);
+    deserialize(options.recommendsExperiment) &&
+        !deserialize(options.recommendsClosed);
 var tabApi = chrome.tabs;
 var whitelist;
 var domain;
@@ -49,9 +49,9 @@ var siteWhitelist;
 var getService = backgroundPage.getService;
 var graph;
 var addon = CollusionAddon;
-var sitesHidden = deserialize(localStorage.sitesHidden);
+var sitesHidden = deserialize(options.sitesHidden);
 var ranOnce;
-var sidebarCollapsed = parseInt(localStorage.sidebarCollapsed, 10);
+var sidebarCollapsed = parseInt(options.sidebarCollapsed, 10);
 var blacklist;
 var siteBlacklist;
 
@@ -68,8 +68,8 @@ function renderGraph() {
       src: "../images/chrollusion/safari.png", alt: "Collusion for Safari"
     });
   } else {
-    if (!deserialize(localStorage.promoHidden)) {
-      localStorage.promoHidden = true;
+    if (!deserialize(options.promoHidden)) {
+      options.promoHidden = true;
 
       setTimeout(function() {
         chrome.browserAction.setBadgeText({text: ""});
@@ -91,7 +91,7 @@ function renderGraph() {
   });
 
   $("#domain-infos").hide();
-  whitelist = deserialize(localStorage.whitelist) || {};
+  whitelist = deserialize(options.whitelist) || {};
 
   tabApi.query({currentWindow: true, active: true}, function(tabs) {
     var tab = tabs[0];
@@ -114,7 +114,7 @@ function renderGraph() {
     }
   });
 
-  if (!deserialize(localStorage.browsingHardened)) {
+  if (!deserialize(options.browsingHardened)) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
   } else {
     $("#disable-wifi").removeClass("invisible").html("Disable Wi-Fi security");
@@ -139,13 +139,13 @@ function renderGraph() {
       ranOnce = true;
 
       $("#update .close").click(function() {
-        localStorage.updateClosed = true;
+        options.updateClosed = true;
         window.location.reload();
       });
 
       $("#recommends .close").click(function() {
         setTimeout(function() {
-          localStorage.recommendsClosed = true;
+          options.recommendsClosed = true;
           window.location.reload();
         }, 100);
       });
@@ -172,8 +172,7 @@ function renderGraph() {
 
       $("#disable-wifi").click(function() {
         var wifiDisabled =
-            localStorage.browsingHardened =
-                !deserialize(localStorage.browsingHardened);
+            options.browsingHardened = !deserialize(options.browsingHardened);
         $(this).
           toggleClass("invisible").
           text((wifiDisabled ? "Disable" : "Enable") + " Wi-Fi security");
@@ -181,7 +180,7 @@ function renderGraph() {
       });
 
       $("#hide-sidebar").click(function() {
-        sidebarCollapsed = localStorage.sidebarCollapsed = 3;
+        sidebarCollapsed = options.sidebarCollapsed = 3;
 
         $("#sidebar").slideUp(function() {
           $("#chart svg").remove();
@@ -199,8 +198,8 @@ function renderGraph() {
       });
 
       $("#show-sidebar").click(function() {
-        delete localStorage.sidebarCollapsed;
-        sidebarCollapsed = localStorage.sidebarCollapsed;
+        delete options.sidebarCollapsed;
+        sidebarCollapsed = options.sidebarCollapsed;
 
         $("#show-sidebar").slideUp(100, function() {
           $("#chart svg").remove();
@@ -211,7 +210,7 @@ function renderGraph() {
       });
 
       $("#show-list").click(function() {
-        localStorage.displayMode = "list";
+        options.displayMode = "list";
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();
