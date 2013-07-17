@@ -83,7 +83,7 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
-xhr.open('GET', 'https://dev.disconnect.me/services.json');
+xhr.open('GET', 'https://disconnect.me/services-pro.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {
@@ -91,7 +91,7 @@ xhr.onload = function() {
     timer.cancel();
     var data =
         deserialize(sjcl.decrypt(
-          'af81cb8d-3203-4925-b16d-0f59d03a4d11', xhr.responseText
+          'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', xhr.responseText
         ));
     var categories = data.categories;
 
