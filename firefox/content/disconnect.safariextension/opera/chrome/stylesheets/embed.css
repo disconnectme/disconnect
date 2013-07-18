@@ -15,10 +15,29 @@
   You should have received a copy of the GNU General Public License along with
   this program. If not, see <http://www.gnu.org/licenses/>.
 
+  This CSS resource incorporates links to font software which is the valuable
+  copyrighted property of WebType LLC, The Font Bureau, and/or their suppliers.
+  You may not attempt to copy, install, redistribute, convert, modify, or
+  reverse engineer this font software. Please contact WebType with any
+  questions: http://www.webtype.com/.
+
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
 */
+@font-face {
+  font-family: 'Antenna RE';
+  src: url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot);
+  src: url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot?)
+           format(embedded-opentype),
+       url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-3.woff) format(woff),
+       url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-1.ttf)
+           format(truetype),
+       url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-4.svg#web) format(svg);
+  font-style: normal;
+  font-weight: normal
+}
+
 #disconnect-list {
   display: none;
   box-shadow: -2px 3px 10px rgba(0, 0, 0, .25);
@@ -26,9 +45,7 @@
   background: white;
   padding: 1px;
   width: 200px;
-  font-family:
-      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
-          sans-serif;
+  font-family: 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   -webkit-user-select: none;
   -moz-user-select: none
@@ -36,7 +53,7 @@
 
 table {
   border-collapse: collapse;
-  font-size: xx-small
+  font-size: 8px
 }
 
 #disconnect-navbar {
@@ -121,7 +138,7 @@ td { padding: 0 }
 .disconnect-category .disconnect-badge {
   display: inline-block;
   position: relative;
-  margin-top: 3px;
+  margin-top: 4px;
   margin-right: 8px;
   margin-left: 3px;
   width: 24px;
@@ -135,7 +152,7 @@ td { padding: 0 }
 
 .disconnect-category .disconnect-text table {
   border-collapse: separate;
-  border-spacing: 2px;
+  border-spacing: 0;
   font-size: x-small
 }
 
@@ -314,7 +331,8 @@ td { padding: 0 }
   margin-right: auto;
   margin-left: auto;
   text-align: center;
-  font-size: 8px
+  line-height: 1.5;
+  font-size: 7px
 }
 
 #disconnect-dashboard .disconnect-label {
@@ -346,9 +364,7 @@ td { padding: 0 }
 }
 
 .t_Tooltip {
-  font-family:
-      'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica, Arial,
-          sans-serif;
+  font-family: 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-user-select: none;
   -moz-user-select: none
 }

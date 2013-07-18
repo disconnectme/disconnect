@@ -16,10 +16,34 @@
   You should have received a copy of the GNU General Public License along with
   this program. If not, see <http://www.gnu.org/licenses/>.
 
+  This CSS resource incorporates links to font software which is the valuable
+  copyrighted property of WebType LLC, The Font Bureau, and/or their suppliers.
+  You may not attempt to copy, install, redistribute, convert, modify, or
+  reverse engineer this font software. Please contact WebType with any
+  questions: http://www.webtype.com/.
+
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
 */
+@font-face {
+  font-family: 'Antenna RE';
+  src: url(
+    chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot
+  );
+  src: url(
+    chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot?
+  ) format(embedded-opentype), url(
+    chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-3.woff
+  ) format(woff), url(
+    chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-1.ttf
+  ) format(truetype), url(
+    chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-4.svg#web
+  ) format(svg);
+  font-style: normal;
+  font-weight: normal
+}
+
 #disconnect-button {
   margin-right: 0;
   list-style-image: url(chrome://disconnect/content/24.png);
@@ -115,9 +139,7 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   padding-left: 2px;
   height: 12px;
   text-align: center;
-  font:
-      xx-small 'Gotham SSm A', 'Gotham SSm B', 'Helvetica Neue', Helvetica,
-          Arial, sans-serif;
+  font: xx-small 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: white;
   visibility: hidden
 }
