@@ -33,13 +33,13 @@
   );
   src: url(
     chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot?
-  ) format(embedded-opentype), url(
+  ) format('embedded-opentype'), url(
     chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-3.woff
-  ) format(woff), url(
+  ) format('woff'), url(
     chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-1.ttf
-  ) format(truetype), url(
+  ) format('truetype'), url(
     chrome://disconnect/skin/fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-4.svg#web
-  ) format(svg);
+  ) format('svg');
   font-style: normal;
   font-weight: normal
 }
@@ -291,8 +291,7 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: 1px;
   box-shadow: none;
   border: none;
-  padding: 0;
-  height: 318px
+  padding: 0
 }
 
 #disconnect-graph {

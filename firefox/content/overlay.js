@@ -1071,7 +1071,7 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
-          $('#disconnect-list').height(318);
+          $('#disconnect-list').height(335);
 
           $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
