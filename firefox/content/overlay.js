@@ -749,6 +749,9 @@ if (typeof Disconnect == 'undefined') {
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
       );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/tipped/tipped.js'
+      );
       loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/d3/d3.js');
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js'

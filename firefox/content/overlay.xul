@@ -21,7 +21,7 @@
     Brian Kennish <byoogle@gmail.com>
 -->
 <?xml-stylesheet
-  href="chrome://disconnect/skin/stylesheets/vendor/typography/typography.css"
+  href="chrome://disconnect/skin/stylesheets/vendor/tipped/tipped.css"
 ?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
