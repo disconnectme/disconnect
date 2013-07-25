@@ -29,8 +29,8 @@ or [trying the extension](https://disconnect.me/).
 
 ### In Firefox
 
-3. Go to [your Mozilla profile
-   folder](http://kb.mozillazine.org/Profile_folder).
+3. Go to
+   [your Mozilla profile folder](http://kb.mozillazine.org/Profile_folder).
 4. Under `extensions`, create a new text file.
 5. Enter the path to your working directory followed by `firefox` then a closing
    slash in the file.
@@ -66,41 +66,35 @@ These libraries are bundled with the project and needn’t be updated manually:
 
 Copyright 2010–2013 Disconnect, Inc.
 
-This program, except as noted below, is free software: you can redistribute it
-and/or modify it under the terms of the GNU General Public License as published
-by the Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
+This program is free software, excluding the brand features and third-party
+portions of the program identified in the “Exceptions” below: you can
+redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the [GNU General Public
-License](https://www.gnu.org/licenses/gpl.html) for more details.
+PARTICULAR PURPOSE. See the
+[GNU General Public License](https://www.gnu.org/licenses/gpl.html) for more
+details.
 
 ## Exceptions
 
 The Disconnect logos, trademarks, domain names, and other brand features used in
-this program cannot be reused without permission. The following, temporary,
-portions of the program cannot be reused either:
+this program cannot be reused without permission and no license is granted
+thereto.
 
-* [tipped.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped/tipped.js)
-  provides tooltips and can be replaced with a library such as [jQuery
-  UI](http://jqueryui.com/).
+Further, the following third-party portions of the program and any use thereof
+are subject to their own license terms as set forth below:
 
-* [services.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/services.js)
-  and
-  [services-firefox.js](https://github.com/disconnectme/disconnect/blob/master/firefox/content/services-firefox.js)
-  determine whether a domain name belongs to a third party and can be replaced
-  by implementing a single function:
+* [Antenna RE](https://github.com/disconnectme/disconnect/tree/master/firefox/content/disconnect.safariextension/opera/chrome/fonts)
+  replaces system fonts and is the valuable copyrighted property of WebType LLC,
+  The Font Bureau, and/or their suppliers. You may not attempt to copy, install,
+  redistribute, convert, modify, or reverse engineer this font software. Please
+  contact [WebType](http://www.webtype.com/) with any questions. Antenna RE can
+  be removed and will be replaced with a system font.
 
-### {Object} getService({string} domain)
-
-Retrieves the third-party metadata, if any, associated with a domain name.
-
-#### Parameter
-
-`domain` The domain name.
-
-#### Return value
-
-A hash with the keys `category` (`Advertising`, `Analytics`, `Social`, or
-`Content`), (company) `name`, and (homepage) `url`.
+* [Tipped](https://github.com/disconnectme/disconnect/tree/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped)
+  provides tooltips and is subject to the terms and conditions of the
+  [Tipped License](http://projects.nickstakenburg.com/tipped/license). Tipped
+  can be replaced with a library such as [jQuery UI](http://jqueryui.com/).
