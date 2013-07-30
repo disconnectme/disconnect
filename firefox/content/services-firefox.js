@@ -83,7 +83,7 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
-xhr.open('GET', 'https://disconnect.me/services-pro.json');
+xhr.open('GET', 'https://s3.amazonaws.com/disconnect.me/services-pro.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {
