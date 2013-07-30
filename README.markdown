@@ -20,7 +20,7 @@ or [trying the extension](https://disconnect.me/).
 3. Go to the Chrome menu > **Tools** > **Extensions**.
 4. Check **Developer mode** then press **Load unpacked extension...** .
 5. Find your working directory.
-6. Under `firefox`, `content`, and `disconnect.safariextension`, select
+6. Under `firefox/content/disconnect.safariextension/opera`, select
    `chrome`.
 7. To test after you make a change, be sure to expand the extension listing then
    press **Reload**.
