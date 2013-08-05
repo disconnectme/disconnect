@@ -20,6 +20,40 @@
     Brian Kennish <byoogle@gmail.com>
 */
 
+/* Formats the blacklist. */
+function processServices(data) {
+  var categories = data.categories;
+
+  for (var categoryName in categories) {
+    var category = categories[categoryName];
+    var serviceCount = category.length;
+    var legacy = categoryName.length > 11;
+
+    for (var i = 0; i < serviceCount; i++) {
+      var service = category[i];
+
+      for (var serviceName in service) {
+        var urls = service[serviceName];
+
+        for (var homepage in urls) {
+          var domains = urls[homepage];
+          var domainCount = domains.length;
+
+          for (var j = 0; j < domainCount; j++)
+              (legacy ? evenMoreServices : moreServices)[domains[j]] = {
+                category: legacy ? categoryName.slice(7) : categoryName,
+                name: serviceName,
+                url: homepage
+              };
+        }
+      }
+    }
+  }
+
+  hardeningRules = data.hardeningRules;
+  moreRules = data.moreRules;
+}
+
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return servicePointer[domain]; }
 
@@ -79,45 +113,16 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
+processServices(data);
+
 /* Fetches the third-party metadata. */
 var id = setInterval(function() {
   if (index == nextRequest) {
     $.get('https://disconnect.me/services-pro.json', function(data) {
       clearInterval(id);
-      data =
-          deserialize(sjcl.decrypt(
-            'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
-          ));
-      var categories = data.categories;
-
-      for (var categoryName in categories) {
-        var category = categories[categoryName];
-        var serviceCount = category.length;
-        var legacy = categoryName.length > 11;
-
-        for (var i = 0; i < serviceCount; i++) {
-          var service = category[i];
-
-          for (var serviceName in service) {
-            var urls = service[serviceName];
-
-            for (var homepage in urls) {
-              var domains = urls[homepage];
-              var domainCount = domains.length;
-
-              for (var j = 0; j < domainCount; j++)
-                  (legacy ? evenMoreServices : moreServices)[domains[j]] = {
-                    category: legacy ? categoryName.slice(7) : categoryName,
-                    name: serviceName,
-                    url: homepage
-                  };
-            }
-          }
-        }
-      }
-
-      hardeningRules = data.hardeningRules;
-      moreRules = data.moreRules;
+      processServices(deserialize(sjcl.decrypt(
+        'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
+      )));
     });
 
     nextRequest = index + Math.pow(2, Math.min(requestCount++, 6));
