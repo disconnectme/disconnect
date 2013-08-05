@@ -21,6 +21,38 @@
     Brian Kennish <byoogle@gmail.com>
 */
 
+/* Formats the blacklist. */
+function processServices(data) {
+  var categories = data.categories;
+
+  for (var categoryName in categories) {
+    if (categoryName.length < 12) {
+      var category = categories[categoryName];
+      var serviceCount = category.length;
+
+      for (var i = 0; i < serviceCount; i++) {
+        var service = category[i];
+
+        for (var serviceName in service) {
+          var urls = service[serviceName];
+
+          for (var homepage in urls) {
+            var domains = urls[homepage];
+            var domainCount = domains.length;
+            for (var j = 0; j < domainCount; j++)
+                moreServices[domains[j]] = {
+                  category: categoryName, name: serviceName, url: homepage
+                };
+          }
+        }
+      }
+    }
+  }
+
+  hardeningRules = data.hardeningRules;
+  moreRules = data.moreRules;
+}
+
 /* Destringifies an object. */
 function deserialize(object) {
   return typeof object == 'string' ? JSON.parse(object) : object;
@@ -83,44 +115,20 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
+Components.
+  classes['@mozilla.org/moz/jssubscript-loader;1'].
+  getService(Components.interfaces.mozIJSSubScriptLoader).
+  loadSubScript('chrome://disconnect/skin/data/services.js');
+processServices(data);
 xhr.open('GET', 'https://disconnect.me/services-pro.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {
   if (xhr.status == 200) {
     timer.cancel();
-    var data =
-        deserialize(sjcl.decrypt(
-          'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', xhr.responseText
-        ));
-    var categories = data.categories;
-
-    for (var categoryName in categories) {
-      if (categoryName.length < 12) {
-        var category = categories[categoryName];
-        var serviceCount = category.length;
-
-        for (var i = 0; i < serviceCount; i++) {
-          var service = category[i];
-
-          for (var serviceName in service) {
-            var urls = service[serviceName];
-
-            for (var homepage in urls) {
-              var domains = urls[homepage];
-              var domainCount = domains.length;
-              for (var j = 0; j < domainCount; j++)
-                  moreServices[domains[j]] = {
-                    category: categoryName, name: serviceName, url: homepage
-                  };
-            }
-          }
-        }
-      }
-    }
-
-    hardeningRules = data.hardeningRules;
-    moreRules = data.moreRules;
+    processServices(deserialize(sjcl.decrypt(
+      'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', xhr.responseText
+    )));
   }
 };
 
