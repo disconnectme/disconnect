@@ -703,11 +703,11 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     if (SAFARI) {
       const BLOCKED = request.blocked;
       const WHITELISTED = request.whitelisted;
-      const POPUP =
+      var popup =
           options.displayMode != LEGACY_NAME &&
               EXTENSION.getViews({type: 'popup'})[0];
       if (BLOCKED || WHITELISTED)
-          incrementCounter(TAB_ID, request.childService, !WHITELISTED, POPUP);
+          incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
       var blockedCount;
 
       if (BLOCKED) {
@@ -745,18 +745,15 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
       }
 
       // A live update.
-      const POPUP =
-          options.displayMode != LEGACY_NAME &&
-              EXTENSION.getViews({type: 'popup'})[0];
-      if (POPUP)
+      if (popup)
           if (options.displayMode == GRAPH_NAME) {
-            const GRAPH = POPUP.graph;
+            const GRAPH = popup.graph;
             GRAPH && GRAPH.update(LOG);
           } else {
-            const TIMEOUT = POPUP.timeout;
+            const TIMEOUT = popup.timeout;
 
             blockedCount && setTimeout(function() {
-              POPUP.renderBlockedRequest(
+              popup.renderBlockedRequest(
                 TAB_ID,
                 Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
                 TOTAL_COUNT
