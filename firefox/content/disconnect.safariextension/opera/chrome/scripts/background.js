@@ -239,7 +239,8 @@ function incrementCounter(tabId, service, blocked, popup) {
         var categoryCount = 0;
         for (var name in CATEGORY_REQUESTS)
             categoryCount += CATEGORY_REQUESTS[name].count;
-        popup.updateCategory(
+        const UPDATE_CATEGORY = popup.updateCategory;
+        UPDATE_CATEGORY && UPDATE_CATEGORY(
           tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
         );
       }
