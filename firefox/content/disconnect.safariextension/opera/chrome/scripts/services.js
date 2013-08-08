@@ -125,7 +125,7 @@ var id = setInterval(function() {
       )));
     });
 
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 6));
+    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
   }
 
   index++;

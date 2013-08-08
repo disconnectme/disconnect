@@ -118,7 +118,7 @@ var moreRules = [];
 Components.
   classes['@mozilla.org/moz/jssubscript-loader;1'].
   getService(Components.interfaces.mozIJSSubScriptLoader).
-  loadSubScript('chrome://disconnect/skin/data/services.js');
+  loadSubScript('chrome://disconnect/skin/scripts/data.js');
 processServices(data);
 xhr.open('GET', 'https://disconnect.me/services-pro.json');
 
@@ -136,7 +136,7 @@ xhr.onload = function() {
 timer.init({observe: function() {
   if (index == nextRequest) {
     try { xhr.send(); } catch (exception) {}
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 6));
+    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
   }
 
   index++;

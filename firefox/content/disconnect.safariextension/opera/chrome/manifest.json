@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Disconnect",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "Make the web faster, more private, and more secure.",
   "icons": {"48": "images/48.png", "128": "images/128.png"},
   "permissions": [
@@ -29,7 +29,7 @@
       "scripts/vendor/sitename/tldpatch.js",
       "scripts/vendor/sitename/sitename.js",
       "scripts/vendor/sjcl/sjcl.js",
-      "data/services.js",
+      "scripts/data.js",
       "scripts/services.js",
       "scripts/background.js"
     ]
