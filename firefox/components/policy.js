@@ -121,6 +121,7 @@ Disconnect.prototype = {
             var parentDomain = get(parentUrl.hostname);
             var parentService = getService(parentDomain);
             var childName = childService.name;
+            debug(getService("google.com"));
             var redirectSafe = childUrl != requests[parentUrl];
             var childCategory = childService.category;
             var content = childCategory == contentName;
