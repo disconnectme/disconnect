@@ -391,8 +391,10 @@ if (typeof Disconnect == 'undefined') {
 
         setTimeout(function(index, count) {
           if (gBrowser.contentWindow.location == url)
-              $($('.disconnect-category .disconnect-count')[index + 1]).
-                text(count + ' request' + (count - 1 ? 's' : ''));
+              document.
+                getElementsByClassName('disconnect-category')[index + 1].
+                getElementsByClassName('disconnect-count')[0].
+                textContent = count + ' request' + (count - 1 ? 's' : '');
         }, requestCount * 100, i, requestCount);
       }
     },
