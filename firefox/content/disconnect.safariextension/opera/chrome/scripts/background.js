@@ -425,8 +425,18 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const UDACITY_DOMAIN = 'udacity.com';
+  const DOMAIN_WHITELIST =
+      whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {});
+  const DISCONNECT_WHITELIST =
+      DOMAIN_WHITELIST.Disconnect ||
+          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
+  DISCONNECT_WHITELIST.services.Facebook = true;
+  DISCONNECT_WHITELIST.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
+}
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);

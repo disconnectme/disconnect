@@ -810,7 +810,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 3;
+      var currentBuild = 12;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -846,7 +846,7 @@ if (typeof Disconnect == 'undefined') {
           setCharPref(whitelistName, JSON.stringify(migratedWhitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 3) {
         var currentSet = toolbar.getAttribute(currentSetName);
         var items = currentSet.split(',');
         var itemCount = items.length;
@@ -857,6 +857,20 @@ if (typeof Disconnect == 'undefined') {
         toolbar.insertItem('disconnect-item');
         toolbar.setAttribute(currentSetName, toolbar.currentSet);
         document.persist(navbarName, currentSetName);
+      }
+
+      whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var udacityDomain = 'udacity.com';
+        var domainWhitelist =
+            whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
+        domainWhitelist.Disconnect = {
+          whitelisted: false, services: {
+            Facebook: true, Google: true, Twitter: true
+          }
+        };
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
 
@@ -1012,7 +1026,6 @@ if (typeof Disconnect == 'undefined') {
           var domain = get(url.hostname);
           var tabRequests = requestCounts[url] || {};
           var disconnectRequests = tabRequests.Disconnect || {};
-          whitelist = JSON.parse(preferences.getCharPref(whitelistName));
           var siteWhitelist = whitelist[domain] || {};
           var shortcutWhitelist =
               (siteWhitelist.Disconnect || {}).services || {};
