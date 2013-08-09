@@ -747,7 +747,7 @@ if (typeof Disconnect == 'undefined') {
           Components.
             classes['@mozilla.org/moz/jssubscript-loader;1'].
             getService(interfaces.mozIJSSubScriptLoader);
-      loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
+      loader.loadSubScript('chrome://disconnect/content/sitename.js');
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
       );

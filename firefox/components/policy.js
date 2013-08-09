@@ -27,8 +27,8 @@ var loader =
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(interfaces.mozIJSSubScriptLoader);
 loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js');
-loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
-loader.loadSubScript('chrome://disconnect/content/services-firefox.js');
+loader.loadSubScript('chrome://disconnect/content/sitename.js');
+loader.loadSubScript('chrome://disconnect/content/services.js');
 loader.loadSubScript('chrome://disconnect/content/debug.js');
 var observer =
     Components.
