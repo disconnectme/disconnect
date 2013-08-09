@@ -1,6 +1,5 @@
 /*
-  A script that determines whether a domain name belongs to a third party. TODO:
-  Document the API so other third-party lists can be plugged in.
+  A script that determines whether a domain name belongs to a third party.
 
   Copyright 2012, 2013 Disconnect, Inc.
 
@@ -135,8 +134,8 @@ xhr.onload = function() {
 /* Retries unsuccessful requests. */
 timer.init({observe: function() {
   if (index == nextRequest) {
-    try { xhr.send(); } catch (exception) {}
     nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
+    try { xhr.send(); } catch (exception) {}
   }
 
   index++;
