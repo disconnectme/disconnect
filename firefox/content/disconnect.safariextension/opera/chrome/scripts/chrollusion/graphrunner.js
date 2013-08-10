@@ -70,7 +70,7 @@ var GraphRunner = (function(jQuery, d3) {
       return !(
         childService && parentService && childService.name == parentService.name
       ) && (
-        !categoryWhitelist.whitelisted &&
+        category != 'Content' && !categoryWhitelist.whitelisted &&
             !(categoryWhitelist.services || {})[name] ||
                 (siteBlacklist[category] || {})[name]
       );
