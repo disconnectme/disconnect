@@ -1091,6 +1091,7 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
+          //everything closed
           $('#disconnect-list').height(335);
 
           $('.disconnect-category .disconnect-action').each(function() {
@@ -1319,7 +1320,7 @@ if (typeof Disconnect == 'undefined') {
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#disconnect-list').height() == 318;
+                var collapsed = $('#disconnect-list').height() == 335;
                 var serviceCount =
                     Math.min(
                       serviceContainer.find('.disconnect-service').length - 1,
@@ -1328,7 +1329,7 @@ if (typeof Disconnect == 'undefined') {
 
                 setTimeout(function() {
                   $('#disconnect-list').height(function() {
-                    return collapsed ? serviceCount * 18 + 325 : 318;
+                    return collapsed ? serviceCount * 18 + 325 : 335;
                   });
                 }, collapsed ? 0 : 200);
 
