@@ -10,10 +10,10 @@ var GraphRunner = (function(jQuery, d3) {
     isNodeBeingDragged = false;
   }, true);
 
-  function Runner(options) {
-    var SVG_WIDTH = options.width;
-    var SVG_HEIGHT = options.height;
-    var hideFavicons = options.hideFavicons;
+  function Runner(settings) {
+    var SVG_WIDTH = settings.width;
+    var SVG_HEIGHT = settings.height;
+    var hideFavicons = settings.hideFavicons;
     var favicon = new Favicon();
 
     // Create the SVG element and populate it with some basic definitions
@@ -477,9 +477,9 @@ var GraphRunner = (function(jQuery, d3) {
         return domainIds[name];
       }
 
-      function addLink(options) {
-        var fromId = getNodeId(options.from);
-        var toId = getNodeId(options.to);
+      function addLink(settings) {
+        var fromId = getNodeId(settings.from);
+        var toId = getNodeId(settings.to);
         var link = vis.select("line.to-" + toId + ".from-" + fromId);
         if (!link[0][0])
           links.push({source: fromId, target: toId});
