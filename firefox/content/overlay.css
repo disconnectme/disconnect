@@ -382,8 +382,7 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: 1px;
   box-shadow: none;
   border: none;
-  padding: 0;
-  height: 318px
+  padding: 0
 }
 
 #disconnect-graph {

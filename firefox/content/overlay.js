@@ -810,7 +810,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 12;
+      var currentBuild = 13;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -861,7 +861,7 @@ if (typeof Disconnect == 'undefined') {
 
       whitelist = JSON.parse(preferences.getCharPref(whitelistName));
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 12) {
         var udacityDomain = 'udacity.com';
         var domainWhitelist =
             whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
@@ -871,9 +871,10 @@ if (typeof Disconnect == 'undefined') {
           }
         };
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-        preferences.setIntPref(buildName, currentBuild);
       }
 
+      if (!previousBuild || previousBuild < currentBuild)
+          preferences.setIntPref(buildName, currentBuild);
       var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
       var shortcutSurface =
@@ -1091,7 +1092,6 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
-          //everything closed
           $('#disconnect-list').height(335);
 
           $('.disconnect-category .disconnect-action').each(function() {
@@ -1126,7 +1126,8 @@ if (typeof Disconnect == 'undefined') {
             var categoryControl = wrappedCategoryControl[0];
             var serviceContainer = $(
               categoryControls.
-                filter('.disconnect-services')[0].getElementsByTagName('html:div')
+                filter('.disconnect-services')[0].
+                getElementsByTagName('html:div')
             );
             var serviceSurface = $(
               serviceContainer[0].getElementsByTagName('html:tbody')
@@ -1312,9 +1313,10 @@ if (typeof Disconnect == 'undefined') {
                   animateAction(action, button, name);
                   var serviceCount =
                       Math.min(
-                        serviceContainer.find('.disconnect-service').length - 1, 10
+                        serviceContainer.find('.disconnect-service').length - 1,
+                        10
                       );
-                  $('#disconnect-list').height(serviceCount * 18 + 325);
+                  $('#disconnect-list').height(serviceCount * 20 + 335);
                   activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
@@ -1329,7 +1331,7 @@ if (typeof Disconnect == 'undefined') {
 
                 setTimeout(function() {
                   $('#disconnect-list').height(function() {
-                    return collapsed ? serviceCount * 18 + 325 : 335;
+                    return collapsed ? serviceCount * 20 + 335 : 335;
                   });
                 }, collapsed ? 0 : 200);
 

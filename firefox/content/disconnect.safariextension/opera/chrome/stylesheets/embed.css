@@ -191,27 +191,27 @@ td { padding: 0 }
   -moz-transition: height .4s cubic-bezier(.175, .885, .32, 1.275)
 }
 
-.disconnect-services div.disconnect-i { height: 18px }
+.disconnect-services div.disconnect-i { height: 20px }
 
-.disconnect-services div.disconnect-ii { height: 36px }
+.disconnect-services div.disconnect-ii { height: 40px }
 
-.disconnect-services div.disconnect-iii { height: 54px }
+.disconnect-services div.disconnect-iii { height: 60px }
 
-.disconnect-services div.disconnect-iv { height: 72px }
+.disconnect-services div.disconnect-iv { height: 80px }
 
-.disconnect-services div.disconnect-v { height: 88px }
+.disconnect-services div.disconnect-v { height: 100px }
 
-.disconnect-services div.disconnect-vi { height: 104px }
+.disconnect-services div.disconnect-vi { height: 120px }
 
-.disconnect-services div.disconnect-vii { height: 122px }
+.disconnect-services div.disconnect-vii { height: 140px }
 
-.disconnect-services div.disconnect-viii { height: 140px }
+.disconnect-services div.disconnect-viii { height: 160px }
 
-.disconnect-services div.disconnect-ix { height: 158px }
+.disconnect-services div.disconnect-ix { height: 180px }
 
-.disconnect-services div.disconnect-x { height: 176px }
+.disconnect-services div.disconnect-x { height: 200px }
 
-.disconnect-service { height: 15px }
+.disconnect-service { height: 20px }
 
 .disconnect-service:first-child { display: none }
 
