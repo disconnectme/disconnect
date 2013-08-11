@@ -253,7 +253,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 54;
+const CURRENT_BUILD = 55;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -425,7 +425,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
   const UDACITY_DOMAIN = 'udacity.com';
   const DOMAIN_WHITELIST =
       whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {});
@@ -435,8 +435,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   DISCONNECT_WHITELIST.services.Facebook = true;
   DISCONNECT_WHITELIST.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
@@ -701,6 +703,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     const DOMAIN = GET(TAB.url);
     sendResponse({
       servicePointer: servicePointer,
+      tlds: SITENAME.getTlds(),
       domain: DOMAIN,
       whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
       blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}

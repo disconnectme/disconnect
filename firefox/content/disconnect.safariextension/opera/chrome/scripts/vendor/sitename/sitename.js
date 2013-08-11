@@ -15,12 +15,18 @@
  * @constructor
  * @author <a href="https://github.com/byoogle">Brian Kennish</a>
  */
-function Sitename() {
+function Sitename(tlds) {
   /**
    * Indicates whether the reference TLDs are loaded.
    * @return {boolean} True if the reference TLDs are loaded or false if not.
    */
   this.isInitialized = function() { return initialized; };
+
+  /**
+   * Dumps the reference TLDs.
+   * @return {string} The serialized reference TLDs.
+   */
+  this.getTlds = function() { return JSON.stringify(tlds); };
 
   /**
    * Determines a canonical domain name.
@@ -44,12 +50,13 @@ function Sitename() {
     return domain;
   };
 
-  var version = '1.4.0';
+  var version = '1.5.0';
   var tldList =
       'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
   var initialized = false;
   var anchor = document.createElement('a');
-  var tlds = (options || localStorage).tlds;
+  var reload = !tlds;
+  var tlds = tlds || localStorage.tlds;
 
   function parseTldList(data) {
     data = data.split('\n');
@@ -73,7 +80,7 @@ function Sitename() {
     var tldCount = tldPatch.length;
     for (var i = 0; i < tldCount; i++) tlds[tldPatch[i]] = true;
     initialized = true;
-    (options || localStorage).tlds = JSON.stringify(tlds);
+    localStorage.tlds = JSON.stringify(tlds);
   }
 
   if (tlds) {
@@ -81,7 +88,7 @@ function Sitename() {
     initialized = true;
   } else tlds = {};
 
-  $.get(tldList, function(data) { parseTldList(data); });
+  reload && $.get(tldList, function(data) { parseTldList(data); });
 
   return this;
 }

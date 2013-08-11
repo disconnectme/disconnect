@@ -26,15 +26,13 @@ function getService(domain) { return servicePointer[domain]; }
 /* The "extension" API. */
 var EXTENSION = chrome.extension;
 
-/* The domain getter. */
-var GET = (new Sitename).get;
-
 /* The active categories et al. */
 var servicePointer;
 
 /* Traps and selectively cancels a request and messages such. */
 EXTENSION.sendRequest({initialized: true}, function(response) {
   servicePointer = response.servicePointer;
+  var GET = (new Sitename(response.tlds)).get;
   var PARENT_DOMAIN = response.domain;
   var PARENT_SERVICE = getService(PARENT_DOMAIN);
   var WHITELIST = response.whitelist;
@@ -85,7 +83,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
     });
   }, true);
 
-  if (location.href.indexOf('https://disconnect.me/') + 1)
+  if (location.href.indexOf('disconnect.me') + 1)
       EXTENSION.sendRequest({
         pwyw: true,
         bucket: document.getElementById('input-type').getAttribute('value')
