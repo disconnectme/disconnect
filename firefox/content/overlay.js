@@ -1218,23 +1218,11 @@ if (typeof Disconnect == 'undefined') {
 
            visual.click(function() {
             //$('#' + 'disconnect-list').fadeOut('fast', function() {
-                    const BUTTON =
-                    activeServices.
-                    parent().
-                    parent().
-                    prev().
-                    prev().
-                    find('.action img')[0];
-                    if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
-                    activeServices.hide();
-
-                   renderGraphs(url);
-                   renderGraph(gBrowser.contentWindow);
-
                    $('#disconnect-list').css('display', 'none'); 
                    $('#graph').height(500);
                    $('#graph').width(708);
                    $('#graph').css('display', 'block'); 
+                   renderGraph(gBrowser.contentWindow);
             //  });
            });
 
@@ -1244,6 +1232,7 @@ if (typeof Disconnect == 'undefined') {
             //$('#' + 'graph').fadeOut('fast', function() {
                    $('#graph').css('display', 'none'); 
                    $('#disconnect-list').css('display', 'block'); 
+                   renderGraphs(url);
              // });
            });
 
