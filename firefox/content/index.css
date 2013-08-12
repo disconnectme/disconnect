@@ -1,0 +1,340 @@
+/* index.css */
+
+g.node.unrelated-domain image {
+  display: none;
+}
+
+g.node.unrelated-domain circle.glow {
+  display: none;
+}
+
+g.node.unrelated-domain circle.visited {
+  stroke: #bfffff;
+}
+
+g.node.unrelated-domain circle.site {
+  stroke: #dfdfdf;
+}
+
+g.node.unrelated-domain .tracker {
+  stroke: #efdfaf;
+}
+
+g.node.unrelated-domain circle.round-border {
+  fill: #eaeaea;
+}
+
+.round-border {
+  fill: #fff;
+  stroke-width: 2px;
+}
+
+marker {
+  stroke: none;
+  fill: #000;
+  fill-opacity: 1;  
+}
+
+line.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+line.bold {
+  stroke: #000;
+  stroke-opacity: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+#graph {
+  font-family: "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 8pt;
+  padding: 0;
+  background-color: white;
+  color: #666666;
+}
+
+#graph.safari {
+  margin: 0;
+}
+
+#graph a {
+  outline: none;
+  color: black;
+}
+
+#page {
+  position: relative;
+  width: 706px;
+}
+
+#sidebar {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  width: 200px;
+  padding-left: 15px;
+  padding-bottom: 15px;
+  pointer-events: none;
+}
+
+#chart {
+  position: absolute;
+  left: 216px;
+}
+
+#chart.fullscreen {
+  left: 0;
+}
+
+#chart.safari.fullscreen {
+  left: 4px;
+}
+
+#chart svg {
+  margin: 3px;
+}
+
+#sidebar a, .info a, span.next {
+  pointer-events: auto;
+}
+
+hr { border-width: 1px 0 0 }
+
+blockquote {
+  margin-left: 10px;
+  font-style: italic;
+}
+
+h1 {
+  margin: 0;
+}
+
+h2.domain img.favicon {
+  width: 16px;
+  height: 16px;
+  padding-right: 4px;
+  vertical-align: middle;
+}
+
+h2.domain img.tracker {
+  height: 30px;
+}
+
+.attribution {
+  margin-left: 20px;
+}
+
+.tracker {
+  stroke: #d62728;
+}
+
+.site {
+  stroke: #7f7f7f;
+}
+
+.visited {
+  stroke: #3388ff;
+}
+
+.demo span.next {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.demo span.next:hover, #graph a:hover {
+  margin-right: -1px;
+  margin-left: -1px;
+  background: yellow;
+  padding-right: 1px;
+  padding-left: 1px;
+  color: black;
+}
+
+#sidebar-content {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+#sidebar-content p:first-child, #sidebar-content h2 {
+  margin-top: 0;
+  font-size: 8pt;
+}
+
+#sidebar-content #domain-infos .info a.visited {
+  color: #3388ff;
+}
+
+#sidebar-content #domain-infos .info a.tracker {
+  color: #d62728;
+}
+
+#sidebar-content #domain-infos .info a.tracker.blocked {
+  text-decoration: line-through;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+#addon-installation-detected {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: green;
+  padding: 5px;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+div.settings-menu {
+  padding: 5px;
+  pointer-events: auto;
+}
+
+div.settings-menu > ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  font-size: 8pt;
+}
+
+div.settings-menu > ul > li, div.settings-menu.collapsed {
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+}
+
+div.settings-menu > ul > li.invisible:hover {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+}
+
+div.settings-menu > ul > li:first-child {
+  margin-top: 0px;
+}
+
+div.settings-menu > ul > li.invisible,
+div.settings-menu > ul > li:hover,
+div.settings-menu.collapsed:hover {
+  background: white;
+  color: black;
+}
+
+div.settings-menu.collapsed {
+  position: absolute;
+  top: 10px;
+  border: 1px solid white;
+  text-align: center;
+}
+
+#show-sidebar {
+  display: none;
+  left: 15px;
+  width: 10px;
+}
+
+#show-sidebar:hover {
+  border-color: black;
+}
+
+#show-list {
+  right: 15px;
+  border-color: white;
+  background: #009548;
+  width: 170px;
+  color: white;
+}
+
+#show-list:hover {
+  border-color: #009548;
+  background: white;
+  color: #009548;
+}
+
+#deployment-info {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+}
+
+html.deployment-production #deployment-info {
+  display: none;
+}
+
+.notification {
+  margin-bottom: 4px;
+  border: 1px solid #fc0;
+  border-radius: 5px;
+  background: -webkit-linear-gradient(white, #fe8);
+  padding: 10px;
+  width: 772px;
+}
+
+#update.safari {
+  margin-left: 4px;
+  width: 769px;
+}
+
+#update .chrome, #update .safari {
+  display: none;
+}
+
+#recommends {
+  border: 1px solid #c5d5dd;
+  background: -webkit-linear-gradient(white, #e6f1f6);
+}
+
+.share {
+  display: inline-block;
+  margin-top: 455px;
+  background: url(../images/chrollusion/share.png);
+  width: 200px;
+  height: 60px;
+  cursor: pointer;
+}
+
+#js-share-tweet {
+  margin-left: 20px;
+  background-position: 0 60px;
+}
+
+.close {
+  display: inline-block;
+  vertical-align: text-top;
+  background: url(../images/chrollusion/close.png);
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: url(../images/chrollusion/close-hover.png);
+}
+
+.dashlane {
+  vertical-align: text-top;
+  width: 16px;
+  height: 16px;
+}
+
+#social_share {
+  position: absolute;
+  top: -10000px;
+  left: -10000px;
+  width: 300px;
+  height: 300px;
+  z-index: 999;
+}
