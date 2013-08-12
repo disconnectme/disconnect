@@ -119,7 +119,7 @@ Components.
   getService(Components.interfaces.mozIJSSubScriptLoader).
   loadSubScript('chrome://disconnect/skin/scripts/data.js');
 processServices(data);
-xhr.open('GET', 'https://services.disconnect.me/services-pro.json');
+xhr.open('GET', 'https://disconnect.me/services-pro.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {

@@ -118,7 +118,7 @@ processServices(data);
 /* Fetches the third-party metadata. */
 var id = setInterval(function() {
   if (index == nextRequest) {
-    $.get('https://services.disconnect.me/services-pro.json', function(data) {
+    $.get('https://disconnect.me/services-pro.json', function(data) {
       clearInterval(id);
       processServices(deserialize(sjcl.decrypt(
         'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
