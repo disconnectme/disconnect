@@ -183,20 +183,7 @@ if (typeof Disconnect == 'undefined') {
           );
         }
       );
-
       Disconnect.renderWhitelisting(siteWhitelist);
-
-/* 279 
-      if( (!shortcutWhitelist[name]) == true ) {              
-        if(name == Disconnect.shortcutNames[0]) {
-          $.get("http://disconnect.me/firefox/facebook/uninstall").always(function() { alert("finishFFFFed"); });
-        }else if(name == Disconnect.shortcutNames[1]) {
-          $.get("http://disconnect.me/firefox/google/uninstall").always(function() { alert("finisGGGGhed"); });
-        }else if(name == Disconnect.shortcutNames[2]) {
-          $.get("http://disconnect.me/firefox/twitter/uninstall").always(function() { alert("finisTTTThed"); });
-        } 
-      }
-*/ 
       content.location.reload();
     },
 
@@ -819,15 +806,13 @@ if (typeof Disconnect == 'undefined') {
      */
     initialize: function() {
 
-/* 279 
       Components.utils.import("resource://gre/modules/AddonManager.jsm");
       AddonManager.addAddonListener({ 
           onUninstalling: function(addon){
-              $.get("http://www.disconnect.me/firefox/uninstall");
+              $.post("http://www.disconnect.me/firefox/uninstall");
           }
       });
-*/ 
-
+ 
       Components.utils['import']('resource://modules/state.js');
       var interfaces = Components.interfaces;
       var loader =
