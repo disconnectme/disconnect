@@ -182,6 +182,11 @@ ul {
   padding-left: 20px;
 }
 
+li {
+  list-style-image: none !important;
+  display:list-item;
+}
+
 #addon-installation-detected {
   position: fixed;
   top: 0px;
