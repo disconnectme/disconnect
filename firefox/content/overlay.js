@@ -1232,6 +1232,7 @@ if (typeof Disconnect == 'undefined') {
             //$('#' + 'graph').fadeOut('fast', function() {
                    $('#graph').css('display', 'none'); 
                    $('#disconnect-list').css('display', 'block'); 
+                   renderGraphs(url);
              // });
            });
 
