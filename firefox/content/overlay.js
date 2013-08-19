@@ -413,43 +413,6 @@ if (typeof Disconnect == 'undefined') {
       }
     },
 
-    /** 
-     * Plays a visualization animation. daniel
-     */
-    animateVisualization: function(icon, callback) {
-      var imageExtension = Disconnect.imageExtension;
-      var imageDirectory = Disconnect.imageDirectory;
-
-      for (var i = 0; i < Disconnect.FRAME_COUNT - 1; i++)
-          setTimeout(function(scene, index) {
-            if(scene == undefined)return;
-            icon.src = imageDirectory + scene + '/' + (index + 2) +  Disconnect.imageExtension;
-          }, i * Disconnect.FRAME_LENGTH, Disconnect.currentScene, i);
-      var PREVIOUS_SCENE = Disconnect.currentScene;
-      Disconnect.currentScene = Disconnect.getScene();
-      Disconnect.SCENES.push(Disconnect.PREVIOUS_SCENE);
-      for (i = 0; i < Disconnect.FRAME_COUNT; i++)
-          setTimeout(function(scene, index) { 
-            if(scene == undefined)return;
-            icon.src = imageDirectory + scene + '/' + (Disconnect.FRAME_COUNT - index) +  Disconnect.imageExtension;
-            index == Disconnect.FRAME_COUNT - 1 && callback && callback();
-          }, (i + Disconnect.FRAME_COUNT - 1) * Disconnect.FRAME_LENGTH, Disconnect.currentScene, i);
-    },
-
-    /**
-     * Restricts the visualization animation to 1x per mouseover.
-     */
-    handleVisualization: function() {
-      var target = $('.' + this.className.split(' ', 1));
-      target.off('mouseenter');
-
-      Disconnect.animateVisualization(
-        target[0].getElementsByTagName('html:img')[0], function() {
-          target.mouseenter(Disconnect.handleVisualization);
-        }
-      );
-    },
-
     /**
      * Outputs the global blocking state.
      */
@@ -479,11 +442,6 @@ if (typeof Disconnect == 'undefined') {
         control: whitelisting, icon: whitelistingIcon, text: whitelistingText
       };
     },
-
-    /* Picks a random animation path. */
-    getScene: function() {
-      return Disconnect.SCENES.splice(Math.floor(Math.random() * Disconnect.SCENES.length), 1)[0];
-    }, 
 
     /**
      * Plays a whitelist animation.
@@ -780,29 +738,6 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
-     * Reload Corrent Tab
-     */
-    reloadTab: function()
-    {
-      gBrowser.contentWindow.location.reload();
-    }, 
-
-    /**
-     * Get hostnome with Sitename
-     */
-    getHostSitename: function(s){
-      return new Sitename().get(s.toString());
-    }, 
-
-    /**
-     * Get hostnome. 
-     */
-    getHostname: function (str) {
-      var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
-      return str.match(re)[1].toString();
-    },
-
-    /**
      * Registers event handlers.
      */
     initialize: function() {
@@ -813,10 +748,6 @@ if (typeof Disconnect == 'undefined') {
             classes['@mozilla.org/moz/jssubscript-loader;1'].
             getService(interfaces.mozIJSSubScriptLoader);
       loader.loadSubScript('chrome://disconnect/content/sitename.js');
-
-      loader.loadSubScript('chrome://disconnect/content/sitename-firefox.js');
-      loader.loadSubScript('chrome://disconnect/content/services-firefox.js');
-
       loader.loadSubScript(
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
       );
@@ -858,7 +789,6 @@ if (typeof Disconnect == 'undefined') {
       var clearServices = this.clearServices;
       var renderWhitelisting = this.renderWhitelisting;
       var handleWhitelisting = this.handleWhitelisting;
-      var handleVisualization = this.handleVisualization;  
       var whitelistSite = this.whitelistSite;
       var renderBlockedRequest = this.renderBlockedRequest;
       var renderSecuredRequest = this.renderSecuredRequest;
@@ -971,7 +901,6 @@ if (typeof Disconnect == 'undefined') {
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
-        renderGraph(gBrowser.contentWindow);  
       }, false);
 
       tabs.addEventListener('TabClose', function(event) {
@@ -985,7 +914,6 @@ if (typeof Disconnect == 'undefined') {
         var count = countReturn.count;
         count ? updateBadge(button, badge, count, countReturn.blocked) :
             clearBadge(button, badge);
-        renderGraph(gBrowser.contentWindow);   
       }, false);
 
       observer.addObserver({observe: function(subject, topic, data) {
@@ -1023,48 +951,6 @@ if (typeof Disconnect == 'undefined') {
       observer.addObserver({observe: function(subject, topic, data) {
         clearServices(data, get(data));
       }}, 'disconnect-load', false);
-
-     observer.addObserver({observe: function(subject, topic, data) {
-        this.aborted = Components.results.NS_BINDING_ABORTED;
-        this.nsIHttpChannel = Components.interfaces.nsIHttpChannel;
-        this.nsIChannel = Components.interfaces.nsIChannel;
-        this.nsIRequest = Components.interfaces.nsIRequest;
-
-        var uri, aVisitor;
-        if ( subject instanceof this.nsIHttpChannel ) {
-          var REQUESTED_URL = subject.URI.spec;
-          var CHILD_DOMAIN = get(subject.URI.host);
-          var PARENT_DOMAIN = CHILD_DOMAIN;
-          if (subject.loadGroup && subject.loadGroup.name != "") {
-            PARENT_DOMAIN = Disconnect.getHostname(subject.loadGroup.name);
-          } else if (subject.referrer && subject.referrer.host) {
-            PARENT_DOMAIN = get(subject.referrer.host);
-          }
-
-          // The Collusion data structure.
-          if (!(CHILD_DOMAIN in Disconnect.LOG))
-              Disconnect.LOG[CHILD_DOMAIN] = {host: CHILD_DOMAIN, referrers: {}, visited: false};
-          if (!(PARENT_DOMAIN in Disconnect.LOG))
-              Disconnect.LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
-          Disconnect.LOG[PARENT_DOMAIN].visited = true;
-          const REFERRERS = Disconnect.LOG[CHILD_DOMAIN].referrers;
-          const ELAPSED_TIME = new Date(); //- startTime;
-          if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
-              REFERRERS[PARENT_DOMAIN] = {
-                host: PARENT_DOMAIN,
-                types: [ELAPSED_TIME]
-              };
-          const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
-
-          /*
-          var TYPE = 'image';
-          if (PARENT_REFERRERS) {
-            const TYPES = PARENT_REFERRERS.types;
-            TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
-          }
-          */
-        }
-      }}, "http-on-modify-request", false);
 
       $(
         document.
@@ -1211,41 +1097,6 @@ if (typeof Disconnect == 'undefined') {
           $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
           });
-
-          var visual = $('.disconnect-visualization');
-          visual.mouseenter(handleVisualization);
-          visual.off(clickName);
-
-           visual.click(function() {
-            //$('#' + 'disconnect-list').fadeOut('fast', function() {
-                    const BUTTON =
-                    activeServices.
-                    parent().
-                    parent().
-                    prev().
-                    prev().
-                    find('.action img')[0];
-                    if (BUTTON) BUTTON.src = BUTTON.src.replace(7, 1);
-                    activeServices.hide();
-
-                   renderGraphs(url);
-                   renderGraph(gBrowser.contentWindow);
-
-                   $('#disconnect-list').css('display', 'none'); 
-                   $('#graph').height(500);
-                   $('#graph').width(708);
-                   $('#graph').css('display', 'block'); 
-            //  });
-           });
-
-
-          var showList = $('#show-list');
-            showList.click(function() {
-            //$('#' + 'graph').fadeOut('fast', function() {
-                   $('#graph').css('display', 'none'); 
-                   $('#disconnect-list').css('display', 'block'); 
-             // });
-           });
 
           $('.disconnect-service').not(':first-child').remove();
           var siteBlacklist =
@@ -1551,13 +1402,7 @@ if (typeof Disconnect == 'undefined') {
     trackingResourceSize: 8.51145760261889,
     resourceSize: 10.4957370842049,
     dashboard: {},
-    whitelistingClicked: 0,
-    LOG: {},
-    localStorage: new Object(),
-    SCENES: [1, 2, 3, 4, 5], /* The number of animation cells. */
-    FRAME_COUNT: 7, /* The duration of animation cells. */
-    FRAME_LENGTH: 100,
-    currentScene: 1
+    whitelistingClicked: 0
   };
 }
 
