@@ -1018,6 +1018,8 @@ if (typeof Disconnect == 'undefined') {
             totalCount
           );
         }, timeout);
+
+        renderGraph(gBrowser.contentWindow);
       }}, 'disconnect-request', false);
 
       observer.addObserver({observe: function(subject, topic, data) {
