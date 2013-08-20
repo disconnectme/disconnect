@@ -20,8 +20,16 @@
     Brian Kennish <byoogle@gmail.com>
 */
 
+/* Destringifies an object. */
+function deserialize(object) {
+  return typeof object == 'string' ? JSON.parse(object) : object;
+}
+
 /* Formats the blacklist. */
 function processServices(data) {
+  data = deserialize(sjcl.decrypt(
+    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
+  ));
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -120,9 +128,7 @@ var id = setInterval(function() {
   if (index == nextRequest) {
     $.get('https://services.disconnect.me/disconnect.json', function(data) {
       clearInterval(id);
-      processServices(deserialize(sjcl.decrypt(
-        'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
-      )));
+      processServices(data);
     });
 
     nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));

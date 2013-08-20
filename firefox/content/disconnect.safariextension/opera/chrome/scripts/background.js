@@ -28,11 +28,6 @@ function initializeArray(length, defaultValue) {
   return ARRAY;
 }
 
-/* Destringifies an object. */
-function deserialize(object) {
-  return typeof object == 'string' ? JSON.parse(object) : object;
-}
-
 /* Toggles the search preferences. */
 function editSettings(state) {
   state = !!state;

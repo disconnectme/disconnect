@@ -22,6 +22,8 @@
 
 /* Formats the blacklist. */
 function processServices(data) {
+  data =
+      deserialize(sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data));
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -118,16 +120,14 @@ Components.
   classes['@mozilla.org/moz/jssubscript-loader;1'].
   getService(Components.interfaces.mozIJSSubScriptLoader).
   loadSubScript('chrome://disconnect/skin/scripts/data.js');
-processServices(data);
+processServices(JSON.stringify(data));
 xhr.open('GET', 'https://services.disconnect.me/disconnect.json');
 
 /* Fetches the third-party metadata. */
 xhr.onload = function() {
   if (xhr.status == 200) {
     timer.cancel();
-    processServices(deserialize(sjcl.decrypt(
-      'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', xhr.responseText
-    )));
+    processServices(xhr.responseText);
   }
 };
 
