@@ -23,6 +23,9 @@
 <?xml-stylesheet
   href="chrome://disconnect/skin/stylesheets/vendor/tipped/tipped.css"
 ?>
+<?xml-stylesheet
+  href="chrome://disconnect/skin/stylesheets/chrollusion/index.css"
+?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
 <overlay
@@ -30,6 +33,25 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   id="disconnect"
 >
+  <script src="chrome://disconnect/skin/scripts/vendor/port/port.js"/>
+  <script src="sitename.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/jquery/jquery.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/tipped/tipped.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js"/>
+  <script src="services.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js"/>
+  <script src="chrome://disconnect/skin/scripts/vendor/favicon/favicon.js"/>
+  <script
+    src="chrome://disconnect/skin/scripts/chrollusion/index-content-script.js"
+  />
+  <script
+    src="chrome://disconnect/skin/scripts/chrollusion/collusion-addon.js"
+  />
+  <script src="graphrunner.js"/>
+  <script src="index.js"/>
+  <script src="debug.js"/>
   <script src="overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
     <toolbaritem id="disconnect-item" title="Disconnect">
@@ -138,19 +160,17 @@
                   Whitelist site
                 </html:td>
                 <html:td
-                  class="disconnect-visualization disconnect-badge disconnect-disabled"
-                  title="Coming soon"
+                  class="disconnect-visualization disconnect-badge"
                 >
                   <html:img src="chrome://disconnect/skin/images/1/1.png"/>
                 </html:td>
                 <html:td
-                  class="disconnect-visualization disconnect-text disconnect-disabled"
-                  title="Coming soon"
+                  class="disconnect-visualization disconnect-text"
                 >Visualize page</html:td>
               </html:tr>
               <html:tr>
                 <html:td class="disconnect-wifi">
-                  <html:input type="checkbox"/>
+                  <html:input type="checkbox" id="disconnect-wifi-check"/>
                 </html:td>
                 <html:td class="disconnect-wifi">Secure Wi-Fi</html:td>
                 <html:td class="disconnect-search" title="Coming soon">
@@ -287,57 +307,57 @@
               </html:tr>
             </html:table>
           </html:div>
-          <html:div id="disconnect-graph">
-            <html:div class="disconnect-notification" id="disconnect-update" style="display: none">
-              <html:div class="disconnect-close"></html:div>
-              &#160;<html:strong><html:span class="disconnect-chrome">v2.0</html:span><html:span class="disconnect-safari">v2.0</html:span></html:strong> • Click <html:strong>Hide inactive sites</html:strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site.
-              <html:div class="disconnect-share" id="disconnect-js-share-fb" style="display: none"></html:div>
-              <html:div class="disconnect-share" id="disconnect-js-share-tweet" style="display: none"></html:div>
+          <html:div id="graph">
+            <!-- html:div class="notification" id="update" style="display: none;" >
+              <html:div class="close"></html:div>
+             &#160;<html:strong><html:span class="disconnect-chrome">v2.0</html:span><html:span class="disconnect-safari">v2.0</html:span></html:strong> • Click <html:strong>Hide inactive sites</html:strong> in the sidebar to view the graph for just the current site. • Click a blocked site in the graph to unblock the site. 
+              <html:div class="share" id="js-share-fb" ></html:div>
+              <html:div class="share" id="js-share-tweet" ></html:div>
+            </html:div -->
+            <html:div class="notification" id="recommends" style="display: none">
+              <html:div class="close"></html:div>
+              <html:span id='recommender-message'></html:span>
             </html:div>
-            <html:div class="disconnect-notification" id="disconnect-recommends" style="display: none">
-              <html:div class="disconnect-close"></html:div>
-              <html:span id='disconnect-recommender-message'></html:span>
-            </html:div>
-            <html:div id="disconnect-page">
-            <html:div id="disconnect-sidebar" style="display: none;">
+            <html:div id="page">
+            <html:div id="sidebar" >
               <html:h1></html:h1>
-              <html:img id="disconnect-logo"/>
+              <html:img id="logo" src="chrome://disconnect/skin/images/chrollusion/chrome.png"/>
               <html:hr/>
 
-              <html:div id="disconnect-sidebar-content">
-              <html:div class="disconnect-live-data">
+              <html:div id="sidebar-content">
+              <html:div class="live-data">
                 <html:p>Browse the web normally. As you do, the graph in this popup and the counter in the toolbar will update. Each circle in the graph represents a site that’s been or would’ve been sent some of your personal info.</html:p>
                 <html:p>Circles with a halo are sites you’ve visited. Circles without a halo are sites you haven’t.</html:p>
-                <html:p><html:span class="disconnect-tracker">Red</html:span> circles are known tracking sites. <html:span class="disconnect-site">Gray</html:span> circles aren’t but may still track you.</html:p>
+                <html:p><html:span class="tracker">Red</html:span> circles are known tracking sites. <html:span class="site">Gray</html:span> circles aren’t but may still track you.</html:p>
                 <html:p>Mouse over a circle to view that site’s tracking footprint. Click a red circle to block or unblock that site.</html:p>
               </html:div> <!-- end of live-data -->
-              <html:div id="disconnect-domain-infos"></html:div> <!-- Templates are copied into here -->
-              <html:div class="disconnect-settings-menu">
+              <html:div id="domain-infos" style="display: none" ></html:div> <!-- Templates are copied into here -->
+              <html:div class="settings-menu">
                 <html:ul>
-                  <html:li id="disconnect-unblock-tracking"></html:li>
-                  <html:li id="disconnect-disable-wifi"></html:li>
-                  <html:li id="disconnect-hide-sidebar">Hide sidebar</html:li>
-                  <html:li class="disconnect-invisible" id="disconnect-show-instructions">Show instructions</html:li>
+                  <html:li id="unblock-tracking" ></html:li>
+                  <html:li id="disable-wifi" ></html:li>
+                  <html:li id="hide-sidebar" >Hide sidebar</html:li>
+                  <html:li class="invisible" id="show-instructions"  style="display: none;"  >Show instructions</html:li>
                 </html:ul>
               </html:div> <!-- end of settingsmenu -->
               </html:div> <!-- End of #sidebar-content -->
             </html:div> <!-- End of #sidebar -->
-            <html:div id="disconnect-chart"></html:div><!-- The d3 layout graph will go inside this div -->
-            <html:div class="disconnect-settings-menu disconnect-collapsed" id="disconnect-show-sidebar">+</html:div>
-            <html:div class="disconnect-settings-menu disconnect-collapsed" id="disconnect-show-list">Show list view</html:div>
+            <html:div id="chart"></html:div><!-- The d3 layout graph will go inside this div -->
+            <html:div class="settings-menu collapsed" id="show-sidebar">+</html:div>
+            <html:div class="settings-menu collapsed" id="show-list">Show list view</html:div>
             </html:div>
-            <html:div id="disconnect-addon-installation-detected" style="display: none;">
+            <html:div id="addon-installation-detected"  style="display: none" >
               Collusion add-on detected! Reload this page to see your graph.
             </html:div>
-            <html:div id="disconnect-templates">
-              <html:div class="disconnect-info" style="display: none;">
-                <html:h2 class="disconnect-domain"><html:a class="disconnect-domain"></html:a></html:h2>
+            <html:div id="templates">
+              <html:div class="info" style="display: none" >
+                <html:h2 class="domain"><html:a class="domain"></html:a></html:h2>
 
-                <html:div class="disconnect-referrees">
+                <html:div class="referrees">
                   <html:p>When you visit this site, the following sites are informed:</html:p>
                   <html:ul></html:ul>
                 </html:div>
-                <html:div class="disconnect-referrers">
+                <html:div class="referrers">
                   <html:p>This site is informed when you visit the following sites:</html:p>
                   <html:ul></html:ul>
                 </html:div>
@@ -345,7 +365,7 @@
             </html:div>
 
             <!-- Start Social Sharing Stuff -->
-            <html:div id="disconnect-social_share">
+            <html:div id="disconnect-social_share" style="display: none">
               <!-- Start Twitter Stuff-->
               <html:a href="https://twitter.com/share" class="disconnect-twitter-share-button" data-url="https://blog.disconnect.me/collusion-for-safari">Tweet</html:a>
               <!-- End Twitter Stuff-->
