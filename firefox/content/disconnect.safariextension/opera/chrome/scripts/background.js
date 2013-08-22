@@ -511,9 +511,9 @@ false && INSTANT_ENABLED.get({}, function(details) {
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
+  const TAB_ID = details.tabId;
   const TYPE = details.type;
   const PARENT = TYPE == 'main_frame';
-  const TAB_ID = details.tabId;
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
 
@@ -548,8 +548,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
             {})[CHILD_CATEGORY] || {};
 
     if (
-      PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
-          PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
+      TAB_ID == -1 || PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN
+          || PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
     ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
