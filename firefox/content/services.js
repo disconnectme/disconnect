@@ -64,18 +64,18 @@ function getService(domain) { return moreServices[domain]; }
 
 /* Rewrites a URL, if insecure. */
 function harden(url) {
-  var hardeningRules = [];
+  var rules = [];
   if (preferences.getBoolPref('searchHardened'))
-      hardeningRules = hardeningRules.concat(moreRules);
+      rules = rules.concat(moreRules);
   if (preferences.getBoolPref('browsingHardened'))
-      hardeningRules = hardeningRules.concat(hardeningRules);
-  var ruleCount = hardeningRules.length;
+      rules = rules.concat(hardeningRules);
+  var ruleCount = rules.length;
   var hardenedUrl = url;
   var hardened;
 
   for (var i = 0; i < ruleCount; i++) {
-    var hardeningRule = hardeningRules[i];
-    hardenedUrl = url.replace(RegExp(hardeningRule[0]), hardeningRule[1]);
+    var rule = rules[i];
+    hardenedUrl = url.replace(RegExp(rule[0]), rule[1]);
 
     if (hardenedUrl != url) {
       hardened = true;
