@@ -541,7 +541,9 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
     const CHILD_NAME = CHILD_SERVICE.name;
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
-    const CHILD_CATEGORY = CHILD_SERVICE.category;
+    const CHILD_CATEGORY =
+        CHILD_SERVICE.category =
+            recategorize(CHILD_DOMAIN, REQUESTED_URL) || CHILD_SERVICE.category;
     const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
     const CATEGORY_WHITELIST =
         ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||

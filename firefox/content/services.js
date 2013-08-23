@@ -20,6 +20,11 @@
     Brian Kennish <byoogle@gmail.com>
 */
 
+/* Destringifies an object. */
+function deserialize(object) {
+  return typeof object == 'string' ? JSON.parse(object) : object;
+}
+
 /* Formats the blacklist. */
 function processServices(data) {
   data =
@@ -50,17 +55,21 @@ function processServices(data) {
     }
   }
 
+  filteringRules = data.filteringRules;
   hardeningRules = data.hardeningRules;
   moreRules = data.moreRules;
 }
 
-/* Destringifies an object. */
-function deserialize(object) {
-  return typeof object == 'string' ? JSON.parse(object) : object;
-}
-
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return moreServices[domain]; }
+
+/* Retests a URL. */
+function recategorize(domain, url) {
+  var category;
+  var rule = filteringRules[domain];
+  if (rule && RegExp(rule[0]).test(url)) category = rule[1];
+  return category;
+}
 
 /* Rewrites a URL, if insecure. */
 function harden(url) {
@@ -109,6 +118,9 @@ var nextRequest = 0;
   domain names they phone home with, lowercased.
 */
 var moreServices = {};
+
+/* The supplementary domain names, regexes, and categories. */
+var filteringRules = {};
 
 /* The matching regexes and replacement strings. */
 var hardeningRules = [];

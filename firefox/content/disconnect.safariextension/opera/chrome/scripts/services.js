@@ -58,12 +58,21 @@ function processServices(data) {
     }
   }
 
+  filteringRules = data.filteringRules;
   hardeningRules = data.hardeningRules;
   moreRules = data.moreRules;
 }
 
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return servicePointer[domain]; }
+
+/* Retests a URL. */
+function recategorize(domain, url) {
+  var category;
+  var rule = filteringRules[domain];
+  if (rule && RegExp(rule[0]).test(url)) category = rule[1];
+  return category;
+}
 
 /* Rewrites a URL, if insecure. */
 function harden(url) {
@@ -110,6 +119,9 @@ var moreServices = {};
 
 /* The categories et al. for Disconnect 1. */
 var evenMoreServices = {};
+
+/* The supplementary domain names, regexes, and categories. */
+var filteringRules = {};
 
 /* The matching regexes and replacement strings. */
 var hardeningRules = [];

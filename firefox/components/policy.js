@@ -122,7 +122,8 @@ Disconnect.prototype = {
             var parentService = getService(parentDomain);
             var childName = childService.name;
             var redirectSafe = childUrl != requests[parentUrl];
-            var childCategory = childService.category;
+            var childCategory =
+                recategorize(childDomain, childUrl) || childService.category;
             var content = childCategory == contentName;
             var categoryWhitelist =
                 (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
