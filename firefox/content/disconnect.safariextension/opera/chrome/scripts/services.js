@@ -102,15 +102,6 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
-/* The number of iterations. */
-var index = 0;
-
-/* The number of requests. */
-var requestCount = 0;
-
-/* The next iteration to make a request. */
-var nextRequest = 0;
-
 /*
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
@@ -132,18 +123,14 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
+function fetchServicesData() {
+  $.get('https://services.disconnect.me/disconnect.json', processServices);
+}
+
+// Set the block list from the local, default dataset.
 processServices(data);
+// Fetch a more up-to-date block list from the web.
+fetchServicesData();
+// Update the block list once every 24 hours.
+setInterval(fetchServicesData, 24*60*60*1000);
 
-/* Fetches the third-party metadata. */
-var id = setInterval(function() {
-  if (index == nextRequest) {
-    $.get('https://services.disconnect.me/disconnect.json', function(data) {
-      clearInterval(id);
-      processServices(data);
-    });
-
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
-  }
-
-  index++;
-}, 1000);
