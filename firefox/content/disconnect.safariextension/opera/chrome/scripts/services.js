@@ -124,7 +124,29 @@ var moreRules = [];
 var servicePointer = moreServices;
 
 function fetchServicesData() {
-  $.get('https://services.disconnect.me/disconnect.json', processServices);
+  var now = new Date();
+  var firstUpdate = new Date(deserialize(localStorage.firstUpdate)) || now;
+  var howLongInstalledMsec = now.getTime() - firstUpdate.getTime();
+  var oneWeekAsMsec = 7 * 24 * 60 * 60 * 1000;
+  var oneMonthAsMsec = 30 * 24 * 60 * 60 * 1000;
+  var weekly = JSON.stringify(howLongInstalledMsec >= oneWeekAsMsec);
+  var monthly = JSON.stringify(howLongInstalledMsec >= oneMonthAsMsec);
+  var url = 'https://services.disconnect.me/disconnect.json';
+  // Include params that tell whether the user has been using the extension for
+  // a month or for a month.
+  var params = ['weekly=' + weekly, 'monthly=' + monthly].join('&');
+  url = url + '?' + params;
+  $.get(url, function(data) {
+    processServices(data);
+
+    // Keep track of when first and last updates were done.
+    var now = new Date();
+    localStorage.lastUpdate = JSON.stringify(now);
+    if (localStorage.firstUpdate == null) {
+      localStorage.firstUpdate = localStorage.lastUpdate;
+    }
+    localStorage.updateCount = JSON.stringify((deserialize(localStorage.updateCount) || 0) + 1);
+  });
 }
 
 // Set the block list from the local, default dataset.
