@@ -688,92 +688,90 @@ SAFARI && safari.application.addEventListener(
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
-  if (!(typeof TAB == 'undefined')) {
-    const TAB_ID = TAB.id;
-    const TAB_DASHBOARD =
-        DASHBOARD[TAB_ID] ||
-            (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
-    const TOTAL_COUNT = ++TAB_DASHBOARD.total;
+  const TAB_ID = TAB.id;
+  const TAB_DASHBOARD =
+      DASHBOARD[TAB_ID] ||
+          (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
+  const TOTAL_COUNT = ++TAB_DASHBOARD.total;
 
-    if (request.initialized) {
-      const DOMAIN = GET(TAB.url);
-      sendResponse({
-        servicePointer: servicePointer,
-        tlds: SITENAME.getTlds(),
-        domain: DOMAIN,
-        whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
-        blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
-      });
-    } else if (request.pwyw) {
-      const PWYW = deserialize(options.pwyw);
-      PWYW.bucket = request.bucket;
-      options.pwyw = JSON.stringify(PWYW);
-      sendResponse({});
-    } else {
-      if (SAFARI) {
-        const BLOCKED = request.blocked;
-        const WHITELISTED = request.whitelisted;
-        var popup =
-            options.displayMode != LEGACY_NAME &&
-                EXTENSION.getViews({type: 'popup'})[0];
-        if (BLOCKED || WHITELISTED)
-            incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
-        var blockedCount;
+  if (request.initialized) {
+    const DOMAIN = GET(TAB.url);
+    sendResponse({
+      servicePointer: servicePointer,
+      tlds: SITENAME.getTlds(),
+      domain: DOMAIN,
+      whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
+      blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
+    });
+  } else if (request.pwyw) {
+    const PWYW = deserialize(options.pwyw);
+    PWYW.bucket = request.bucket;
+    options.pwyw = JSON.stringify(PWYW);
+    sendResponse({});
+  } else {
+    if (SAFARI) {
+      const BLOCKED = request.blocked;
+      const WHITELISTED = request.whitelisted;
+      var popup =
+          options.displayMode != LEGACY_NAME &&
+              EXTENSION.getViews({type: 'popup'})[0];
+      if (BLOCKED || WHITELISTED)
+          incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
+      var blockedCount;
 
-        if (BLOCKED) {
-          blockedCount = ++TAB_DASHBOARD.blocked;
-          const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
-          BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
-              BLOCKED_REQUESTS[date] = 1;
-          options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
-        }
-
-        // The Collusion data structure.
-        const CHILD_DOMAIN = request.childDomain;
-        if (!(CHILD_DOMAIN in LOG))
-            LOG[CHILD_DOMAIN] = {
-              host: CHILD_DOMAIN, referrers: {}, visited: false
-            };
-        const PARENT_DOMAIN = request.parentDomain;
-        if (!(PARENT_DOMAIN in LOG))
-            LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
-        LOG[PARENT_DOMAIN].visited = true;
-        const REFERRERS = LOG[CHILD_DOMAIN].referrers;
-        if (!startTime) startTime = new Date();
-        const ELAPSED_TIME = new Date() - startTime;
-        if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
-            REFERRERS[PARENT_DOMAIN] = {
-              host: PARENT_DOMAIN,
-              types: [ELAPSED_TIME]
-            };
-        const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
-
-        if (PARENT_REFERRERS) {
-          const TYPES = PARENT_REFERRERS.types;
-          const TYPE = request.type;
-          TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
-        }
-
-        // A live update.
-        if (popup)
-            if (options.displayMode == GRAPH_NAME) {
-              const GRAPH = popup.graph;
-              GRAPH && GRAPH.update(LOG);
-            } else {
-              const TIMEOUT = popup.timeout;
-
-              blockedCount && setTimeout(function() {
-                popup.renderBlockedRequest(
-                  TAB_ID,
-                  Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
-                  TOTAL_COUNT
-                );
-              }, TIMEOUT);
-            }
+      if (BLOCKED) {
+        blockedCount = ++TAB_DASHBOARD.blocked;
+        const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
+        BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
+            BLOCKED_REQUESTS[date] = 1;
+        options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
       }
 
-      sendResponse({});
+      // The Collusion data structure.
+      const CHILD_DOMAIN = request.childDomain;
+      if (!(CHILD_DOMAIN in LOG))
+          LOG[CHILD_DOMAIN] = {
+            host: CHILD_DOMAIN, referrers: {}, visited: false
+          };
+      const PARENT_DOMAIN = request.parentDomain;
+      if (!(PARENT_DOMAIN in LOG))
+          LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
+      LOG[PARENT_DOMAIN].visited = true;
+      const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+      if (!startTime) startTime = new Date();
+      const ELAPSED_TIME = new Date() - startTime;
+      if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
+          REFERRERS[PARENT_DOMAIN] = {
+            host: PARENT_DOMAIN,
+            types: [ELAPSED_TIME]
+          };
+      const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+
+      if (PARENT_REFERRERS) {
+        const TYPES = PARENT_REFERRERS.types;
+        const TYPE = request.type;
+        TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+      }
+
+      // A live update.
+      if (popup)
+          if (options.displayMode == GRAPH_NAME) {
+            const GRAPH = popup.graph;
+            GRAPH && GRAPH.update(LOG);
+          } else {
+            const TIMEOUT = popup.timeout;
+
+            blockedCount && setTimeout(function() {
+              popup.renderBlockedRequest(
+                TAB_ID,
+                Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
+                TOTAL_COUNT
+              );
+            }, TIMEOUT);
+          }
     }
+
+    sendResponse({});
   }
 });
 
