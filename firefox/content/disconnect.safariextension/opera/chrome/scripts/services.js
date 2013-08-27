@@ -102,15 +102,6 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
-/* The number of iterations. */
-var index = 0;
-
-/* The number of requests. */
-var requestCount = 0;
-
-/* The next iteration to make a request. */
-var nextRequest = 0;
-
 /*
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
@@ -132,18 +123,33 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
+function fetchServicesData() {
+  var now = new Date();
+  var firstUpdate = new Date(deserialize(localStorage.firstUpdate)) || now;
+  var howLongInstalledMsec = now.getTime() - firstUpdate.getTime();
+  var oneWeekAsMsec = 7 * 24 * 60 * 60 * 1000;
+  var oneMonthAsMsec = 30 * 24 * 60 * 60 * 1000;
+  var weekly = JSON.stringify(howLongInstalledMsec >= oneWeekAsMsec);
+  var monthly = JSON.stringify(howLongInstalledMsec >= oneMonthAsMsec);
+  var url = 'https://services.disconnect.me/disconnect.json';
+  // Include params that tell whether the user has been using the extension for
+  // a month or for a month.
+  var params = ['weekly=' + weekly, 'monthly=' + monthly].join('&');
+  url = url + '?' + params;
+  $.get(url, function() {
+    var now = new Date();
+    localStorage.lastUpdate = JSON.stringify(now);
+    if (localStorage.firstUpdate == null) {
+      localStorage.firstUpdate = localStorage.lastUpdate;
+    }
+    localStorage.updateCount = JSON.stringify((deserialize(localStorage.updateCount) || 0) + 1);
+  });
+}
+
+// Set the block list from the local, default dataset.
 processServices(data);
+// Fetch a more up-to-date block list from the web.
+fetchServicesData();
+// Update the block list once every 24 hours.
+setInterval(fetchServicesData, 24*60*60*1000);
 
-/* Fetches the third-party metadata. */
-var id = setInterval(function() {
-  if (index == nextRequest) {
-    $.get('https://services.disconnect.me/disconnect.json', function(data) {
-      clearInterval(id);
-      processServices(data);
-    });
-
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
-  }
-
-  index++;
-}, 1000);
