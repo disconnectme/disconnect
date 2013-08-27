@@ -1,7 +1,7 @@
 # Disconnect
 
-[Disconnect](https://disconnect.me/) is a browser extension that makes the web
-faster, more private, and more secure.
+[Disconnect](https://www.disconnect.me/) is a browser extension that makes the
+web faster, more private, and more secure.
 
 ![Disconnect](https://raw.github.com/disconnectme/disconnect/master/collateral/disconnect/d2-faster-transparent.png)  
 You might fancy [watching a demo](https://www.youtube.com/watch?v=Lvem1Z66C7Q)
@@ -20,12 +20,12 @@ or [trying the extension](https://disconnect.me/).
 3. Go to the Chrome menu > **Tools** > **Extensions**.
 4. Check **Developer mode** then press **Load unpacked extension...** .
 5. Find your working directory.
-6. Under `firefox/content/disconnect.safariextension/opera`, select
+6. Under `firefox`, `content`, `disconnect.safariextension`, and `opera`, select
    `chrome`.
 7. To test after you make a change, be sure to expand the extension listing then
    press **Reload**.
 8. Push your changes.
-9. Send us pull requests!
+9. Send us pull requests<em>!</em>
 
 ### In Firefox
 
@@ -38,7 +38,7 @@ or [trying the extension](https://disconnect.me/).
 7. (Re)start Firefox.
 8. To test after you make a change, be sure to restart Firefox.
 9. Push your changes.
-10. Send us pull requests!
+10. Send us pull requests<em>!</em>
 
 ### In Safari
 
@@ -49,7 +49,17 @@ or [trying the extension](https://disconnect.me/).
 7. Click **Install** then **Allow**.
 8. To test after you make a change, be sure to click **Reload** then **Allow**.
 9. Push your changes.
-10. Send us pull requests!
+10. Send us pull requests<em>!</em>
+
+### In Opera
+
+3. Go to **Window** > **Extensions**.
+4. Press **Developer Mode** then press **Load Unpacked Extension...** .
+5. Find your working directory.
+6. Under `firefox`, `content`, and `disconnect.safariextension`, select `opera`.
+7. To test after you make a change, be sure to press **Reload**.
+8. Push your changes.
+9. Send us pull requests<em>!</em>
 
 ## Software used
 
