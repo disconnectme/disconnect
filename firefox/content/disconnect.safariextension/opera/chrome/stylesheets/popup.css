@@ -90,6 +90,15 @@ td { padding: 0 }
   cursor: default
 }
 
+.hint--rounded:after { font-size: 8px }
+
+#navbar span:before { margin-left: -6px }
+
+#navbar span:after {
+  margin-top: -1px;
+  margin-left: -88px
+}
+
 #navbar .text a:last-child { display: none }
 
 #shortcuts {
@@ -280,16 +289,27 @@ td { padding: 0 }
 
 #dashboard .label { width: 66px }
 
-.sharing {
-  display: none;
-  color: #efefef;
-  white-space: nowrap;
-  cursor: default
+#tooltips {
+  margin-top: -60px;
+  width: 100%;
+  height: 60px
 }
 
-.sharing td { padding-left: 10px }
+#tooltips td { width: 33% }
 
-.sharing td:first-child { padding-left: 0 }
+#tooltips td:after { margin-top: 1px }
+
+#tooltips .speed:before { margin-left: -5px }
+
+#tooltips .speed:after { margin-left: -27px }
+
+#tooltips .bandwidth:before { margin-left: -6px }
+
+#tooltips .bandwidth:after { margin-left: -50px }
+
+#tooltips .security:before { margin-left: -7px }
+
+#tooltips .security:after { margin-left: -77px }
 
 #graph { display: none }
 

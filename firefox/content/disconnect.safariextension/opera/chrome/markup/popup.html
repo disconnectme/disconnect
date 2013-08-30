@@ -20,13 +20,12 @@
     Brian Kennish <byoogle@gmail.com>
 -->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../stylesheets/vendor/tipped/tipped.css">
+<link rel="stylesheet" href="../stylesheets/vendor/hint/hint.css">
 <link rel="stylesheet" href="../stylesheets/chrollusion/index.css">
 <link rel="stylesheet" href="../stylesheets/legacy.css">
 <link rel="stylesheet" href="../stylesheets/popup.css">
 <script src="../scripts/vendor/port/port.js"></script>
 <script src="../scripts/vendor/jquery/jquery.js"></script>
-<script src="../scripts/vendor/tipped/tipped.js"></script>
 <script src="../scripts/vendor/d3/d3.js"></script>
 <script src="../scripts/vendor/d3/d3.layout.js"></script>
 <script src="../scripts/vendor/d3/d3.geom.js"></script>
@@ -51,7 +50,9 @@
           title="Get help"
           target="_blank"
           href="https://disconnect.me/d2/help"
-        >Help</a><span title="Share Disconnect">Share</span><a
+        >Help</a><span
+          class="hint--bottom hint--rounded hint--bounce"
+        >Share</span><a
           title="Pay what you want"
           target="_blank"
           href="https://disconnect.me/pwyw"
@@ -145,80 +146,11 @@
       </td>
     </tr>
   </table>
-  <table class="sharing disconnect">
+  <table id="tooltips">
     <tr>
-      <td class="text"></td>
-      <td>
-        <a
-          title="Share Disconnect"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/facebook.png" alt="Facebook"></a>
-      </td>
-      <td>
-        <a
-          title="Tweet about Disconnect"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/twitter.png" alt="Twitter"></a>
-      </td>
-    </tr>
-  </table>
-  <table class="sharing speed">
-    <tr>
-      <td class="text"></td>
-      <td>
-        <a
-          title="Share speed"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/facebook.png" alt="Facebook"></a>
-      </td>
-      <td>
-        <a
-          title="Tweet about speed"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/twitter.png" alt="Twitter"></a>
-      </td>
-    </tr>
-  </table>
-  <table class="sharing bandwidth">
-    <tr>
-      <td class="text"></td>
-      <td>
-        <a
-          title="Share bandwidth"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/facebook.png" alt="Facebook"></a>
-      </td>
-      <td>
-        <a
-          title="Tweet about bandwidth"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/twitter.png" alt="Twitter"></a>
-      </td>
-    </tr>
-  </table>
-  <table class="sharing security">
-    <tr>
-      <td class="text"></td>
-      <td>
-        <a
-          title="Share security"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/facebook.png" alt="Facebook"></a>
-      </td>
-      <td>
-        <a
-          title="Tweet about security"
-          target="_blank"
-          href="https://disconnect.me/"
-        ><img src="../images/twitter.png" alt="Twitter"></a>
-      </td>
+      <td class="speed hint--top hint--rounded hint--bounce"></td>
+      <td class="bandwidth hint--top hint--rounded hint--bounce"></td>
+      <td class="security hint--top hint--rounded hint--bounce"></td>
     </tr>
   </table>
 </div>
