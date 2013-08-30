@@ -385,6 +385,11 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   padding: 0
 }
 
+#disconnect-navbar .disconnect-text a {
+  position: relative;
+  top: -3px
+}
+
 #disconnect-graph {
   margin: 1px;
   box-shadow: none;

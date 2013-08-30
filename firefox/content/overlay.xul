@@ -21,7 +21,7 @@
     Brian Kennish <byoogle@gmail.com>
 -->
 <?xml-stylesheet
-  href="chrome://disconnect/skin/stylesheets/vendor/tipped/tipped.css"
+  href="chrome://disconnect/skin/stylesheets/vendor/hint/hint.css"
 ?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
@@ -58,14 +58,12 @@
                   <html:a
                     title="Get help"
                     target="_blank"
-                    href="https://disconnect.me/d2/help"
-                  >Help</html:a><html:span
-                    title="Share Disconnect"
-                  >Share</html:span><html:a
+                    href="https://disconnect.me/desktop/help"
+                  >Help</html:a><html:a
                     title="Pay what you want"
                     target="_blank"
-                    href="https://disconnect.me/pwyw"
-                  >$</html:a>
+                    href="https://disconnect.me/#pwyw"
+                  >Pay</html:a>
                 </html:td>
               </html:tr>
             </html:table>
@@ -186,104 +184,17 @@
                 </html:td>
               </html:tr>
             </html:table>
-            <html:table class="disconnect-sharing disconnect">
+            <html:table id="disconnect-tooltips">
               <html:tr>
-                <html:td class="disconnect-text"></html:td>
-                <html:td>
-                  <html:a
-                    title="Share Disconnect"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/facebook.png"
-                    alt="Facebook"
-                  /></html:a>
-                </html:td>
-                <html:td>
-                  <html:a
-                    title="Tweet about Disconnect"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/twitter.png"
-                    alt="Twitter"
-                  /></html:a>
-                </html:td>
-              </html:tr>
-            </html:table>
-            <html:table class="disconnect-sharing disconnect-speed">
-              <html:tr>
-                <html:td class="disconnect-text"></html:td>
-                <html:td>
-                  <html:a
-                    title="Share speed"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/facebook.png"
-                    alt="Facebook"
-                  /></html:a>
-                </html:td>
-                <html:td>
-                  <html:a
-                    title="Tweet about speed"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/twitter.png"
-                    alt="Twitter"
-                  /></html:a>
-                </html:td>
-              </html:tr>
-            </html:table>
-            <html:table class="disconnect-sharing disconnect-bandwidth">
-              <html:tr>
-                <html:td class="disconnect-text"></html:td>
-                <html:td>
-                  <html:a
-                    title="Share bandwidth"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/facebook.png"
-                    alt="Facebook"
-                  /></html:a>
-                </html:td>
-                <html:td>
-                  <html:a
-                    title="Tweet about bandwidth"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/twitter.png"
-                    alt="Twitter"
-                  /></html:a>
-                </html:td>
-              </html:tr>
-            </html:table>
-            <html:table class="disconnect-sharing disconnect-security">
-              <html:tr>
-                <html:td class="disconnect-text"></html:td>
-                <html:td>
-                  <html:a
-                    title="Share security"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/facebook.png"
-                    alt="Facebook"
-                  /></html:a>
-                </html:td>
-                <html:td>
-                  <html:a
-                    title="Tweet about security"
-                    target="_blank"
-                    href="https://disconnect.me/"
-                  ><html:img
-                    src="chrome://disconnect/skin/images/twitter.png"
-                    alt="Twitter"
-                  /></html:a>
-                </html:td>
+                <html:td
+                  class="disconnect-speed hint--top hint--rounded hint--bounce"
+                ></html:td>
+                <html:td
+                  class="disconnect-bandwidth hint--top hint--rounded hint--bounce"
+                ></html:td>
+                <html:td
+                  class="disconnect-security hint--top hint--rounded hint--bounce"
+                ></html:td>
               </html:tr>
             </html:table>
           </html:div>
