@@ -579,12 +579,6 @@ function animateVisualization(icon, callback) {
 /* Outputs a blocked request. */
 function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
   if (id == tabId) {
-    $('#navbar span').attr('data-hint', function() {
-      const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-      return BLOCKED_COUNT + ' blocked' + REQUEST +
-          (BLOCKED_COUNT - 1 ? 's' : '');
-    });
-
     d3.select('.subtotal.speed').remove();
     const HEIGHT = (blockedCount / totalCount || 0) * 35;
     const SPEED_HEIGHT = Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
@@ -607,28 +601,6 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
       attr('width', 8).
       attr('height', BANDWIDTH_HEIGHT).
       attr('fill', '#ffbf3f');
-
-    $('#tooltips .speed').attr('data-hint', function() {
-      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-      return (
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100
-      ).toFixed() + '% (' + (
-        BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
-      ).toFixed(1) + 's) faster';
-    });
-
-    $('#tooltips .bandwidth').attr('data-hint', function() {
-      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-      return (
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100
-      ).toFixed() + '% (' + (
-        BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
-      ).toFixed() + 'K) less data';
-    });
   }
 }
 
@@ -645,12 +617,6 @@ function renderSecuredRequest(id, securedCount, totalCount) {
       attr('width', 8).
       attr('height', HEIGHT).
       attr('fill', '#00bfff');
-
-    $('#tooltips .security').attr('data-hint', function() {
-      const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
-      return SECURED_COUNT + ' secured' + REQUEST +
-          (SECURED_COUNT - 1 ? 's' : '');
-    });
   }
 }
 
@@ -665,6 +631,29 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.speed');
+  $('#' + LIST).append($($('.sharing.speed')[0]).clone(true));
+
+  Tipped.create('.control.speed', $('.sharing.speed')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      $('.sharing.speed .text').text((
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100
+      ).toFixed() + '% (' + (
+        BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
+      ).toFixed(1) + 's) faster');
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
   d3.select('.control.bandwidth').remove();
   dashboard.
     append('svg:rect').
@@ -674,6 +663,29 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.bandwidth');
+  $('#' + LIST).append($($('.sharing.bandwidth')[0]).clone(true));
+
+  Tipped.create('.control.bandwidth', $('.sharing.bandwidth')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      $('.sharing.bandwidth .text').text((
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100
+      ).toFixed() + '% (' + (
+        BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
+      ).toFixed() + 'K) less data');
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
   d3.select('.control.security').remove();
   dashboard.
     append('svg:rect').
@@ -683,6 +695,25 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
+  Tipped.remove('.control.security');
+  $('#' + LIST).append($($('.sharing.security')[0]).clone(true));
+
+  Tipped.create('.control.security', $('.sharing.security')[0], {
+    skin: 'tiny',
+    offset: {x: 23},
+    shadow: {opacity: .1},
+    stem: {spacing: 0},
+    background: {color: '#333', opacity: .9},
+    onShow: function() {
+      const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+      $('.sharing.security .text').text(
+        SECURED_COUNT + ' secured' + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
+      );
+    },
+    fadeIn: 400,
+    fadeOut: 400
+  });
+
   const TAB_DASHBOARD = DASHBOARD[tabId] || {};
   const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
   const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
@@ -1023,6 +1054,25 @@ var whitelistingClicked = 0;
         this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
       }).off('mouseleave').mouseleave(function() {
         this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
+      });
+
+      Tipped.remove('#navbar span');
+      $('#' + LIST).append($($('.sharing.disconnect')[0]).clone(true));
+
+      Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
+        skin: 'tiny',
+        shadow: {color: '#fff', opacity: .1},
+        stem: {spacing: -1},
+        background: {color: '#333', opacity: .9},
+        onShow: function() {
+          const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+          $('.sharing.disconnect .text').text(
+            BLOCKED_COUNT + ' blocked' + REQUEST +
+                (BLOCKED_COUNT - 1 ? 's' : '')
+          );
+        },
+        fadeIn: 400,
+        fadeOut: 400
       });
 
       var activeServices = $();
