@@ -18,6 +18,7 @@
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
+    Issac Trotts <issac.trotts@gmail.com>
 */
 
 /* Destringifies an object. */
@@ -63,6 +64,43 @@ function processServices(data) {
   moreRules = data.moreRules;
 }
 
+/* Updates the third-party metadata. */
+function fetchServices() {
+  var index = 1;
+  var requestCount = 1;
+  var nextRequest = 1;
+
+  if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
+      var id = setInterval(function() {
+        if (index == nextRequest) {
+          var runtime = Date.now();
+          var updatedThisWeek =
+              runtime - (options.firstUpdateThisWeekTime || 0) <
+                  7 * dayMilliseconds;
+          var updatedThisMonth =
+              runtime - (options.firstUpdateThisMonthTime || 0) <
+                  30 * dayMilliseconds;
+
+          $.get('https://services.disconnect.me/disconnect.json?' + [
+            'updated_this_week=' + updatedThisWeek,
+            'updated_this_month=' + updatedThisMonth
+          ].join('&'), function(data) {
+            clearInterval(id);
+            processServices(data);
+            options.firstUpdateTime || (options.firstUpdateTime = runtime);
+            updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
+            updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
+            options.lastUpdateTime = runtime;
+            options.updateCount = (deserialize(options.updateCount) || 0) + 1;
+          });
+
+          nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
+        }
+
+        index++;
+      }, secondMilliseconds);
+}
+
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return servicePointer[domain]; }
 
@@ -102,6 +140,12 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
+/* The number of milliseconds in a second. */
+var secondMilliseconds = 1000;
+
+/* The number of milliseconds in a day. */
+var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
+
 /*
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
@@ -123,36 +167,6 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-function fetchServicesData() {
-  var now = new Date();
-  var firstUpdate = new Date(deserialize(localStorage.firstUpdate)) || now;
-  var howLongInstalledMsec = now.getTime() - firstUpdate.getTime();
-  var oneWeekAsMsec = 7 * 24 * 60 * 60 * 1000;
-  var oneMonthAsMsec = 30 * 24 * 60 * 60 * 1000;
-  var weekly = JSON.stringify(howLongInstalledMsec >= oneWeekAsMsec);
-  var monthly = JSON.stringify(howLongInstalledMsec >= oneMonthAsMsec);
-  var url = 'https://services.disconnect.me/disconnect.json';
-  // Include params that tell whether the user has been using the extension for
-  // a month or for a month.
-  var params = ['weekly=' + weekly, 'monthly=' + monthly].join('&');
-  url = url + '?' + params;
-  $.get(url, function(data) {
-    processServices(data);
-
-    // Keep track of when first and last updates were done.
-    var now = new Date();
-    localStorage.lastUpdate = JSON.stringify(now);
-    if (localStorage.firstUpdate == null) {
-      localStorage.firstUpdate = localStorage.lastUpdate;
-    }
-    localStorage.updateCount = JSON.stringify((deserialize(localStorage.updateCount) || 0) + 1);
-  });
-}
-
-// Set the block list from the local, default dataset.
 processServices(data);
-// Fetch a more up-to-date block list from the web.
-fetchServicesData();
-// Update the block list once every 24 hours.
-setInterval(fetchServicesData, 24*60*60*1000);
-
+fetchServices();
+setInterval(fetchServices, dayMilliseconds);
