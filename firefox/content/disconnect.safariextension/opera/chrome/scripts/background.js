@@ -248,7 +248,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 56;
+const CURRENT_BUILD = 57;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -432,8 +432,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
+  const DOMAIN_WHITELIST =
+      whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
+  const DISCONNECT_WHITELIST =
+      DOMAIN_WHITELIST.Disconnect ||
+          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
+  DISCONNECT_WHITELIST.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
+}
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);

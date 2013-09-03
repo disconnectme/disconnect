@@ -840,7 +840,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 15;
+      var currentBuild = 16;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -903,8 +903,19 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
+      if (!previousBuild || previousBuild < currentBuild) {
+        var freshDirectDomain = 'freshdirect.com';
+        var domainWhitelist =
+            whitelist[freshDirectDomain] || (whitelist[freshDirectDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
+      }
+
       var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
       var shortcutSurface =
