@@ -36,3 +36,8 @@ pref('extensions.disconnect.blockedRequests', '{}');
 pref('extensions.disconnect.hardenedRequests', '{}');
 pref('extensions.disconnect.blockingIndicated', true);
 pref('extensions.disconnect.displayMode', 'list');
+pref('extensions.disconnect.firstUpdateTime', '0');
+pref('extensions.disconnect.firstUpdateThisWeekTime', '0');
+pref('extensions.disconnect.firstUpdateThisMonthTime', '0');
+pref('extensions.disconnect.lastUpdateTime', '0');
+pref('extensions.disconnect.updateCount', 0);

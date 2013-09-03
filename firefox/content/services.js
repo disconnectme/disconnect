@@ -60,6 +60,52 @@ function processServices(data) {
   moreRules = data.moreRules;
 }
 
+/* Updates the third-party metadata. */
+function fetchServices() {
+  var index = 1;
+  var requestCount = 1;
+  var nextRequest = 1;
+
+  if (Date.now() - preferences.getCharPref('lastUpdateTime') >= dayMilliseconds)
+      retryTimer.init({observe: function() {
+        if (index == nextRequest) {
+          var runtime = Date.now();
+          var updatedThisWeek =
+              runtime - preferences.getCharPref('firstUpdateThisWeekTime') <
+                  7 * dayMilliseconds;
+          var updatedThisMonth =
+              runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
+                  30 * dayMilliseconds;
+          xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
+            'updated_this_week=' + updatedThisWeek,
+            'updated_this_month=' + updatedThisMonth
+          ].join('&'));
+
+          xhr.onload = function() {
+            if (xhr.status == 200) {
+              retryTimer.cancel();
+              processServices(xhr.responseText);
+              JSON.parse(preferences.getCharPref('firstUpdateTime')) ||
+                  preferences.setCharPref('firstUpdateTime', runtime);
+              updatedThisWeek ||
+                  preferences.setCharPref('firstUpdateThisWeekTime', runtime);
+              updatedThisMonth ||
+                  preferences.setCharPref('firstUpdateThisMonthTime', runtime);
+              preferences.setCharPref('lastUpdateTime', runtime);
+              preferences.setIntPref(
+                'updateCount', preferences.getIntPref('updateCount') + 1
+              );
+            }
+          };
+
+          nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
+          try { xhr.send(); } catch (exception) {}
+        }
+
+        index++;
+      }}, secondMilliseconds, repeatingSlack);
+}
+
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return moreServices[domain]; }
 
@@ -95,23 +141,37 @@ function harden(url) {
   return {url: hardenedUrl, hardened: hardened};
 }
 
-/* The "setInterval" replacement. */
-var timer =
-    Components.classes['@mozilla.org/timer;1'].
-      createInstance(Components.interfaces.nsITimer);
+/* The "setInterval"-replacement class. */
+var timerClass = Components.classes['@mozilla.org/timer;1'];
+
+/* The "setInterval"-replacement ID. */
+var timerId = Components.interfaces.nsITimer;
+
+/* The "setInterval" replacement for daily updating. */
+var dayTimer = timerClass.createInstance(timerId);
+
+/* The "setInterval" replacement for error handling. */
+var retryTimer = timerClass.createInstance(timerId);
+
+/* The timer type. */
+var repeatingSlack = timerId.TYPE_REPEATING_SLACK;
 
 /* The "XMLHttpRequest" object. */
 var xhr =
     new Components.Constructor('@mozilla.org/xmlextras/xmlhttprequest;1')();
 
-/* The number of iterations. */
-var index = 0;
+/* The add-on settings. */
+var preferences =
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(interfaces.nsIPrefService).
+      getBranch('extensions.disconnect.');
 
-/* The number of requests. */
-var requestCount = 0;
+/* The number of milliseconds in a second. */
+var secondMilliseconds = 1000;
 
-/* The next iteration to make a request. */
-var nextRequest = 0;
+/* The number of milliseconds in a day. */
+var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -133,22 +193,5 @@ Components.
   getService(Components.interfaces.mozIJSSubScriptLoader).
   loadSubScript('chrome://disconnect/skin/scripts/data.js');
 processServices(JSON.stringify(data));
-xhr.open('GET', 'https://services.disconnect.me/disconnect.json');
-
-/* Fetches the third-party metadata. */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    timer.cancel();
-    processServices(xhr.responseText);
-  }
-};
-
-/* Retries unsuccessful requests. */
-timer.init({observe: function() {
-  if (index == nextRequest) {
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
-    try { xhr.send(); } catch (exception) {}
-  }
-
-  index++;
-}}, 1000, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+fetchServices();
+dayTimer.init({observe: fetchServices}, dayMilliseconds, repeatingSlack);

@@ -60,10 +60,10 @@
                     target="_blank"
                     href="https://disconnect.me/desktop/help"
                   >Help</html:a><html:a
-                    title="Pay what you want"
+                    title="Give props"
                     target="_blank"
-                    href="https://disconnect.me/#pwyw"
-                  >Pay</html:a>
+                    href="https://addons.mozilla.org/en-US/firefox/addon/disconnect/"
+                  >Props</html:a>
                 </html:td>
               </html:tr>
             </html:table>

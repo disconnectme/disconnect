@@ -390,6 +390,16 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   top: -3px
 }
 
+.disconnect-category .disconnect-badge {
+  position: relative;
+  top: 2px
+}
+
+.disconnect-category .disconnect-action {
+  position: relative;
+  top: 2px
+}
+
 #disconnect-graph {
   margin: 1px;
   box-shadow: none;
