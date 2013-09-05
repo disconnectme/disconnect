@@ -834,6 +834,7 @@ if (typeof Disconnect == 'undefined') {
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
+      var pwywName = 'pwyw';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
       var contentName = this.contentName;
@@ -854,15 +855,7 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 2) {
-        var date = new Date();
-        var month = date.getMonth() + 1;
-        month = (month < 10 ? '0' : '') + month;
-        var day = date.getDate();
-        day = (day < 10 ? '0' : '') + day;
-        date = date.getFullYear() + '-' + month + '-' + day;
         var migratedWhitelist = {};
-        preferences.
-          setCharPref('pwyw', JSON.stringify({date: date, bucket: 'trying'}));
 
         for (var domain in whitelist) {
           var siteWhitelist =
@@ -913,6 +906,32 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+
+        if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
+          var tab =
+              Components.
+                classes['@mozilla.org/appshell/window-mediator;1'].
+                getService(Components.interfaces.nsIWindowMediator).
+                getMostRecentWindow('navigator:browser').
+                gBrowser.addTab('https://disconnect.me/desktop/welcome');
+
+          gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
+            gBrowser.selectedTab = tab;
+            var date = new Date();
+            var month = date.getMonth() + 1;
+            month = (month < 10 ? '0' : '') + month;
+            var day = date.getDate();
+            day = (day < 10 ? '0' : '') + day;
+            preferences.setCharPref(
+              pwywName,
+              JSON.stringify({
+                date: date.getFullYear() + '-' + month + '-' + day,
+                bucket: 'viewed'
+              })
+            );
+          }, true);
+        }
+
         preferences.setIntPref(buildName, currentBuild);
       }
 
