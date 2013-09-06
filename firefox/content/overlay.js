@@ -912,7 +912,10 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
+      }
 
+      setTimeout(function() {
         if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
           var tab =
               Components.
@@ -922,15 +925,14 @@ if (typeof Disconnect == 'undefined') {
                 gBrowser.addTab('https://disconnect.me/desktop/welcome');
 
           gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
+            this.removeEventListener('load', arguments.callee, true);
             gBrowser.selectedTab = tab;
             preferences.setCharPref(
               pwywName, JSON.stringify({date: date, bucket: 'viewed'})
             );
           }, true);
         }
-
-        preferences.setIntPref(buildName, currentBuild);
-      }
+      }, 1000);
 
       var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
