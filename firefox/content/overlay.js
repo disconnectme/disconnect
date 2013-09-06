@@ -855,9 +855,11 @@ if (typeof Disconnect == 'undefined') {
       this.preferences = preferences;
 
       if (!previousBuild) {
-        toolbar.insertItem(buttonName);
-        toolbar.setAttribute(currentSetName, toolbar.currentSet);
-        document.persist(navbarName, currentSetName);
+        setTimeout(function() {
+          toolbar.insertItem(buttonName);
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
+        }, 1000);
       }
 
       if (!previousBuild || previousBuild < 2) {
