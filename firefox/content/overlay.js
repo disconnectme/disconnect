@@ -846,6 +846,12 @@ if (typeof Disconnect == 'undefined') {
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
       var toolbar = document.getElementById(navbarName);
+      var date = new Date();
+      var month = date.getMonth() + 1;
+      month = (month < 10 ? '0' : '') + month;
+      var day = date.getDate();
+      day = (day < 10 ? '0' : '') + day;
+      date = date.getFullYear() + '-' + month + '-' + day;
       this.preferences = preferences;
 
       if (!previousBuild) {
@@ -917,17 +923,8 @@ if (typeof Disconnect == 'undefined') {
 
           gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
             gBrowser.selectedTab = tab;
-            var date = new Date();
-            var month = date.getMonth() + 1;
-            month = (month < 10 ? '0' : '') + month;
-            var day = date.getDate();
-            day = (day < 10 ? '0' : '') + day;
             preferences.setCharPref(
-              pwywName,
-              JSON.stringify({
-                date: date.getFullYear() + '-' + month + '-' + day,
-                bucket: 'viewed'
-              })
+              pwywName, JSON.stringify({date: date, bucket: 'viewed'})
             );
           }, true);
         }
@@ -1011,6 +1008,18 @@ if (typeof Disconnect == 'undefined') {
       observer.addObserver({observe: function(subject, topic, data) {
         clearServices(data, get(data));
       }}, 'disconnect-load', false);
+
+      gBrowser.addEventListener('load', function() {
+        var contentWindow = gBrowser.contentWindow;
+
+        if (contentWindow.location.href.indexOf('disconnect.me') + 1) {
+          var control = contentWindow.document.getElementById('input-type');
+          var bucket = control && control.getAttribute('value');
+          bucket && preferences.setCharPref(
+            pwywName, JSON.stringify({date: date, bucket: bucket})
+          );
+        }
+      }, true);
 
       $(
         document.

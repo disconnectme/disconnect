@@ -83,9 +83,9 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
     });
   }, true);
 
-  if (location.href.indexOf('disconnect.me') + 1)
-      EXTENSION.sendRequest({
-        pwyw: true,
-        bucket: document.getElementById('input-type').getAttribute('value')
-      });
+  if (location.href.indexOf('disconnect.me') + 1) {
+    var CONTROL = document.getElementById('input-type');
+    var BUCKET = CONTROL && CONTROL.getAttribute('value');
+    BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
+  }
 });
