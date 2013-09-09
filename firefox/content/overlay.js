@@ -913,6 +913,14 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
+        var newYorkerDomain = 'newyorker.com';
+        domainWhitelist =
+            whitelist[newYorkerDomain] || (whitelist[newYorkerDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }

@@ -434,12 +434,19 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
-  const DOMAIN_WHITELIST =
+  var domainWhitelist =
       whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
-  const DISCONNECT_WHITELIST =
-      DOMAIN_WHITELIST.Disconnect ||
-          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
-  DISCONNECT_WHITELIST.services.Google = true;
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const NEW_YORKER_DOMAIN = 'newyorker.com';
+  domainWhitelist =
+      whitelist[NEW_YORKER_DOMAIN] || (whitelist[NEW_YORKER_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
 }
