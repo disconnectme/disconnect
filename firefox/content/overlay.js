@@ -1108,6 +1108,7 @@ if (typeof Disconnect == 'undefined') {
           var domain = get(url.hostname);
           var tabRequests = requestCounts[url] || {};
           var disconnectRequests = tabRequests.Disconnect || {};
+          whitelist = JSON.parse(preferences.getCharPref(whitelistName));
           var siteWhitelist = whitelist[domain] || {};
           var shortcutWhitelist =
               (siteWhitelist.Disconnect || {}).services || {};
