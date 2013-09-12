@@ -850,6 +850,7 @@ if (typeof Disconnect == 'undefined') {
       var month = date.getMonth() + 1;
       month = (month < 10 ? '0' : '') + month;
       var day = date.getDate();
+      var collapsed = false;
       day = (day < 10 ? '0' : '') + day;
       date = date.getFullYear() + '-' + month + '-' + day;
       this.preferences = preferences;
@@ -1406,7 +1407,7 @@ if (typeof Disconnect == 'undefined') {
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#disconnect-list').height() == 335;
+                collapsed = !(collapsed);
                 var serviceCount =
                     Math.min(
                       serviceContainer.find('.disconnect-service').length - 1,
