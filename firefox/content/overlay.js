@@ -856,8 +856,10 @@ if (typeof Disconnect == 'undefined') {
 
       if (!previousBuild) {
         setTimeout(function() {
+          toolbar.collapsed = false;
           toolbar.insertItem(buttonName);
           toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, 'collapsed');
           document.persist(navbarName, currentSetName);
         }, 1000);
       }
