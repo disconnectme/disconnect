@@ -752,9 +752,9 @@ if (typeof Disconnect == 'undefined') {
     /**
      * Plays an expanding or collapsing animation.
      */
-    animateAction: function(action, button, name) {
+    animateAction: function(action, button, name, collapsed) {
+      collapsed = !(collapsed)
       button = $(button);
-      var collapsed = button.css('top') == '-28px';
       action.title = (collapsed ? 'Collapse' : 'Expand') + ' ' + name;
       var previousFrame;
       var currentFrame;
@@ -1373,7 +1373,7 @@ if (typeof Disconnect == 'undefined') {
             ) {
               var expandedServices =
                   activeServices.filter(function() {
-                    return $(this).css('height') != '0px';
+                    return $(this).css('height') != '0px' || $(this).hasClass('disconnect-none');
                   });
 
               if (
@@ -1388,14 +1388,15 @@ if (typeof Disconnect == 'undefined') {
                     prev().
                     find('.disconnect-action')[0].
                     getElementsByTagName('html:img')[0],
-                  name
+                  name, 
+                  collapsed
                 );
                 expandedServices.removeClass(
-                  'disconnect-i disconnect-ii disconnect-iii disconnect-iv disconnect-v disconnect-vi disconnect-vii disconnect-viii disconnect-ix disconnect-x'
+                  'disconnect-none disconnect-i disconnect-ii disconnect-iii disconnect-iv disconnect-v disconnect-vi disconnect-vii disconnect-viii disconnect-ix disconnect-x'
                 );
 
                 setTimeout(function() {
-                  animateAction(action, button, name);
+                  animateAction(action, button, name, !(collapsed));
                   var serviceCount =
                       Math.min(
                         serviceContainer.find('.disconnect-service').length - 1,
@@ -1406,7 +1407,8 @@ if (typeof Disconnect == 'undefined') {
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
-                animateAction(action, button, name);
+                animateAction(action, button, name, !(collapsed));
+                animateAction(action, button, name, collapsed);
                 collapsed = !(collapsed);
                 var serviceCount =
                     Math.min(
@@ -1457,7 +1459,7 @@ if (typeof Disconnect == 'undefined') {
     shortcutNames: ['Facebook', 'Google', 'Twitter'],
     categoryNames: ['Advertising', 'Analytics', 'Social', 'Content'],
     categoryClasses: [
-      '',
+      'disconnect-none',
       'disconnect-i',
       'disconnect-ii',
       'disconnect-iii',
