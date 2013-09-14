@@ -774,7 +774,7 @@ if (typeof Disconnect == 'undefined') {
      * Registers event handlers.
      */
     initialize: function() {
-      Components.utils['import']('resource://modules/state.js');
+      Components.utils['import']('resource://disconnect/state.js');
       var interfaces = Components.interfaces;
       var loader =
           Components.

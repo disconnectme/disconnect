@@ -20,7 +20,7 @@
     Brian Kennish <byoogle@gmail.com>
 */
 Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils['import']('resource://modules/state.js');
+Components.utils['import']('resource://disconnect/state.js');
 var interfaces = Components.interfaces;
 var loader =
     Components.
