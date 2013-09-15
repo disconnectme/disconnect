@@ -1020,7 +1020,8 @@ if (typeof Disconnect == 'undefined') {
       }}, 'disconnect-request', false);
 
       observer.addObserver({observe: function(subject, topic, data) {
-        clearServices(data, get(data));
+        clearBadge(button, badge);
+        clearServices(get(data), shortcutCount);
       }}, 'disconnect-load', false);
 
       gBrowser.addEventListener('load', function() {
