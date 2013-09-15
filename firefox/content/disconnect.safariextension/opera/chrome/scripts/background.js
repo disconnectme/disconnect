@@ -369,8 +369,8 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
-  const UDACITY_DOMAIN = 'udacity.com';
-  (whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {})).Twitter =
+  var udacityDomain = 'udacity.com';
+  (whitelist[udacityDomain] || (whitelist[udacityDomain] = {})).Twitter =
       true;
   options.whitelist = JSON.stringify(whitelist);
 }
@@ -421,9 +421,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
-  const UDACITY_DOMAIN = 'udacity.com';
+  var udacityDomain = 'udacity.com';
   const DOMAIN_WHITELIST =
-      whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {});
+      whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
   const DISCONNECT_WHITELIST =
       DOMAIN_WHITELIST.Disconnect ||
           (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
