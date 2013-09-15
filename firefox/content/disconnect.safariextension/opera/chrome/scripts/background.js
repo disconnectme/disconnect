@@ -411,24 +411,24 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   const FEEDLY_DOMAIN = 'feedly.com';
-  const DOMAIN_WHITELIST =
+  var domainWhitelist =
       whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
-  const DISCONNECT_WHITELIST =
-      DOMAIN_WHITELIST.Disconnect ||
-          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
-  DISCONNECT_WHITELIST.services.Google = true;
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
   var udacityDomain = 'udacity.com';
-  const DOMAIN_WHITELIST =
+  var domainWhitelist =
       whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
-  const DISCONNECT_WHITELIST =
-      DOMAIN_WHITELIST.Disconnect ||
-          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
-  DISCONNECT_WHITELIST.services.Facebook = true;
-  DISCONNECT_WHITELIST.services.Google = true;
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
