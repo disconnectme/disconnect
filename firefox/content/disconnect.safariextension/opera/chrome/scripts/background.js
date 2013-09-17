@@ -184,7 +184,8 @@ function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(options.blockingIndicated) &&
         (deserialize(options.pwyw) || {}).bucket != 'pending' &&
-            (deserialize(options.pwyw) || {}).bucket != 'pending-trial'
+            (deserialize(options.pwyw) || {}).bucket != 'pending-trial' &&
+                !deserialize(options.promoRunning)
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -248,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 57;
+const CURRENT_BUILD = 58;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -432,7 +433,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
   var domainWhitelist =
       whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
@@ -448,6 +449,18 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  $.getJSON('https://goldenticket.disconnect.me/kids', function(data) {
+    if (data.goldenticket === 'true') {
+      options.promoRunning = true;
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+      BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
+
   options.build = CURRENT_BUILD;
 }
 
@@ -489,8 +502,10 @@ if (!deserialize(options.pwyw).date) {
   }
 }
 
-if ((deserialize(options.pwyw) || {}).bucket == 'pending')
-    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+if (
+  (deserialize(options.pwyw) || {}).bucket == 'pending' ||
+      deserialize(options.promoRunning)
+) BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
     options.sidebarCollapsed--; // An experimental "semisticky" bit.
@@ -809,6 +824,13 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+  }
+
+  if (deserialize(options.promoRunning)) {
+    TABS.create({url: 'https://disconnect.me/recommends/kids'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    delete options.promoRunning;
   }
 });
 
