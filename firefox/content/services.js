@@ -170,8 +170,11 @@ var preferences =
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
+/* The number of milliseconds in an hour. */
+var hourMilliseconds = 60 * 60 * secondMilliseconds;
+
 /* The number of milliseconds in a day. */
-var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
+var dayMilliseconds = 24 * hourMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -194,4 +197,4 @@ Components.
   loadSubScript('chrome://disconnect/skin/scripts/data.js');
 processServices(JSON.stringify(data));
 fetchServices();
-dayTimer.init({observe: fetchServices}, dayMilliseconds, repeatingSlack);
+dayTimer.init({observe: fetchServices}, hourMilliseconds, repeatingSlack);

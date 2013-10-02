@@ -143,8 +143,11 @@ function downgradeServices(downgraded) {
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
+/* The number of milliseconds in an hour. */
+var hourMilliseconds = 60 * 60 * secondMilliseconds;
+
 /* The number of milliseconds in a day. */
-var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
+var dayMilliseconds = 24 * hourMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -169,4 +172,4 @@ var servicePointer = moreServices;
 
 processServices(data);
 fetchServices();
-setInterval(fetchServices, dayMilliseconds);
+setInterval(fetchServices, hourMilliseconds);
