@@ -69,7 +69,7 @@ function fetchServices() {
   if (Date.now() - preferences.getCharPref('lastUpdateTime') >= dayMilliseconds)
       retryTimer.init({observe: function() {
         if (index == nextRequest) {
-          var firstRun = !!preferences.getCharPref('firstUpdateTime');
+          var firstRun = !preferences.getCharPref('firstUpdateTime');
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - preferences.getCharPref('firstUpdateThisWeekTime') <
@@ -87,7 +87,7 @@ function fetchServices() {
             if (xhr.status == 200) {
               retryTimer.cancel();
               processServices(xhr.responseText);
-              firstRun || preferences.setCharPref('firstUpdateTime', runtime);
+              firstRun && preferences.setCharPref('firstUpdateTime', runtime);
               updatedThisWeek ||
                   preferences.setCharPref('firstUpdateThisWeekTime', runtime);
               updatedThisMonth ||

@@ -73,7 +73,7 @@ function fetchServices() {
   if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
       var id = setInterval(function() {
         if (index == nextRequest) {
-          var firstRun = !!options.firstUpdateTime;
+          var firstRun = !options.firstUpdateTime;
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - (options.firstUpdateThisWeekTime || 0) <
@@ -89,7 +89,7 @@ function fetchServices() {
           ].join('&'), function(data) {
             clearInterval(id);
             processServices(data);
-            firstRun || (options.firstUpdateTime = runtime);
+            firstRun && (options.firstUpdateTime = runtime);
             updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
             updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
             options.lastUpdateTime = runtime;
