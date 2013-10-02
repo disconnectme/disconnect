@@ -73,6 +73,7 @@ function fetchServices() {
   if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
       var id = setInterval(function() {
         if (index == nextRequest) {
+          var firstRun = !!options.firstUpdateTime;
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - (options.firstUpdateThisWeekTime || 0) <
@@ -82,12 +83,13 @@ function fetchServices() {
                   30 * dayMilliseconds;
 
           $.get('https://services.disconnect.me/disconnect.json?' + [
+            'first_run=' + firstRun,
             'updated_this_week=' + updatedThisWeek,
             'updated_this_month=' + updatedThisMonth
           ].join('&'), function(data) {
             clearInterval(id);
             processServices(data);
-            options.firstUpdateTime || (options.firstUpdateTime = runtime);
+            firstRun || (options.firstUpdateTime = runtime);
             updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
             updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
             options.lastUpdateTime = runtime;

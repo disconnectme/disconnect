@@ -69,6 +69,7 @@ function fetchServices() {
   if (Date.now() - preferences.getCharPref('lastUpdateTime') >= dayMilliseconds)
       retryTimer.init({observe: function() {
         if (index == nextRequest) {
+          var firstRun = !!preferences.getCharPref('firstUpdateTime');
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - preferences.getCharPref('firstUpdateThisWeekTime') <
@@ -77,6 +78,7 @@ function fetchServices() {
               runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
                   30 * dayMilliseconds;
           xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
+            'first_run=' + firstRun,
             'updated_this_week=' + updatedThisWeek,
             'updated_this_month=' + updatedThisMonth
           ].join('&'));
@@ -85,8 +87,7 @@ function fetchServices() {
             if (xhr.status == 200) {
               retryTimer.cancel();
               processServices(xhr.responseText);
-              JSON.parse(preferences.getCharPref('firstUpdateTime')) ||
-                  preferences.setCharPref('firstUpdateTime', runtime);
+              firstRun || preferences.setCharPref('firstUpdateTime', runtime);
               updatedThisWeek ||
                   preferences.setCharPref('firstUpdateThisWeekTime', runtime);
               updatedThisMonth ||
