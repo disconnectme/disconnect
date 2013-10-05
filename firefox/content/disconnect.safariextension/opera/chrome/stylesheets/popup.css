@@ -280,6 +280,28 @@ td { padding: 0 }
 
 #dashboard .label { width: 66px }
 
+
+#support a {
+  background: #21953a url(../images/support-heart.png) no-repeat 23px 12px;
+  display: block;
+  color: #FFF;
+  text-decoration: none;
+  padding: 7px 0px 7px 42px;
+  width: 158px;
+  font-size: 12px;
+  -webkit-transition: background-color .4s ease-out;
+     -moz-transition: background-color .4s ease-out;
+      -ms-transition: background-color .4s ease-out;
+       -o-transition: background-color .4s ease-out;
+          transition: background-color .4s ease-out;
+}
+
+#support a:hover {
+  background-color: #24a33f;
+}
+
+
+
 .sharing {
   display: none;
   color: #efefef;
