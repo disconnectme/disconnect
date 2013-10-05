@@ -830,6 +830,7 @@ if (typeof Disconnect == 'undefined') {
       var categoryCount = categoryNames.length;
       var categoryClasses = this.categoryClasses;
       var buildName = 'build';
+      var firstBuildName = 'firstBuild';
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
@@ -928,6 +929,8 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.getIntPref(firstBuildName) ||
+            preferences.setIntPref(firstBuildName, currentBuild);
         preferences.setIntPref(buildName, currentBuild);
       }
 

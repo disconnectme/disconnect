@@ -461,6 +461,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
     }
   });
 
+  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
 }
 

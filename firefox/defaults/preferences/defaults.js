@@ -24,6 +24,7 @@
  * The Disconnect preferences.
  */
 pref('extensions.disconnect.build', 0);
+pref('extensions.disconnect.firstBuild', 0);
 pref(
   'extensions.disconnect.whitelist',
   '{"latimes.com":{"Google":true},"mediafire.com":{"Facebook":true},"salon.com":{"Google":true},"udacity.com":{"Twitter":true}}'
