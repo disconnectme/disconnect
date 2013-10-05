@@ -280,27 +280,24 @@ td { padding: 0 }
 
 #dashboard .label { width: 66px }
 
-
 #support a {
-  background: #21953a url(../images/support-heart.png) no-repeat 23px 12px;
   display: block;
-  color: #FFF;
-  text-decoration: none;
-  padding: 7px 0px 7px 42px;
+  background: #21953a url(../images/heart.png) no-repeat 23px 12px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 42px;
   width: 158px;
   font-size: 12px;
-  -webkit-transition: background-color .4s ease-out;
-     -moz-transition: background-color .4s ease-out;
-      -ms-transition: background-color .4s ease-out;
-       -o-transition: background-color .4s ease-out;
-          transition: background-color .4s ease-out;
+  text-decoration: none;
+  color: white;
+  -webkit-transition: background-color .4s ease;
+     -moz-transition: background-color .4s ease;
+      -ms-transition: background-color .4s ease;
+       -o-transition: background-color .4s ease;
+          transition: background-color .4s ease
 }
 
-#support a:hover {
-  background-color: #24a33f;
-}
-
-
+#support a:hover { background-color: #24a33f }
 
 .sharing {
   display: none;
