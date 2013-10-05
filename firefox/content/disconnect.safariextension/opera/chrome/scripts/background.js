@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 58;
+const CURRENT_BUILD = 59;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
