@@ -841,7 +841,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 16;
+      var currentBuild = 17;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -906,7 +906,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 16) {
         var freshDirectDomain = 'freshdirect.com';
         var domainWhitelist =
             whitelist[freshDirectDomain] || (whitelist[freshDirectDomain] = {});
@@ -924,8 +924,10 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-        preferences.setIntPref(buildName, currentBuild);
       }
+
+      if (!previousBuild || previousBuild < currentBuild)
+          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
