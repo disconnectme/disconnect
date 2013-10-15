@@ -941,6 +941,37 @@ if (typeof Disconnect == 'undefined') {
 
       Components.utils['import']('resource://disconnect/state.js');
       var interfaces = Components.interfaces;
+      var loader =
+          Components.
+            classes['@mozilla.org/moz/jssubscript-loader;1'].
+            getService(interfaces.mozIJSSubScriptLoader);
+      loader.loadSubScript('chrome://disconnect/content/sitename.js');
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js'
+      );
+      loader.loadSubScript('chrome://disconnect/content/services.js');
+      loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/d3/d3.js');
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/favicon/favicon.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/chrollusion/index-content-script.js'
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/chrollusion/collusion-addon.js'
+      );
+      loader.loadSubScript('chrome://disconnect/content/graphrunner.js');
+      loader.loadSubScript('chrome://disconnect/content/index.js');
+      loader.loadSubScript('chrome://disconnect/content/debug.js');
 
       Disconnect.activeServices = $();
       var preferences =

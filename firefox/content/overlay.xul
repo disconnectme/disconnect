@@ -33,23 +33,6 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   id="disconnect"
 >
-  <script src="sitename.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/jquery/jquery.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js"/>
-  <script src="services.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js"/>
-  <script src="chrome://disconnect/skin/scripts/vendor/favicon/favicon.js"/>
-  <script
-    src="chrome://disconnect/skin/scripts/chrollusion/index-content-script.js"
-  />
-  <script
-    src="chrome://disconnect/skin/scripts/chrollusion/collusion-addon.js"
-  />
-  <script src="graphrunner.js"/>
-  <script src="index.js"/>
-  <script src="debug.js"/>
   <script src="overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
     <toolbaritem id="disconnect-item" title="Disconnect">
