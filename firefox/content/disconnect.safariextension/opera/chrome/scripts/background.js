@@ -28,11 +28,6 @@ function initializeArray(length, defaultValue) {
   return ARRAY;
 }
 
-/* Destringifies an object. */
-function deserialize(object) {
-  return typeof object == 'string' ? JSON.parse(object) : object;
-}
-
 /* Toggles the search preferences. */
 function editSettings(state) {
   state = !!state;
@@ -189,7 +184,8 @@ function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(options.blockingIndicated) &&
         (deserialize(options.pwyw) || {}).bucket != 'pending' &&
-            (deserialize(options.pwyw) || {}).bucket != 'pending-trial'
+            (deserialize(options.pwyw) || {}).bucket != 'pending-trial' &&
+                !deserialize(options.promoRunning)
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -253,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 55;
+const CURRENT_BUILD = 59;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -374,8 +370,8 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
-  const UDACITY_DOMAIN = 'udacity.com';
-  (whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {})).Twitter =
+  var udacityDomain = 'udacity.com';
+  (whitelist[udacityDomain] || (whitelist[udacityDomain] = {})).Twitter =
       true;
   options.whitelist = JSON.stringify(whitelist);
 }
@@ -416,29 +412,58 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   const FEEDLY_DOMAIN = 'feedly.com';
-  const DOMAIN_WHITELIST =
+  var domainWhitelist =
       whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
-  const DISCONNECT_WHITELIST =
-      DOMAIN_WHITELIST.Disconnect ||
-          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
-  DISCONNECT_WHITELIST.services.Google = true;
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
-  const UDACITY_DOMAIN = 'udacity.com';
-  const DOMAIN_WHITELIST =
-      whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {});
-  const DISCONNECT_WHITELIST =
-      DOMAIN_WHITELIST.Disconnect ||
-          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
-  DISCONNECT_WHITELIST.services.Facebook = true;
-  DISCONNECT_WHITELIST.services.Google = true;
+  var udacityDomain = 'udacity.com';
+  var domainWhitelist =
+      whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
+  const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
+  var domainWhitelist =
+      whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const NEW_YORKER_DOMAIN = 'newyorker.com';
+  domainWhitelist =
+      whitelist[NEW_YORKER_DOMAIN] || (whitelist[NEW_YORKER_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  $.getJSON('https://goldenticket.disconnect.me/kids', function(data) {
+    if (data.goldenticket === 'true') {
+      options.promoRunning = true;
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+      BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
+
+  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
+  options.build = CURRENT_BUILD;
+}
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
@@ -478,8 +503,10 @@ if (!deserialize(options.pwyw).date) {
   }
 }
 
-if ((deserialize(options.pwyw) || {}).bucket == 'pending')
-    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+if (
+  (deserialize(options.pwyw) || {}).bucket == 'pending' ||
+      deserialize(options.promoRunning)
+) BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
     options.sidebarCollapsed--; // An experimental "semisticky" bit.
@@ -516,9 +543,9 @@ false && INSTANT_ENABLED.get({}, function(details) {
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
+  const TAB_ID = details.tabId;
   const TYPE = details.type;
   const PARENT = TYPE == 'main_frame';
-  const TAB_ID = details.tabId;
   const REQUESTED_URL = details.url;
   const CHILD_DOMAIN = GET(REQUESTED_URL);
 
@@ -546,15 +573,17 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
     const CHILD_NAME = CHILD_SERVICE.name;
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
-    const CHILD_CATEGORY = CHILD_SERVICE.category;
+    const CHILD_CATEGORY =
+        CHILD_SERVICE.category =
+            recategorize(CHILD_DOMAIN, REQUESTED_URL) || CHILD_SERVICE.category;
     const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
     const CATEGORY_WHITELIST =
         ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||
             {})[CHILD_CATEGORY] || {};
 
     if (
-      PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
-          PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
+      TAB_ID == -1 || PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN
+          || PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
     ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
@@ -796,6 +825,13 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+  }
+
+  if (deserialize(options.promoRunning)) {
+    TABS.create({url: 'https://disconnect.me/recommends/kids'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    delete options.promoRunning;
   }
 });
 

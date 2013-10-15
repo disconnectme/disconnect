@@ -336,8 +336,8 @@ var GraphRunner = (function(jQuery, d3) {
                 categoryBlacklist[name] = true;
                 header.addClass("blocked");
               }
-              Disconnect.localStorage.whitelist = JSON.stringify(whitelist);
-              Disconnect.localStorage.blacklist = JSON.stringify(blacklist);
+              preferences.setCharPref("whitelist", JSON.stringify(whitelist));
+              preferences.setCharPref("blacklist", JSON.stringify(blacklist));
               d3.select(this).select("line").classed("hidden", blocked);
               Disconnect.reloadTab(); 
             }
@@ -514,13 +514,14 @@ var GraphRunner = (function(jQuery, d3) {
             for (var name in json) {
               var site = json[name];
               var referrers = site.referrers;
-              for (var referrerName in referrers)
-                if (referrerName.toString() == domain.toString()) { //(!sitesHidden || url.indexOf(referrerName) + 1) && 
+              for (var referrerName in referrers) {
+                if (domain.indexOf(referrerName) + 1 && referrerName.length > 0) {
                   addLink({
                     from: {name: referrerName, host: referrers[referrerName].host},
                     to: {name: name, host: site.host}
                   });
                 }
+              }
             }
             for (var n = 0; n < nodes.length; n++) {
               if (json[nodes[n].name]) {
@@ -543,9 +544,9 @@ var GraphRunner = (function(jQuery, d3) {
             drawing.force.links(links);
             drawing.force.start();
             createLinks(links);
-            whitelist = deserialize(Disconnect.localStorage.whitelist) || {};
+            whitelist = JSON.parse(preferences.getCharPref("whitelist"));
             siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
-            blacklist = deserialize(Disconnect.localStorage.blacklist) || {};
+            blacklist = JSON.parse(preferences.getCharPref("blacklist"));
             siteBlacklist = blacklist[domain] || (blacklist[domain] = {});
             createNodes(nodes, drawing.force);
 

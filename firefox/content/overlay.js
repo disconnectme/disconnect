@@ -382,21 +382,114 @@ if (typeof Disconnect == 'undefined') {
       var whitelistName = Disconnect.whitelistName;
       var contentName = Disconnect.contentName;
 
+      var categorySurface = $(document.getElementById('disconnect-categories'));
+      var categoryTemplate = categorySurface.children();
+      var serviceTemplate = categoryTemplate.find('.disconnect-service');
+
       for (var i = 0; i < categoryCount; i++) {
         var categoryName = categoryNames[i];
         var categoryRequests = tabRequests[categoryName] || {};
         var requestCount = 0;
-        for (var serviceName in categoryRequests)
-            requestCount += categoryRequests[serviceName].count;
 
-        setTimeout(function(index, count) {
-          if (gBrowser.contentWindow.location == url)
-              document.
-                getElementsByClassName('disconnect-category')[index + 1].
-                getElementsByClassName('disconnect-count')[0].
-                textContent = count + ' request' + (count - 1 ? 's' : '');
-        }, requestCount * 100, i, requestCount);
-      }
+        var categoryControls =
+            $(document.getElementsByClassName('disconnect-category')[i]).
+              add(document.getElementsByClassName('disconnect-border')[i]).
+              add(document.getElementsByClassName('disconnect-services')[i]);
+        var wrappedCategoryControl =
+            categoryControls.filter('.disconnect-category');
+        var categoryControl = wrappedCategoryControl[0];
+        var serviceContainer = $(
+          categoryControls.
+            filter('.disconnect-services')[0].
+            getElementsByTagName('html:div')
+        );
+        var serviceSurfaces = $(
+          serviceContainer[0].getElementsByTagName('html:tbody')
+        );
+
+        for (var serviceName in categoryRequests) {
+          requestCount += categoryRequests[serviceName].count;
+          setTimeout(
+            function(
+              index,
+              count,
+              serviceName,
+              serviceCount,
+              serviceTemplates,
+              service,
+              serviceSurface,
+              siteWhitelist,
+              categoryNames
+            ) {
+              if (gBrowser.contentWindow.location == url) {
+                document.
+                  getElementsByClassName('disconnect-category')[index + 1].
+                  getElementsByClassName('disconnect-count')[0].
+                  textContent = count + ' request' + (count - 1 ? 's' : '');
+
+                var text = serviceCount + ' request' + (serviceCount - 1 ? 's' : '');
+                if (Disconnect.requestsSites[serviceName]) {
+                  Disconnect.requestsSites[serviceName].text(text);
+                } else {
+
+                  if (service != undefined) {
+                    var serviceControl = serviceTemplate.clone(true);
+                    var checkbox = serviceControl[0].getElementsByTagName('html:input')[0];
+                    var link = serviceControl[0].getElementsByTagName('html:a')[0];
+                    link.title += serviceName;
+
+                    link.href = service.url;
+                    $(link).text(serviceName);
+                    var serviceRequestCount = service.count;
+                    serviceControl.
+                      find('.disconnect-text').
+                      text(
+                        serviceRequestCount + ' request' +
+                            (serviceRequestCount - 1 ? 's' : '')
+                      );
+                    checkbox.checked = true;
+                    Disconnect.requestsSites[serviceName] = serviceControl.find('.disconnect-text');
+
+                    var add = '<html:tr xmlns:html="http://www.w3.org/1999/xhtml" class="disconnect-service">' + serviceControl.html() + '</html:tr>';
+                    var CONTROL = $($('.disconnect-services')[index + 1]);
+                    CONTROL.find('html\\:tbody').append(add);
+
+                    var serviceContainer = CONTROL.find('html\\:div');
+
+                    var expandedServices = Disconnect.activeServices.filter(function() { return $(this).css('height') != '0px'; });
+
+                    serviceCount =
+                        Math.min(
+                          serviceContainer.find('.disconnect-service').length - 1,
+                          10
+                        );
+
+                    if (expandedServices.length && serviceContainer != Disconnect.activeServices) {
+                      $('#disconnect-list').height(serviceCount * 20 + 335);
+                      Disconnect.activeServices = serviceContainer.addClass(Disconnect.categoryClasses[serviceCount]);
+                    }
+
+                  }
+                }
+
+
+              }
+            },
+            100,
+            i,
+            requestCount,
+            serviceName,
+            categoryRequests[serviceName].count,
+            serviceTemplate,
+            categoryRequests[serviceName],
+            serviceSurfaces,
+            Disconnect.whitelistSite,
+            categoryName
+          ); // requestCount * 100 removido para um efeito
+        }
+      } // update categorie
+    // daniel
+
     },
 
     /**
@@ -413,7 +506,7 @@ if (typeof Disconnect == 'undefined') {
       }
     },
 
-    /** 
+    /**
      * Plays a visualization animation. daniel
      */
     animateVisualization: function(icon, callback) {
@@ -422,16 +515,16 @@ if (typeof Disconnect == 'undefined') {
 
       for (var i = 0; i < Disconnect.FRAME_COUNT - 1; i++)
           setTimeout(function(scene, index) {
-            if(scene == undefined)return;
+            if (scene == undefined) return;
             icon.src = imageDirectory + scene + '/' + (index + 2) +  Disconnect.imageExtension;
           }, i * Disconnect.FRAME_LENGTH, Disconnect.currentScene, i);
       var PREVIOUS_SCENE = Disconnect.currentScene;
       Disconnect.currentScene = Disconnect.getScene();
       Disconnect.SCENES.push(Disconnect.PREVIOUS_SCENE);
       for (i = 0; i < Disconnect.FRAME_COUNT; i++)
-          setTimeout(function(scene, index) { 
-            if(scene == undefined)return;
-            icon.src = imageDirectory + scene + '/' + (Disconnect.FRAME_COUNT - index) +  Disconnect.imageExtension;
+          setTimeout(function(scene, index) {
+            if (scene == undefined) return;
+            icon.src = imageDirectory + scene + '/' + (Disconnect.FRAME_COUNT - index) + Disconnect.imageExtension;
             index == Disconnect.FRAME_COUNT - 1 && callback && callback();
           }, (i + Disconnect.FRAME_COUNT - 1) * Disconnect.FRAME_LENGTH, Disconnect.currentScene, i);
     },
@@ -483,7 +576,7 @@ if (typeof Disconnect == 'undefined') {
     /* Picks a random animation path. */
     getScene: function() {
       return Disconnect.SCENES.splice(Math.floor(Math.random() * Disconnect.SCENES.length), 1)[0];
-    }, 
+    },
 
     /**
      * Plays a whitelist animation.
@@ -649,6 +742,32 @@ if (typeof Disconnect == 'undefined') {
           attr('width', 8).
           attr('height', bandwidthHeight).
           attr('fill', '#ffbf3f');
+
+        $('#disconnect-tooltips .disconnect-speed').
+          attr('data-hint', function() {
+            var tabDashboard = dashboardCounts[url] || {};
+            var blockedCount = tabDashboard.blocked || 0;
+            return (
+              (blockedCount / (tabDashboard.total || 0) || 0) *
+                  Disconnect.trackingResourceTime / Disconnect.resourceTime *
+                      100
+            ).toFixed() + '% (' + (
+              blockedCount * Disconnect.trackingResourceTime / 1000
+            ).toFixed(1) + 's) faster';
+          });
+
+        $('#disconnect-tooltips .disconnect-bandwidth').
+          attr('data-hint', function() {
+            var tabDashboard = dashboardCounts[url] || {};
+            var blockedCount = tabDashboard.blocked || 0;
+            return (
+              (blockedCount / (tabDashboard.total || 0) || 0) *
+                  Disconnect.trackingResourceSize / Disconnect.resourceSize *
+                      100
+            ).toFixed() + '% (' + (
+              blockedCount * Disconnect.trackingResourceSize
+            ).toFixed() + 'K) less data';
+          });
       }
     },
 
@@ -668,6 +787,13 @@ if (typeof Disconnect == 'undefined') {
           attr('width', 8).
           attr('height', height).
           attr('fill', '#00bfff');
+
+        $('#disconnect-tooltips .disconnect-security').
+          attr('data-hint', function() {
+            var securedCount = (dashboardCounts[url] || {}).secured || 0;
+            return securedCount + ' secured request' +
+                (securedCount - 1 ? 's' : '');
+          });
       }
     },
 
@@ -780,24 +906,23 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
-     * Reload Corrent Tab
+     * Reload Current Tab
      */
-    reloadTab: function()
-    {
+    reloadTab: function() {
       gBrowser.contentWindow.location.reload();
-    }, 
+    },
 
     /**
      * Get hostnome with Sitename
      */
-    getHostSitename: function(s){
+    getHostSitename: function(s) {
       return new Sitename().get(s.toString());
-    }, 
+    },
 
     /**
-     * Get hostnome. 
+     * Get hostnome.
      */
-    getHostname: function (str) {
+    getHostname: function(str) {
       var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
       return str.match(re)[1].toString();
     },
@@ -806,8 +931,18 @@ if (typeof Disconnect == 'undefined') {
      * Registers event handlers.
      */
     initialize: function() {
-      Components.utils['import']('resource://modules/state.js');
+
+      Components.utils.import("resource://gre/modules/AddonManager.jsm");
+      AddonManager.addAddonListener({
+        onUninstalling: function(addon) {
+          $.post("http://www.disconnect.me/firefox/uninstall");
+        }
+      });
+
+      Components.utils['import']('resource://disconnect/state.js');
       var interfaces = Components.interfaces;
+
+      Disconnect.activeServices = $();
       var preferences =
           Components.
             classes['@mozilla.org/preferences-service;1'].
@@ -835,7 +970,7 @@ if (typeof Disconnect == 'undefined') {
       var clearServices = this.clearServices;
       var renderWhitelisting = this.renderWhitelisting;
       var handleWhitelisting = this.handleWhitelisting;
-      var handleVisualization = this.handleVisualization;  
+      var handleVisualization = this.handleVisualization;
       var whitelistSite = this.whitelistSite;
       var renderBlockedRequest = this.renderBlockedRequest;
       var renderSecuredRequest = this.renderSecuredRequest;
@@ -847,39 +982,43 @@ if (typeof Disconnect == 'undefined') {
       var categoryCount = categoryNames.length;
       var categoryClasses = this.categoryClasses;
       var buildName = 'build';
+      var firstBuildName = 'firstBuild';
       var navbarName = 'nav-bar';
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
+      var pwywName = 'pwyw';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
       var contentName = this.contentName;
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 13;
+      var currentBuild = 17;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
       var toolbar = document.getElementById(navbarName);
+      var date = new Date();
+      var month = date.getMonth() + 1;
+      month = (month < 10 ? '0' : '') + month;
+      var day = date.getDate();
+      day = (day < 10 ? '0' : '') + day;
+      date = date.getFullYear() + '-' + month + '-' + day;
       this.preferences = preferences;
 
       if (!previousBuild) {
-        toolbar.insertItem(buttonName);
-        toolbar.setAttribute(currentSetName, toolbar.currentSet);
-        document.persist(navbarName, currentSetName);
+        setTimeout(function() {
+          toolbar.collapsed = false;
+          toolbar.insertItem(buttonName);
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, 'collapsed');
+          document.persist(navbarName, currentSetName);
+        }, 1000);
       }
 
       if (!previousBuild || previousBuild < 2) {
-        var date = new Date();
-        var month = date.getMonth() + 1;
-        month = (month < 10 ? '0' : '') + month;
-        var day = date.getDate();
-        day = (day < 10 ? '0' : '') + day;
-        date = date.getFullYear() + '-' + month + '-' + day;
         var migratedWhitelist = {};
-        preferences.
-          setCharPref('pwyw', JSON.stringify({date: date, bucket: 'trying'}));
 
         for (var domain in whitelist) {
           var siteWhitelist =
@@ -920,8 +1059,52 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
+      if (!previousBuild || previousBuild < currentBuild) {
+        previousBuild && !JSON.parse(preferences.getCharPref(pwywName)).date &&
+            preferences.setCharPref(
+              pwywName, JSON.stringify({date: date, bucket: 'trying'})
+            );
+        var freshDirectDomain = 'freshdirect.com';
+        var domainWhitelist =
+            whitelist[freshDirectDomain] || (whitelist[freshDirectDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var newYorkerDomain = 'newyorker.com';
+        domainWhitelist =
+            whitelist[newYorkerDomain] || (whitelist[newYorkerDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.getIntPref(firstBuildName) ||
+            preferences.setIntPref(firstBuildName, currentBuild);
+        preferences.setIntPref(buildName, currentBuild);
+      }
+
+      setTimeout(function() {
+        if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
+          var tab =
+              Components.
+                classes['@mozilla.org/appshell/window-mediator;1'].
+                getService(Components.interfaces.nsIWindowMediator).
+                getMostRecentWindow('navigator:browser').
+                gBrowser.addTab('https://disconnect.me/desktop/welcome');
+
+          gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
+            this.removeEventListener('load', arguments.callee, true);
+            gBrowser.selectedTab = tab;
+            preferences.setCharPref(
+              pwywName, JSON.stringify({date: date, bucket: 'viewed'})
+            );
+          }, true);
+        }
+      }, 1000);
+
       var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
       var shortcutSurface =
@@ -942,13 +1125,17 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
-            
+
+      var search =
+          document.
+            getElementsByClassName('disconnect-search')[0].
+            getElementsByTagName('html:input')[0];
+
       os == 'WINNT' && button.add(badge).addClass('windows');
       os == 'Linux' && button.add(badge).addClass('linux'); 
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
-        renderGraph(gBrowser.contentWindow);  
       }, false);
 
       tabs.addEventListener('TabClose', function(event) {
@@ -962,7 +1149,7 @@ if (typeof Disconnect == 'undefined') {
         var count = countReturn.count;
         count ? updateBadge(button, badge, count, countReturn.blocked) :
             clearBadge(button, badge);
-        renderGraph(gBrowser.contentWindow);   
+        renderGraph(gBrowser.contentWindow);
       }, false);
 
       observer.addObserver({observe: function(subject, topic, data) {
@@ -995,55 +1182,25 @@ if (typeof Disconnect == 'undefined') {
             totalCount
           );
         }, timeout);
-
-        renderGraph(gBrowser.contentWindow);
+        updateGraph();
       }}, 'disconnect-request', false);
 
       observer.addObserver({observe: function(subject, topic, data) {
-        clearServices(data, get(data));
+        clearBadge(button, badge);
+        clearServices(get(data), shortcutCount);
       }}, 'disconnect-load', false);
 
-     observer.addObserver({observe: function(subject, topic, data) {
-        this.aborted = Components.results.NS_BINDING_ABORTED;
-        this.nsIHttpChannel = Components.interfaces.nsIHttpChannel;
-        this.nsIChannel = Components.interfaces.nsIChannel;
-        this.nsIRequest = Components.interfaces.nsIRequest;
+      gBrowser.addEventListener('load', function() {
+        var contentWindow = gBrowser.contentWindow;
 
-        var uri, aVisitor;
-        if ( subject instanceof this.nsIHttpChannel ) {
-          var REQUESTED_URL = subject.URI.spec;
-          var CHILD_DOMAIN = get(subject.URI.host);
-          var PARENT_DOMAIN = CHILD_DOMAIN;
-          if (subject.loadGroup && subject.loadGroup.name != "") {
-            PARENT_DOMAIN = Disconnect.getHostname(subject.loadGroup.name);
-          } else if (subject.referrer && subject.referrer.host) {
-            PARENT_DOMAIN = get(subject.referrer.host);
-          }
-
-          // The Collusion data structure.
-          if (!(CHILD_DOMAIN in Disconnect.LOG))
-              Disconnect.LOG[CHILD_DOMAIN] = {host: CHILD_DOMAIN, referrers: {}, visited: false};
-          if (!(PARENT_DOMAIN in Disconnect.LOG))
-              Disconnect.LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
-          Disconnect.LOG[PARENT_DOMAIN].visited = true;
-          const REFERRERS = Disconnect.LOG[CHILD_DOMAIN].referrers;
-          const ELAPSED_TIME = new Date(); //- startTime;
-          if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
-              REFERRERS[PARENT_DOMAIN] = {
-                host: PARENT_DOMAIN,
-                types: [ELAPSED_TIME]
-              };
-          const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
-
-          /*
-          var TYPE = 'image';
-          if (PARENT_REFERRERS) {
-            const TYPES = PARENT_REFERRERS.types;
-            TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
-          }
-          */
+        if (contentWindow.location.href.indexOf('disconnect.me') + 1) {
+          var control = contentWindow.document.getElementById('input-type');
+          var bucket = control && control.getAttribute('value');
+          bucket && preferences.setCharPref(
+            pwywName, JSON.stringify({date: date, bucket: bucket})
+          );
         }
-      }}, "http-on-modify-request", false);
+      }, true);
 
       $(
         document.
@@ -1078,6 +1235,30 @@ if (typeof Disconnect == 'undefined') {
         browsingHardened = !browsingHardened;
         preferences.setBoolPref(browsingHardenedName, browsingHardened);
         this.checked = browsingHardened;
+      }, false);
+
+      search.addEventListener(clickName, function() {
+
+        var add = '<html:tr xmlns:html="http://www.w3.org/1999/xhtml" class="disconnect-service"><html:td class="disconnect-control"><html:input type="checkbox"/></html:td><html:td xmlns:html="http://www.w3.org/1999/xhtml" class="disconnect-link"><html:a title="Visit Outbrain" target="_blank" href="http://www.outbrain.com/">Outbrain</html:a></html:td><html:td xmlns:html="http://www.w3.org/1999/xhtml" class="disconnect-text">1 request</html:td></html:tr>';
+
+        var expandedService = Disconnect.activeServices.filter(function() {
+          return $(this).css('height') != '0px';
+        });
+
+        if (this.checked && expandedService) {
+          Disconnect.contadorTeste = Disconnect.contadorTeste + 1;
+
+          var CONTROL = $($('.disconnect-services')[1]);
+          CONTROL.find('html\\:tbody').append(add);
+
+          var serviceContainer = CONTROL.find('html\\:div');
+          if (expandedServices.length != 0) {
+            $('#disconnect-list').height(Disconnect.contadorTeste * 20 + 335);
+            Disconnect.activeServices = serviceContainer.addClass(categoryClasses[Disconnect.contadorTeste]);
+          }
+
+        }
+
       }, false);
 
       this.dashboard =
@@ -1120,9 +1301,12 @@ if (typeof Disconnect == 'undefined') {
           var domain = get(url.hostname);
           var tabRequests = requestCounts[url] || {};
           var disconnectRequests = tabRequests.Disconnect || {};
+          whitelist = JSON.parse(preferences.getCharPref(whitelistName));
           var siteWhitelist = whitelist[domain] || {};
           var shortcutWhitelist =
               (siteWhitelist.Disconnect || {}).services || {};
+
+          renderGraph(gBrowser.contentWindow);
 
           for (var i = 0; i < shortcutCount; i++) {
             var control =
@@ -1195,30 +1379,27 @@ if (typeof Disconnect == 'undefined') {
           visual.mouseenter(handleVisualization);
           visual.off(clickName);
 
-           visual.click(function() {
-            //$('#' + 'disconnect-list').fadeOut('fast', function() {
-                   $('#disconnect-list').css('display', 'none'); 
-                   $('#graph').height(500);
-                   $('#graph').width(708);
-                   $('#graph').css('display', 'block'); 
-                   renderGraph(gBrowser.contentWindow);
-            //  });
-           });
+          visual.click(function() {
+            $('#disconnect-list').css('display', 'none');
+            $('#graph').height(500);
+            $('#graph').width(708);
+            $('#graph').css('display', 'block');
+            $('.live-data').css('display', 'block');
+            $('#sidebar-content').css('display', 'block');
 
+            renderGraph(gBrowser.contentWindow);
+          });
 
           var showList = $('#show-list');
-            showList.click(function() {
-            //$('#' + 'graph').fadeOut('fast', function() {
-                   $('#graph').css('display', 'none'); 
-                   $('#disconnect-list').css('display', 'block'); 
-             // });
-           });
+          showList.click(function() {
+            $('#graph').css('display', 'none');
+            $('#disconnect-list').css('display', 'block');
+          });
 
           $('.disconnect-service').not(':first-child').remove();
           var siteBlacklist =
               JSON.parse(preferences.getCharPref(blacklistName))[domain] || {};
           var serviceTemplate = categoryTemplate.find('.disconnect-service');
-          var activeServices = $();
 
           for (i = 0; i < categoryCount; i++) {
             var name = categoryNames[i];
@@ -1317,6 +1498,7 @@ if (typeof Disconnect == 'undefined') {
                 );
               serviceSurface.append(serviceControl);
               requestCount += serviceRequestCount;
+              Disconnect.requestsSites[serviceName] = serviceControl.find('.disconnect-text');
             }
 
             renderCategory(
@@ -1403,12 +1585,12 @@ if (typeof Disconnect == 'undefined') {
               serviceContainer, action, button, name
             ) {
               var expandedServices =
-                  activeServices.filter(function() {
+                  Disconnect.activeServices.filter(function() {
                     return $(this).css('height') != '0px';
                   });
 
               if (
-                expandedServices.length && serviceContainer != activeServices
+                expandedServices.length && serviceContainer != Disconnect.activeServices
               ) {
                 animateAction(
                   action,
@@ -1433,7 +1615,7 @@ if (typeof Disconnect == 'undefined') {
                         10
                       );
                   $('#disconnect-list').height(serviceCount * 20 + 335);
-                  activeServices =
+                  Disconnect.activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
@@ -1451,7 +1633,7 @@ if (typeof Disconnect == 'undefined') {
                   });
                 }, collapsed ? 0 : 200);
 
-                activeServices =
+                Disconnect.activeServices =
                     serviceContainer.toggleClass(categoryClasses[serviceCount]);
               }
             }.bind(null, serviceContainer, action, button, lowercaseName));
@@ -1519,12 +1701,13 @@ if (typeof Disconnect == 'undefined') {
     resourceSize: 10.4957370842049,
     dashboard: {},
     whitelistingClicked: 0,
-    LOG: {},
-    localStorage: new Object(),
     SCENES: [1, 2, 3, 4, 5], /* The number of animation cells. */
     FRAME_COUNT: 7, /* The duration of animation cells. */
     FRAME_LENGTH: 100,
-    currentScene: 1
+    currentScene: 1,
+    requestsSites: {},
+    contadorTeste: 0,
+    activeServices: null
   };
 }
 

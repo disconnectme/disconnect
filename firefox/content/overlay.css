@@ -552,11 +552,6 @@ ul {
   padding-left: 20px;
 }
 
-li {
-  display: list-item;
-  list-style-image: none !important;
-}
-
 hr { border-width: 1px 0 0 }
 
 blockquote {
@@ -644,3 +639,5 @@ div.settings-menu.collapsed {
   background: white;
   color: #009548;
 }
+
+div.referrees > ul >  li { display: inline !important; }

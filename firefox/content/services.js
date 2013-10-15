@@ -20,8 +20,15 @@
     Brian Kennish <byoogle@gmail.com>
 */
 
+/* Destringifies an object. */
+function deserialize(object) {
+  return typeof object == 'string' ? JSON.parse(object) : object;
+}
+
 /* Formats the blacklist. */
 function processServices(data) {
+  data =
+      deserialize(sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data));
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -48,32 +55,85 @@ function processServices(data) {
     }
   }
 
+  filteringRules = data.filteringRules;
   hardeningRules = data.hardeningRules;
   moreRules = data.moreRules;
 }
 
-/* Destringifies an object. */
-function deserialize(object) {
-  return typeof object == 'string' ? JSON.parse(object) : object;
+/* Updates the third-party metadata. */
+function fetchServices() {
+  var index = 1;
+  var requestCount = 1;
+  var nextRequest = 1;
+
+  if (Date.now() - preferences.getCharPref('lastUpdateTime') >= dayMilliseconds)
+      retryTimer.init({observe: function() {
+        if (index == nextRequest) {
+          var firstUpdate = !preferences.getCharPref('firstUpdateTime');
+          var runtime = Date.now();
+          var updatedThisWeek =
+              runtime - preferences.getCharPref('firstUpdateThisWeekTime') <
+                  7 * dayMilliseconds;
+          var updatedThisMonth =
+              runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
+                  30 * dayMilliseconds;
+          xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
+            'build=' + (preferences.getIntPref('firstBuild') || ''),
+            'first_update=' + firstUpdate,
+            'updated_this_week=' + updatedThisWeek,
+            'updated_this_month=' + updatedThisMonth
+          ].join('&'));
+
+          xhr.onload = function() {
+            if (xhr.status == 200) {
+              retryTimer.cancel();
+              processServices(xhr.responseText);
+              firstUpdate &&
+                  preferences.setCharPref('firstUpdateTime', runtime);
+              updatedThisWeek ||
+                  preferences.setCharPref('firstUpdateThisWeekTime', runtime);
+              updatedThisMonth ||
+                  preferences.setCharPref('firstUpdateThisMonthTime', runtime);
+              preferences.setCharPref('lastUpdateTime', runtime);
+              preferences.setIntPref(
+                'updateCount', preferences.getIntPref('updateCount') + 1
+              );
+            }
+          };
+
+          nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
+          try { xhr.send(); } catch (exception) {}
+        }
+
+        index++;
+      }}, secondMilliseconds, repeatingSlack);
 }
 
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
-function getService(domain) { return moreServices[domain]; }
+function getService(domain) { return moreServices[domain] || null; }
+
+/* Retests a URL. */
+function recategorize(domain, url) {
+  var category;
+  var rule = filteringRules[domain];
+  if (rule && RegExp(rule[0]).test(url)) category = rule[1];
+  return category;
+}
 
 /* Rewrites a URL, if insecure. */
 function harden(url) {
-  var hardeningRules = [];
+  var rules = [];
   if (preferences.getBoolPref('searchHardened'))
-      hardeningRules = hardeningRules.concat(moreRules);
+      rules = rules.concat(moreRules);
   if (preferences.getBoolPref('browsingHardened'))
-      hardeningRules = hardeningRules.concat(hardeningRules);
-  var ruleCount = hardeningRules.length;
+      rules = rules.concat(hardeningRules);
+  var ruleCount = rules.length;
   var hardenedUrl = url;
   var hardened;
 
   for (var i = 0; i < ruleCount; i++) {
-    var hardeningRule = hardeningRules[i];
-    hardenedUrl = url.replace(RegExp(hardeningRule[0]), hardeningRule[1]);
+    var rule = rules[i];
+    hardenedUrl = url.replace(RegExp(rule[0]), rule[1]);
 
     if (hardenedUrl != url) {
       hardened = true;
@@ -84,29 +144,49 @@ function harden(url) {
   return {url: hardenedUrl, hardened: hardened};
 }
 
-/* The "setInterval" replacement. */
-var timer =
-    Components.classes['@mozilla.org/timer;1'].
-      createInstance(Components.interfaces.nsITimer);
+/* The "setInterval"-replacement class. */
+var timerClass = Components.classes['@mozilla.org/timer;1'];
+
+/* The "setInterval"-replacement ID. */
+var timerId = Components.interfaces.nsITimer;
+
+/* The "setInterval" replacement for daily updating. */
+var dayTimer = timerClass.createInstance(timerId);
+
+/* The "setInterval" replacement for error handling. */
+var retryTimer = timerClass.createInstance(timerId);
+
+/* The timer type. */
+var repeatingSlack = timerId.TYPE_REPEATING_SLACK;
 
 /* The "XMLHttpRequest" object. */
 var xhr =
     new Components.Constructor('@mozilla.org/xmlextras/xmlhttprequest;1')();
 
-/* The number of iterations. */
-var index = 0;
+/* The add-on settings. */
+var preferences =
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(Components.interfaces.nsIPrefService).
+      getBranch('extensions.disconnect.');
 
-/* The number of requests. */
-var requestCount = 0;
+/* The number of milliseconds in a second. */
+var secondMilliseconds = 1000;
 
-/* The next iteration to make a request. */
-var nextRequest = 0;
+/* The number of milliseconds in an hour. */
+var hourMilliseconds = 60 * 60 * secondMilliseconds;
+
+/* The number of milliseconds in a day. */
+var dayMilliseconds = 24 * hourMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
   domain names they phone home with, lowercased.
 */
 var moreServices = {};
+
+/* The supplementary domain names, regexes, and categories. */
+var filteringRules = {};
 
 /* The matching regexes and replacement strings. */
 var hardeningRules = [];
@@ -118,25 +198,6 @@ Components.
   classes['@mozilla.org/moz/jssubscript-loader;1'].
   getService(Components.interfaces.mozIJSSubScriptLoader).
   loadSubScript('chrome://disconnect/skin/scripts/data.js');
-processServices(data);
-xhr.open('GET', 'https://services.disconnect.me/disconnect.json');
-
-/* Fetches the third-party metadata. */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    timer.cancel();
-    processServices(deserialize(sjcl.decrypt(
-      'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', xhr.responseText
-    )));
-  }
-};
-
-/* Retries unsuccessful requests. */
-timer.init({observe: function() {
-  if (index == nextRequest) {
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
-    try { xhr.send(); } catch (exception) {}
-  }
-
-  index++;
-}}, 1000, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+processServices(JSON.stringify(data));
+fetchServices();
+dayTimer.init({observe: fetchServices}, hourMilliseconds, repeatingSlack);

@@ -18,10 +18,19 @@
   Authors (one per line):
 
     Brian Kennish <byoogle@gmail.com>
+    Issac Trotts <issac.trotts@gmail.com>
 */
+
+/* Destringifies an object. */
+function deserialize(object) {
+  return typeof object == 'string' ? JSON.parse(object) : object;
+}
 
 /* Formats the blacklist. */
 function processServices(data) {
+  data = deserialize(sjcl.decrypt(
+    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
+  ));
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -50,27 +59,75 @@ function processServices(data) {
     }
   }
 
+  filteringRules = data.filteringRules;
   hardeningRules = data.hardeningRules;
   moreRules = data.moreRules;
+}
+
+/* Updates the third-party metadata. */
+function fetchServices() {
+  var index = 1;
+  var requestCount = 1;
+  var nextRequest = 1;
+
+  if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
+      var id = setInterval(function() {
+        if (index == nextRequest) {
+          var firstUpdate = !options.firstUpdateTime;
+          var runtime = Date.now();
+          var updatedThisWeek =
+              runtime - (options.firstUpdateThisWeekTime || 0) <
+                  7 * dayMilliseconds;
+          var updatedThisMonth =
+              runtime - (options.firstUpdateThisMonthTime || 0) <
+                  30 * dayMilliseconds;
+
+          $.get('https://services.disconnect.me/disconnect.json?' + [
+            'build=' + (options.firstBuild || ''),
+            'first_update=' + firstUpdate,
+            'updated_this_week=' + updatedThisWeek,
+            'updated_this_month=' + updatedThisMonth
+          ].join('&'), function(data) {
+            clearInterval(id);
+            processServices(data);
+            firstUpdate && (options.firstUpdateTime = runtime);
+            updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
+            updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
+            options.lastUpdateTime = runtime;
+            options.updateCount = (deserialize(options.updateCount) || 0) + 1;
+          });
+
+          nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
+        }
+
+        index++;
+      }, secondMilliseconds);
 }
 
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return servicePointer[domain]; }
 
+/* Retests a URL. */
+function recategorize(domain, url) {
+  var category;
+  var rule = filteringRules[domain];
+  if (rule && RegExp(rule[0]).test(url)) category = rule[1];
+  return category;
+}
+
 /* Rewrites a URL, if insecure. */
 function harden(url) {
-  var hardeningRules = [];
-  if (deserialize(localStorage.searchHardened))
-      hardeningRules = hardeningRules.concat(moreRules);
-  if (deserialize(localStorage.browsingHardened))
-      hardeningRules = hardeningRules.concat(hardeningRules);
-  var ruleCount = hardeningRules.length;
+  var rules = [];
+  if (deserialize(options.searchHardened)) rules = rules.concat(moreRules);
+  if (deserialize(options.browsingHardened))
+      rules = rules.concat(hardeningRules);
+  var ruleCount = rules.length;
   var hardenedUrl = url;
   var hardened;
 
   for (var i = 0; i < ruleCount; i++) {
-    var hardeningRule = hardeningRules[i];
-    hardenedUrl = url.replace(RegExp(hardeningRule[0]), hardeningRule[1]);
+    var rule = rules[i];
+    hardenedUrl = url.replace(RegExp(rule[0]), rule[1]);
 
     if (hardenedUrl != url) {
       hardened = true;
@@ -86,14 +143,14 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
-/* The number of iterations. */
-var index = 0;
+/* The number of milliseconds in a second. */
+var secondMilliseconds = 1000;
 
-/* The number of requests. */
-var requestCount = 0;
+/* The number of milliseconds in an hour. */
+var hourMilliseconds = 60 * 60 * secondMilliseconds;
 
-/* The next iteration to make a request. */
-var nextRequest = 0;
+/* The number of milliseconds in a day. */
+var dayMilliseconds = 24 * hourMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -103,6 +160,9 @@ var moreServices = {};
 
 /* The categories et al. for Disconnect 1. */
 var evenMoreServices = {};
+
+/* The supplementary domain names, regexes, and categories. */
+var filteringRules = {};
 
 /* The matching regexes and replacement strings. */
 var hardeningRules = [];
@@ -114,19 +174,5 @@ var moreRules = [];
 var servicePointer = moreServices;
 
 processServices(data);
-
-/* Fetches the third-party metadata. */
-var id = setInterval(function() {
-  if (index == nextRequest) {
-    $.get('https://services.disconnect.me/disconnect.json', function(data) {
-      clearInterval(id);
-      processServices(deserialize(sjcl.decrypt(
-        'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
-      )));
-    });
-
-    nextRequest = index + Math.pow(2, Math.min(requestCount++, 12));
-  }
-
-  index++;
-}, 1000);
+fetchServices();
+setInterval(fetchServices, hourMilliseconds);

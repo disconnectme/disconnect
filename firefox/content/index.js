@@ -1,6 +1,6 @@
 /* Toggles the blocking state globally. */
 function whitelistSite() {
-  whitelist = deserialize(Disconnect.localStorage.whitelist) || {};
+  whitelist = JSON.parse(preferences.getCharPref("whitelist"));
   siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
   var disconnectWhitelist =
       siteWhitelist.Disconnect || (siteWhitelist.Disconnect = {});
@@ -26,50 +26,44 @@ function whitelistSite() {
       socialWhitelist.services = {};
   !trackingUnblocked &&
       (siteWhitelist.Content = {whitelisted: true, services: {}});
-  Disconnect.localStorage.whitelist = JSON.stringify(whitelist);
-  blacklist = deserialize(Disconnect.localStorage.blacklist);
+  preferences.setCharPref("whitelist", JSON.stringify(whitelist));
+  blacklist = JSON.parse(preferences.getCharPref("blacklist"));
   blacklist && delete blacklist[domain];
-  Disconnect.localStorage.blacklist = JSON.stringify(blacklist || {});
+  preferences.setCharPref("blacklist", JSON.stringify(blacklist));
   Disconnect.reloadTab();
   return trackingUnblocked;
 }
 
-  /* Destringifies an object. */
-  function deserialize(object) {
-    return typeof object == 'string' ? JSON.parse(object) : object;
-  }
+function tabsQuery(url) {
+  domain = url.host;
+  siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
+  var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
 
-  function tabsQuery(url) {
-    domain = url.host; //new Sitename().get(url.toString());
-    siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
-    var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
-
-    if (
-      serviceWhitelist.Facebook && serviceWhitelist.Google &&
-          serviceWhitelist.Twitter &&
-              (siteWhitelist.Advertising || {}).whitelisted &&
-                  (siteWhitelist.Analytics || {}).whitelisted &&
-                      (siteWhitelist.Content || {}).whitelisted &&
-                          (siteWhitelist.Social || {}).whitelisted
-    ) {
-      $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
-    } else {
-      $("#unblock-tracking").html("Unblock tracking sites");
-    }
+  if (
+    serviceWhitelist.Facebook && serviceWhitelist.Google &&
+        serviceWhitelist.Twitter &&
+            (siteWhitelist.Advertising || {}).whitelisted &&
+                (siteWhitelist.Analytics || {}).whitelisted &&
+                    (siteWhitelist.Content || {}).whitelisted &&
+                        (siteWhitelist.Social || {}).whitelisted
+  ) {
+    $("#unblock-tracking").addClass("invisible").html("Block tracking sites");
+  } else {
+    $("#unblock-tracking").html("Unblock tracking sites");
   }
+}
 
 /* Constants. */
 var backgroundPage;
-var localStorage = Disconnect.localStorage;
-/* var deserialize = backgroundPage.deserialize;
-var updateClosed = deserialize(Disconnect.localStorage.updateClosed);
+var preferences =
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(Components.interfaces.nsIPrefService).
+      getBranch('extensions.disconnect.');
+var updateClosed = preferences.getBoolPref("updateClosed");
 var recommendsActivated =
-    deserialize(Disconnect.localStorage.recommendsExperiment) &&
-        !deserialize(Disconnect.localStorage.recommendsClosed); */ 
-var deserialize;
-var updateClosed;
-var recommendsActivated;
-
+    preferences.getBoolPref("recommendsExperiment") &&
+        !preferences.getBoolPref("recommendsClosed");
 var tabApi;
 var whitelist;
 var domain;
@@ -77,23 +71,24 @@ var tabId;
 var siteWhitelist;
 var graph;
 var addon = CollusionAddon;
-var sitesHidden = deserialize(Disconnect.localStorage.sitesHidden);
+var sitesHidden = preferences.getBoolPref("sitesHidden");
 var ranOnce;
-var sidebarCollapsed = parseInt(Disconnect.localStorage.sidebarCollapsed, 10);
+var sidebarCollapsed = preferences.getIntPref("sidebarCollapsed");
 var blacklist;
 var siteBlacklist;
 
 var gbrowserA; 
 
+
+function updateGraph() {
+  try { graph.update(log); } catch(e) {}
+}
+
+
 /* Paints the graph UI. */
 function renderGraph(gbrowser) {
   backgroundPage = gbrowser;
   tabApi = gbrowser.tabContainer;
-
- updateClosed = deserialize(Disconnect.localStorage.updateClosed);
- recommendsActivated =
-    deserialize(Disconnect.localStorage.recommendsExperiment) &&
-        !deserialize(Disconnect.localStorage.recommendsClosed);
 
   $("#chart svg").remove(); 
   $("update").css('display', 'block');
@@ -108,11 +103,11 @@ function renderGraph(gbrowser) {
   });
 
   $("#domain-infos").hide();
-  whitelist = deserialize(Disconnect.localStorage.whitelist) || {};
+  whitelist = JSON.parse(preferences.getCharPref("whitelist"));
 
   tabsQuery(gbrowser.location); 
 
-  if (!deserialize(Disconnect.localStorage.browsingHardened)) {
+  if (!preferences.getBoolPref("browsingHardened")) {
     $("#disable-wifi").addClass("invisible").html("Enable Wi-Fi security");
   } else {
     $("#disable-wifi").removeClass("invisible").html("Disable Wi-Fi security");
@@ -126,19 +121,20 @@ function renderGraph(gbrowser) {
   if (CollusionAddon.isInstalled()) {
 
     // You should only ever see this page if the addon is installed, anyway
-    graph.update(Disconnect.LOG);
+
+    try { graph.update(log); } catch(e) {}
 
     if (!ranOnce) {
       ranOnce = true;
 
       $("#update .close").click(function() {
-        Disconnect.localStorage.updateClosed = true;
+        preferences.setBoolPref("updateClosed", true);
         window.location.reload();
       });
 
       $("#recommends .close").click(function() {
         setTimeout(function() {
-          Disconnect.localStorage.recommendsClosed = true;
+          preferences.setBoolPref("recommendsClosed", true);
           window.location.reload();
         }, 100);
       });
@@ -165,19 +161,18 @@ function renderGraph(gbrowser) {
       });
 
       $("#disable-wifi").click(function() {
-        var wifiDisabled =
-            Disconnect.localStorage.browsingHardened =
-                !deserialize(Disconnect.localStorage.browsingHardened);
+        var wifiDisabled = !preferences.getBoolPref("browsingHardened");
+        preferences.setBoolPref("browsingHardened", wifiDisabled);
         $(this).
           toggleClass("invisible").
           text((wifiDisabled ? "Disable" : "Enable") + " Wi-Fi security");
           document.getElementById('disconnect-wifi-check').checked = wifiDisabled;
-          //$("#disconnect-wifi-check").attr("checked",wifiDisabled);
 
       });
 
       $("#hide-sidebar").click(function() {
-        sidebarCollapsed = Disconnect.localStorage.sidebarCollapsed = 3;
+        sidebarCollapsed = 3;
+        preferences.setIntPref("sidebarCollapsed", sidebarCollapsed);
 
         $("#sidebar").slideUp(function() {
           $("#chart svg").remove();
@@ -196,8 +191,8 @@ function renderGraph(gbrowser) {
       });
 
       $("#show-sidebar").click(function() {
-        delete Disconnect.localStorage.sidebarCollapsed;
-        sidebarCollapsed = Disconnect.localStorage.sidebarCollapsed;
+        sidebarCollapsed = 0;
+        preferences.setIntPref("sidebarCollapsed", sidebarCollapsed);
 
         $("#show-sidebar").slideUp(100, function() {
           $("#chart svg").remove();
@@ -208,7 +203,7 @@ function renderGraph(gbrowser) {
       });
 
       $("#show-list").click(function() {
-        Disconnect.localStorage.displayMode = "list";
+        preferences.setCharPref("displayMode", "list");
 
         $("#graph").fadeOut(function() {
           $("#chart svg").remove();

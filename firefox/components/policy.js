@@ -20,7 +20,7 @@
     Brian Kennish <byoogle@gmail.com>
 */
 Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils['import']('resource://modules/state.js');
+Components.utils['import']('resource://disconnect/state.js');
 var interfaces = Components.interfaces;
 var loader =
     Components.
@@ -122,7 +122,8 @@ Disconnect.prototype = {
             var parentService = getService(parentDomain);
             var childName = childService.name;
             var redirectSafe = childUrl != requests[parentUrl];
-            var childCategory = childService.category;
+            var childCategory =
+                recategorize(childDomain, childUrl) || childService.category;
             var content = childCategory == contentName;
             var categoryWhitelist =
                 (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
@@ -202,25 +203,29 @@ Disconnect.prototype = {
             );
           }
 
-          // The Collusion data structure.
-          if (!(childDomain in log))
-              log[childDomain] = {
-                host: childDomain, referrers: {}, visited: false
-              };
-          if (!(parentDomain in log))
-              log[parentDomain] = {host: parentDomain, referrers: {}};
-          log[parentDomain].visited = true;
-          var referrers = log[childDomain].referrers;
-          if (childDomain != parentDomain && !(parentDomain in referrers))
-              referrers[parentDomain] = {
-                host: parentDomain,
-                types: [new Date() - startTime]
-              };
-          var parentReferrers = referrers[parentDomain];
+          if (childDomain != undefined && parentDomain != undefined) {
 
-          if (parentReferrers) {
-            var types = parentReferrers.types;
-            types.indexOf(contentType) == -1 && types.push(contentType);
+            // The Collusion data structure.
+            if (!(childDomain in log))
+                log[childDomain] = {
+                  host: childDomain, referrers: {}, visited: false
+                };
+            if (!(parentDomain in log))
+                log[parentDomain] = {host: parentDomain, referrers: {}};
+            log[parentDomain].visited = true;
+            var referrers = log[childDomain].referrers;
+            var time = new Date() - startTime;
+            if (childDomain != parentDomain && !(parentDomain in referrers))
+                referrers[parentDomain] = {
+                  host: parentDomain,
+                  types: [time]
+                };
+            var parentReferrers = referrers[parentDomain];
+
+            if (parentReferrers) {
+              var types = parentReferrers.types;
+              types.indexOf(contentType) == -1 && types.push(contentType);
+            }
           }
         }
       }
