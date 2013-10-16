@@ -104,13 +104,13 @@ toolbar[iconsize=small]#nav-bar[mode=full]
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
-.disconnect-badge#disconnect-badge {
+.disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
-.windows.disconnect-badge#disconnect-badge {
+.windows.disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
