@@ -86,7 +86,7 @@ toolbar[iconsize=small]#TabsToolbar[mode=icons]
 }
 
 toolbar[iconsize=small] .disconnect-badge#disconnect-button {
-  -moz-image-region: rect(16px, 16px, 32px, 0)
+  -moz-image-region: rect(32px, 16px, 48px, 0)
 }
 
 toolbar[iconsize=small] .linux.disconnect-badge#disconnect-button {
@@ -99,6 +99,18 @@ toolbar[iconsize=small] .linux.disconnect-badge#disconnect-button {
 
 toolbar[iconsize=small]#nav-bar[mode=full]
 .windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.disconnect-badge#disconnect-badge {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.windows.disconnect-badge#disconnect-badge {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
