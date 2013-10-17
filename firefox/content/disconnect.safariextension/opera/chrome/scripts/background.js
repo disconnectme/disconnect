@@ -451,6 +451,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
+  const HM_DOMAIN = 'hm.com';
+  var domainWhitelist =
+      whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.IBM = true;
+  options.whitelist = JSON.stringify(whitelist);
+}
+
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   $.getJSON('https://goldenticket.disconnect.me/kids', function(data) {
     if (data.goldenticket === 'true') {
