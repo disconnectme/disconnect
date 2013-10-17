@@ -354,28 +354,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
   options.browsingHardened = true;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
-  const MEDIAFIRE_DOMAIN = 'mediafire.com';
-  (whitelist[MEDIAFIRE_DOMAIN] || (whitelist[MEDIAFIRE_DOMAIN] = {})).Facebook =
-      true;
-  const SALON_DOMAIN = 'salon.com';
-  (whitelist[SALON_DOMAIN] || (whitelist[SALON_DOMAIN] = {})).Google = true;
-  options.whitelist = JSON.stringify(whitelist);
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
-  const LATIMES_DOMAIN = 'latimes.com';
-  (whitelist[LATIMES_DOMAIN] || (whitelist[LATIMES_DOMAIN] = {})).Google = true;
-  options.whitelist = JSON.stringify(whitelist);
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
-  var udacityDomain = 'udacity.com';
-  (whitelist[udacityDomain] || (whitelist[udacityDomain] = {})).Twitter =
-      true;
-  options.whitelist = JSON.stringify(whitelist);
-}
-
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete options.blogOpened;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) options.blogOpened = true;
 
@@ -410,57 +388,65 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   options.sitesHidden = true;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
-  const FEEDLY_DOMAIN = 'feedly.com';
-  var domainWhitelist =
-      whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Google = true;
+var defaultWhitelist = {
+  'mediafire.com': {
+    Facebook: {category: "Disconnect", buildReleased: 35}
+  },
+  'salon.com': {
+    Google: {category: "Disconnect", buildReleased: 35}
+  },
+  'latimes.com': {
+    Google: {category: "Disconnect", buildReleased: 38}
+  },
+  'udacity.com': {
+    Twitter: {category: "Disconnect", buildReleased: 39}
+  },
+  'feedly.com': {
+    Google: {category: "Disconnect", buildReleased: 44}
+  },
+  'udacity.com': {
+    Google: {category: "Disconnect", buildReleased: 54},
+    Facebook: {category: "Disconnect", buildReleased: 54}
+  },
+  'freshdirect.com': {
+    Google: {category: "Disconnect", buildReleased: 57}
+  },
+  'newyorker.com': {
+    Google: {category: "Disconnect", buildReleased: 57}
+  },
+  'hm.com': {
+    IBM: {category: "Analytics", buildReleased: "current"}
+  }
+}
+
+function setDefaultWhitelist () {
+  for (var siteURL in defaultWhitelist) {
+    for (var service in defaultWhitelist[siteURL]) {
+      var category = defaultWhitelist[siteURL][service].category;
+      var buildReleased = defaultWhitelist[siteURL][service].buildReleased;
+
+      if (!PREVIOUS_BUILD || PREVIOUS_BUILD > buildReleased){
+        addtoWhitelist(service, siteURL, category)
+      }
+      else if (buildReleased == "current" && PREVIOUS_BUILD < CURRENT_BUILD) {
+        addtoWhitelist(service, siteURL, category)
+      }
+    }
+  }
+}
+
+function addtoWhitelist(service, url, category) {
+  const EMPTY_SETTINGS = {whitelisted: false, services: {}};
+  whitelist[url] = whitelist[url] || {};
+  whitelist[url][category] = whitelist[url][category] || EMPTY_SETTINGS;
+
+  whitelist[url][category].services[service] = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
-  var udacityDomain = 'udacity.com';
-  var domainWhitelist =
-      whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Facebook = true;
-  disconnectWhitelist.services.Google = true;
-  options.whitelist = JSON.stringify(whitelist);
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
-  const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
-  var domainWhitelist =
-      whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Google = true;
-  const NEW_YORKER_DOMAIN = 'newyorker.com';
-  domainWhitelist =
-      whitelist[NEW_YORKER_DOMAIN] || (whitelist[NEW_YORKER_DOMAIN] = {});
-  disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Google = true;
-  options.whitelist = JSON.stringify(whitelist);
-}
+setDefaultWhitelist();
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  const HM_DOMAIN = 'hm.com';
-  var domainWhitelist =
-      whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Analytics ||
-          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
-  options.whitelist = JSON.stringify(whitelist);
-
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
 }
