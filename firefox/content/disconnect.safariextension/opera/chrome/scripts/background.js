@@ -451,7 +451,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) {
   const HM_DOMAIN = 'hm.com';
   var domainWhitelist =
       whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
