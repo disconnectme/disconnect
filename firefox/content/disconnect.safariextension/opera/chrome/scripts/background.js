@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 59;
+const CURRENT_BUILD = 60;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -451,7 +451,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const HM_DOMAIN = 'hm.com';
   var domainWhitelist =
       whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
@@ -460,17 +460,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) {
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  $.getJSON('https://goldenticket.disconnect.me/kids', function(data) {
-    if (data.goldenticket === 'true') {
-      options.promoRunning = true;
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
 
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
