@@ -426,25 +426,72 @@ function setDefaultWhitelist () {
       var buildReleased = defaultWhitelist[siteURL][service].buildReleased;
 
       if (!PREVIOUS_BUILD || PREVIOUS_BUILD > buildReleased){
-        addtoWhitelist(service, siteURL, category)
+        addtoWhitelist(service, category, siteURL)
       }
       else if (buildReleased == "current" && PREVIOUS_BUILD < CURRENT_BUILD) {
-        addtoWhitelist(service, siteURL, category)
+        addtoWhitelist(service, category, siteURL)
       }
     }
   }
 }
 
-function addtoWhitelist(service, url, category) {
-  const EMPTY_SETTINGS = {whitelisted: false, services: {}};
-  whitelist[url] = whitelist[url] || {};
-  whitelist[url][category] = whitelist[url][category] || EMPTY_SETTINGS;
+setDefaultWhitelist();
 
-  whitelist[url][category].services[service] = true;
+function addtoWhitelist(service, category, url) {
+  if (url && whitelist) {
+    const EMPTY_SETTINGS = {whitelisted: false, services: {}};
+    whitelist[url] = whitelist[url] || {};
+    whitelist[url][category] = whitelist[url][category] || EMPTY_SETTINGS;
+
+    whitelist[url][category].services[service] = true;
+  }
+  else if (whitelist.Global) {
+    whitelist.Global[category] = whitelist.Global[category] || EMPTY_SETTINGS;
+  }
   options.whitelist = JSON.stringify(whitelist);
 }
 
-setDefaultWhitelist();
+function createGlobalWhitelist() {
+  if (!(whitelist.Global)) {
+    const EMPTY_SETTINGS = {whitelisted: false, services: {}};
+    whitelist.Global = {
+      Advertising: EMPTY_SETTINGS,
+      Analytics: EMPTY_SETTINGS,
+      Social: EMPTY_SETTINGS,
+      Content: EMPTY_SETTINGS,
+      Disconnect: {whitelisted: false, services: {
+        Google: false,
+        Facebook: false,
+        Twitter: false
+      }}
+    };
+  }
+
+  options.whitelist = JSON.stringify(whitelist);
+}
+
+createGlobalWhitelist();
+
+function isBlacklisted(parentDomain, url, category) {
+    var blacklist = deserialize(options.blacklist) || {};
+    var parentBlacklist = blacklist[parentDomain] || {};
+    var categoryBlacklisted = parentBlacklist[category] || {};
+    return categoryBlacklist[url] || false;
+}
+
+function isWhitelisted(parentDomain, url, category) {
+  if (whitelist && whitelist != {}) {
+    var domainWhitelist = whitelist[[parentDomain]] || {};
+    var categoryWhitelist = domainWhitelist[category] || {};
+    var servicesWhitelist = categoryWhitelist.services || {};
+    if (category == "Content" || categoryWhitelist.whitelisted) {
+      return !(isBlacklisted(parentDomain, url, category));
+    }
+    else if (servicesWhitelist[url]) {
+      return !(isBlacklisted(parentDomain, url, category));
+    }
+  }
+}
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
