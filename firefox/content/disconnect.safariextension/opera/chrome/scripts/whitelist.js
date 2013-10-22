@@ -51,16 +51,18 @@ function whitelistExistenceCheck(url) {
 
 function createWhitelist(url) {
   const EMPTY_SETTINGS = {whitelisted: false, services: {}};
-  whitelist[url] = {
+  return {
     Advertising: EMPTY_SETTINGS,
     Analytics: EMPTY_SETTINGS,
     Social: EMPTY_SETTINGS,
     Content: EMPTY_SETTINGS,
-    Disconnect: {whitelisted: false, services: {
-      Google: false,
-      Facebook: false,
-      Twitter: false
-    }}
+    Disconnect: {whitelisted: false, 
+    	services: {
+	      Google: false,
+	      Facebook: false,
+	      Twitter: false
+    	}
+  	}
   };
 
   options.whitelist = JSON.stringify(whitelist);
