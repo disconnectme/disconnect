@@ -50,12 +50,11 @@ function whitelistExistenceCheck(url) {
 }
 
 function createWhitelist(url) {
-  const EMPTY_SETTINGS = {whitelisted: false, services: {}};
   return {
-    Advertising: EMPTY_SETTINGS,
-    Analytics: EMPTY_SETTINGS,
-    Social: EMPTY_SETTINGS,
-    Content: EMPTY_SETTINGS,
+    Advertising: {whitelisted: false, services: {}},
+    Analytics: {whitelisted: false, services: {}},
+    Social: {whitelisted: false, services: {}},
+    Content: {whitelisted: true, services: {}},
     Disconnect: {whitelisted: false, 
     	services: {
 	      Google: false,
