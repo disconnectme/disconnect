@@ -28,7 +28,7 @@
       Treats global whitelist as just another url passed in as 'Global'
   */
 function changeWhitelist(whitelisted, url, category, service) {
-  whitelistExistenceCheck(url);
+  whitelistExistenceCheck(url, category);
 
   if (service) {
     whitelist[url][category].services[service] = whitelisted;
@@ -44,9 +44,27 @@ function changeWhitelist(whitelisted, url, category, service) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-function whitelistExistenceCheck(url) {
+function whitelistExistenceCheck(url, category) {
   whitelist = whitelist || {};
   whitelist[url] = whitelist[url] || createWhitelist(url);
+  if (category && !(whitelist[url][category])) {
+    if (category == 'Content') {
+      whitelist[url][category] = {whitelisted: true, services: {}}
+    }
+    else if (category == 'Disconnect') {
+      whitelist[url][category] = {
+        whitelisted: false, 
+        services: {
+          Google: false,
+          Facebook: false,
+          Twitter: false
+        }
+      }
+    }
+    else {
+      whitelist[url][category] = {whitelisted: false, services: {}}
+    }
+  }
 }
 
 function createWhitelist(url) {
@@ -63,8 +81,6 @@ function createWhitelist(url) {
     	}
   	}
   };
-
-  options.whitelist = JSON.stringify(whitelist);
 }
 
 function isBlacklisted(parentDomain, url, category) {
