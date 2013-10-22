@@ -28,13 +28,6 @@ content/disconnect.safariextension/Icon-48.png \
 content/disconnect.safariextension/Icon.png \
 content/disconnect.safariextension/Info.plist \
 content/disconnect.safariextension/opera/manifest.json \
-content/disconnect.safariextension/opera/chrome/images/16.png \
-content/disconnect.safariextension/opera/chrome/images/19.png \
-content/disconnect.safariextension/opera/chrome/images/32-placeholder.png \
-content/disconnect.safariextension/opera/chrome/images/32.png \
-content/disconnect.safariextension/opera/chrome/images/48.png \
-content/disconnect.safariextension/opera/chrome/images/64.png \
-content/disconnect.safariextension/opera/chrome/images/128.png \
 content/disconnect.safariextension/opera/chrome/images/legacy/\* \
 content/disconnect.safariextension/opera/chrome/manifest.json \
 content/disconnect.safariextension/opera/chrome/markup/\* \

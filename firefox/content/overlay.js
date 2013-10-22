@@ -842,7 +842,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 17;
+      var currentBuild = 20;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -907,7 +907,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 17) {
         previousBuild && !JSON.parse(preferences.getCharPref(pwywName)).date &&
             preferences.setCharPref(
               pwywName, JSON.stringify({date: date, bucket: 'trying'})
@@ -929,6 +929,9 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
         preferences.getIntPref(firstBuildName) ||
             preferences.setIntPref(firstBuildName, currentBuild);
         preferences.setIntPref(buildName, currentBuild);
