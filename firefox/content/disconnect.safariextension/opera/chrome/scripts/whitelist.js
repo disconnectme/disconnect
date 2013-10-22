@@ -26,6 +26,7 @@
       If we get everything except service, whitelist/blacklist category
       If we get only get whitelisted and the url, whitelist/blacklist url
       Treats global whitelist as just another url passed in as 'Global'
+      TODO: Change the blacklist at the same time
   */
 function changeWhitelist(whitelisted, url, category, service) {
   whitelistExistenceCheck(url, category);
@@ -44,12 +45,13 @@ function changeWhitelist(whitelisted, url, category, service) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
+//TODO: Create blacklist entries at the same time
 function whitelistExistenceCheck(url, category) {
   whitelist = whitelist || {};
   whitelist[url] = whitelist[url] || createWhitelist(url);
   if (category && !(whitelist[url][category])) {
     if (category == 'Content') {
-      whitelist[url][category] = {whitelisted: true, services: {}}
+      whitelist[url][category] = {whitelisted: true, services: {}};
     }
     else if (category == 'Disconnect') {
       whitelist[url][category] = {
@@ -59,10 +61,10 @@ function whitelistExistenceCheck(url, category) {
           Facebook: false,
           Twitter: false
         }
-      }
+      };
     }
     else {
-      whitelist[url][category] = {whitelisted: false, services: {}}
+      whitelist[url][category] = {whitelisted: false, services: {}};
     }
   }
 }
@@ -83,36 +85,44 @@ function createWhitelist(url) {
   };
 }
 
-function isBlacklisted(parentDomain, url, category) {
+function isWhitelisted(parentDomain, category, url) {
+  if (whitelist && whitelist != {}) {
+    var domainWhitelist = whitelist[parentDomain] || {};
+    var categoryWhitelist = domainWhitelist[category] || {};
+    var servicesWhitelist = categoryWhitelist.services || {};
+    if (!(url) && category) {
+      if (category == "Content" || categoryWhitelist.whitelisted) {
+        return !(isBlacklisted(parentDomain, category, url));
+      }
+    }
+    else if (category == "Content" || categoryWhitelist.whitelisted) {
+      return !(isBlacklisted(parentDomain, category, url));
+    }
+    else if (servicesWhitelist[url]) {
+      return !(isBlacklisted(parentDomain, category, url));
+    }
+    else if (globalCategory.whitelisted || globalCategory.services[service]) {
+      return !(isBlacklisted(parentDomain, category, url));
+    }
+    else return false;
+  }
+}
+
+function isBlacklisted(parentDomain, category, url) {
     var blacklist = deserialize(options.blacklist) || {};
     var parentBlacklist = blacklist[parentDomain] || {};
     var categoryBlacklisted = parentBlacklist[category] || {};
     var globalBlacklist = blacklist.Global;
-    if (categoryBlacklist[url]) {
+    if (!(url) && category){
+      return categoryBlacklisted.blacklisted;
+    }
+    else if (categoryBlacklist[url]) {
       return true;
     }
     else if (globalBlacklist[category][url]) {
       return true
     }
     return false;
-}
-
-function isWhitelisted(parentDomain, url, category) {
-  if (whitelist && whitelist != {}) {
-    var domainWhitelist = whitelist[parentDomain] || {};
-    var categoryWhitelist = domainWhitelist[category] || {};
-    var servicesWhitelist = categoryWhitelist.services || {};
-    var globalCategory = whitelist.Global[category] || {};
-    if (category == "Content" || categoryWhitelist.whitelisted) {
-      return !(isBlacklisted(parentDomain, url, category));
-    }
-    else if (servicesWhitelist[url]) {
-      return !(isBlacklisted(parentDomain, url, category));
-    }
-    else if (globalCategory.whitelisted || globalCategory.services[service]) {
-      return !(isBlacklisted(parentDomain, url, category));
-    }
-  }
 }
 
 function setDefaultWhitelist () {
@@ -145,7 +155,7 @@ function setDefaultWhitelist () {
     'hm.com': {
       IBM: {category: "Analytics", buildReleased: "current"}
     }
-  }
+  };
 
   for (var siteURL in defaultWhitelist) {
     for (var service in defaultWhitelist[siteURL]) {
@@ -153,10 +163,10 @@ function setDefaultWhitelist () {
       var buildReleased = defaultWhitelist[siteURL][service].buildReleased;
 
       if (!PREVIOUS_BUILD || PREVIOUS_BUILD > buildReleased){
-        changeWhitelist(true, siteURL, category, service)
+        changeWhitelist(true, siteURL, category, service);
       }
       else if (buildReleased == "current" && PREVIOUS_BUILD < CURRENT_BUILD) {
-        changeWhitelist(true, siteURL, category, service)
+        changeWhitelist(true, siteURL, category, service);
       }
     }
   }

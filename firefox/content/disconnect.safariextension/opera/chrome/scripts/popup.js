@@ -256,16 +256,22 @@ function handleCategory(
           (LOCAL_SITE_WHITELIST[name] = {whitelisted: CONTENT, services: {}});
   const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
   var whitelisted = CATEGORY_WHITELIST.whitelisted;
+  var whitelisted2 = isWhitelisted(domain, name);
+  chrome.extension.getBackgroundPage().console.log(whitelisted2);
   whitelisted =
       CATEGORY_WHITELIST.whitelisted =
           !(whitelisted || CONTENT && whitelisted !== false);
+          //TODO: figure out how this works
+  chrome.extension.getBackgroundPage().console.log(!(whitelisted || CONTENT && whitelisted !== false));
+  //changeWhitelist(!(whitelisted || CONTENT && whitelisted !== false), domain, name);
+
   const BLACKLIST = DESERIALIZE(options.blacklist) || {};
   const LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
   const CATEGORY_BLACKLIST =
       LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
-  for (var serviceName in SERVICE_WHITELIST)
-      SERVICE_WHITELIST[serviceName] = whitelisted;
+  //for (var serviceName in SERVICE_WHITELIST)
+      //SERVICE_WHITELIST[serviceName] = whitelisted;
   for (var serviceName in CATEGORY_BLACKLIST)
       CATEGORY_BLACKLIST[serviceName] = !whitelisted;
   options.whitelist = JSON.stringify(WHITELIST);
@@ -927,6 +933,8 @@ var timeout = 1600;
 
 /* Whether or not the whitelist button was clicked. */
 var whitelistingClicked = 0;
+
+var whitelist = DESERIALIZE(options.whitelist) || {};
 
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
