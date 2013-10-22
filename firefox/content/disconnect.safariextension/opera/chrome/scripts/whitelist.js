@@ -114,6 +114,7 @@ function isBlacklisted(parentDomain, category, url) {
     var categoryBlacklisted = parentBlacklist[category] || {};
     var globalBlacklist = blacklist.Global;
     if (!(url) && category){
+      //right now the UI blacklists every service listed under it for categories
       return categoryBlacklisted.blacklisted;
     }
     else if (categoryBlacklist[url]) {
