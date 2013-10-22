@@ -31,6 +31,7 @@
       "scripts/vendor/sjcl/sjcl.js",
       "scripts/data.js",
       "scripts/services.js",
+      "scripts/whitelist.js"
       "scripts/background.js"
     ]
   },
