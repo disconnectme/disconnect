@@ -97,7 +97,7 @@ function handleShortcut(
   text
 ) {
   wrappedControl.off('click');
-  var whitelisted = isWhitelisted(domain, 'Disconnect', name)
+  var whitelisted = isWhitelisted(domain, 'Disconnect', name);
   renderShortcut(
     name,
     lowercaseName,
@@ -1030,8 +1030,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
             document.getElementById('shortcuts').getElementsByTagName('td')[0];
         const SHORTCUT_TEMPLATE =
             SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-        const SITE_WHITELIST =
-            (DESERIALIZE(options.whitelist) || {})[DOMAIN] || {};
+        const SITE_WHITELIST = getSiteWhitelist(DOMAIN);
         const SHORTCUT_WHITELIST =
             (SITE_WHITELIST.Disconnect || {}).services || {};
         var expiredShortcuts;
@@ -1054,7 +1053,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           renderShortcut(
             name,
             lowercaseName,
-            !SHORTCUT_WHITELIST[name],
+            !(isWhitelisted(DOMAIN, 'Disconnect', name);),
             requestCount,
             control,
             wrappedControl,
@@ -1099,8 +1098,6 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
         const CATEGORY_SURFACE = $('#categories');
         CATEGORY_SURFACE.children().slice(3).remove();
         const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
-        const SITE_BLACKLIST =
-            (DESERIALIZE(options.blacklist) || {})[DOMAIN] || {};
         serviceTemplate = CATEGORY_TEMPLATE.find('.service');
 
         for (i = 0; i < CATEGORY_COUNT; i++) {
@@ -1121,18 +1118,13 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           var text = wrappedText[0];
           var textName = wrappedText.find('.name');
           var textCount = wrappedText.find('.count');
-          var categoryWhitelist = SITE_WHITELIST[name] || {};
-          var whitelisted = categoryWhitelist.whitelisted;
-          whitelisted =
-              whitelisted || name == CONTENT_NAME && whitelisted !== false;
-          var categoryBlacklist = SITE_BLACKLIST[name] || {};
+          var whitelisted = isWhitelisted(DOMAIN, name);
 
           for (var serviceName in categoryRequests) {
             var serviceControl = serviceTemplate.clone(true);
             var checkbox = serviceControl.find(INPUT)[0];
             checkbox.checked =
-                !whitelisted && !(categoryWhitelist.services || {})[serviceName]
-                    || categoryBlacklist[serviceName];
+                !whitelisted && !(isWhitelisted(DOMAIN, name, serviceName));
             $(checkbox).off('click');
 
             checkbox.onclick = function(name, serviceName) {
@@ -1146,12 +1138,14 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
                           {whitelisted: CONTENT, services: {}});
               const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
               const WHITELISTED = SERVICE_WHITELIST[serviceName];
+
               const BLACKLIST = DESERIALIZE(options.blacklist) || {};
               const LOCAL_SITE_BLACKLIST =
                   BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
               const CATEGORY_BLACKLIST =
                   LOCAL_SITE_BLACKLIST[name] ||
                       (LOCAL_SITE_BLACKLIST[name] = {});
+              var whitelisted = isWhitelisted(DOMAIN, name, serviceName);
               this.checked =
                   SERVICE_WHITELIST[serviceName] =
                       !(CATEGORY_BLACKLIST[serviceName] =
