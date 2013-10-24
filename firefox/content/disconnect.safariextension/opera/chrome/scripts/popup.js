@@ -320,11 +320,7 @@ function updateCategory(
           serviceControl = serviceTemplate.clone(true);
           const CHECKBOX = serviceControl.find(INPUT)[0];
 
-          try {var whitelisted = isWhitelisted(DOMAIN, categoryName, serviceName);}
-          catch(error) {
-            //chrome.extension.getBackgroundPage().console.log(error);
-            //chrome.extension.getBackgroundPage().console.log(DOMAIN + " " + categoryName + " " + serviceName);
-          }
+          var whitelisted = isWhitelisted(DOMAIN, categoryName, serviceName);
          
           CHECKBOX.checked = !(whitelisted); 
 
@@ -374,8 +370,6 @@ function renderService(
 function clearServices(id) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     if (id == tabs[0].id) {
-      whitelist = deserialize(options.whitelist) || {};
-      siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
 
       for (var i = 0; i < SHORTCUT_COUNT; i++) {
         var name = SHORTCUTS[i];
@@ -383,7 +377,7 @@ function clearServices(id) {
         renderShortcut(
           name,
           name.toLowerCase(),
-          !((siteWhitelist.Disconnect || {}).services || {})[name],
+          !(isWhitelisted(domain, 'Disconnect', name)),
           0,
           control,
           $(control),
@@ -397,7 +391,7 @@ function clearServices(id) {
 
       for (i = 0; i < CATEGORY_COUNT; i++) {
         var name = CATEGORIES[i];
-        var whitelisted = (siteWhitelist[name] || {}).whitelisted;
+        var whitelisted = isWhitelisted(domain, name);
         var control = $('.category')[i + 1];
         var wrappedControl = $(control);
         var wrappedBadge = wrappedControl.find('.badge');
