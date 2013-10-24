@@ -29,6 +29,7 @@
       TODO: Change the blacklist at the same time
   */
 function changeWhitelist(whitelisted, url, category, service) {
+  chrome.extension.getBackgroundPage().console.log(arguments);
   whitelistExistenceCheck(url, category);
 
   if (service) {
@@ -36,19 +37,40 @@ function changeWhitelist(whitelisted, url, category, service) {
   }
   else if (category) {
     whitelist[url][category].whitelisted = whitelisted;
+    for (var serviceName in whitelist[url][category].services) {
+      changeWhitelist(whitelisted, url, category, serviceName);
+    }
   }
   else if (url) {
     for (var currentCategory in whitelist[url]) {
-      whitelist[url][currentCategory].whitelisted = whitelisted;
+      changeWhitelist(whitelisted, url, currentCategory);
     }
   }
   options.whitelist = JSON.stringify(whitelist);
+  return (whitelisted);
 }
 
-//TODO: Create blacklist entries at the same time
+function changeBlacklist(blacklisted, domain, name) {
+  const BLACKLIST = DESERIALIZE(options.blacklist) || {};
+  const LOCAL_SITE_BLACKLIST =
+      BLACKLIST[domain] || (BLACKLIST[domain] = {});
+  const CATEGORY_BLACKLIST =
+      LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
+  for (var serviceName in CATEGORY_BLACKLIST) {
+    CATEGORY_BLACKLIST[serviceName] = blacklisted;
+  }
+  options.blacklist = JSON.stringify(BLACKLIST);
+}
+
+function getSiteWhitelist(domain) {
+  whitelistExistenceCheck(domain);
+  return whitelist[domain];
+}
+
+//TODO: Create the blacklist at the same time
 function whitelistExistenceCheck(url, category) {
-  whitelist = whitelist || {};
-  whitelist[url] = whitelist[url] || createWhitelist(url);
+  whitelist = JSON.parse(options.whitelist) || {};
+  whitelist[url] = whitelist[url] || createWhitelist();
   if (category && !(whitelist[url][category])) {
     if (category == 'Content') {
       whitelist[url][category] = {whitelisted: true, services: {}};
@@ -69,27 +91,40 @@ function whitelistExistenceCheck(url, category) {
   }
 }
 
-function createWhitelist(url) {
+function createWhitelist() {
   return {
+    Disconnect: {whitelisted: false, 
+      services: {
+        Google: false,
+        Facebook: false,
+        Twitter: false
+      }
+    },
     Advertising: {whitelisted: false, services: {}},
     Analytics: {whitelisted: false, services: {}},
     Social: {whitelisted: false, services: {}},
-    Content: {whitelisted: true, services: {}},
-    Disconnect: {whitelisted: false, 
-    	services: {
-	      Google: false,
-	      Facebook: false,
-	      Twitter: false
-    	}
-  	}
+    Content: {whitelisted: true, services: {}}
+  };
+}
+
+function createBlacklist() {
+  return {
+    Advertising: {},
+    Analytics: {},
+    Social: {},
+    Content: {},
+    Disconnect: {}
   };
 }
 
 function isWhitelisted(parentDomain, category, url) {
-  if (whitelist && whitelist != {}) {
+  whitelistExistenceCheck(url, category);
+  if (whitelist != {}) {
+    whitelist.Global = whitelist.Global || createWhitelist();
     var domainWhitelist = whitelist[parentDomain] || {};
     var categoryWhitelist = domainWhitelist[category] || {};
     var servicesWhitelist = categoryWhitelist.services || {};
+    var globalCategory = whitelist.Global[category] || {};
     if (!(url) && category) {
       if (category == "Content" || categoryWhitelist.whitelisted) {
         return !(isBlacklisted(parentDomain, category, url));
@@ -101,21 +136,22 @@ function isWhitelisted(parentDomain, category, url) {
     else if (servicesWhitelist[url]) {
       return !(isBlacklisted(parentDomain, category, url));
     }
-    else if (globalCategory.whitelisted || globalCategory.services[service]) {
+    else if (globalCategory.whitelisted || globalCategory.services[url]) {
       return !(isBlacklisted(parentDomain, category, url));
     }
     else return false;
   }
+  return false;
 }
 
 function isBlacklisted(parentDomain, category, url) {
     var blacklist = deserialize(options.blacklist) || {};
-    var parentBlacklist = blacklist[parentDomain] || {};
-    var categoryBlacklisted = parentBlacklist[category] || {};
-    var globalBlacklist = blacklist.Global;
+    var parentBlacklist = blacklist[parentDomain] || createBlacklist();
+    var categoryBlacklist = parentBlacklist[category] || {};
+    var globalBlacklist = blacklist.Global || createBlacklist();
     if (!(url) && category){
       //right now the UI blacklists every service listed under it for categories
-      return categoryBlacklisted.blacklisted;
+      return categoryBlacklist.blacklisted;
     }
     else if (categoryBlacklist[url]) {
       return true;

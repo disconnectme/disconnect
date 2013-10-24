@@ -97,20 +97,11 @@ function handleShortcut(
   text
 ) {
   wrappedControl.off('click');
-  const WHITELIST = DESERIALIZE(options.whitelist) || {};
-  const LOCAL_SITE_WHITELIST =
-      WHITELIST[domain] || (WHITELIST[domain] = {});
-  const DISCONNECT_WHITELIST =
-      LOCAL_SITE_WHITELIST.Disconnect ||
-          (LOCAL_SITE_WHITELIST.Disconnect =
-              {whitelisted: false, services: {}});
-  const LOCAL_SHORTCUT_WHITELIST =
-      DISCONNECT_WHITELIST.services ||
-          (DISCONNECT_WHITELIST.services = {});
+  var whitelisted = isWhitelisted(domain, 'Disconnect', name)
   renderShortcut(
     name,
     lowercaseName,
-    !(LOCAL_SHORTCUT_WHITELIST[name] = !LOCAL_SHORTCUT_WHITELIST[name]),
+    !(changeWhitelist(!(whitelisted), domain, 'Disconnect', name)),
     requestCount,
     control,
     wrappedControl,
@@ -131,8 +122,7 @@ function handleShortcut(
       );
     }
   );
-  options.whitelist = JSON.stringify(WHITELIST);
-  renderWhitelisting(LOCAL_SITE_WHITELIST);
+  renderWhitelisting(getSiteWhitelist(domain));
   TABS.reload(id);
 }
 
@@ -247,35 +237,18 @@ function handleCategory(
   serviceSurface
 ) {
   $(badge).off('click');
-  const WHITELIST = DESERIALIZE(options.whitelist) || {};
-  const LOCAL_SITE_WHITELIST =
-      WHITELIST[domain] || (WHITELIST[domain] = {});
-  const CONTENT = name == CONTENT_NAME;
-  const CATEGORY_WHITELIST =
-      LOCAL_SITE_WHITELIST[name] ||
-          (LOCAL_SITE_WHITELIST[name] = {whitelisted: CONTENT, services: {}});
-  const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-  var whitelisted = CATEGORY_WHITELIST.whitelisted;
-  var whitelisted2 = isWhitelisted(domain, name);
-  chrome.extension.getBackgroundPage().console.log(whitelisted2);
-  whitelisted =
-      CATEGORY_WHITELIST.whitelisted =
-          !(whitelisted || CONTENT && whitelisted !== false);
-          //TODO: figure out how this works
-  chrome.extension.getBackgroundPage().console.log(!(whitelisted || CONTENT && whitelisted !== false));
-  //changeWhitelist(!(whitelisted || CONTENT && whitelisted !== false), domain, name);
+  whitelist = DESERIALIZE(options.whitelist) || {};
+  whitelist[domain] = whitelist[domain] || createWhitelist();
 
-  const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-  const LOCAL_SITE_BLACKLIST =
-      BLACKLIST[domain] || (BLACKLIST[domain] = {});
-  const CATEGORY_BLACKLIST =
-      LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
-  //for (var serviceName in SERVICE_WHITELIST)
-      //SERVICE_WHITELIST[serviceName] = whitelisted;
-  for (var serviceName in CATEGORY_BLACKLIST)
-      CATEGORY_BLACKLIST[serviceName] = !whitelisted;
-  options.whitelist = JSON.stringify(WHITELIST);
-  options.blacklist = JSON.stringify(BLACKLIST);
+  //What is changing content?
+  if (name == 'Content' && !(whitelist[domain].Content.whitelisted)) {
+    var whitelisted = isWhitelisted(domain, name);
+  }
+  else var whitelisted = !(isWhitelisted(domain, name));
+  chrome.extension.getBackgroundPage().console.log(whitelisted);
+  changeWhitelist(whitelisted, domain, name);
+  changeBlacklist(!(whitelisted), domain, name);
+
   renderCategory(
     name,
     lowercaseName,
@@ -312,7 +285,7 @@ function handleCategory(
     if (index) this.checked = !whitelisted;
   });
 
-  renderWhitelisting(LOCAL_SITE_WHITELIST);
+  renderWhitelisting(whitelist[domain]);
   TABS.reload(id);
 }
 
@@ -346,43 +319,23 @@ function updateCategory(
         else {
           serviceControl = serviceTemplate.clone(true);
           const CHECKBOX = serviceControl.find(INPUT)[0];
-          const CATEGORY_WHITELIST =
-              ((DESERIALIZE(options.whitelist) || {})[DOMAIN] ||
-                  {})[categoryName] || {};
-          const WHITELISTED = CATEGORY_WHITELIST.whitelisted;
-          CHECKBOX.checked = !(
-            WHITELISTED || categoryName == CONTENT_NAME && WHITELISTED !== false
-          ) && !(CATEGORY_WHITELIST.services || {})[serviceName] ||
-              (((DESERIALIZE(options.blacklist) || {})[DOMAIN] ||
-                  {})[categoryName] || {})[serviceName];
+
+          try {var whitelisted = isWhitelisted(DOMAIN, categoryName, serviceName);}
+          catch(error) {
+            //chrome.extension.getBackgroundPage().console.log(error);
+            //chrome.extension.getBackgroundPage().console.log(DOMAIN + " " + categoryName + " " + serviceName);
+          }
+         
+          CHECKBOX.checked = !(whitelisted); 
+
           $(CHECKBOX).off('click');
 
           CHECKBOX.onclick = function(categoryName, serviceName) {
-            const WHITELIST = DESERIALIZE(options.whitelist) || {};
-            const SITE_WHITELIST =
-                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const CONTENT = categoryName == CONTENT_NAME;
-            const LOCAL_CATEGORY_WHITELIST =
-                SITE_WHITELIST[categoryName] ||
-                    (SITE_WHITELIST[categoryName] = {
-                      whitelisted: CONTENT, services: {}
-                    });
-            const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
-            const WHITELISTED = SERVICE_WHITELIST[serviceName];
-            const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-            const SITE_BLACKLIST =
-                BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-            const CATEGORY_BLACKLIST =
-                SITE_BLACKLIST[categoryName] ||
-                    (SITE_BLACKLIST[categoryName] = {});
-            this.checked =
-                SERVICE_WHITELIST[serviceName] =
-                    !(CATEGORY_BLACKLIST[serviceName] =
-                        WHITELISTED ||
-                            CONTENT && LOCAL_CATEGORY_WHITELIST.whitelisted &&
-                                WHITELISTED !== false);
-            options.whitelist = JSON.stringify(WHITELIST);
-            options.blacklist = JSON.stringify(BLACKLIST);
+
+            var whitelisted = isWhitelisted(DOMAIN, categoryName, serviceName);
+            changeWhitelist(!(whitelisted), DOMAIN, categoryName, serviceName);
+            changeBlacklist(whitelisted, DOMAIN, categoryName, serviceName);
+            this.checked = !(whitelisted);
             TABS.reload(ID);
           }.bind(null, categoryName, serviceName);
 
