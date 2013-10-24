@@ -918,9 +918,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           renderService(
             name,
             lowercaseName,
-            !(((
-              (DESERIALIZE(options.whitelist) || {})[DOMAIN] || {}
-            ).Disconnect || {}).services || {})[name],
+            !(isWhitelisted(DOMAIN, 'Disconnect', name)),
             requestCount,
             control,
             badge,
@@ -936,26 +934,16 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           control.onclick = function(
             name, lowercaseName, requestCount, control, badge, text
           ) {
-            const WHITELIST = DESERIALIZE(options.whitelist) || {};
-            const SITE_WHITELIST =
-                WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const DISCONNECT_WHITELIST =
-                SITE_WHITELIST.Disconnect ||
-                    (SITE_WHITELIST.Disconnect =
-                        {whitelisted: false, services: {}});
+            var whitelisted = isWhitelisted(DOMAIN, 'Disconnect', name);
             renderService(
               name,
               lowercaseName,
-              !(
-                DISCONNECT_WHITELIST.services[name] =
-                    !DISCONNECT_WHITELIST.services[name]
-              ),
+              !(changeWhitelist(!(whitelisted), DOMAIN, 'Disconnect', name)),
               requestCount,
               control,
               badge,
               text
             );
-            options.whitelist = JSON.stringify(WHITELIST);
             TABS.reload(ID);
           }.bind(null, name, lowercaseName, requestCount, control, badge, text);
         }
