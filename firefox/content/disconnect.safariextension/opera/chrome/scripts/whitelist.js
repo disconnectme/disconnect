@@ -37,9 +37,6 @@ function changeWhitelist(whitelisted, url, category, service) {
   }
   else if (category) {
     whitelist[url][category].whitelisted = whitelisted;
-    for (var serviceName in whitelist[url][category].services) {
-      changeWhitelist(whitelisted, url, category, serviceName);
-    }
   }
   else if (url) {
     for (var currentCategory in whitelist[url]) {
