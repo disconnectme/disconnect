@@ -29,7 +29,6 @@
       TODO: Change the blacklist at the same time
   */
 function changeWhitelist(whitelisted, url, category, service) {
-  chrome.extension.getBackgroundPage().console.log(arguments);
   whitelistExistenceCheck(url, category);
   changeBlacklist(!(whitelisted), url, category, service);
 
@@ -67,7 +66,6 @@ function getSiteWhitelist(domain) {
 
 //TODO: Create the blacklist at the same time
 function whitelistExistenceCheck(url, category) {
-  chrome.extension.getBackgroundPage().console.log(url);
   whitelist = JSON.parse(options.whitelist) || {};
   whitelist[url] = whitelist[url] || createWhitelist();
   if (category && !(whitelist[url][category])) {
@@ -131,7 +129,7 @@ function isWhitelisted(parentDomain, category, url) {
     var servicesWhitelist = categoryWhitelist.services || {};
     var undefinedWhitelist = isUndefined(categoryWhitelist.whitelisted);
 
-    if (category == "Content" && undefinedWhitelist) {
+    if (category == 'Content' && undefinedWhitelist) {
       return !(isBlacklisted(parentDomain, category, url));
     }
     else if (categoryWhitelist.whitelisted) {
