@@ -31,6 +31,7 @@
 function changeWhitelist(whitelisted, url, category, service) {
   chrome.extension.getBackgroundPage().console.log(arguments);
   whitelistExistenceCheck(url, category);
+  changeBlacklist(!(whitelisted), url, category, service);
 
   if (service) {
     whitelist[url][category].services[service] = whitelisted;
@@ -48,7 +49,7 @@ function changeWhitelist(whitelisted, url, category, service) {
 }
 
 function changeBlacklist(blacklisted, domain, name) {
-  const BLACKLIST = DESERIALIZE(options.blacklist) || {};
+  const BLACKLIST = JSON.parse(options.blacklist) || {};
   const LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
   const CATEGORY_BLACKLIST =
@@ -66,6 +67,7 @@ function getSiteWhitelist(domain) {
 
 //TODO: Create the blacklist at the same time
 function whitelistExistenceCheck(url, category) {
+  chrome.extension.getBackgroundPage().console.log(url);
   whitelist = JSON.parse(options.whitelist) || {};
   whitelist[url] = whitelist[url] || createWhitelist();
   if (category && !(whitelist[url][category])) {
@@ -85,6 +87,9 @@ function whitelistExistenceCheck(url, category) {
     else {
       whitelist[url][category] = {whitelisted: false, services: {}};
     }
+  }
+  if (url == 'Global') {
+    whitelist[url].Content.whitelisted = false;
   }
 }
 
@@ -114,29 +119,30 @@ function createBlacklist() {
   };
 }
 
+function isUndefined(object) {
+  return (typeof object == 'undefined')
+}
+
 function isWhitelisted(parentDomain, category, url) {
-  whitelistExistenceCheck(url, category);
+  whitelistExistenceCheck(parentDomain, category);
   if (whitelist != {}) {
-    whitelist.Global = whitelist.Global || createWhitelist();
     var domainWhitelist = whitelist[parentDomain] || {};
     var categoryWhitelist = domainWhitelist[category] || {};
     var servicesWhitelist = categoryWhitelist.services || {};
-    var globalCategory = whitelist.Global[category] || {};
-    if (!(url) && category) {
-      if (category == "Content" || categoryWhitelist.whitelisted) {
-        return !(isBlacklisted(parentDomain, category, url));
-      }
+    var undefinedWhitelist = isUndefined(categoryWhitelist.whitelisted);
+
+    if (category == "Content" && undefinedWhitelist) {
+      return !(isBlacklisted(parentDomain, category, url));
     }
-    else if (category == "Content" || categoryWhitelist.whitelisted) {
+    else if (categoryWhitelist.whitelisted) {
       return !(isBlacklisted(parentDomain, category, url));
     }
     else if (servicesWhitelist[url]) {
       return !(isBlacklisted(parentDomain, category, url));
     }
-    else if (globalCategory.whitelisted || globalCategory.services[url]) {
-      return !(isBlacklisted(parentDomain, category, url));
+    else if (parentDomain != 'Global') {
+      return (isWhitelisted('Global', category, url));
     }
-    else return false;
   }
   return false;
 }

@@ -507,9 +507,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         CHILD_SERVICE.category =
             recategorize(CHILD_DOMAIN, REQUESTED_URL) || CHILD_SERVICE.category;
     const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
-    const CATEGORY_WHITELIST =
-        ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||
-            {})[CHILD_CATEGORY] || {};
 
     if (
       TAB_ID == -1 || PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN
@@ -521,12 +518,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         hardenedUrl = hardenedUrl.url;
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
-    } else if (
-      (CONTENT || CATEGORY_WHITELIST.whitelisted ||
-          (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-              !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
-                  {})[CHILD_CATEGORY] || {})[CHILD_NAME]
-    ) { // The request is allowed: the category or service is whitelisted.
+    } else if (isWhitelisted(PARENT_DOMAIN, CHILD_CATEGORY, CHILD_NAME)) 
+      { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
         hardened = hardenedUrl.hardened;

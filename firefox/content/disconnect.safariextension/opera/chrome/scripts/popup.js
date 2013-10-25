@@ -241,10 +241,11 @@ function handleCategory(
   whitelist[domain] = whitelist[domain] || createWhitelist();
 
   //What is changing content?
-  if (name == 'Content' && !(whitelist[domain].Content.whitelisted)) {
-    var whitelisted = isWhitelisted(domain, name);
-  }
-  else var whitelisted = !(isWhitelisted(domain, name));
+  //if (name == 'Content' && !(whitelist[domain].Content.whitelisted)) {
+    //var whitelisted = isWhitelisted(domain, name);
+  //}
+  //else var whitelisted = !(isWhitelisted(domain, name));
+  var whitelisted = !(isWhitelisted(domain, name));
   chrome.extension.getBackgroundPage().console.log(whitelisted);
   changeWhitelist(whitelisted, domain, name);
   changeBlacklist(!(whitelisted), domain, name);
@@ -1142,7 +1143,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
             serviceSurface.append(serviceControl);
             requestCount += serviceCount;
           }
-
+          chrome.extension.getBackgroundPage().console.log(whitelisted);
           renderCategory(
             name,
             lowercaseName,
