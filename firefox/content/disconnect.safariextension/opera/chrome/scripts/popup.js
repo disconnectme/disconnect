@@ -1030,9 +1030,6 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
             document.getElementById('shortcuts').getElementsByTagName('td')[0];
         const SHORTCUT_TEMPLATE =
             SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-        const SITE_WHITELIST = getSiteWhitelist(DOMAIN);
-        const SHORTCUT_WHITELIST =
-            (SITE_WHITELIST.Disconnect || {}).services || {};
         var expiredShortcuts;
         while (expiredShortcuts = SHORTCUT_TEMPLATE.nextSibling)
             SHORTCUT_SURFACE.removeChild(expiredShortcuts);
@@ -1053,7 +1050,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           renderShortcut(
             name,
             lowercaseName,
-            !(isWhitelisted(DOMAIN, 'Disconnect', name);),
+            !(isWhitelisted(DOMAIN, 'Disconnect', name)),
             requestCount,
             control,
             wrappedControl,
@@ -1128,32 +1125,8 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
             $(checkbox).off('click');
 
             checkbox.onclick = function(name, serviceName) {
-              const WHITELIST = DESERIALIZE(options.whitelist) || {};
-              const LOCAL_SITE_WHITELIST =
-                  WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-              const CONTENT = name == CONTENT_NAME;
-              const CATEGORY_WHITELIST =
-                  LOCAL_SITE_WHITELIST[name] ||
-                      (LOCAL_SITE_WHITELIST[name] =
-                          {whitelisted: CONTENT, services: {}});
-              const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-              const WHITELISTED = SERVICE_WHITELIST[serviceName];
-
-              const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-              const LOCAL_SITE_BLACKLIST =
-                  BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-              const CATEGORY_BLACKLIST =
-                  LOCAL_SITE_BLACKLIST[name] ||
-                      (LOCAL_SITE_BLACKLIST[name] = {});
               var whitelisted = isWhitelisted(DOMAIN, name, serviceName);
-              this.checked =
-                  SERVICE_WHITELIST[serviceName] =
-                      !(CATEGORY_BLACKLIST[serviceName] =
-                          WHITELISTED ||
-                              CONTENT && CATEGORY_WHITELIST.whitelisted &&
-                                  WHITELISTED !== false);
-              options.whitelist = JSON.stringify(WHITELIST);
-              options.blacklist = JSON.stringify(BLACKLIST);
+              this.checked = changeWhitelist(!(whitelisted), DOMAIN, name, serviceName);
               TABS.reload(ID);
             }.bind(null, name, serviceName);
 
@@ -1275,7 +1248,7 @@ var whitelist = DESERIALIZE(options.whitelist) || {};
           CATEGORY_SURFACE.append(categoryControls);
         }
 
-        const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
+        const WHITELISTING_ELEMENTS = renderWhitelisting(getSiteWhitelist(DOMAIN));
         const WHITELISTING = WHITELISTING_ELEMENTS.control;
         const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
         const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
