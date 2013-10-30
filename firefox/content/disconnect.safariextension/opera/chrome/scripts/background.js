@@ -150,6 +150,17 @@ function reduceCookies(url, service, name) {
   });
 }
 
+function loadPageOnClick(promoUrl) {
+  !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
+    if (deserialize(options.promoRunning)) {
+      TABS.create({url: promoUrl});
+      BROWSER_ACTION.setBadgeText({text: ''});
+      initializeToolbar();
+      delete options.promoRunning;
+    }
+  });
+}
+
 /* Preps the browser action. */
 function initializeToolbar() {
   BROWSER_ACTION.setBadgeBackgroundColor({
@@ -463,6 +474,16 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
+}
+
+if (options.displayMode == LEGACY_NAME) {
+  $.getJSON('https://goldenticket.disconnect.me/dOne', function(data) {
+    if (data.goldenticket === 'true') {
+      options.promoRunning = true;
+      options.displayMode = LIST_NAME;
+      loadPageOnClick('https://disconnect.me/intro');
+    }
+  });
 }
 
 if (!deserialize(options.pwyw).date) {
@@ -810,6 +831,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 });
 
 /* Loads the blog promo. */
+/*
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
   const PWYW = deserialize(options.pwyw) || {};
 
@@ -834,7 +856,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     delete options.promoRunning;
   }
 });
-
+*/
 /* The interface is English only for now. */
 if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHardenable)) {
 	chrome.cookies.getAll({url:'https://google.com', name:'PREF'}, function() {
