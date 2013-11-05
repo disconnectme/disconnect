@@ -775,6 +775,8 @@ if (typeof Disconnect == 'undefined') {
      */
     initialize: function() {
       Components.utils['import']('resource://disconnect/state.js');
+      Components.utils.import("resource://gre/modules/AddonManager.jsm");
+
       var interfaces = Components.interfaces;
       var loader =
           Components.
@@ -854,6 +856,15 @@ if (typeof Disconnect == 'undefined') {
       day = (day < 10 ? '0' : '') + day;
       date = date.getFullYear() + '-' + month + '-' + day;
       this.preferences = preferences;
+      var oldExtensionIDs = ["disconnect@disconnect.me", "google@disconnect.me", 
+          "twitter@disconnect.me", "facebook@disconnect.me"];
+
+      //Remove all pre-disconnect 1 extensions
+      oldExtensionIDs.forEach(function(ID) {
+        AddonManager.getAddonByID(ID, function(addon) {
+          if (addon) addon.uninstall();
+        });
+      })
 
       if (!previousBuild) {
         setTimeout(function() {
