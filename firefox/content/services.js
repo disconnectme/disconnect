@@ -78,7 +78,7 @@ function fetchServices() {
               runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
                   30 * dayMilliseconds;
           xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
-            'build=' + (preferences.getIntPref(firstBuild) || ''),
+            'build=' + (preferences.getIntPref('firstBuild') || ''),
             'first_update=' + firstUpdate,
             'updated_this_week=' + updatedThisWeek,
             'updated_this_month=' + updatedThisMonth
@@ -194,10 +194,14 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
-Components.
-  classes['@mozilla.org/moz/jssubscript-loader;1'].
-  getService(Components.interfaces.mozIJSSubScriptLoader).
-  loadSubScript('chrome://disconnect/skin/scripts/data.js');
-processServices(JSON.stringify(data));
+xhr.open('GET', 'chrome://disconnect/skin/data/services.json');
+xhr.overrideMimeType('application/json');
+
+xhr.onreadystatechange = function() {
+  xhr.readyState == 4 && (xhr.status == 0 || xhr.status == 200) &&
+      processServices(xhr.responseText);
+};
+
+xhr.send();
 fetchServices();
 dayTimer.init({observe: fetchServices}, hourMilliseconds, repeatingSlack);

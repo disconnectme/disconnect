@@ -29,7 +29,6 @@
       "scripts/vendor/sitename/tldpatch.js",
       "scripts/vendor/sitename/sitename.js",
       "scripts/vendor/sjcl/sjcl.js",
-      "scripts/data.js",
       "scripts/services.js",
       "scripts/background.js"
     ]
