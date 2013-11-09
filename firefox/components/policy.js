@@ -84,7 +84,7 @@ Disconnect.prototype = {
   shouldLoad: function(contentType, contentLocation, requestOrigin, context) {
     var result = accept;
 
-    if (contentLocation.asciiHost && context) {
+    if (contentLocation && contentLocation.asciiHost && context) {
       var html = context.ownerDocument;
 
       if (html) {
