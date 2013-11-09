@@ -19,37 +19,6 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils['import']('resource://disconnect/state.js');
-var interfaces = Components.interfaces;
-var loader =
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(interfaces.mozIJSSubScriptLoader);
-loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js');
-loader.loadSubScript('chrome://disconnect/content/sitename.js');
-loader.loadSubScript('chrome://disconnect/content/services.js');
-loader.loadSubScript('chrome://disconnect/content/debug.js');
-var observer =
-    Components.
-      classes['@mozilla.org/observer-service;1'].
-      getService(interfaces.nsIObserverService);
-
-/**
- * Constants.
- */
-var preferences =
-    Components.
-      classes['@mozilla.org/preferences-service;1'].
-      getService(interfaces.nsIPrefService).
-      getBranch('extensions.disconnect.');
-var contentPolicy = interfaces.nsIContentPolicy;
-var accept = contentPolicy.ACCEPT;
-var get = (new Sitename).get;
-var requests = {};
-var redirects = {};
-var contentName = 'Content';
-var startTime = new Date();
 
 /**
  * Creates the component.
@@ -60,6 +29,45 @@ function Disconnect() { this.wrappedJSObject = this; }
  * A content policy that makes the web faster, more private, and more secure.
  */
 Disconnect.prototype = {
+  /**
+   * Constants.
+   */
+  initialize: (
+    Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm'),
+    Components.utils['import']('resource://disconnect/state.js'),
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader).
+      loadSubScript('chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js'),
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader).
+      loadSubScript('chrome://disconnect/content/sitename.js'),
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader).
+      loadSubScript('chrome://disconnect/content/services.js'),
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(Components.interfaces.mozIJSSubScriptLoader).
+      loadSubScript('chrome://disconnect/content/debug.js')
+  ),
+  observer:
+      Components.
+        classes['@mozilla.org/observer-service;1'].
+        getService(Components.interfaces.nsIObserverService),
+  preferences:
+      Components.
+        classes['@mozilla.org/preferences-service;1'].
+        getService(Components.interfaces.nsIPrefService).
+        getBranch('extensions.disconnect.'),
+  contentPolicy: Components.interfaces.nsIContentPolicy,
+  accept: Components.interfaces.nsIContentPolicy.ACCEPT,
+  get: (new Sitename).get,
+  requests: {},
+  redirects: {},
+  startTime: new Date(),
+
   /**
    * The properties required for XPCOM registration.
    */
@@ -76,12 +84,14 @@ Disconnect.prototype = {
   /**
    * Gets a component interface.
    */
-  QueryInterface: XPCOMUtils.generateQI([contentPolicy]),
+  QueryInterface:
+      XPCOMUtils.generateQI([Components.interfaces.nsIContentPolicy]),
 
   /**
    * Traps and selectively cancels or redirects a request.
    */
   shouldLoad: function(contentType, contentLocation, requestOrigin, context) {
+    var accept = this.accept;
     var result = accept;
 
     if (contentLocation && contentLocation.asciiHost && context) {
@@ -92,10 +102,14 @@ Disconnect.prototype = {
 
         if (view) {
           var childUrl = contentLocation.spec;
+          var get = this.get;
           var childDomain = get(contentLocation.host);
           var childService = getService(childDomain);
           var parentUrl = view.top.location;
+          var contentPolicy = this.contentPolicy;
           var parent = contentType == contentPolicy.TYPE_DOCUMENT;
+          var observer = this.observer;
+          var preferences = this.preferences;
           var hardenedUrl;
           var hardened;
           var whitelisted;
@@ -121,10 +135,10 @@ Disconnect.prototype = {
             var parentDomain = get(parentUrl.hostname);
             var parentService = getService(parentDomain);
             var childName = childService.name;
-            var redirectSafe = childUrl != requests[parentUrl];
+            var redirectSafe = childUrl != this.requests[parentUrl];
             var childCategory =
                 recategorize(childDomain, childUrl) || childService.category;
-            var content = childCategory == contentName;
+            var content = childCategory == 'Content';
             var categoryWhitelist =
                 (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
                     || {})[childCategory] || {};
@@ -185,13 +199,14 @@ Disconnect.prototype = {
             }
           }
 
-          childUrl != redirects[parentUrl] && delete requests[parentUrl];
-          delete redirects[parentUrl];
+          childUrl != this.redirects[parentUrl] &&
+              delete this.requests[parentUrl];
+          delete this.redirects[parentUrl];
           var securedCount;
 
           if (hardened) {
-            requests[parentUrl] = childUrl;
-            redirects[parentUrl] = hardenedUrl;
+            this.requests[parentUrl] = childUrl;
+            this.redirects[parentUrl] = hardenedUrl;
             securedCount = ++tabDashboard.secured;
             var hardenedRequestName = 'hardenedRequests';
             var hardenedRequests =
@@ -215,7 +230,7 @@ Disconnect.prototype = {
           if (childDomain != parentDomain && !(parentDomain in referrers))
               referrers[parentDomain] = {
                 host: parentDomain,
-                types: [new Date() - startTime]
+                types: [new Date() - this.startTime]
               };
           var parentReferrers = referrers[parentDomain];
 
@@ -233,7 +248,7 @@ Disconnect.prototype = {
   /**
    * Passes a request through.
    */
-  shouldProcess: function() { return accept; }
+  shouldProcess: function() { return this.accept; }
 }
 
 /**

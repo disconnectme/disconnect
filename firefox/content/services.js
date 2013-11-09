@@ -167,7 +167,7 @@ var xhr =
 var preferences =
     Components.
       classes['@mozilla.org/preferences-service;1'].
-      getService(interfaces.nsIPrefService).
+      getService(Components.interfaces.nsIPrefService).
       getBranch('extensions.disconnect.');
 
 /* The number of milliseconds in a second. */
