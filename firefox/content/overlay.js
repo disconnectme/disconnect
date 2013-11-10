@@ -29,7 +29,8 @@ if (typeof Disconnect == 'undefined') {
      * Tallies the number of tracking requests.
      */
     getCount: function() {
-      var tabRequests = requestCounts[gBrowser.contentWindow.location] || {};
+      var tabRequests =
+          Disconnect.requestCounts[gBrowser.contentWindow.location] || {};
       var count = 0;
       var blocked = true;
 
@@ -358,7 +359,7 @@ if (typeof Disconnect == 'undefined') {
      * Refreshes third-party details.
      */
     updateServices: function(url, domain) {
-      var tabRequests = requestCounts[url] || {};
+      var tabRequests = Disconnect.requestCounts[url] || {};
       var shortcutRequests = tabRequests.Disconnect || {};
       var shortcutNames = Disconnect.shortcutNames;
 
@@ -607,6 +608,7 @@ if (typeof Disconnect == 'undefined') {
           attr('width', 8).
           attr('height', bandwidthHeight).
           attr('fill', '#ffbf3f');
+        var dashboardCounts = Disconnect.dashboardCounts;
 
         $('#disconnect-tooltips .disconnect-speed').
           attr('data-hint', function() {
@@ -655,7 +657,8 @@ if (typeof Disconnect == 'undefined') {
 
         $('#disconnect-tooltips .disconnect-security').
           attr('data-hint', function() {
-            var securedCount = (dashboardCounts[url] || {}).secured || 0;
+            var securedCount =
+                (Disconnect.dashboardCounts[url] || {}).secured || 0;
             return securedCount + ' secured request' +
                 (securedCount - 1 ? 's' : '');
           });
@@ -672,7 +675,7 @@ if (typeof Disconnect == 'undefined') {
       d3.select('.disconnect-total.disconnect-bandwidth').remove();
       d3.select('.disconnect-subtotal.disconnect-security').remove();
       d3.select('.disconnect-total.disconnect-security').remove();
-      var tabDashboard = dashboardCounts[url] || {};
+      var tabDashboard = Disconnect.dashboardCounts[url] || {};
       var blockedCount = tabDashboard.blocked || 0;
       var totalCount = tabDashboard.total || 0;
       var securedCount = tabDashboard.secured || 0;
@@ -774,24 +777,26 @@ if (typeof Disconnect == 'undefined') {
      * Registers event handlers.
      */
     initialize: function() {
-      Components.utils['import']('resource://disconnect/state.js');
+      Components.utils['import']('resource://disconnect/state.js', this);
       var interfaces = Components.interfaces;
       var loader =
           Components.
             classes['@mozilla.org/moz/jssubscript-loader;1'].
             getService(interfaces.mozIJSSubScriptLoader);
-      loader.loadSubScript('chrome://disconnect/content/sitename.js');
+      loader.loadSubScript('chrome://disconnect/content/sitename.js', this);
       loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js'
-      );
-      loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/d3/d3.js');
-      loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js'
+        'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js', this
       );
       loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js'
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.js', this
       );
-      loader.loadSubScript('chrome://disconnect/content/debug.js');
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js', this
+      );
+      loader.loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js', this
+      );
+      loader.loadSubScript('chrome://disconnect/content/debug.js', this);
       var preferences =
           Components.
             classes['@mozilla.org/preferences-service;1'].
@@ -807,7 +812,7 @@ if (typeof Disconnect == 'undefined') {
             classes['@mozilla.org/observer-service;1'].
             getService(interfaces.nsIObserverService);
       var tabs = gBrowser.tabContainer;
-      var get = (new Sitename).get;
+      var get = (new this.Sitename).get;
       var getCount = this.getCount;
       var clearBadge = this.clearBadge;
       var updateBadge = this.updateBadge;
@@ -985,7 +990,7 @@ if (typeof Disconnect == 'undefined') {
       }, false);
 
       tabs.addEventListener('TabClose', function(event) {
-        delete requestCounts[
+        delete Disconnect.requestCounts[
           gBrowser.getBrowserForTab(event.target).contentWindow.location
         ];
       }, false);
@@ -1006,7 +1011,7 @@ if (typeof Disconnect == 'undefined') {
         }, count * 100);
 
         updateServices(data, get(data));
-        var tabDashboard = dashboardCounts[data] || {};
+        var tabDashboard = Disconnect.dashboardCounts[data] || {};
         var blockedCount = tabDashboard.blocked || 0;
         var totalCount = tabDashboard.total || 0;
         var timeout = Disconnect.timeouts[data] || 0;
@@ -1119,7 +1124,7 @@ if (typeof Disconnect == 'undefined') {
         'popupshowing', function() {
           var url = gBrowser.contentWindow.location;
           var domain = get(url.hostname);
-          var tabRequests = requestCounts[url] || {};
+          var tabRequests = Disconnect.requestCounts[url] || {};
           var disconnectRequests = tabRequests.Disconnect || {};
           whitelist = JSON.parse(preferences.getCharPref(whitelistName));
           var siteWhitelist = whitelist[domain] || {};
