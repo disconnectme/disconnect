@@ -34,23 +34,25 @@ Disconnect.prototype = {
    */
   initialize: (
     Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm'),
-    Components.utils['import']('resource://disconnect/state.js'),
+    Components.utils['import']('resource://disconnect/state.js', Disconnect),
     Components.
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js'),
+      loadSubScript(
+        'chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js', Disconnect
+      ),
     Components.
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/sitename.js'),
+      loadSubScript('chrome://disconnect/content/sitename.js', Disconnect),
     Components.
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/services.js'),
+      loadSubScript('chrome://disconnect/content/services.js', Disconnect),
     Components.
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/debug.js')
+      loadSubScript('chrome://disconnect/content/debug.js', Disconnect)
   ),
   observer:
       Components.
@@ -63,7 +65,7 @@ Disconnect.prototype = {
         getBranch('extensions.disconnect.'),
   contentPolicy: Components.interfaces.nsIContentPolicy,
   accept: Components.interfaces.nsIContentPolicy.ACCEPT,
-  get: (new Sitename).get,
+  get: (new Disconnect.Sitename).get,
   requests: {},
   redirects: {},
   startTime: new Date(),
@@ -104,6 +106,7 @@ Disconnect.prototype = {
           var childUrl = contentLocation.spec;
           var get = this.get;
           var childDomain = get(contentLocation.host);
+          var getService = Disconnect.getService;
           var childService = getService(childDomain);
           var parentUrl = view.top.location;
           var contentPolicy = this.contentPolicy;
@@ -115,8 +118,10 @@ Disconnect.prototype = {
           var whitelisted;
           var blockedCount;
           var tabDashboard =
-              dashboardCounts[parentUrl] || (
-                dashboardCounts[parentUrl] = {total: 0, blocked: 0, secured: 0}
+              Disconnect.dashboardCounts[parentUrl] || (
+                Disconnect.dashboardCounts[parentUrl] = {
+                  total: 0, blocked: 0, secured: 0
+                }
               );
           var totalCount = ++tabDashboard.total;
           var date = new Date();
@@ -127,7 +132,7 @@ Disconnect.prototype = {
           date = date.getFullYear() + '-' + month + '-' + day;
 
           if (parent) {
-            requestCounts[childUrl] = {};
+            Disconnect.requestCounts[childUrl] = {};
             observer.notifyObservers(null, 'disconnect-load', childUrl);
           }
 
@@ -136,8 +141,10 @@ Disconnect.prototype = {
             var parentService = getService(parentDomain);
             var childName = childService.name;
             var redirectSafe = childUrl != this.requests[parentUrl];
+            var harden = Disconnect.harden;
             var childCategory =
-                recategorize(childDomain, childUrl) || childService.category;
+                Disconnect.recategorize(childDomain, childUrl) ||
+                    childService.category;
             var content = childCategory == 'Content';
             var categoryWhitelist =
                 (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
@@ -182,7 +189,9 @@ Disconnect.prototype = {
 
             if (hardened || whitelisted || result != accept) {
               var tabRequests =
-                  requestCounts[parentUrl] || (requestCounts[parentUrl] = {});
+                  Disconnect.requestCounts[parentUrl] || (
+                    Disconnect.requestCounts[parentUrl] = {}
+                  );
               var categoryRequests =
                   tabRequests[childCategory] ||
                       (tabRequests[childCategory] = {});
@@ -219,14 +228,16 @@ Disconnect.prototype = {
           }
 
           // The Collusion data structure.
-          if (!(childDomain in log))
-              log[childDomain] = {
+          if (!(childDomain in Disconnect.log))
+              Disconnect.log[childDomain] = {
                 host: childDomain, referrers: {}, visited: false
               };
-          if (!(parentDomain in log))
-              log[parentDomain] = {host: parentDomain, referrers: {}};
-          log[parentDomain].visited = true;
-          var referrers = log[childDomain].referrers;
+          if (!(parentDomain in Disconnect.log))
+              Disconnect.log[parentDomain] = {
+                host: parentDomain, referrers: {}
+              };
+          Disconnect.log[parentDomain].visited = true;
+          var referrers = Disconnect.log[childDomain].referrers;
           if (childDomain != parentDomain && !(parentDomain in referrers))
               referrers[parentDomain] = {
                 host: parentDomain,
