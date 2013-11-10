@@ -208,6 +208,7 @@ if (typeof Disconnect == 'undefined') {
       callback
     ) {
       var contentCategory = name == Disconnect.contentName;
+      var $ = Disconnect.$;
       var count =
           animation > 1 ||
               Disconnect.whitelistingClicked && Disconnect.whitelistingClicked--
@@ -289,6 +290,7 @@ if (typeof Disconnect == 'undefined') {
       textCount,
       serviceSurface
     ) {
+      var $ = Disconnect.$;
       $(badge).off(Disconnect.clickName);
       var preferences = Disconnect.preferences;
       var whitelistName = Disconnect.whitelistName;
@@ -368,7 +370,7 @@ if (typeof Disconnect == 'undefined') {
 
         setTimeout(function(name, count) {
           if (gBrowser.contentWindow.location == url)
-              $(
+              Disconnect.$(
                 document.
                   getElementsByClassName('disconnect-shortcut')[
                     shortcutNames.indexOf(name) + 1
@@ -406,7 +408,7 @@ if (typeof Disconnect == 'undefined') {
     clearServices: function(url, shortcutCount) {
       if (gBrowser.contentWindow.location == url) {
         for (var i = 0; i < shortcutCount; i++)
-            $(
+            Disconnect.$(
               document.
                 getElementsByClassName('disconnect-shortcut')[i + 1].
                 getElementsByClassName('disconnect-text')[0]
@@ -419,7 +421,7 @@ if (typeof Disconnect == 'undefined') {
      */
     renderWhitelisting: function(siteWhitelist) {
       var serviceWhitelist = (siteWhitelist.Disconnect || {}).services || {};
-      var whitelisting = $('.disconnect-whitelisting');
+      var whitelisting = Disconnect.$('.disconnect-whitelisting');
       var whitelistingIcon =
           whitelisting[0].getElementsByTagName('html:img')[0];
       var whitelistingText = whitelisting.filter('.disconnect-text');
@@ -462,7 +464,7 @@ if (typeof Disconnect == 'undefined') {
      * Restricts the whitelist animation to 1x per mouseover.
      */
     handleWhitelisting: function() {
-      var target = $('.' + this.className.split(' ', 1));
+      var target = Disconnect.$('.' + this.className.split(' ', 1));
       target.off('mouseenter');
 
       Disconnect.animateWhitelisting(
@@ -511,6 +513,7 @@ if (typeof Disconnect == 'undefined') {
       preferences.setCharPref(blacklistName, JSON.stringify(blacklist));
       var shortcutNames = Disconnect.shortcutNames;
       var shortcutCount = shortcutNames.length;
+      var $ = Disconnect.$;
       var renderShortcut = Disconnect.renderShortcut;
 
       for (var i = 0; i < shortcutCount; i++) {
@@ -576,6 +579,7 @@ if (typeof Disconnect == 'undefined') {
      */
     renderBlockedRequest: function(url, blockedCount, totalCount, weighted) {
       if (gBrowser.contentWindow.location == url) {
+        var d3 = Disconnect.d3;
         d3.select('.disconnect-subtotal.disconnect-speed').remove();
         var dashboard = Disconnect.dashboard;
         var height = (blockedCount / totalCount || 0) * 35;
@@ -608,6 +612,7 @@ if (typeof Disconnect == 'undefined') {
           attr('width', 8).
           attr('height', bandwidthHeight).
           attr('fill', '#ffbf3f');
+        var $ = Disconnect.$;
         var dashboardCounts = Disconnect.dashboardCounts;
 
         $('#disconnect-tooltips .disconnect-speed').
@@ -643,7 +648,10 @@ if (typeof Disconnect == 'undefined') {
      */
     renderSecuredRequest: function(url, securedCount, totalCount) {
       if (gBrowser.contentWindow.location == url) {
-        d3.select('.disconnect-subtotal.disconnect-security').remove();
+        Disconnect.
+          d3.
+          select('.disconnect-subtotal.disconnect-security').
+          remove();
         var height = Math.round((securedCount / totalCount || 0) * 35);
         Disconnect.
           dashboard.
@@ -655,7 +663,8 @@ if (typeof Disconnect == 'undefined') {
           attr('height', height).
           attr('fill', '#00bfff');
 
-        $('#disconnect-tooltips .disconnect-security').
+        Disconnect.
+          $('#disconnect-tooltips .disconnect-security').
           attr('data-hint', function() {
             var securedCount =
                 (Disconnect.dashboardCounts[url] || {}).secured || 0;
@@ -669,6 +678,7 @@ if (typeof Disconnect == 'undefined') {
      * Outputs total, blocked, and secured requests.
      */
     renderGraphs: function(url) {
+      var d3 = Disconnect.d3;
       d3.select('.disconnect-subtotal.disconnect-speed').remove();
       d3.select('.disconnect-total.disconnect-speed').remove();
       d3.select('.disconnect-subtotal.disconnect-bandwidth').remove();
@@ -756,7 +766,7 @@ if (typeof Disconnect == 'undefined') {
      * Plays an expanding or collapsing animation.
      */
     animateAction: function(action, button, name) {
-      button = $(button);
+      button = Disconnect.$(button);
       var collapsed = button.css('top') == '-28px';
       action.title = (collapsed ? 'Collapse' : 'Expand') + ' ' + name;
       var previousFrame;
@@ -797,6 +807,9 @@ if (typeof Disconnect == 'undefined') {
         'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js', this
       );
       loader.loadSubScript('chrome://disconnect/content/debug.js', this);
+      this.$ = jQuery.noConflict(true);
+      this.d3 = d3;
+      delete d3;
       var preferences =
           Components.
             classes['@mozilla.org/preferences-service;1'].
@@ -961,6 +974,7 @@ if (typeof Disconnect == 'undefined') {
         }
       }, 1000);
 
+      var $ = Disconnect.$;
       var button = $(document.getElementById(buttonName));
       var badge = $(document.getElementById('disconnect-badge'));
       var shortcutSurface =
@@ -1087,7 +1101,8 @@ if (typeof Disconnect == 'undefined') {
       }, false);
 
       this.dashboard =
-          d3.
+          this.
+            d3.
             select('#disconnect-data').
             append('svg:svg').
             attr('width', 198).
