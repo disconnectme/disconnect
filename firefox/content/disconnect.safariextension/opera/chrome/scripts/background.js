@@ -592,10 +592,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
     } else if (
-      (CONTENT || CATEGORY_WHITELIST.whitelisted ||
+      ((CATEGORY_WHITELIST.whitelisted ||
           (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
               !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
-                  {})[CHILD_CATEGORY] || {})[CHILD_NAME]
+                  {})[CHILD_CATEGORY] || {})[CHILD_NAME]) || 
+                      (CONTENT && (CATEGORY_WHITELIST.whitelisted != false))
     ) { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);

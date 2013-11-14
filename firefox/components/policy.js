@@ -161,11 +161,14 @@ Disconnect.prototype = {
                 if (hardened) contentLocation.spec = hardenedUrl;
               }
             } else if (
-              (content || categoryWhitelist.whitelisted ||
+              ((categoryWhitelist.whitelisted ||
                   (categoryWhitelist.services || {})[childName]) &&
                       !((JSON.parse(preferences.getCharPref(
                         'blacklist'
-                      ))[parentDomain] || {})[childCategory] || {})[childName]
+                      ))[parentDomain] || {})[childCategory] || {})[childName])
+                          || (content && 
+                              (categoryWhitelist.whitelisted != false))
+
             ) { // The request is allowed: the category or service is unblocked.
               if (redirectSafe) {
                 hardenedUrl = harden(childUrl);

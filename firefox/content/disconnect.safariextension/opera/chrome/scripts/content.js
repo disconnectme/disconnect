@@ -58,9 +58,10 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       ) { // The request is allowed: the topmost frame has the same origin.
         // No-op.
       } else if (
-        (CONTENT || CATEGORY_WHITELIST.whitelisted ||
-            (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-                !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]
+      ((CATEGORY_WHITELIST.whitelisted ||
+          (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
+              !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]) || 
+                      (CONTENT && (CATEGORY_WHITELIST.whitelisted != false))
       ) { // The request is allowed: the category or service is whitelisted.
         whitelisted = true;
       } else { // The request is denied.
