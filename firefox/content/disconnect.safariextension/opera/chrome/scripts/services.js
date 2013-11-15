@@ -89,7 +89,7 @@ function fetchServices() {
             'updated_this_month=' + updatedThisMonth
           ].join('&'), function(data) {
             clearInterval(id);
-            processServices(data);
+            processServices(JSON.stringify(data));
             firstUpdate && (options.firstUpdateTime = runtime);
             updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
             updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
