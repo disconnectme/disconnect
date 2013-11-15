@@ -465,6 +465,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
+if (deserialize(options.pwyw).bucket == 'trying') {
+  if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
+    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+  }
+}
+
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
   BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
