@@ -214,6 +214,24 @@ function safelyUpdateCounter(tabId, count, deactivated) {
   });
 }
 
+function getTotals() {
+  const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
+  const HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
+  const TRACKING_RESOURCE_TIME = 72.6141083689391;
+  const RESOURCE_TIME = 55.787731003361;
+  const TIME_CONSTANT = TRACKING_RESOURCE_TIME / RESOURCE_TIME;
+  const TRACKING_RESOURCE_SIZE = 8.51145760261889;
+  const RESOURCE_SIZE = 10.4957370842049;
+  const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
+
+  return {
+    blocked: BLOCKED_REQUESTS;
+    secured: HARDENED_REQUESTS;
+    timeSaved: BLOCKED_REQUESTS * TRACKING_RESOURCE_TIME / 1000;
+    bandwidthSaved: BLOCKED_COUNT * TRACKING_RESOURCE_SIZE;
+  }
+}
+
 /* Tallies and indicates the number of tracking requests. */
 function incrementCounter(tabId, service, blocked, popup) {
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
@@ -465,6 +483,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
+  /* Show the user a pwyw page 48 hours later if they're on a trial. */
 if (deserialize(options.pwyw).bucket == 'trying') {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
     TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
@@ -619,6 +638,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
                     : 'about:blank'
       };
+
       blockedCount = ++TAB_DASHBOARD.blocked;
       const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
