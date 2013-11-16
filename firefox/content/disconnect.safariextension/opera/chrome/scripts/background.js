@@ -228,7 +228,7 @@ function getTotals() {
     blocked: BLOCKED_REQUESTS,
     secured: HARDENED_REQUESTS,
     timeSaved: BLOCKED_REQUESTS * TRACKING_RESOURCE_TIME / 1000,
-    bandwidthSaved: BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
+    bandwidthSaved: BLOCKED_REQUESTS * TRACKING_RESOURCE_SIZE
   }
 }
 
