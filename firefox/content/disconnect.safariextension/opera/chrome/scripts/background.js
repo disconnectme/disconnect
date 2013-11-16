@@ -215,20 +215,22 @@ function safelyUpdateCounter(tabId, count, deactivated) {
 }
 
 function getTotals() {
-  const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
-  const HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
-  const TRACKING_RESOURCE_TIME = 72.6141083689391;
-  const RESOURCE_TIME = 55.787731003361;
-  const TIME_CONSTANT = TRACKING_RESOURCE_TIME / RESOURCE_TIME;
-  const TRACKING_RESOURCE_SIZE = 8.51145760261889;
-  const RESOURCE_SIZE = 10.4957370842049;
-  const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
+  var blocked = deserialize(options.blockedRequests) || {};
+  var secured = deserialize(options.hardenedRequests) || {};
+  var blockedTotal = 0;
+  var securedTotal = 0;
+
+  $.each(blocked, function(index, value){
+    blockedTotal = blockedTotal + value;
+  });
+
+  $.each(secured, function(index, value){
+    securedTotal = securedTotal + value;
+  });
 
   return {
-    blocked: BLOCKED_REQUESTS,
-    secured: HARDENED_REQUESTS,
-    timeSaved: BLOCKED_REQUESTS * TRACKING_RESOURCE_TIME / 1000,
-    bandwidthSaved: BLOCKED_REQUESTS * TRACKING_RESOURCE_SIZE
+    blocked: blockedTotal,
+    secured: securedTotal
   }
 }
 
@@ -483,13 +485,29 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
+function showTryLater(){
+  if (!(SAFARI)) {
+    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
+    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+    BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+    BROWSER_ACTION.setBadgeText({text: 'Stats!'});
+    BROWSER_ACTION.setPopup({popup: ''});
+    options.promoRunning = true;
+  }
+}
+
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
 if (deserialize(options.pwyw).bucket == 'trying') {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
-    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+    showTryLater();
+  }
+} 
+else if (deserialize(options.pwyw).bucket == 'remindme') {
+  if (Date.now() > (deserialize(options.pwyw).date + dayMilliseconds * 2)) {
+    showTryLater();
   }
 }
+
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
@@ -848,14 +866,20 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 
-  if (PWYW.bucket == 'pending-trial') {
-    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
+  if ((PWYW.bucket == 'trying') && deserialize(options.promoRunning)) {
+    console.log("Success!")
+    const TOTALS = getTotals();
+    const DAYS = Math.round((Date.now() - options.firstUpdateTime)/dayMilliseconds);
+    TABS.create({
+      url: 'https://disconnect.me/d2/welcome-trial?blocked=' + 
+          TOTALS.blocked + '&secured=' + TOTALS.secured + '&days=' + DAYS
+    });
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'viewed-trial'});
   }
 
-  if (deserialize(options.promoRunning)) {
+  if (deserialize(options.promoRunning) && false) {
     TABS.create({url: 'https://disconnect.me/recommends/kids'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
