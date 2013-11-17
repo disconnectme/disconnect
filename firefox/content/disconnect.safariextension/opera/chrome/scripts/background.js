@@ -499,12 +499,20 @@ function showTryLater(){
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
 if (deserialize(options.pwyw).bucket == 'trying') {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
-    showTryLater();
+    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+      if (data.goldenticket === 'true') {
+        showTryLater();
+      }
+    });
   }
 } 
 else if (deserialize(options.pwyw).bucket == 'remindme') {
   if (Date.now() > (deserialize(options.pwyw).date + dayMilliseconds * 2)) {
-    showTryLater();
+    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+      if (data.goldenticket === 'true') {
+        showTryLater();
+      }
+    });
   }
 }
 
