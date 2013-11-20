@@ -498,7 +498,7 @@ function showTryLater(){
 
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
 if (deserialize(options.pwyw).bucket == 'trying' && 
-      Date.now() > 1384692985642) {
+      Date.now() > options.firstUpdateTime) {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
       if (data.goldenticket === 'true') {
