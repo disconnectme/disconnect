@@ -508,11 +508,12 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 }
 
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
-if (!(paid()) && Date.now() > options.firstUpdateTime) {
+if (!(paid()) && Date.now() > options.firstUpdateTime && !(options.shownStats)) {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
       if (data.goldenticket === 'true') {
         showTryLater();
+        options.shownStats = true;
       }
     });
   }
