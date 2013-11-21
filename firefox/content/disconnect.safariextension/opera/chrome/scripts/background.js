@@ -245,11 +245,11 @@ function showTryLater(){
 
 function paid() {
   switch(deserialize(options.pwyw).bucket) {
-    case 'paid-paypal'
+    case 'paid-paypal':
       return true;
-    case 'paid-bitcoin'
+    case 'paid-bitcoin':
       return true;
-    case 'paid-cc'
+    case 'paid-cc':
       return true;
     default: 
       return false;
