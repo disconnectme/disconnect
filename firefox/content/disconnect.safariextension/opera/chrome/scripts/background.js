@@ -235,14 +235,12 @@ function getTotals() {
 }
 
 function showTryLater(){
-  if (!(SAFARI)) {
-    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
-    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-    BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-    BROWSER_ACTION.setBadgeText({text: 'Stats!'});
-    BROWSER_ACTION.setPopup({popup: ''});
-    options.promoRunning = true;
-  }
+  options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
+  BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+  BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+  BROWSER_ACTION.setBadgeText({text: 'Stats!'});
+  BROWSER_ACTION.setPopup({popup: ''});
+  options.promoRunning = true;
 }
 
 function paid() {
