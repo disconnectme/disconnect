@@ -234,6 +234,30 @@ function getTotals() {
   }
 }
 
+function showTryLater(){
+  if (!(SAFARI)) {
+    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
+    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+    BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+    BROWSER_ACTION.setBadgeText({text: 'Stats!'});
+    BROWSER_ACTION.setPopup({popup: ''});
+    options.promoRunning = true;
+  }
+}
+
+function paid() {
+  switch(deserialize(options.pwyw).bucket) {
+    case 'paid-paypal'
+      return true;
+    case 'paid-bitcoin'
+      return true;
+    case 'paid-cc'
+      return true;
+    default: 
+      return false;
+  }
+}
+
 /* Tallies and indicates the number of tracking requests. */
 function incrementCounter(tabId, service, blocked, popup) {
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
@@ -485,20 +509,8 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-function showTryLater(){
-  if (!(SAFARI)) {
-    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
-    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-    BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-    BROWSER_ACTION.setBadgeText({text: 'Stats!'});
-    BROWSER_ACTION.setPopup({popup: ''});
-    options.promoRunning = true;
-  }
-}
-
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
-if (deserialize(options.pwyw).bucket == 'trying' && 
-      Date.now() > options.firstUpdateTime) {
+if (!(paid()) && Date.now() > options.firstUpdateTime) {
   if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
       if (data.goldenticket === 'true') {
