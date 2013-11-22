@@ -862,7 +862,12 @@ if (typeof Disconnect == 'undefined') {
       //Remove all pre-disconnect 1 extensions
       oldExtensionIDs.forEach(function(ID) {
         AddonManager.getAddonByID(ID, function(addon) {
-          if (addon) addon.uninstall();
+          if (addon) {
+            addon.uninstall();
+            preferences.setCharPref(
+              pwywName, JSON.stringify({date: new Date(), bucket: 'd1-firefox'})
+            );
+          }
         });
       })
 
