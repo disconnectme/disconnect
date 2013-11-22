@@ -481,7 +481,7 @@ if (options.displayMode == LEGACY_NAME) {
     if (data.goldenticket === 'true') {
       options.promoRunning = true;
       options.displayMode = LIST_NAME;
-      loadPageOnClick('https://disconnect.me/intro');
+      loadPageOnClick('https://disconnect.me/welcome');
     }
   });
 }
