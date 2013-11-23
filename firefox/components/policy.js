@@ -161,14 +161,14 @@ Disconnect.prototype = {
                 if (hardened) contentLocation.spec = hardenedUrl;
               }
             } else if (
-              ((categoryWhitelist.whitelisted ||
-                  (categoryWhitelist.services || {})[childName]) &&
-                      !((JSON.parse(preferences.getCharPref(
-                        'blacklist'
-                      ))[parentDomain] || {})[childCategory] || {})[childName])
-                          || (content && 
-                              (categoryWhitelist.whitelisted != false))
-
+              (content && categoryWhitelist.whitelisted != false ||
+                  categoryWhitelist.whitelisted ||
+                      (categoryWhitelist.services || {})[childName]) &&
+                          !((
+                            JSON.parse(
+                              preferences.getCharPref('blacklist')
+                            )[parentDomain] || {}
+                          )[childCategory] || {})[childName]
             ) { // The request is allowed: the category or service is unblocked.
               if (redirectSafe) {
                 hardenedUrl = harden(childUrl);
