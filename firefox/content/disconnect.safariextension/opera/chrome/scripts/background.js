@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 60;
+const CURRENT_BUILD = 61;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -451,19 +451,20 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   const HM_DOMAIN = 'hm.com';
-  var domainWhitelist =
-      whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
+  var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
-
-  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
