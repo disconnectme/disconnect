@@ -28,7 +28,9 @@ function deserialize(object) {
 /* Formats the blacklist. */
 function processServices(data) {
   data =
-      deserialize(sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data));
+      deserialize(
+        sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data) || '{}'
+      );
   var categories = data.categories;
 
   for (var categoryName in categories) {
