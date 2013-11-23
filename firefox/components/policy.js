@@ -96,7 +96,9 @@ Disconnect.prototype = {
     var accept = this.accept;
     var result = accept;
 
-    if (contentLocation && contentLocation.asciiHost && context) {
+    if (
+      contentLocation && contentLocation.scheme.indexOf('http') + 1 && context
+    ) {
       var html = context.ownerDocument;
 
       if (html) {
