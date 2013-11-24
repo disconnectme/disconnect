@@ -29,7 +29,7 @@ function deserialize(object) {
 /* Formats the blacklist. */
 function processServices(data) {
   data = deserialize(sjcl.decrypt(
-    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data
+    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
   ));
   var categories = data.categories;
 
@@ -73,7 +73,6 @@ function fetchServices() {
   if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
       var id = setInterval(function() {
         if (index == nextRequest) {
-          var firstUpdate = !options.firstUpdateTime;
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - (options.firstUpdateThisWeekTime || 0) <
@@ -83,14 +82,12 @@ function fetchServices() {
                   30 * dayMilliseconds;
 
           $.get('https://services.disconnect.me/disconnect.json?' + [
-            'build=' + (options.firstBuild || ''),
-            'first_update=' + firstUpdate,
             'updated_this_week=' + updatedThisWeek,
             'updated_this_month=' + updatedThisMonth
           ].join('&'), function(data) {
             clearInterval(id);
-            processServices(JSON.stringify(data));
-            firstUpdate && (options.firstUpdateTime = runtime);
+            processServices(data);
+            options.firstUpdateTime || (options.firstUpdateTime = runtime);
             updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
             updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
             options.lastUpdateTime = runtime;
@@ -146,11 +143,8 @@ function downgradeServices(downgraded) {
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
-/* The number of milliseconds in an hour. */
-var hourMilliseconds = 60 * 60 * secondMilliseconds;
-
 /* The number of milliseconds in a day. */
-var dayMilliseconds = 24 * hourMilliseconds;
+var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -173,7 +167,6 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-$.get('data/services.json', function(data) { processServices(data); });
-
+processServices(data);
 fetchServices();
-setInterval(fetchServices, hourMilliseconds);
+setInterval(fetchServices, dayMilliseconds);

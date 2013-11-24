@@ -19,7 +19,7 @@
 #   Brian Kennish <byoogle@gmail.com>
 
 # Modules.
-resource disconnect modules/
+resource modules modules/
 
 # The content policy.
 component {3f722c5d-555d-4fbc-9444-c5e0d963de8f} components/policy.js

@@ -184,8 +184,7 @@ function updateCounter(tabId, count, deactivated) {
   if (
     deserialize(options.blockingIndicated) &&
         (deserialize(options.pwyw) || {}).bucket != 'pending' &&
-            (deserialize(options.pwyw) || {}).bucket != 'pending-trial' &&
-                !deserialize(options.promoRunning)
+            (deserialize(options.pwyw) || {}).bucket != 'pending-trial'
   ) {
     deactivated && BROWSER_ACTION.setBadgeBackgroundColor({
       tabId: tabId,
@@ -249,7 +248,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 61;
+const CURRENT_BUILD = 57;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -370,8 +369,8 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 39) {
-  var udacityDomain = 'udacity.com';
-  (whitelist[udacityDomain] || (whitelist[udacityDomain] = {})).Twitter =
+  const UDACITY_DOMAIN = 'udacity.com';
+  (whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {})).Twitter =
       true;
   options.whitelist = JSON.stringify(whitelist);
 }
@@ -412,28 +411,28 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
   const FEEDLY_DOMAIN = 'feedly.com';
-  var domainWhitelist =
+  const DOMAIN_WHITELIST =
       whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Google = true;
+  const DISCONNECT_WHITELIST =
+      DOMAIN_WHITELIST.Disconnect ||
+          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
+  DISCONNECT_WHITELIST.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
-  var udacityDomain = 'udacity.com';
-  var domainWhitelist =
-      whitelist[udacityDomain] || (whitelist[udacityDomain] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Facebook = true;
-  disconnectWhitelist.services.Google = true;
+  const UDACITY_DOMAIN = 'udacity.com';
+  const DOMAIN_WHITELIST =
+      whitelist[UDACITY_DOMAIN] || (whitelist[UDACITY_DOMAIN] = {});
+  const DISCONNECT_WHITELIST =
+      DOMAIN_WHITELIST.Disconnect ||
+          (DOMAIN_WHITELIST.Disconnect = {whitelisted: false, services: {}});
+  DISCONNECT_WHITELIST.services.Facebook = true;
+  DISCONNECT_WHITELIST.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
   var domainWhitelist =
       whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
@@ -449,22 +448,8 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
 }
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
-  const HM_DOMAIN = 'hm.com';
-  var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Analytics ||
-          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
-  options.whitelist = JSON.stringify(whitelist);
-}
-
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
@@ -504,10 +489,8 @@ if (!deserialize(options.pwyw).date) {
   }
 }
 
-if (
-  (deserialize(options.pwyw) || {}).bucket == 'pending' ||
-      deserialize(options.promoRunning)
-) BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+if ((deserialize(options.pwyw) || {}).bucket == 'pending')
+    BROWSER_ACTION.setBadgeText({text: 'NEW!'});
 else initializeToolbar();
 options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
     options.sidebarCollapsed--; // An experimental "semisticky" bit.
@@ -593,11 +576,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
     } else if (
-      (CONTENT && CATEGORY_WHITELIST.whitelisted != false ||
-          CATEGORY_WHITELIST.whitelisted ||
-              (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-                  !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
-                      {})[CHILD_CATEGORY] || {})[CHILD_NAME]
+      (CONTENT || CATEGORY_WHITELIST.whitelisted ||
+          (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
+              !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
+                  {})[CHILD_CATEGORY] || {})[CHILD_NAME]
     ) { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
@@ -827,13 +809,6 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
-  }
-
-  if (deserialize(options.promoRunning)) {
-    TABS.create({url: 'https://disconnect.me/recommends/kids'});
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    delete options.promoRunning;
   }
 });
 

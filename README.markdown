@@ -1,17 +1,9 @@
 # Disconnect
 
-[Disconnect](https://disconnect.me/) is a browser extension that makes the web
-faster, more private, and more secure.
+[Disconnect](https://www.disconnect.me/) is a browser extension that makes the
+web faster, more private, and more secure.
 
 ![Disconnect](https://raw.github.com/disconnectme/disconnect/master/collateral/disconnect/d2-faster-transparent.png)  
-Disconnect has been named one of the
-[100 best innovations of the year](http://www.popsci.com/bown/2013/category/software)
-by Popular Science and one of the
-[20 best Chrome extensions](http://lifehacker.com/lifehacker-pack-for-chrome-2013-our-list-of-the-best-e-880863393)
-and
-[20 best Firefox add-ons](http://lifehacker.com/lifehacker-pack-for-firefox-2013-our-list-of-the-best-896766794)
-by Lifehacker.
-
 You might fancy [watching a demo](https://www.youtube.com/watch?v=Lvem1Z66C7Q)
 or [trying the extension](https://disconnect.me/).
 

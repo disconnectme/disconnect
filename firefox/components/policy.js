@@ -19,6 +19,37 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
+Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils['import']('resource://modules/state.js');
+var interfaces = Components.interfaces;
+var loader =
+    Components.
+      classes['@mozilla.org/moz/jssubscript-loader;1'].
+      getService(interfaces.mozIJSSubScriptLoader);
+loader.loadSubScript('chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js');
+loader.loadSubScript('chrome://disconnect/content/sitename.js');
+loader.loadSubScript('chrome://disconnect/content/services.js');
+loader.loadSubScript('chrome://disconnect/content/debug.js');
+var observer =
+    Components.
+      classes['@mozilla.org/observer-service;1'].
+      getService(interfaces.nsIObserverService);
+
+/**
+ * Constants.
+ */
+var preferences =
+    Components.
+      classes['@mozilla.org/preferences-service;1'].
+      getService(interfaces.nsIPrefService).
+      getBranch('extensions.disconnect.');
+var contentPolicy = interfaces.nsIContentPolicy;
+var accept = contentPolicy.ACCEPT;
+var get = (new Sitename).get;
+var requests = {};
+var redirects = {};
+var contentName = 'Content';
+var startTime = new Date();
 
 /**
  * Creates the component.
@@ -29,47 +60,6 @@ function Disconnect() { this.wrappedJSObject = this; }
  * A content policy that makes the web faster, more private, and more secure.
  */
 Disconnect.prototype = {
-  /**
-   * Constants.
-   */
-  initialize: (
-    Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm'),
-    Components.utils['import']('resource://disconnect/state.js', Disconnect),
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js', Disconnect
-      ),
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/sitename.js', Disconnect),
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/services.js', Disconnect),
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript('chrome://disconnect/content/debug.js', Disconnect)
-  ),
-  observer:
-      Components.
-        classes['@mozilla.org/observer-service;1'].
-        getService(Components.interfaces.nsIObserverService),
-  preferences:
-      Components.
-        classes['@mozilla.org/preferences-service;1'].
-        getService(Components.interfaces.nsIPrefService).
-        getBranch('extensions.disconnect.'),
-  contentPolicy: Components.interfaces.nsIContentPolicy,
-  accept: Components.interfaces.nsIContentPolicy.ACCEPT,
-  get: (new Disconnect.Sitename).get,
-  requests: {},
-  redirects: {},
-  startTime: new Date(),
-
   /**
    * The properties required for XPCOM registration.
    */
@@ -86,19 +76,15 @@ Disconnect.prototype = {
   /**
    * Gets a component interface.
    */
-  QueryInterface:
-      XPCOMUtils.generateQI([Components.interfaces.nsIContentPolicy]),
+  QueryInterface: XPCOMUtils.generateQI([contentPolicy]),
 
   /**
    * Traps and selectively cancels or redirects a request.
    */
   shouldLoad: function(contentType, contentLocation, requestOrigin, context) {
-    var accept = this.accept;
     var result = accept;
 
-    if (
-      contentLocation && contentLocation.scheme.indexOf('http') + 1 && context
-    ) {
+    if (contentLocation.asciiHost && context) {
       var html = context.ownerDocument;
 
       if (html) {
@@ -106,24 +92,17 @@ Disconnect.prototype = {
 
         if (view) {
           var childUrl = contentLocation.spec;
-          var get = this.get;
           var childDomain = get(contentLocation.host);
-          var getService = Disconnect.getService;
           var childService = getService(childDomain);
           var parentUrl = view.top.location;
-          var contentPolicy = this.contentPolicy;
           var parent = contentType == contentPolicy.TYPE_DOCUMENT;
-          var observer = this.observer;
-          var preferences = this.preferences;
           var hardenedUrl;
           var hardened;
           var whitelisted;
           var blockedCount;
           var tabDashboard =
-              Disconnect.dashboardCounts[parentUrl] || (
-                Disconnect.dashboardCounts[parentUrl] = {
-                  total: 0, blocked: 0, secured: 0
-                }
+              dashboardCounts[parentUrl] || (
+                dashboardCounts[parentUrl] = {total: 0, blocked: 0, secured: 0}
               );
           var totalCount = ++tabDashboard.total;
           var date = new Date();
@@ -134,7 +113,7 @@ Disconnect.prototype = {
           date = date.getFullYear() + '-' + month + '-' + day;
 
           if (parent) {
-            Disconnect.requestCounts[childUrl] = {};
+            requestCounts[childUrl] = {};
             observer.notifyObservers(null, 'disconnect-load', childUrl);
           }
 
@@ -142,12 +121,10 @@ Disconnect.prototype = {
             var parentDomain = get(parentUrl.hostname);
             var parentService = getService(parentDomain);
             var childName = childService.name;
-            var redirectSafe = childUrl != this.requests[parentUrl];
-            var harden = Disconnect.harden;
+            var redirectSafe = childUrl != requests[parentUrl];
             var childCategory =
-                Disconnect.recategorize(childDomain, childUrl) ||
-                    childService.category;
-            var content = childCategory == 'Content';
+                recategorize(childDomain, childUrl) || childService.category;
+            var content = childCategory == contentName;
             var categoryWhitelist =
                 (JSON.parse(preferences.getCharPref('whitelist'))[parentDomain]
                     || {})[childCategory] || {};
@@ -163,14 +140,11 @@ Disconnect.prototype = {
                 if (hardened) contentLocation.spec = hardenedUrl;
               }
             } else if (
-              (content && categoryWhitelist.whitelisted != false ||
-                  categoryWhitelist.whitelisted ||
-                      (categoryWhitelist.services || {})[childName]) &&
-                          !((
-                            JSON.parse(
-                              preferences.getCharPref('blacklist')
-                            )[parentDomain] || {}
-                          )[childCategory] || {})[childName]
+              (content || categoryWhitelist.whitelisted ||
+                  (categoryWhitelist.services || {})[childName]) &&
+                      !((JSON.parse(preferences.getCharPref(
+                        'blacklist'
+                      ))[parentDomain] || {})[childCategory] || {})[childName]
             ) { // The request is allowed: the category or service is unblocked.
               if (redirectSafe) {
                 hardenedUrl = harden(childUrl);
@@ -194,9 +168,7 @@ Disconnect.prototype = {
 
             if (hardened || whitelisted || result != accept) {
               var tabRequests =
-                  Disconnect.requestCounts[parentUrl] || (
-                    Disconnect.requestCounts[parentUrl] = {}
-                  );
+                  requestCounts[parentUrl] || (requestCounts[parentUrl] = {});
               var categoryRequests =
                   tabRequests[childCategory] ||
                       (tabRequests[childCategory] = {});
@@ -213,14 +185,13 @@ Disconnect.prototype = {
             }
           }
 
-          childUrl != this.redirects[parentUrl] &&
-              delete this.requests[parentUrl];
-          delete this.redirects[parentUrl];
+          childUrl != redirects[parentUrl] && delete requests[parentUrl];
+          delete redirects[parentUrl];
           var securedCount;
 
           if (hardened) {
-            this.requests[parentUrl] = childUrl;
-            this.redirects[parentUrl] = hardenedUrl;
+            requests[parentUrl] = childUrl;
+            redirects[parentUrl] = hardenedUrl;
             securedCount = ++tabDashboard.secured;
             var hardenedRequestName = 'hardenedRequests';
             var hardenedRequests =
@@ -233,20 +204,18 @@ Disconnect.prototype = {
           }
 
           // The Collusion data structure.
-          if (!(childDomain in Disconnect.log))
-              Disconnect.log[childDomain] = {
+          if (!(childDomain in log))
+              log[childDomain] = {
                 host: childDomain, referrers: {}, visited: false
               };
-          if (!(parentDomain in Disconnect.log))
-              Disconnect.log[parentDomain] = {
-                host: parentDomain, referrers: {}
-              };
-          Disconnect.log[parentDomain].visited = true;
-          var referrers = Disconnect.log[childDomain].referrers;
+          if (!(parentDomain in log))
+              log[parentDomain] = {host: parentDomain, referrers: {}};
+          log[parentDomain].visited = true;
+          var referrers = log[childDomain].referrers;
           if (childDomain != parentDomain && !(parentDomain in referrers))
               referrers[parentDomain] = {
                 host: parentDomain,
-                types: [new Date() - this.startTime]
+                types: [new Date() - startTime]
               };
           var parentReferrers = referrers[parentDomain];
 
@@ -264,7 +233,7 @@ Disconnect.prototype = {
   /**
    * Passes a request through.
    */
-  shouldProcess: function() { return this.accept; }
+  shouldProcess: function() { return accept; }
 }
 
 /**
