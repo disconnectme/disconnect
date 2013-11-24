@@ -102,6 +102,18 @@ toolbar[iconsize=small]#nav-bar[mode=full]
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
 
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.windows.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(16px, 16px, 32px, 0)
+}
+
 #PersonalToolbar[mode=icons] .disconnect-badge#disconnect-button {
   -moz-image-region: rect(16px, 16px, 32px, 0)
 }
@@ -214,12 +226,12 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 }
 
 #navigator-toolbox[iconsize=small] #nav-bar[mode=icons] #disconnect-badge {
-  margin-bottom: -4px
+  margin-top: 9px
 }
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
-.windows#disconnect-badge { margin: 16px -3px -2px -11px }
+.windows#disconnect-badge { margin: 11px -3px -7px -11px }
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]

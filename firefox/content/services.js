@@ -28,7 +28,9 @@ function deserialize(object) {
 /* Formats the blacklist. */
 function processServices(data) {
   data =
-      deserialize(sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data));
+      deserialize(
+        sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data) || '{}'
+      );
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -69,6 +71,7 @@ function fetchServices() {
   if (Date.now() - preferences.getCharPref('lastUpdateTime') >= dayMilliseconds)
       retryTimer.init({observe: function() {
         if (index == nextRequest) {
+          var firstUpdate = !preferences.getCharPref('firstUpdateTime');
           var runtime = Date.now();
           var updatedThisWeek =
               runtime - preferences.getCharPref('firstUpdateThisWeekTime') <
@@ -77,6 +80,8 @@ function fetchServices() {
               runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
                   30 * dayMilliseconds;
           xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
+            'build=' + (preferences.getIntPref('firstBuild') || ''),
+            'first_update=' + firstUpdate,
             'updated_this_week=' + updatedThisWeek,
             'updated_this_month=' + updatedThisMonth
           ].join('&'));
@@ -85,7 +90,7 @@ function fetchServices() {
             if (xhr.status == 200) {
               retryTimer.cancel();
               processServices(xhr.responseText);
-              JSON.parse(preferences.getCharPref('firstUpdateTime')) ||
+              firstUpdate &&
                   preferences.setCharPref('firstUpdateTime', runtime);
               updatedThisWeek ||
                   preferences.setCharPref('firstUpdateThisWeekTime', runtime);
@@ -164,14 +169,17 @@ var xhr =
 var preferences =
     Components.
       classes['@mozilla.org/preferences-service;1'].
-      getService(interfaces.nsIPrefService).
+      getService(Components.interfaces.nsIPrefService).
       getBranch('extensions.disconnect.');
 
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
+/* The number of milliseconds in an hour. */
+var hourMilliseconds = 60 * 60 * secondMilliseconds;
+
 /* The number of milliseconds in a day. */
-var dayMilliseconds = 24 * 60 * 60 * secondMilliseconds;
+var dayMilliseconds = 24 * hourMilliseconds;
 
 /*
   The categories and third parties, titlecased, and URL of their homepage and
@@ -188,10 +196,14 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
-Components.
-  classes['@mozilla.org/moz/jssubscript-loader;1'].
-  getService(Components.interfaces.mozIJSSubScriptLoader).
-  loadSubScript('chrome://disconnect/skin/scripts/data.js');
-processServices(JSON.stringify(data));
+xhr.open('GET', 'chrome://disconnect/skin/data/services.json');
+xhr.overrideMimeType('application/json');
+
+xhr.onreadystatechange = function() {
+  xhr.readyState == 4 && (xhr.status == 0 || xhr.status == 200) &&
+      processServices(xhr.responseText);
+};
+
+xhr.send();
 fetchServices();
-dayTimer.init({observe: fetchServices}, dayMilliseconds, repeatingSlack);
+dayTimer.init({observe: fetchServices}, hourMilliseconds, repeatingSlack);

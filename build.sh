@@ -22,6 +22,29 @@
 cd builds
 rm disconnect.xpi disconnect.zip
 cd ../firefox
-zip -r ../builds/disconnect.xpi * -x \*.DS_Store
+zip -r ../builds/disconnect.xpi * -x \*.DS_Store \
+content/disconnect.safariextension/Icon-32.png \
+content/disconnect.safariextension/Icon-48.png \
+content/disconnect.safariextension/Icon.png \
+content/disconnect.safariextension/Info.plist \
+content/disconnect.safariextension/opera/manifest.json \
+content/disconnect.safariextension/opera/chrome/images/legacy/\* \
+content/disconnect.safariextension/opera/chrome/manifest.json \
+content/disconnect.safariextension/opera/chrome/markup/\* \
+content/disconnect.safariextension/opera/chrome/scripts/background.js \
+content/disconnect.safariextension/opera/chrome/scripts/chrollusion/graphrunner.js \
+content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index-embed.js \
+content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index.js \
+content/disconnect.safariextension/opera/chrome/scripts/content.js \
+content/disconnect.safariextension/opera/chrome/scripts/popup.js \
+content/disconnect.safariextension/opera/chrome/scripts/services.js \
+content/disconnect.safariextension/opera/chrome/scripts/share.js \
+content/disconnect.safariextension/opera/chrome/scripts/vendor/port/\* \
+content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped/\* \
+content/disconnect.safariextension/opera/chrome/stylesheets/chrollusion/\* \
+content/disconnect.safariextension/opera/chrome/stylesheets/content.css \
+content/disconnect.safariextension/opera/chrome/stylesheets/legacy.css \
+content/disconnect.safariextension/opera/chrome/stylesheets/popup.css \
+content/disconnect.safariextension/opera/chrome/stylesheets/vendor/tipped/\*
 cd content/disconnect.safariextension/opera
 zip -r ../../../../builds/disconnect chrome -x \*.DS_Store
