@@ -860,7 +860,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 23;
+      var currentBuild = 17;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -925,11 +925,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 17) {
-        previousBuild && !JSON.parse(preferences.getCharPref(pwywName)).date &&
-            preferences.setCharPref(
-              pwywName, JSON.stringify({date: date, bucket: 'trying'})
-            );
+      if (!previousBuild || previousBuild < 16) {
         var freshDirectDomain = 'freshdirect.com';
         var domainWhitelist =
             whitelist[freshDirectDomain] || (whitelist[freshDirectDomain] = {});
@@ -949,8 +945,6 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 20)
-          preferences.setIntPref(firstBuildName, currentBuild);
       if (!previousBuild || previousBuild < currentBuild)
           preferences.setIntPref(buildName, currentBuild);
 
