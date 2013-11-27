@@ -471,15 +471,12 @@ if (options.displayMode == LEGACY_NAME) {
     if (data.goldenticket === 'true') {
       options.promoRunning = true;
       options.displayMode = LIST_NAME;
+      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+      downgradeServices();
+      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
-      !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-        TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
-        BROWSER_ACTION.setBadgeText({text: ''});
-        initializeToolbar();
-        delete options.promoRunning;
-      });
     }
   });
 }
@@ -834,10 +831,11 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const PWYW = deserialize(options.pwyw) || {};
 
   if (PWYW.bucket == 'pending') {
-    TABS.create({url: 'https://disconnect.me/d2/upgrade'});
+    TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    delete options.promoRunning;
   }
 
   if (PWYW.bucket == 'pending-trial') {
@@ -845,13 +843,6 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
-  }
-
-  if (deserialize(options.promoRunning)) {
-    TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    delete options.promoRunning;
   }
 });
 
