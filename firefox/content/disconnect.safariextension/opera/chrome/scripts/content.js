@@ -85,8 +85,11 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
   }, true);
 
   if (location.href.indexOf('disconnect.me') + 1) {
-    var CONTROL = document.getElementById('input-type');
-    var BUCKET = CONTROL && CONTROL.getAttribute('value');
-    BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
-  }
+      $(function(){
+      var CONTROL = document.getElementById('input-type');
+      var BUCKET = CONTROL && CONTROL.getAttribute('value');
+      alert(BUCKET);
+      BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
+    });
+  });
 });
