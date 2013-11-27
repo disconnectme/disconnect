@@ -150,21 +150,6 @@ function reduceCookies(url, service, name) {
   });
 }
 
-/* Opens up a new tab at the specified URL when running a promo. */
-function loadPageOnClick(promoUrl) {
-  console.log('testing')
-  BROWSER_ACTION.onClicked.addListener(function() {
-    console.log('browser action')
-    if (deserialize(options.promoRunning)) {
-      TABS.create({url: promoUrl});
-      BROWSER_ACTION.setBadgeText({text: ''});
-      options.displayMode = LIST_NAME;
-      initializeToolbar();
-      delete options.promoRunning;
-    }
-  });
-}
-
 /* Preps the browser action. */
 function initializeToolbar() {
   BROWSER_ACTION.setBadgeBackgroundColor({
