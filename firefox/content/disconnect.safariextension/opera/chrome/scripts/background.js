@@ -839,7 +839,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   }
 
   if (deserialize(options.promoRunning)) {
-    TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+    TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     delete options.promoRunning;
