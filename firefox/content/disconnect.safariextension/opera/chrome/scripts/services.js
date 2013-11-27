@@ -29,7 +29,7 @@ function deserialize(object) {
 /* Formats the blacklist. */
 function processServices(data) {
   data = deserialize(sjcl.decrypt(
-    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', JSON.stringify(data)
+    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data
   ));
   var categories = data.categories;
 
@@ -89,7 +89,7 @@ function fetchServices() {
             'updated_this_month=' + updatedThisMonth
           ].join('&'), function(data) {
             clearInterval(id);
-            processServices(data);
+            processServices(JSON.stringify(data));
             firstUpdate && (options.firstUpdateTime = runtime);
             updatedThisWeek || (options.firstUpdateThisWeekTime = runtime);
             updatedThisMonth || (options.firstUpdateThisMonthTime = runtime);
@@ -173,6 +173,7 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-processServices(data);
+$.get('data/services.json', function(data) { processServices(data); });
+
 fetchServices();
 setInterval(fetchServices, hourMilliseconds);
