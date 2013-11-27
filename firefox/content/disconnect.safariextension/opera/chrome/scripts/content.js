@@ -88,7 +88,6 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
     $(function(){
       var CONTROL = document.getElementById('input-type');
       var BUCKET = CONTROL && CONTROL.getAttribute('value');
-      alert(BUCKET);
       BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
     });
   };
