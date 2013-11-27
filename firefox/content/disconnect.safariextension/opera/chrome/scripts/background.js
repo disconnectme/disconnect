@@ -152,10 +152,13 @@ function reduceCookies(url, service, name) {
 
 /* Opens up a new tab at the specified URL when running a promo. */
 function loadPageOnClick(promoUrl) {
-  !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
+  console.log('testing')
+  BROWSER_ACTION.onClicked.addListener(function() {
+    console.log('browser action')
     if (deserialize(options.promoRunning)) {
       TABS.create({url: promoUrl});
       BROWSER_ACTION.setBadgeText({text: ''});
+      options.displayMode = LIST_NAME;
       initializeToolbar();
       delete options.promoRunning;
     }
@@ -478,11 +481,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 }
 
 if (options.displayMode == LEGACY_NAME) {
-  $.getJSON('https://goldenticket.disconnect.me/dOne', function(data) {
+  $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
     if (data.goldenticket === 'true') {
       options.promoRunning = true;
       options.displayMode = LIST_NAME;
-      loadPageOnClick('https://disconnect.me/disconnect/welcome');
     }
   });
 }
@@ -828,6 +830,31 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     }
 
     sendResponse({});
+  }
+});
+
+!SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
+  const PWYW = deserialize(options.pwyw) || {};
+
+  if (PWYW.bucket == 'pending') {
+    TABS.create({url: 'https://disconnect.me/d2/upgrade'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+  }
+
+  if (PWYW.bucket == 'pending-trial') {
+    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+  }
+
+  if (deserialize(options.promoRunning)) {
+    TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
+    delete options.promoRunning;
   }
 });
 
