@@ -864,14 +864,3 @@ if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHard
 		}
 	});
 }
-
-//checks every 30 seconds to see if memory is over 114 megs, and reloads if so
-if (!SAFARI) {
-  setInterval(function() {
-    console.log(window.performance.memory.totalJSHeapSize);
-    if (window.performance.memory.usedJSHeapSize > 120500000) {
-      console.log("OVERLOAD! " + window.performance.memory.totalJSHeapSize);
-      chrome.runtime.reload();
-    }
-  }, 30000);  
-}
