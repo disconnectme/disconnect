@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 61;
+const CURRENT_BUILD = 62;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -461,10 +461,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
-
-  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
