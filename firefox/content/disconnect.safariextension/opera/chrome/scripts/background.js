@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 61;
+const CURRENT_BUILD = 62;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -463,7 +463,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 61) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const TARGET_DOMAIN = 'target.com';
   var domainWhitelist = whitelist[TARGET_DOMAIN] || 
       (whitelist[TARGET_DOMAIN] = {});
@@ -920,14 +920,4 @@ if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHard
 			xhr.send();
 		}
 	});
-}
-
-//checks every 30 seconds to see if memory is over 114 megs, and reloads if so
-if (!SAFARI) {
-  setInterval(function() {
-    if (window.performance.memory.usedJSHeapSize > 120500000) {
-      console.log("OVERLOAD! " + window.performance.memory.totalJSHeapSize);
-      chrome.runtime.reload();
-    }
-  }, 30000);  
 }
