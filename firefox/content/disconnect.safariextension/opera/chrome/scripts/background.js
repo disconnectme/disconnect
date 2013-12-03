@@ -501,6 +501,15 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 61) {
   disconnectWhitelist.services.WPP = true;
   options.whitelist = JSON.stringify(whitelist);
 
+  const COOLCHASER_DOMAIN = 'coolchaser.com';
+  var domainWhitelist = whitelist[COOLCHASER_DOMAIN] || 
+      (whitelist[COOLCHASER_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  options.whitelist = JSON.stringify(whitelist);
+
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
 }
