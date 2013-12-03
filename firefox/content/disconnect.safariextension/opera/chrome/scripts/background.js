@@ -249,7 +249,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 62;
+const CURRENT_BUILD = 63;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -464,62 +464,47 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const CVS_DOMAIN = 'cvs.com';
+  var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Advertising ||
+          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.WPP = true;
+
+  const DEVIANTART_DOMAIN = 'deviantart.com';
+  var domainWhitelist =
+      whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+
+  const MACYS_DOMAIN = 'macys.com';
+  var domainWhitelist =
+      whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.IBM = true;
+
+  const NORDSTROM_DOMAIN = 'nordstrom.com';
+  var domainWhitelist =
+      whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.IBM = true;
+
   const TARGET_DOMAIN = 'target.com';
-  var domainWhitelist = whitelist[TARGET_DOMAIN] || 
-      (whitelist[TARGET_DOMAIN] = {});
+  var domainWhitelist =
+      whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Ensighten = true;
   disconnectWhitelist.services.RichRelevance = true;
-  options.whitelist = JSON.stringify(whitelist);
 
-  const MACYS_DOMAIN = 'macys.com';
-  var domainWhitelist = whitelist[MACYS_DOMAIN] || 
-      (whitelist[MACYS_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Analytics ||
-          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
-
-  const NORDSTROM_DOMAIN = 'nordstrom.com';
-  var domainWhitelist = whitelist[NORDSTROM_DOMAIN] || 
-      (whitelist[NORDSTROM_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Analytics ||
-          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
-  options.whitelist = JSON.stringify(whitelist);
-
-  const CVS_DOMAIN = 'cvs.com';
-  var domainWhitelist = whitelist[CVS_DOMAIN] || 
-      (whitelist[CVS_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Advertising ||
-          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.WPP = true;
-  options.whitelist = JSON.stringify(whitelist);
-
-  const COOLCHASER_DOMAIN = 'coolchaser.com';
-  var domainWhitelist = whitelist[COOLCHASER_DOMAIN] || 
-      (whitelist[COOLCHASER_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Facebook = true;
-  options.whitelist = JSON.stringify(whitelist);
-
-  const DEVIANTART_DOMAIN = 'deviantart.com';
-  var domainWhitelist = whitelist[DEVIANTART_DOMAIN] || 
-      (whitelist[DEVIANTART_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Google = true;
-  options.whitelist = JSON.stringify(whitelist);
-
-  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
 }
 
