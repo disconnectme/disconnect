@@ -510,6 +510,15 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 61) {
   disconnectWhitelist.services.Facebook = true;
   options.whitelist = JSON.stringify(whitelist);
 
+  const DEVIANTART_DOMAIN = 'deviantart.com';
+  var domainWhitelist = whitelist[DEVIANTART_DOMAIN] || 
+      (whitelist[DEVIANTART_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
 }
