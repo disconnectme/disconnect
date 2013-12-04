@@ -956,6 +956,9 @@ if (typeof Disconnect == 'undefined') {
 
       setTimeout(function() {
         if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
+          preferences.setCharPref(
+            pwywName, JSON.stringify({date: date, bucket: 'opened'})
+          );
           var tab =
               Components.
                 classes['@mozilla.org/appshell/window-mediator;1'].
