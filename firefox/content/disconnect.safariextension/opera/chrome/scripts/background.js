@@ -291,7 +291,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 60;
+const CURRENT_BUILD = 63;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -493,18 +493,78 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   const HM_DOMAIN = 'hm.com';
-  var domainWhitelist =
-      whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
+  var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const CVS_DOMAIN = 'cvs.com';
+  var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Advertising ||
+          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.WPP = true;
+
+  const DEVIANTART_DOMAIN = 'deviantart.com';
+  var domainWhitelist =
+      whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+
+  const MACYS_DOMAIN = 'macys.com';
+  var domainWhitelist =
+      whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.IBM = true;
+
+  const NORDSTROM_DOMAIN = 'nordstrom.com';
+  var domainWhitelist =
+      whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.IBM = true;
+
+  const TARGET_DOMAIN = 'target.com';
+  var domainWhitelist =
+      whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Advertising ||
+          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Ensighten = true;
+  disconnectWhitelist.services.RichRelevance = true;
+
+  options.whitelist = JSON.stringify(whitelist);
 
   if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
   options.build = CURRENT_BUILD;
+}
+
+if (options.displayMode == LEGACY_NAME) {
+  $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
+    if (data.goldenticket === 'true') {
+      options.promoRunning = true;
+      options.displayMode = LIST_NAME;
+      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+      downgradeServices();
+      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+      BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
 }
 
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
@@ -523,7 +583,6 @@ else if (deserialize(options.pwyw).bucket == 'remindme') {
     showTryLater();
   }
 }
-
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
@@ -652,11 +711,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
       }
     } else if (
-      ((CATEGORY_WHITELIST.whitelisted ||
-          (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-              !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
-                  {})[CHILD_CATEGORY] || {})[CHILD_NAME]) || 
-                      (CONTENT && (CATEGORY_WHITELIST.whitelisted != false))
+      (CONTENT && CATEGORY_WHITELIST.whitelisted != false ||
+          CATEGORY_WHITELIST.whitelisted ||
+              (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
+                  !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||
+                      {})[CHILD_CATEGORY] || {})[CHILD_NAME]
     ) { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
         hardenedUrl = harden(REQUESTED_URL);
@@ -881,10 +940,11 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const PWYW = deserialize(options.pwyw) || {};
 
   if (PWYW.bucket == 'pending') {
-    TABS.create({url: 'https://disconnect.me/d2/upgrade'});
+    TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    delete options.promoRunning;
   }
 
   if ((PWYW.bucket == 'trying') && deserialize(options.promoRunning)) {

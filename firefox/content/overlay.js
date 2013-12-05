@@ -860,7 +860,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 22;
+      var currentBuild = 23;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
@@ -949,11 +949,10 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
-        preferences.getIntPref(firstBuildName) ||
-            preferences.setIntPref(firstBuildName, currentBuild);
-        preferences.setIntPref(buildName, currentBuild);
-      }
+      if (!previousBuild || previousBuild < 20)
+          preferences.setIntPref(firstBuildName, currentBuild);
+      if (!previousBuild || previousBuild < currentBuild)
+          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(preferences.getCharPref(pwywName)).date) {

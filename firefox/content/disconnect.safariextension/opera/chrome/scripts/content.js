@@ -58,10 +58,10 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       ) { // The request is allowed: the topmost frame has the same origin.
         // No-op.
       } else if (
-      ((CATEGORY_WHITELIST.whitelisted ||
-          (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
-              !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]) || 
-                      (CONTENT && (CATEGORY_WHITELIST.whitelisted != false))
+        (CONTENT && CATEGORY_WHITELIST.whitelisted != false ||
+            CATEGORY_WHITELIST.whitelisted ||
+                (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
+                    !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]
       ) { // The request is allowed: the category or service is whitelisted.
         whitelisted = true;
       } else { // The request is denied.
@@ -144,6 +144,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
   }
 
   if (location.href.indexOf('disconnect.me') + 1) {
+	$(function() {
     if (location.href.indexOf('/d2/welcome') + 1) {
       EXTENSION.sendRequest({getStats: true}, function(response) {
         var blocked = response.totals.blocked;
@@ -176,5 +177,6 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       var BUCKET = CONTROL && CONTROL.getAttribute('value');
       BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
     }
+	});
   }
 });
