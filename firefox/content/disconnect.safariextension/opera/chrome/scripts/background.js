@@ -179,6 +179,29 @@ function getCount(tabRequests) {
   return count;
 }
 
+/* Creates a html5 growl notification */
+function dispatchBubble(title, text, link, closeURL) {
+    var link = link || false;
+    var n = new Notification(title,{
+        dir: 'auto',
+        lang: "en",
+        body: text,
+        icon: 'https://disconnect.me/images/octopus/D-sans.png'
+    });
+    
+    n.onclick = function(){
+        if(link) {
+            TABS.create({url: link});
+        }
+    }
+
+    n.onclose = function() {
+        $.ajax(closeURL);
+    }
+
+    n.show();
+}
+
 /* Indicates the number of tracking requests. */
 function updateCounter(tabId, count, deactivated) {
   if (
@@ -525,7 +548,10 @@ if (options.displayMode == LEGACY_NAME) {
 else {
   $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
     if (data.goldenticket === 'true') {
-      options.ecpa = true;
+      dispatchBubble('US privacy laws need to be reformed.', 
+          'You can help by signing this petition.', 
+              'https://disconnect.me', 
+                  'https://disconnect.me/ecpa/analytics/closed');
     }
   });
 }
