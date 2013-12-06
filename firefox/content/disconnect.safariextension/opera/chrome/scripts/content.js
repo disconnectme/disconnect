@@ -91,4 +91,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
     });
   }
+  EXTENSION.sendRequest({ecpa: true}, function(response) {
+    //growl notification?
+  });
 });

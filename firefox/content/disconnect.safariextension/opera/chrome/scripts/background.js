@@ -808,6 +808,8 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     PWYW.bucket = request.bucket;
     options.pwyw = JSON.stringify(PWYW);
     sendResponse({});
+  } else if (request.ecpa) {
+    sendResponse({ecpa: options.ecpa});
   } else {
     if (SAFARI) {
       const BLOCKED = request.blocked;
