@@ -522,6 +522,13 @@ if (options.displayMode == LEGACY_NAME) {
     }
   });
 }
+else {
+  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
+    if (data.goldenticket === 'true') {
+      options.ecpa = true;
+    }
+  });
+}
 
 if (!deserialize(options.pwyw).date) {
   downgradeServices(true);
