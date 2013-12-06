@@ -144,39 +144,39 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
   }
 
   if (location.href.indexOf('disconnect.me') + 1) {
-	$(function() {
-    if (location.href.indexOf('/d2/welcome') + 1) {
-      EXTENSION.sendRequest({getStats: true}, function(response) {
-        var blocked = response.totals.blocked;
-        var secured = response.totals.secured;
-        const TRACKING_RESOURCE_TIME = 72.6141083689391;
-        const TRACKING_RESOURCE_SIZE = 8.51145760261889;
-        var timeSaved = (blocked * TRACKING_RESOURCE_TIME / 1000).toFixed(2);
-        var bandwidthSaved = (blocked * TRACKING_RESOURCE_SIZE).toFixed(2);
+  	$(function() {
+      if (location.href.indexOf('/d2/welcome') + 1) {
+        EXTENSION.sendRequest({getStats: true}, function(response) {
+          var blocked = response.totals.blocked;
+          var secured = response.totals.secured;
+          const TRACKING_RESOURCE_TIME = 72.6141083689391;
+          const TRACKING_RESOURCE_SIZE = 8.51145760261889;
+          var timeSaved = (blocked * TRACKING_RESOURCE_TIME / 1000).toFixed(2);
+          var bandwidthSaved = (blocked * TRACKING_RESOURCE_SIZE).toFixed(2);
 
-        $('#blocked').attr('stat', addCommas(blocked));
-        $('#secured').attr('stat', secured);
-        $('#time').attr('stat', timeSaved);
-        $('#bandwidth').attr('stat', bandwidthSaved + "kb");
+          $('#blocked').attr('stat', addCommas(blocked));
+          $('#secured').attr('stat', secured);
+          $('#time').attr('stat', timeSaved);
+          $('#bandwidth').attr('stat', bandwidthSaved + "kb");
 
-        setTime();
+          setTime();
 
-        var stats = document.getElementsByClassName('odometer');
+          var stats = document.getElementsByClassName('odometer');
 
-        setTimeout(function(){
-          for(var i=0,all=stats.length;i<all;i++) {
-            var n = stats[i].getAttribute("stat");
-            console.log("STAT -> ", n)
-            stats[i].innerHTML = n;
-          }
-        }, 1)
-      });
-    }
-    else {
-      var CONTROL = document.getElementById('input-type');
-      var BUCKET = CONTROL && CONTROL.getAttribute('value');
-      BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
-    }
-	});
+          setTimeout(function(){
+            for(var i=0,all=stats.length;i<all;i++) {
+              var n = stats[i].getAttribute("stat");
+              console.log("STAT -> ", n)
+              stats[i].innerHTML = n;
+            }
+          }, 1)
+        });
+      }
+      else {
+        var CONTROL = document.getElementById('input-type');
+        var BUCKET = CONTROL && CONTROL.getAttribute('value');
+        BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
+      }
+  	});
   }
 });

@@ -234,6 +234,7 @@ function getTotals() {
   }
 }
 
+/* Shows the "Stats!" notification and end-of-trial page. */
 function showTryLater(){
   options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
   BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
@@ -243,6 +244,7 @@ function showTryLater(){
   options.promoRunning = true;
 }
 
+/* Checks to see i user is in a paid state. */
 function paid() {
   switch(deserialize(options.pwyw).bucket) {
     case 'paid-paypal':
@@ -568,18 +570,19 @@ if (options.displayMode == LEGACY_NAME) {
 }
 
   /* Show the user a pwyw page 48 hours later if they're on a trial. */
-if (!(paid()) && Date.now() > options.firstUpdateTime && !(options.shownStats)) {
-  if (Date.now() > (options.firstUpdateTime + dayMilliseconds * 2)) {
-    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
-      if (data.goldenticket === 'true') {
-        showTryLater();
-        options.shownStats = true;
-      }
-    });
-  }
+if (!(paid()) && !(options.shownStats) && 
+    (Date.now() > 
+        (parseInt(deserialize(options.pwyw).date) + dayMilliseconds * 2))) {
+  $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+    if (data.goldenticket === 'true') {
+      showTryLater();
+      options.shownStats = true;
+    }
+  });
 } 
 else if (deserialize(options.pwyw).bucket == 'remindme') {
-  if (Date.now() > (deserialize(options.pwyw).date + dayMilliseconds * 2)) {
+  if (Date.now() > 
+        (parseInt(deserialize(options.pwyw).date) + dayMilliseconds * 2)) {
     showTryLater();
   }
 }
