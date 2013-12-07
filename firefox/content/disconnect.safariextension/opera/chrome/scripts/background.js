@@ -545,13 +545,14 @@ if (options.displayMode == LEGACY_NAME) {
     }
   });
 }
-else {
-  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
+else if (!(options.ecpa)) {
+  $.getJSON('https://goldenticket.disconnect.me/ECPA', function(data) {
     if (data.goldenticket === 'true') {
       dispatchBubble('US privacy laws need to be reformed.', 
           'You can help by signing this petition.', 
               'https://disconnect.me', 
                   'https://disconnect.me/ecpa/analytics/closed');
+      options.ecpa = true;
     }
   });
 }
