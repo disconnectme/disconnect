@@ -550,7 +550,7 @@ else if (!(options.ecpa)) {
     if (data.goldenticket === 'true') {
       dispatchBubble('US privacy laws need to be reformed.', 
           'You can help by signing this petition.', 
-              'https://disconnect.me', 
+              'https://disconnect.me/ecpa', 
                   'https://disconnect.me/ecpa/analytics/closed');
       options.ecpa = true;
     }
