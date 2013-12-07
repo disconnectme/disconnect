@@ -1,0 +1,374 @@
+@font-face {
+  font-family: 'Antenna RE';
+  src: url(../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot);
+  src: url(
+    ../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-2.eot?
+  ) format('embedded-opentype'), url(
+    ../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-3.woff
+  ) format('woff'), url(
+    ../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-1.ttf
+  ) format('truetype'), url(
+    ../fonts/69e03e4b-d31e-4a31-b803-d31679c0e921-4.svg#web
+  ) format('svg');
+  font-style: normal;
+  font-weight: normal
+}
+
+/* ==========================================================================
+   HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
+   ========================================================================== */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+body {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+img {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+html {
+     overflow: -moz-scrollbars-vertical;
+     overflow: scroll;
+}
+#topbar {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #323743;
+    height: 45px;
+}
+
+#logo {
+    background: url(/images/dashboard/logo.png) no-repeat;
+    display: block;
+    position: absolute;
+    width: 29px;
+    height: 24px;
+    left: 17px;
+    top: 11px;
+}
+
+#contribute_btn {
+    position: absolute;
+    font-family: 'Antenna RE', sans-serif;
+    right: 17px;
+    top: 3px;
+    display: block;
+    background: #00ae68 url(../images/heart.png) no-repeat 23px 13px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 47px;
+    width: 165px;
+    font-size: 13px;
+    text-decoration: none;
+    color: white;
+    -webkit-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-transition: background-color .4s ease;
+    -moz-transition: background-color .4s ease;
+    -ms-transition: background-color .4s ease;
+    -o-transition: background-color .4s ease;
+    transition: background-color .4s ease;
+}
+
+#contribute_btn:hover {
+    background-color: #00bf72;
+}
+
+#main_left {
+    width: 70%;
+    float: left;
+    position: relative;
+}
+
+#main_left > div {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+}
+
+#main_left > div[data-ss-colspan="2"] {
+    width: 563px;
+}
+#main_right {
+    width: 30%;
+    margin: 0 0 0 0;
+    padding: 0;
+    float: left;
+}
+.stat_box {
+    background: #efefef;
+    color: #323743;
+}
+.stat_box span.stat{
+    font-size: 48px;
+    font-family: 'Helvetica Neue';
+    display: block;
+    text-align: center;
+    padding-top: 40px;
+    font-weight: 400;
+}
+.stat_box span.stat_label {
+    font-size: 14px;
+    font-family: 'Antenna RE',sans-serif;
+    text-align: center;
+    display: block;
+}
+
+#community_stats {
+    background: #00AE68;
+}
+
+#timeline {
+    height: 100%;
+    font-family: 'Antenna RE',sans-serif;
+    color: #323743;
+    font-size: 12px;
+    border-left: 1px solid #c9c9c9;
+    position: relative;
+    padding: 0;
+    margin: 0px 43px 0 30px;
+}
+
+#timeline li {
+    list-style-type: none;
+    color: #c9c9c9;
+    padding-left: 17px;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+#timeline li:first-child {
+    margin-top: 45px;
+}
+
+#timeline small {
+    color: #ACAEB1;
+    font-size: 8px;
+}
+#timeline li p {
+    margin-top: 0;
+    color: #747474;
+}
+#timeline li .circle {
+    margin-top: -10px;
+    top: 10px;
+    left: -7px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border: 1px solid #c9c9c9;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+}
+
+.bar_graph svg rect{
+    fill: #000;
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+
+}
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    *text-indent: -9999px;
+}
+
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+/* ==========================================================================
+   Print styles
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}

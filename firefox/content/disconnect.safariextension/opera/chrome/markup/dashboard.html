@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>Disconnect Dashboard</title>
+        <link rel="stylesheet" href="/stylesheets/normalize.css">
+        <link rel="stylesheet" href="/stylesheets/dashboard.css">
+
+        <script src="/scripts/vendor/jquery/jquery.min.js"></script>
+        <script src="/scripts/vendor/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+        <script src="/scripts/vendor/shapeshift/jquery.shapeshift.js"></script>
+        <script src="/scripts/vendor/d3/d3.js"></script>
+
+
+    </head>
+    <body>
+        <div id="topbar">
+            <a href="/" id="logo"></a>
+            <a href="/" id="contribute_btn">Support Disconnect</a>
+        </div>
+    </body>
+    <div id="content">
+        <div id="main_left">
+            <div class="stat_box">
+                <span class="stat">1,517</span>
+                <span class="stat_label">Blocked requests</span>
+                <div class="bar_graph">
+                    <svg>
+
+                    </svg>
+                </div>
+            </div>
+            <div class="stat_box">
+                <span class="stat">199</span>
+                <span class="stat_label">Secured requests</span>
+            </div>
+            <div class="stat_box">
+                <span class="stat">35MB</span>
+                <span class="stat_label">Saved bandwidth</span>
+            </div>
+            <div id="community_stats" data-ss-colspan="2">
+                Community
+            </div>
+            <div class="stat_box">
+                <span class="stat">STAT</span>
+                <span class="stat_label"></span>
+            </div>
+        </div>
+        <div id="main_right">
+            <ul id="timeline">
+                <li>
+                    <span class="circle"></span>
+                    <small>Dec 20, 2013</small>
+                    <p>You could have watched Titanic with the time you've saved! (3.5 hours)</p>
+                </li>
+                <li>
+                    <span class="circle"></span>
+                    <small>Dec 10, 2013</small>
+                    <p>You could have watched Inception with the time you've saved! (2.4 hours)</p>
+                </li>
+                <li>
+                    <span class="circle"></span>
+                    <small>Dec 2, 2013</small>
+                    <p>You could have watched the pilot of Breaking Bad with the time you’ve saved! (58 minutes)</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/scripts/dashboard.js"></script>
+</html>
