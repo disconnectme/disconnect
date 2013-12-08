@@ -974,7 +974,7 @@ if (typeof Disconnect == 'undefined') {
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
           preferences.setCharPref(
-            pwywName, JSON.stringify({date: date, bucket: 'opened'})
+            pwywName, JSON.stringify({date: date, bucket: 'trying'})
           );
           var tab =
               Components.
