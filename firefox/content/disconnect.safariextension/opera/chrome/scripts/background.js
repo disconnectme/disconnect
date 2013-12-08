@@ -548,8 +548,8 @@ if (options.displayMode == LEGACY_NAME) {
 else if (!(options.ecpa)) {
   $.getJSON('https://goldenticket.disconnect.me/ECPA', function(data) {
     if (data.goldenticket === 'true') {
-      dispatchBubble('Please help reform U.S. privacy laws.', 
-          'Support this important petition to the White House.', 
+      dispatchBubble('Help reform U.S. privacy law.', 
+          'Please support this important petition.', 
               'https://disconnect.me/ecpa', 
                   'https://disconnect.me/ecpa/analytics/closed');
       options.ecpa = true;
