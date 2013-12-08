@@ -186,7 +186,7 @@ function dispatchBubble(title, text, link, closeURL) {
         dir: 'auto',
         lang: "en",
         body: text,
-        icon: 'https://disconnect.me/images/octopus/D-sans.png'
+        icon: 'https://s3.amazonaws.com/images.disconnect.me/images/octopus/D.png'
     });
     
     n.onclick = function(){
@@ -548,8 +548,8 @@ if (options.displayMode == LEGACY_NAME) {
 else if (!(options.ecpa)) {
   $.getJSON('https://goldenticket.disconnect.me/ECPA', function(data) {
     if (data.goldenticket === 'true') {
-      dispatchBubble('US privacy laws need to be reformed.', 
-          'You can help by signing this petition.', 
+      dispatchBubble('Please help reform U.S. privacy laws.', 
+          'Support this important petition to the White House.', 
               'https://disconnect.me/ecpa', 
                   'https://disconnect.me/ecpa/analytics/closed');
       options.ecpa = true;
