@@ -966,8 +966,79 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 20)
-          preferences.setIntPref(firstBuildName, currentBuild);
+      if (!previousBuild || previousBuild < 23) {
+        var HM_DOMAIN = 'hm.com';
+        var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var CVS_DOMAIN = 'cvs.com';
+        domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.WPP = true;
+
+        var DEVIANTART_DOMAIN = 'deviantart.com';
+        domainWhitelist =
+            whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
+        var MACYS_DOMAIN = 'macys.com';
+        domainWhitelist =
+            whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var NORDSTROM_DOMAIN = 'nordstrom.com';
+        domainWhitelist =
+            whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var TARGET_DOMAIN = 'target.com';
+        domainWhitelist =
+            whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Ensighten = true;
+        disconnectWhitelist.services.RichRelevance = true;
+
+        var SLIDESHARE_DOMAIN = 'slideshare.net';
+        domainWhitelist =
+            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Facebook = true;
+        domainWhitelist =
+            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Social || (
+              domainWhitelist.Social = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.LinkedIn = true;
+
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(firstBuildName, currentBuild);
+      }
       if (!previousBuild || previousBuild < currentBuild)
           preferences.setIntPref(buildName, currentBuild);
 
