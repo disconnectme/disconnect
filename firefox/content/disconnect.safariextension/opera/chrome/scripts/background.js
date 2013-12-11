@@ -504,6 +504,20 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   disconnectWhitelist.services.Ensighten = true;
   disconnectWhitelist.services.RichRelevance = true;
 
+  const SLIDESHARE_DOMAIN = 'slideshare.net';
+  var domainWhitelist =
+      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  domainWhitelist =
+      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Social ||
+          (domainWhitelist.Social = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.LinkedIn = true;
+
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
 }

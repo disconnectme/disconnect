@@ -26,6 +26,13 @@
 if (typeof Disconnect == 'undefined') {
   var Disconnect = {
     /**
+     * Removes newline characters.
+     */
+    unwrap: function(string) {
+      return string.replace('\r', '', 'gm').replace('\n', '', 'gm');
+    },
+
+    /**
      * Tallies the number of tracking requests.
      */
     getCount: function() {
@@ -151,7 +158,8 @@ if (typeof Disconnect == 'undefined') {
       wrappedControl.off(Disconnect.clickName);
       var preferences = Disconnect.preferences;
       var whitelistName = Disconnect.whitelistName;
-      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var whitelist =
+          JSON.parse(Disconnect.unwrap(preferences.getCharPref(whitelistName)));
       var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
       var disconnectWhitelist =
           siteWhitelist.Disconnect ||
@@ -292,9 +300,11 @@ if (typeof Disconnect == 'undefined') {
     ) {
       var $ = Disconnect.$;
       $(badge).off(Disconnect.clickName);
+      var unwrap = Disconnect.unwrap;
       var preferences = Disconnect.preferences;
       var whitelistName = Disconnect.whitelistName;
-      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var whitelist =
+          JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
       var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
       var contentCategory = name == Disconnect.contentName;
       var categoryWhitelist =
@@ -307,7 +317,8 @@ if (typeof Disconnect == 'undefined') {
           categoryWhitelist.whitelisted =
               !(whitelisted || contentCategory && whitelisted !== false);
       var blacklistName = Disconnect.blacklistName;
-      var blacklist = JSON.parse(preferences.getCharPref(blacklistName));
+      var blacklist =
+          JSON.parse(unwrap(preferences.getCharPref(blacklistName)));
       var siteBlacklist = blacklist[domain] || (blacklist[domain] = {});
       var categoryBlacklist = siteBlacklist[name] || (siteBlacklist[name] = {});
       for (var serviceName in serviceWhitelist)
@@ -478,9 +489,11 @@ if (typeof Disconnect == 'undefined') {
      * Toggles the blocking state globally.
      */
     whitelistSite: function(domain) {
+      var unwrap = Disconnect.unwrap;
       var preferences = Disconnect.preferences;
       var whitelistName = Disconnect.whitelistName;
-      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var whitelist =
+          JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
       var siteWhitelist = whitelist[domain] || (whitelist[domain] = {});
       var disconnectWhitelist =
           siteWhitelist.Disconnect || (siteWhitelist.Disconnect = {});
@@ -508,7 +521,8 @@ if (typeof Disconnect == 'undefined') {
           (siteWhitelist.Content = {whitelisted: true, services: {}});
       preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       var blacklistName = Disconnect.blacklistName;
-      var blacklist = JSON.parse(preferences.getCharPref(blacklistName));
+      var blacklist =
+          JSON.parse(unwrap(preferences.getCharPref(blacklistName)));
       delete blacklist[domain];
       preferences.setCharPref(blacklistName, JSON.stringify(blacklist));
       var shortcutNames = Disconnect.shortcutNames;
@@ -826,6 +840,7 @@ if (typeof Disconnect == 'undefined') {
             getService(interfaces.nsIObserverService);
       var tabs = gBrowser.tabContainer;
       var get = (new this.Sitename).get;
+      var unwrap = this.unwrap;
       var getCount = this.getCount;
       var clearBadge = this.clearBadge;
       var updateBadge = this.updateBadge;
@@ -862,7 +877,8 @@ if (typeof Disconnect == 'undefined') {
       var imageExtension = this.imageExtension;
       var currentBuild = 23;
       var previousBuild = preferences.getIntPref(buildName);
-      var whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      var whitelist =
+          JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
       var toolbar = document.getElementById(navbarName);
       var date = new Date();
@@ -911,7 +927,7 @@ if (typeof Disconnect == 'undefined') {
         document.persist(navbarName, currentSetName);
       }
 
-      whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+      whitelist = JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
 
       if (!previousBuild || previousBuild < 12) {
         var udacityDomain = 'udacity.com';
@@ -926,10 +942,11 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 17) {
-        previousBuild && !JSON.parse(preferences.getCharPref(pwywName)).date &&
-            preferences.setCharPref(
-              pwywName, JSON.stringify({date: date, bucket: 'trying'})
-            );
+        previousBuild &&
+            !JSON.parse(unwrap(preferences.getCharPref(pwywName))).date &&
+                preferences.setCharPref(
+                  pwywName, JSON.stringify({date: date, bucket: 'trying'})
+                );
         var freshDirectDomain = 'freshdirect.com';
         var domainWhitelist =
             whitelist[freshDirectDomain] || (whitelist[freshDirectDomain] = {});
@@ -949,13 +966,87 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 20)
-          preferences.setIntPref(firstBuildName, currentBuild);
+      if (!previousBuild || previousBuild < 23) {
+        var HM_DOMAIN = 'hm.com';
+        var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var CVS_DOMAIN = 'cvs.com';
+        domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.WPP = true;
+
+        var DEVIANTART_DOMAIN = 'deviantart.com';
+        domainWhitelist =
+            whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
+        var MACYS_DOMAIN = 'macys.com';
+        domainWhitelist =
+            whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var NORDSTROM_DOMAIN = 'nordstrom.com';
+        domainWhitelist =
+            whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.IBM = true;
+
+        var TARGET_DOMAIN = 'target.com';
+        domainWhitelist =
+            whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Ensighten = true;
+        disconnectWhitelist.services.RichRelevance = true;
+
+        var SLIDESHARE_DOMAIN = 'slideshare.net';
+        domainWhitelist =
+            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Facebook = true;
+        domainWhitelist =
+            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+        disconnectWhitelist =
+            domainWhitelist.Social || (
+              domainWhitelist.Social = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.LinkedIn = true;
+
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(firstBuildName, currentBuild);
+      }
       if (!previousBuild || previousBuild < currentBuild)
           preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
-        if (!JSON.parse(preferences.getCharPref(pwywName)).date) {
+        if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
+          preferences.setCharPref(
+            pwywName, JSON.stringify({date: date, bucket: 'trying'})
+          );
           var tab =
               Components.
                 classes['@mozilla.org/appshell/window-mediator;1'].
@@ -1140,7 +1231,8 @@ if (typeof Disconnect == 'undefined') {
           var domain = get(url.hostname);
           var tabRequests = Disconnect.requestCounts[url] || {};
           var disconnectRequests = tabRequests.Disconnect || {};
-          whitelist = JSON.parse(preferences.getCharPref(whitelistName));
+          whitelist =
+              JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
           var siteWhitelist = whitelist[domain] || {};
           var shortcutWhitelist =
               (siteWhitelist.Disconnect || {}).services || {};
@@ -1214,7 +1306,8 @@ if (typeof Disconnect == 'undefined') {
 
           $('.disconnect-service').not(':first-child').remove();
           var siteBlacklist =
-              JSON.parse(preferences.getCharPref(blacklistName))[domain] || {};
+              JSON.parse(unwrap(preferences.getCharPref(blacklistName)))[domain]
+                  || {};
           var serviceTemplate = categoryTemplate.find('.disconnect-service');
           var activeServices = $();
 
@@ -1270,7 +1363,7 @@ if (typeof Disconnect == 'undefined') {
 
               checkbox.onclick = function(name, serviceName) {
                 var whitelist =
-                    JSON.parse(preferences.getCharPref(whitelistName));
+                    JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
                 var siteWhitelist =
                     whitelist[domain] || (whitelist[domain] = {});
                 var contentCategory = name == contentName;
@@ -1281,7 +1374,7 @@ if (typeof Disconnect == 'undefined') {
                 var serviceWhitelist = categoryWhitelist.services;
                 var whitelisted = serviceWhitelist[serviceName];
                 var blacklist =
-                    JSON.parse(preferences.getCharPref(blacklistName));
+                    JSON.parse(unwrap(preferences.getCharPref(blacklistName)));
                 var siteBlacklist =
                     blacklist[domain] || (blacklist[domain] = {});
                 var categoryBlacklist =

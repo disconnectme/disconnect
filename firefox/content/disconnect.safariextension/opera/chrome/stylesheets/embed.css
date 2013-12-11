@@ -54,10 +54,7 @@
   -moz-user-select: none
 }
 
-table {
-  border-collapse: collapse;
-  font-size: 8px
-}
+#disconnect-list table { border-collapse: collapse }
 
 #disconnect-navbar {
   margin-right: auto;
@@ -65,7 +62,7 @@ table {
   height: 30px
 }
 
-td { padding: 0 }
+#disconnect-list td { padding: 0 }
 
 #disconnect-navbar .disconnect-badge { width: 110px }
 
@@ -258,6 +255,7 @@ td { padding: 0 }
   margin-left: auto;
   height: 45px;
   text-align: center;
+  font-size: 8px;
   cursor: default
 }
 
