@@ -149,6 +149,16 @@ html {
 .stat_box {
     background: #efefef;
     color: #323743;
+    -webkit-transition: background-color .4s ease-out;
+       -moz-transition: background-color .4s ease-out;
+        -ms-transition: background-color .4s ease-out;
+         -o-transition: background-color .4s ease-out;
+            transition: background-color .4s ease-out;
+    /*-webkit-transition: color .4s ease-out;*/
+       /*-moz-transition: color .4s ease-out;*/
+        /*-ms-transition: color .4s ease-out;*/
+         /*-o-transition: color .4s ease-out;*/
+            /*transition: color .4s ease-out;*/
 }
 .stat_box span.stat{
     font-size: 48px;
@@ -163,6 +173,11 @@ html {
     font-family: 'Antenna RE',sans-serif;
     text-align: center;
     display: block;
+}
+
+.stat_box:hover, .stat_box:active, .ss-dragged-child {
+    background: #323743;
+    color: #FFF;
 }
 
 #community_stats {
@@ -213,8 +228,26 @@ html {
     position: absolute;
 }
 
+.bar_graph {
+    text-align: center;
+    margin-top: 4px;
+}
 .bar_graph svg rect{
-    fill: #000;
+    fill: #c9c9c9;
+    cursor: pointer;
+}
+.stat_box:hover .bar_graph svg rect, .ss-dragged-child .bar_graph svg rect {
+    fill: #00ae68;
+}
+.stat_box .bar_graph svg text {
+    font-size: 12px;
+    text-align: center;
+    fill: #00ae68;
+    -webkit-transition: fill-opacity .4s ease-out;
+       -moz-transition: fill-opacity .4s ease-out;
+        -ms-transition: fill-opacity .4s ease-out;
+         -o-transition: fill-opacity .4s ease-out;
+            transition: fill-opacity .4s ease-out;
 }
 
 
