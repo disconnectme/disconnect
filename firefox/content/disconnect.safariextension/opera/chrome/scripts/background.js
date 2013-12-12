@@ -179,6 +179,22 @@ function getCount(tabRequests) {
   return count;
 }
 
+/* Creates an HTML5 Growl notification. */
+function dispatchBubble(title, text, link) {
+  var link = link || false;
+  var notification =
+      new Notification(title, {
+        dir: 'auto',
+        lang: 'en',
+        body: text,
+        icon: PATH + 'images/d.png'
+      });
+
+  notification.onclick = function() { link && TABS.create({url: link}); };
+
+  notification.show();
+}
+
 /* Indicates the number of tracking requests. */
 function updateCounter(tabId, count, deactivated) {
   if (
@@ -529,6 +545,17 @@ if (options.displayMode == LEGACY_NAME) {
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
+} else if (options.firstBuild < 62 && !options.ecpaShown) {
+  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
+    if (data.goldenticket === 'true') {
+      options.ecpaShown = true;
+      dispatchBubble(
+        'Help reform US privacy law',
+        'Click to join Disconnect in supporting a petition to improve digital privacy.',
+        'https://disconnect.me/ecpa'
+      );
     }
   });
 }
