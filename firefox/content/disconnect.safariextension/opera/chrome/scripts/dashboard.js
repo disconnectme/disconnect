@@ -155,24 +155,24 @@ $(function(){
             })
 
         // Add the day of each graph
-        svg
-            .append("svg:g")
-            .attr("transform", "translate(23,0)")
-            .classed("days",true)
-            .selectAll("text")
-            .data(data).enter()
-            .append("svg:text")
-            .attr("x", function(d,i) {
-                return i * (barWidth + barSpace) + 11;
-            })
-            .attr("y", function(d) { return height - 10 })
-            .attr("dy", ".5em")
-            .attr("text-anchor", "middle")
-            .attr("fill-opacity",1)
-            .text(function(d) {
+        // svg
+        //     .append("svg:g")
+        //     .attr("transform", "translate(23,0)")
+        //     .classed("days",true)
+        //     .selectAll("text")
+        //     .data(data).enter()
+        //     .append("svg:text")
+        //     .attr("x", function(d,i) {
+        //         return i * (barWidth + barSpace) + 11;
+        //     })
+        //     .attr("y", function(d) { return height - 10 })
+        //     .attr("dy", ".5em")
+        //     .attr("text-anchor", "middle")
+        //     .attr("fill-opacity",1)
+        //     .text(function(d) {
 
-                return moment(d.date).format('dd');
-            })
+        //         return moment(d.date).format('dd');
+        //     })
 
         //--- Add navigation arrows
         arrow_left = svg.append("svg:g")
@@ -399,7 +399,7 @@ $(function(){
             dateString += last_day.format("MMMM DD, YYYY");
             dateString += "</strong>";
 
-        $("#date_box").html(dateString);
+        $("#date_box span.text").html(dateString);
     }
 
     function calculateBandwidth(data){
