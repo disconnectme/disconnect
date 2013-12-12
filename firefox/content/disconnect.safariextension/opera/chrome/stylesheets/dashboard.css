@@ -140,11 +140,30 @@ html {
 #main_left > div[data-ss-colspan="2"] {
     width: 563px;
 }
+#main_left > div[data-ss-colspan="3"] {
+    width: 846px;
+}
 #main_right {
     width: 30%;
     margin: 0 0 0 0;
     padding: 0;
     float: left;
+}
+#main_left #date_box {
+    height: 25px;
+    background: #efefef;
+    /*background: #255B7C;*/
+    /*background: #393F4D;*/
+    /*background: #FFF;*/
+    /*background: #323743;*/
+    background: #414756;
+    /*color: #FFF;*/
+    color: #eee;
+    /*color: #ACAEB1;*/
+    text-align: center;
+    font-family: 'Antenna RE', sans-serif;
+    font-size: 12px;
+    padding-top: 5px;
 }
 .stat_box {
     background: #efefef;
@@ -250,10 +269,108 @@ html {
             transition: fill-opacity .4s ease-out;
 }
 
+.bar_graph svg g.days text{
+    fill: #323743
+}
 
 
 
+svg #left_arrow, svg #right_arrow {
+    cursor: pointer;
+}
+svg .arrow {
+    fill: #C9C9C9;
+    fill-opacity: 0;
+    -webkit-transition: fill-opacity .4s ease-out;
+       -moz-transition: fill-opacity .4s ease-out;
+        -ms-transition: fill-opacity .4s ease-out;
+         -o-transition: fill-opacity .4s ease-out;
+            transition: fill-opacity .4s ease-out;
+}
 
+
+
+.stat_box:hover .arrow {
+    fill-opacity:1;
+}
+
+.stat_box:hover svg .arrow.inactive {
+    fill-opacity: .2;
+    cursor: none;
+}
+
+
+/* Community Stats */
+#community_stats {
+    color: #FFF;
+    position: relative;
+}
+#community_stats .left {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#community_stats ul {
+    list-style: none;
+    padding: 0 0 0 30px;
+    margin-top: 35px;
+}
+#community_stats li {
+    margin-bottom: 35px;
+}
+#community_stats .stat {
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+    font-size: 29px;
+    line-height: 28px;
+}
+#community_stats .stat_label {
+    display: block;
+    font-family: 'Antenna RE';
+    font-size: 14px;
+    font-weight: 100;
+}
+
+#community_stats .graph .rulers line {
+    stroke: #00a562;
+    stroke-width: 1;
+}
+
+/* Blocked requests line chart */
+#community_stats .blocked_requests .dots circle {
+    fill: #01814d;
+}
+#community_stats .blocked_requests .line path {
+    stroke-width: 1;
+    stroke-dasharray: 5,5;
+    stroke: #01814d;
+}
+
+/* Secured requests line chart */
+#community_stats .secured_requests .dots circle {
+    fill: #019459;
+}
+#community_stats .secured_requests .line path {
+    stroke-width: 1;
+    stroke-dasharray: 5,5;
+    stroke: #019459;
+}
+
+/* Saved bandwith line chart */
+#community_stats .saved_bandwidth .dots circle {
+    fill: #32d795;
+}
+#community_stats .saved_bandwidth .line path {
+    stroke-width: 1;
+    stroke-dasharray: 5,5;
+    stroke: #32d795;
+}
+
+/* -- Notification Box -- */
+.notification_box {
+    background: #efefef;
+    height: 100px !important;
+}
 
 
 

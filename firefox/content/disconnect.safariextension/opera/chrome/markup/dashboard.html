@@ -8,7 +8,8 @@
         <script src="/scripts/vendor/jquery/jquery-ui-1.10.3.custom.min.js"></script>
         <script src="/scripts/vendor/shapeshift/jquery.shapeshift.js"></script>
         <script src="/scripts/vendor/d3/d3.js"></script>
-
+        <script src="/scripts/vendor/moment/moment.min.js"></script>
+        <script src="/scripts/vendor/lodash/lodash.min.js"></script>
 
     </head>
     <body>
@@ -19,28 +20,50 @@
     </body>
     <div id="content">
         <div id="main_left">
-            <div class="stat_box">
+            <div id="date_box" data-ss-colspan="3">
+                Week
+            </div>
+            <div class="stat_box draggable">
                 <span class="stat">1,517</span>
                 <span class="stat_label">Blocked requests</span>
                 <div class="bar_graph" id="blocked_requests">
                 </div>
             </div>
-            <div class="stat_box">
+            <div class="stat_box draggable">
                 <span class="stat">199</span>
                 <span class="stat_label">Secured requests</span>
                 <div class="bar_graph" id="secured_requests"></div>
             </div>
-            <div class="stat_box">
+            <div class="stat_box draggable">
                 <span class="stat">35MB</span>
                 <span class="stat_label">Saved bandwidth</span>
                 <div class="bar_graph" id="bandwidth_saved"></div>
             </div>
-            <div id="community_stats" data-ss-colspan="2">
-                Community
+            <div id="community_stats" data-ss-colspan="2" class="draggable">
+                <div class="graph"></div>
+                <div class="left">
+                    <ul>
+                        <li>
+                            <span class="stat">10,231,002</span>
+                            <span class="stat_label">Community blocked requests</span>
+                        </li>
+                        <li>
+                            <span class="stat">2,012,400</span>
+                            <span class="stat_label">Community secured requests</span>
+                        </li>
+                        <li>
+                            <span class="stat">43 GB</span>
+                            <span class="stat_label">Community saved bandwidth</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="stat_box">
+            <div class="stat_box draggable">
                 <span class="stat">STAT</span>
                 <span class="stat_label"></span>
+            </div>
+            <div class="notification_box" data-ss-colspan="3">
+                This is for notifications
             </div>
         </div>
         <div id="main_right">
