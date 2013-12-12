@@ -179,27 +179,20 @@ function getCount(tabRequests) {
   return count;
 }
 
-/* Creates a html5 growl notification */
-function dispatchBubble(title, text, link, closeURL) {
-    var link = link || false;
-    var n = new Notification(title,{
+/* Creates an HTML5 Growl notification. */
+function dispatchBubble(title, text, link) {
+  var link = link || false;
+  var notification =
+      new Notification(title, {
         dir: 'auto',
-        lang: "en",
+        lang: 'en',
         body: text,
-        icon: 'https://s3.amazonaws.com/images.disconnect.me/images/octopus/D.png'
-    });
-    
-    n.onclick = function(){
-        if(link) {
-            TABS.create({url: link});
-        }
-    }
+        icon: PATH + 'images/d.png'
+      });
 
-    n.onclose = function() {
-        $.ajax(closeURL);
-    }
+  notification.onclick = function() { link && TABS.create({url: link}); };
 
-    n.show();
+  notification.show();
 }
 
 /* Indicates the number of tracking requests. */
@@ -544,15 +537,15 @@ if (options.displayMode == LEGACY_NAME) {
       BROWSER_ACTION.setPopup({popup: ''});
     }
   });
-}
-else if (!(options.ecpa)) {
-  $.getJSON('https://goldenticket.disconnect.me/ECPA', function(data) {
+} else if (options.firstBuild < 62 && !options.ecpaShown) {
+  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
     if (data.goldenticket === 'true') {
-      dispatchBubble('Help reform U.S. privacy law.', 
-          'Please support this important petition.', 
-              'https://disconnect.me/ecpa', 
-                  'https://disconnect.me/ecpa/analytics/closed');
-      options.ecpa = true;
+      options.ecpaShown = true;
+      dispatchBubble(
+        'Help reform US privacy law',
+        'Click to join Disconnect in supporting a petition to improve digital privacy.',
+        'https://disconnect.me/ecpa'
+      );
     }
   });
 }
