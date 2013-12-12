@@ -472,51 +472,44 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   disconnectWhitelist.services.WPP = true;
 
   const DEVIANTART_DOMAIN = 'deviantart.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
-  var disconnectWhitelist =
+  disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
 
   const MACYS_DOMAIN = 'macys.com';
-  var domainWhitelist =
-      whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
-  var disconnectWhitelist =
+  domainWhitelist = whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+  disconnectWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
 
   const NORDSTROM_DOMAIN = 'nordstrom.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
-  var disconnectWhitelist =
+  disconnectWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   disconnectWhitelist.services.IBM = true;
 
+  const SLIDESHARE_DOMAIN = 'slideshare.net';
+  domainWhitelist =
+      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  disconnectWhitelist.services.LinkedIn = true;
+
   const TARGET_DOMAIN = 'target.com';
-  var domainWhitelist =
-      whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
-  var disconnectWhitelist =
+  domainWhitelist = whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+  disconnectWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Ensighten = true;
   disconnectWhitelist.services.RichRelevance = true;
-
-  const SLIDESHARE_DOMAIN = 'slideshare.net';
-  var domainWhitelist =
-      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Facebook = true;
-  domainWhitelist =
-      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
-  disconnectWhitelist =
-      domainWhitelist.Social ||
-          (domainWhitelist.Social = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.LinkedIn = true;
 
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
