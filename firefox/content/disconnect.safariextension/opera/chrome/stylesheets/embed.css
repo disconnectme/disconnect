@@ -54,7 +54,10 @@
   -moz-user-select: none
 }
 
-#disconnect-list table { border-collapse: collapse }
+#disconnect-list table {
+  border-collapse: collapse;
+  font-size: 8px
+}
 
 #disconnect-navbar {
   margin-right: auto;
@@ -88,7 +91,7 @@
   text-align: center
 }
 
-.disconnect-shortcut {
+#disconnect-shortcuts .disconnect-shortcut {
   display: inline-block;
   margin-right: 7px;
   margin-left: 7px;
@@ -98,9 +101,11 @@
   cursor: pointer
 }
 
-.disconnect-shortcut:first-child { display: none }
+#disconnect-shortcuts .disconnect-shortcut:first-child { display: none }
 
-.disconnect-shortcut.disconnect-deactivated { background: #4f4f4f }
+#disconnect-shortcuts .disconnect-shortcut.disconnect-deactivated {
+  background: #4f4f4f
+}
 
 .disconnect-shortcut td {
   width: 24px;
@@ -141,7 +146,7 @@
 
 .disconnect-category .disconnect-text { width: 130px }
 
-.disconnect-category .disconnect-text table {
+#disconnect-list .disconnect-category .disconnect-text table {
   border-collapse: separate;
   border-spacing: 0;
   font-size: x-small
@@ -203,7 +208,7 @@
 
 .disconnect-service:first-child { display: none }
 
-.disconnect-service .disconnect-control { padding-left: 10px }
+#disconnect-list .disconnect-service .disconnect-control { padding-left: 10px }
 
 .disconnect-service input {
   margin-left: 0;
