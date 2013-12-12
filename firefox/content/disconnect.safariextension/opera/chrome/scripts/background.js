@@ -179,6 +179,22 @@ function getCount(tabRequests) {
   return count;
 }
 
+/* Creates an HTML5 Growl notification. */
+function dispatchBubble(title, text, link) {
+  var link = link || false;
+  var notification =
+      new Notification(title, {
+        dir: 'auto',
+        lang: 'en',
+        body: text,
+        icon: PATH + 'images/d.png'
+      });
+
+  notification.onclick = function() { link && TABS.create({url: link}); };
+
+  notification.show();
+}
+
 /* Indicates the number of tracking requests. */
 function updateCounter(tabId, count, deactivated) {
   if (
@@ -456,23 +472,23 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   const HM_DOMAIN = 'hm.com';
   var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
-  var disconnectWhitelist =
+  var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
+  analyticsWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   const CVS_DOMAIN = 'cvs.com';
   var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
-  var disconnectWhitelist =
+  var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.WPP = true;
+  advertisingWhitelist.services.WPP = true;
 
   const DEVIANTART_DOMAIN = 'deviantart.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
@@ -480,43 +496,39 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   disconnectWhitelist.services.Google = true;
 
   const MACYS_DOMAIN = 'macys.com';
-  var domainWhitelist =
-      whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
-  var disconnectWhitelist =
+  domainWhitelist = whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+  var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
+  analyticsWhitelist.services.IBM = true;
 
   const NORDSTROM_DOMAIN = 'nordstrom.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
-  var disconnectWhitelist =
+  analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
-
-  const TARGET_DOMAIN = 'target.com';
-  var domainWhitelist =
-      whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Advertising ||
-          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Ensighten = true;
-  disconnectWhitelist.services.RichRelevance = true;
+  analyticsWhitelist.services.IBM = true;
 
   const SLIDESHARE_DOMAIN = 'slideshare.net';
-  var domainWhitelist =
-      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
-  var disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Facebook = true;
   domainWhitelist =
       whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
   disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  var socialWhitelist =
       domainWhitelist.Social ||
           (domainWhitelist.Social = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.LinkedIn = true;
+  socialWhitelist.services.LinkedIn = true;
+
+  const TARGET_DOMAIN = 'target.com';
+  domainWhitelist = whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+  advertisingWhitelist =
+      domainWhitelist.Advertising ||
+          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
+  advertisingWhitelist.services.Ensighten = true;
+  advertisingWhitelist.services.RichRelevance = true;
 
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
@@ -533,6 +545,17 @@ if (options.displayMode == LEGACY_NAME) {
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
+} else if (options.firstBuild < 62 && !options.ecpaShown) {
+  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
+    if (data.goldenticket === 'true') {
+      options.ecpaShown = true;
+      dispatchBubble(
+        'Help reform US privacy law',
+        'Click to join Disconnect in supporting a petition to improve digital privacy.',
+        'https://disconnect.me/ecpa'
+      );
     }
   });
 }

@@ -966,81 +966,81 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 23) {
-        var HM_DOMAIN = 'hm.com';
-        var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
-        var disconnectWhitelist =
-            domainWhitelist.Analytics || (
-              domainWhitelist.Analytics = {whitelisted: false, services: {}}
-            );
-        disconnectWhitelist.services.IBM = true;
+      if (!previousBuild || previousBuild < 20)
+          preferences.setIntPref(firstBuildName, currentBuild);
 
-        var CVS_DOMAIN = 'cvs.com';
-        domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
-        disconnectWhitelist =
+      if (!previousBuild || previousBuild < currentBuild) {
+        var cvsDomain = 'cvs.com';
+        var domainWhitelist =
+            whitelist[cvsDomain] || (whitelist[cvsDomain] = {});
+        var advertisingWhitelist =
             domainWhitelist.Advertising || (
               domainWhitelist.Advertising = {whitelisted: false, services: {}}
             );
-        disconnectWhitelist.services.WPP = true;
+        advertisingWhitelist.services.WPP = true;
 
-        var DEVIANTART_DOMAIN = 'deviantart.com';
+        var deviantArtDomain = 'deviantart.com';
         domainWhitelist =
-            whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
-        disconnectWhitelist =
+            whitelist[deviantArtDomain] || (whitelist[deviantArtDomain] = {});
+        var disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
 
-        var MACYS_DOMAIN = 'macys.com';
-        domainWhitelist =
-            whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
-        disconnectWhitelist =
+        var hmDomain = 'hm.com';
+        domainWhitelist = whitelist[hmDomain] || (whitelist[hmDomain] = {});
+        var analyticsWhitelist =
             domainWhitelist.Analytics || (
               domainWhitelist.Analytics = {whitelisted: false, services: {}}
             );
-        disconnectWhitelist.services.IBM = true;
+        analyticsWhitelist.services.IBM = true;
 
-        var NORDSTROM_DOMAIN = 'nordstrom.com';
+        var macysDomain = 'macys.com';
         domainWhitelist =
-            whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
-        disconnectWhitelist =
+            whitelist[macysDomain] || (whitelist[macysDomain] = {});
+        analyticsWhitelist =
             domainWhitelist.Analytics || (
               domainWhitelist.Analytics = {whitelisted: false, services: {}}
             );
-        disconnectWhitelist.services.IBM = true;
+        analyticsWhitelist.services.IBM = true;
 
-        var TARGET_DOMAIN = 'target.com';
+        var nordstromDomain = 'nordstrom.com';
         domainWhitelist =
-            whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
-        disconnectWhitelist =
-            domainWhitelist.Advertising || (
-              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            whitelist[nordstromDomain] || (whitelist[nordstromDomain] = {});
+        analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
             );
-        disconnectWhitelist.services.Ensighten = true;
-        disconnectWhitelist.services.RichRelevance = true;
+        analyticsWhitelist.services.IBM = true;
 
-        var SLIDESHARE_DOMAIN = 'slideshare.net';
+        var slideshareDomain = 'slideshare.net';
         domainWhitelist =
-            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+            whitelist[slideshareDomain] || (whitelist[slideshareDomain] = {});
         disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Facebook = true;
-        domainWhitelist =
-            whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
-        disconnectWhitelist =
+        var socialWhitelist =
             domainWhitelist.Social || (
               domainWhitelist.Social = {whitelisted: false, services: {}}
             );
-        disconnectWhitelist.services.LinkedIn = true;
+        socialWhitelist.services.LinkedIn = true;
+
+        var targetDomain = 'target.com';
+        domainWhitelist =
+            whitelist[targetDomain] || (whitelist[targetDomain] = {});
+        advertisingWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        advertisingWhitelist.services.Ensighten = true;
+        advertisingWhitelist.services.RichRelevance = true;
 
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-        preferences.setIntPref(firstBuildName, currentBuild);
+        preferences.setIntPref(buildName, currentBuild);
       }
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
