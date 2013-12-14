@@ -249,7 +249,7 @@
 
 .disconnect-service :hover { color: #191919 }
 
-.disconnect-service .disconnect-text {
+#disconnect-list .disconnect-service .disconnect-text {
   padding-left: 10px;
   color: #b3b3b3;
   cursor: default
