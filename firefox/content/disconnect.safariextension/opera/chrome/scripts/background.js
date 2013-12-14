@@ -265,7 +265,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 63;
+const CURRENT_BUILD = 64;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -479,7 +479,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
   const CVS_DOMAIN = 'cvs.com';
   var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
   var advertisingWhitelist =
@@ -531,8 +531,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   advertisingWhitelist.services.RichRelevance = true;
 
   options.whitelist = JSON.stringify(whitelist);
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
