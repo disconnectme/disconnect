@@ -875,7 +875,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 23;
+      var currentBuild = 24;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -969,7 +969,7 @@ if (typeof Disconnect == 'undefined') {
       if (!previousBuild || previousBuild < 20)
           preferences.setIntPref(firstBuildName, currentBuild);
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 23) {
         var cvsDomain = 'cvs.com';
         var domainWhitelist =
             whitelist[cvsDomain] || (whitelist[cvsDomain] = {});
@@ -1039,8 +1039,10 @@ if (typeof Disconnect == 'undefined') {
         advertisingWhitelist.services.RichRelevance = true;
 
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-        preferences.setIntPref(buildName, currentBuild);
       }
+
+      if (!previousBuild || previousBuild < currentBuild)
+          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
