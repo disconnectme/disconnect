@@ -54,7 +54,7 @@
   -moz-user-select: none
 }
 
-table {
+#disconnect-list table {
   border-collapse: collapse;
   font-size: 8px
 }
@@ -65,7 +65,7 @@ table {
   height: 30px
 }
 
-td { padding: 0 }
+#disconnect-list td { padding: 0 }
 
 #disconnect-navbar .disconnect-badge { width: 110px }
 
@@ -91,7 +91,7 @@ td { padding: 0 }
   text-align: center
 }
 
-.disconnect-shortcut {
+#disconnect-shortcuts .disconnect-shortcut {
   display: inline-block;
   margin-right: 7px;
   margin-left: 7px;
@@ -101,9 +101,11 @@ td { padding: 0 }
   cursor: pointer
 }
 
-.disconnect-shortcut:first-child { display: none }
+#disconnect-shortcuts .disconnect-shortcut:first-child { display: none }
 
-.disconnect-shortcut.disconnect-deactivated { background: #4f4f4f }
+#disconnect-shortcuts .disconnect-shortcut.disconnect-deactivated {
+  background: #4f4f4f
+}
 
 .disconnect-shortcut td {
   width: 24px;
@@ -144,7 +146,7 @@ td { padding: 0 }
 
 .disconnect-category .disconnect-text { width: 130px }
 
-.disconnect-category .disconnect-text table {
+#disconnect-list .disconnect-category .disconnect-text table {
   border-collapse: separate;
   border-spacing: 0;
   font-size: x-small
@@ -206,7 +208,7 @@ td { padding: 0 }
 
 .disconnect-service:first-child { display: none }
 
-.disconnect-service .disconnect-control { padding-left: 10px }
+#disconnect-list .disconnect-service .disconnect-control { padding-left: 10px }
 
 .disconnect-service input {
   margin-left: 0;
@@ -247,7 +249,7 @@ td { padding: 0 }
 
 .disconnect-service :hover { color: #191919 }
 
-.disconnect-service .disconnect-text {
+#disconnect-list .disconnect-service .disconnect-text {
   padding-left: 10px;
   color: #b3b3b3;
   cursor: default
@@ -258,6 +260,7 @@ td { padding: 0 }
   margin-left: auto;
   height: 45px;
   text-align: center;
+  font-size: 8px;
   cursor: default
 }
 

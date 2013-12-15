@@ -179,6 +179,22 @@ function getCount(tabRequests) {
   return count;
 }
 
+/* Creates an HTML5 Growl notification. */
+function dispatchBubble(title, text, link) {
+  var link = link || false;
+  var notification =
+      new Notification(title, {
+        dir: 'auto',
+        lang: 'en',
+        body: text,
+        icon: PATH + 'images/d.png'
+      });
+
+  notification.onclick = function() { link && TABS.create({url: link}); };
+
+  notification.show();
+}
+
 /* Indicates the number of tracking requests. */
 function updateCounter(tabId, count, deactivated) {
   if (
@@ -213,7 +229,7 @@ function safelyUpdateCounter(tabId, count, deactivated) {
     }
   });
 }
-
+/* Gets blocked/secured totals. */
 function getTotals() {
   var blocked = deserialize(options.blockedRequests) || {};
   var secured = deserialize(options.hardenedRequests) || {};
@@ -244,7 +260,7 @@ function showTryLater(){
   options.promoRunning = true;
 }
 
-/* Checks to see i user is in a paid state. */
+/* Checks to see if user is in a paid state. */
 function paid() {
   switch(deserialize(options.pwyw).bucket) {
     case 'paid-paypal':
@@ -293,7 +309,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 63;
+const CURRENT_BUILD = 64;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -500,23 +516,23 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
   const HM_DOMAIN = 'hm.com';
   var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
-  var disconnectWhitelist =
+  var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
+  analyticsWhitelist.services.IBM = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
   const CVS_DOMAIN = 'cvs.com';
   var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
-  var disconnectWhitelist =
+  var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.WPP = true;
+  advertisingWhitelist.services.WPP = true;
 
   const DEVIANTART_DOMAIN = 'deviantart.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
@@ -524,35 +540,45 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   disconnectWhitelist.services.Google = true;
 
   const MACYS_DOMAIN = 'macys.com';
-  var domainWhitelist =
-      whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
-  var disconnectWhitelist =
+  domainWhitelist = whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
+  var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
+  analyticsWhitelist.services.IBM = true;
 
   const NORDSTROM_DOMAIN = 'nordstrom.com';
-  var domainWhitelist =
+  domainWhitelist =
       whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
-  var disconnectWhitelist =
+  analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.IBM = true;
+  analyticsWhitelist.services.IBM = true;
+
+  const SLIDESHARE_DOMAIN = 'slideshare.net';
+  domainWhitelist =
+      whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+  var socialWhitelist =
+      domainWhitelist.Social ||
+          (domainWhitelist.Social = {whitelisted: false, services: {}});
+  socialWhitelist.services.LinkedIn = true;
 
   const TARGET_DOMAIN = 'target.com';
-  var domainWhitelist =
-      whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
-  var disconnectWhitelist =
+  domainWhitelist = whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
+  advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Ensighten = true;
-  disconnectWhitelist.services.RichRelevance = true;
+  advertisingWhitelist.services.Ensighten = true;
+  advertisingWhitelist.services.RichRelevance = true;
 
   options.whitelist = JSON.stringify(whitelist);
-
-  if (!options.firstBuild) options.firstBuild = CURRENT_BUILD;
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
@@ -567,9 +593,20 @@ if (options.displayMode == LEGACY_NAME) {
       BROWSER_ACTION.setPopup({popup: ''});
     }
   });
+} else if (options.firstBuild < 62 && !options.ecpaShown) {
+  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
+    if (data.goldenticket === 'true') {
+      options.ecpaShown = true;
+      dispatchBubble(
+        'Help reform US privacy law',
+        'Click to join Disconnect in supporting a petition to improve digital privacy.',
+        'https://disconnect.me/ecpa'
+      );
+    }
+  });
 }
 
-  /* Show the user a pwyw page 48 hours later if they're on a trial. */
+/* Show the user a pwyw page 48 hours later if they're on a trial. */
 if (!(paid()) && !(options.shownStats) && 
     (Date.now() > 
         (parseInt(deserialize(options.pwyw).date) + dayMilliseconds * 2))) {
@@ -734,7 +771,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='
                     : 'about:blank'
       };
-
       blockedCount = ++TAB_DASHBOARD.blocked;
       const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
@@ -846,96 +882,99 @@ SAFARI && safari.application.addEventListener(
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   const TAB = sender.tab;
-  const TAB_ID = TAB.id;
-  const TAB_DASHBOARD =
-      DASHBOARD[TAB_ID] ||
-          (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
-  const TOTAL_COUNT = ++TAB_DASHBOARD.total;
 
-  if (request.initialized) {
-    const DOMAIN = GET(TAB.url);
-    sendResponse({
-      servicePointer: servicePointer,
-      tlds: SITENAME.getTlds(),
-      domain: DOMAIN,
-      whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
-      blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
-    });
-  } else if (request.pwyw) {
-    const PWYW = deserialize(options.pwyw);
-    PWYW.bucket = request.bucket;
-    options.pwyw = JSON.stringify(PWYW);
-    sendResponse({});
-  } else if (request.getStats) {
-    const TOTALS = getTotals();
-    const DAYS = Math.round((Date.now() - 
-        options.firstUpdateTime)/dayMilliseconds);
-    sendResponse({totals: TOTALS, days: DAYS});
-  } else {
-    if (SAFARI) {
-      const BLOCKED = request.blocked;
-      const WHITELISTED = request.whitelisted;
-      var popup =
-          options.displayMode != LEGACY_NAME &&
-              EXTENSION.getViews({type: 'popup'})[0];
-      if (BLOCKED || WHITELISTED)
-          incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
-      var blockedCount;
+  if (TAB) {
+    const TAB_ID = TAB.id;
+    const TAB_DASHBOARD =
+        DASHBOARD[TAB_ID] ||
+            (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
+    const TOTAL_COUNT = ++TAB_DASHBOARD.total;
 
-      if (BLOCKED) {
-        blockedCount = ++TAB_DASHBOARD.blocked;
-        const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
-        BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
-            BLOCKED_REQUESTS[date] = 1;
-        options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+    if (request.initialized) {
+      const DOMAIN = GET(TAB.url);
+      sendResponse({
+        servicePointer: servicePointer,
+        tlds: SITENAME.getTlds(),
+        domain: DOMAIN,
+        whitelist: (deserialize(options.whitelist) || {})[DOMAIN] || {},
+        blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
+      });
+    } else if (request.pwyw) {
+      const PWYW = deserialize(options.pwyw);
+      PWYW.bucket = request.bucket;
+      options.pwyw = JSON.stringify(PWYW);
+      sendResponse({});
+	} else if (request.getStats) {
+	  const TOTALS = getTotals();
+	  const DAYS = Math.round((Date.now() - 
+          options.firstUpdateTime)/dayMilliseconds);
+      sendResponse({totals: TOTALS, days: DAYS});
+    } else {
+      if (SAFARI) {
+        const BLOCKED = request.blocked;
+        const WHITELISTED = request.whitelisted;
+        var popup =
+            options.displayMode != LEGACY_NAME &&
+                EXTENSION.getViews({type: 'popup'})[0];
+        if (BLOCKED || WHITELISTED)
+            incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
+        var blockedCount;
+
+        if (BLOCKED) {
+          blockedCount = ++TAB_DASHBOARD.blocked;
+          const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
+          BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
+              BLOCKED_REQUESTS[date] = 1;
+          options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+        }
+
+        // The Collusion data structure.
+        const CHILD_DOMAIN = request.childDomain;
+        if (!(CHILD_DOMAIN in LOG))
+            LOG[CHILD_DOMAIN] = {
+              host: CHILD_DOMAIN, referrers: {}, visited: false
+            };
+        const PARENT_DOMAIN = request.parentDomain;
+        if (!(PARENT_DOMAIN in LOG))
+            LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
+        LOG[PARENT_DOMAIN].visited = true;
+        const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+        if (!startTime) startTime = new Date();
+        const ELAPSED_TIME = new Date() - startTime;
+        if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
+            REFERRERS[PARENT_DOMAIN] = {
+              host: PARENT_DOMAIN,
+              types: [ELAPSED_TIME]
+            };
+        const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+
+        if (PARENT_REFERRERS) {
+          const TYPES = PARENT_REFERRERS.types;
+          const TYPE = request.type;
+          TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
+        }
+
+        // A live update.
+        if (popup)
+            if (options.displayMode == GRAPH_NAME) {
+              const GRAPH = popup.graph;
+              GRAPH && GRAPH.update(LOG);
+            } else {
+              const TIMEOUT = popup.timeout;
+
+              blockedCount && setTimeout(function() {
+                popup.renderBlockedRequest(
+                  TAB_ID,
+                  Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
+                  TOTAL_COUNT
+                );
+              }, TIMEOUT);
+            }
       }
 
-      // The Collusion data structure.
-      const CHILD_DOMAIN = request.childDomain;
-      if (!(CHILD_DOMAIN in LOG))
-          LOG[CHILD_DOMAIN] = {
-            host: CHILD_DOMAIN, referrers: {}, visited: false
-          };
-      const PARENT_DOMAIN = request.parentDomain;
-      if (!(PARENT_DOMAIN in LOG))
-          LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
-      LOG[PARENT_DOMAIN].visited = true;
-      const REFERRERS = LOG[CHILD_DOMAIN].referrers;
-      if (!startTime) startTime = new Date();
-      const ELAPSED_TIME = new Date() - startTime;
-      if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
-          REFERRERS[PARENT_DOMAIN] = {
-            host: PARENT_DOMAIN,
-            types: [ELAPSED_TIME]
-          };
-      const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
-
-      if (PARENT_REFERRERS) {
-        const TYPES = PARENT_REFERRERS.types;
-        const TYPE = request.type;
-        TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
-      }
-
-      // A live update.
-      if (popup)
-          if (options.displayMode == GRAPH_NAME) {
-            const GRAPH = popup.graph;
-            GRAPH && GRAPH.update(LOG);
-          } else {
-            const TIMEOUT = popup.timeout;
-
-            blockedCount && setTimeout(function() {
-              popup.renderBlockedRequest(
-                TAB_ID,
-                Math.min(blockedCount + TOTAL_COUNT * .28, TOTAL_COUNT),
-                TOTAL_COUNT
-              );
-            }, TIMEOUT);
-          }
+      sendResponse({});
     }
-
-    sendResponse({});
-  }
+  } else sendResponse({});
 });
 
 /* Loads the blog promo. */
@@ -960,14 +999,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     });
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
-    options.pwyw = JSON.stringify({date: Date.now(), bucket: 'viewed-trial'});
-  }
-
-  if (deserialize(options.promoRunning) && false) {
-    TABS.create({url: 'https://disconnect.me/recommends/kids'});
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    delete options.promoRunning;
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
 });
 

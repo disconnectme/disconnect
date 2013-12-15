@@ -175,7 +175,8 @@ td { padding: 0 }
   border-radius: 2px;
   background: -webkit-linear-gradient(#ededed 38%, #dedede);
   width: 12px;
-  height: 12px
+  height: 12px;
+  outline: none
 }
 
 .service input:hover { border-color: rgba(0, 0, 0, .5) }
@@ -238,7 +239,8 @@ td { padding: 0 }
   border-radius: 2px;
   background: -webkit-linear-gradient(#ededed 38%, #dedede);
   width: 12px;
-  height: 12px
+  height: 12px;
+  outline: none
 }
 
 #options input:not(:disabled):hover { border-color: rgba(0, 0, 0, .5) }

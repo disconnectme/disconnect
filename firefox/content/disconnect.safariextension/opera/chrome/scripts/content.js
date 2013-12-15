@@ -80,7 +80,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       parentDomain: PARENT_DOMAIN,
       blocked: blocked,
       whitelisted: whitelisted,
-      type: TARGET.nodeName.toLowerCase()
+      type: (TARGET.nodeName || '').toLowerCase()
     });
   }, true);
 
