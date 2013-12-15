@@ -990,7 +990,8 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   }
 
   if ((PWYW.bucket == 'trying') && deserialize(options.promoRunning)) {
-    const DAYS = Math.round((Date.now() - options.firstUpdateTime)/dayMilliseconds);
+    const DAYS = Math.round((Date.now() - 
+        options.firstUpdateTime) / dayMilliseconds);
     TABS.create({
       url: 'https://disconnect.me/d2/welcome-trial'
     });
