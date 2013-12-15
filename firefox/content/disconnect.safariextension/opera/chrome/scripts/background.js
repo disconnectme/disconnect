@@ -990,7 +990,6 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   }
 
   if ((PWYW.bucket == 'trying') && deserialize(options.promoRunning)) {
-    console.log("Success!")
     const TOTALS = getTotals();
     const DAYS = Math.round((Date.now() - options.firstUpdateTime)/dayMilliseconds);
     TABS.create({
@@ -1000,6 +999,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
+    delete options.promoRunning;
   }
 });
 
