@@ -990,16 +990,14 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   }
 
   if ((PWYW.bucket == 'trying') && deserialize(options.promoRunning)) {
-    const TOTALS = getTotals();
     const DAYS = Math.round((Date.now() - options.firstUpdateTime)/dayMilliseconds);
     TABS.create({
-      url: 'https://disconnect.me/d2/welcome-trial?blocked=' + 
-          TOTALS.blocked + '&secured=' + TOTALS.secured + '&days=' + DAYS
+      url: 'https://disconnect.me/d2/welcome-trial'
     });
     BROWSER_ACTION.setBadgeText({text: ''});
+    delete options.promoRunning;
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
-    delete options.promoRunning;
   }
 });
 
