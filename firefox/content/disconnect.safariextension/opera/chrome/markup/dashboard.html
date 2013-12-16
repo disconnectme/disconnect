@@ -9,7 +9,8 @@
         <script src="/scripts/vendor/jquery/jquery.min.js"></script>
         <script src="/scripts/vendor/jquery/jquery-ui-1.10.3.custom.min.js"></script>
         <script src="/scripts/vendor/shapeshift/jquery.shapeshift.js"></script>
-        <script src="/scripts/vendor/d3/d3.js"></script>
+        <script src="/scripts/vendor/d3/d3.min.js"></script>
+
         <script src="/scripts/vendor/moment/moment.min.js"></script>
         <script src="/scripts/vendor/lodash/lodash.min.js"></script>
 
@@ -25,7 +26,7 @@
             <div id="date_box" data-ss-colspan="3">
                 <span class="text">fff</span>
                 <span id="previous">〈</span>
-                <span id="next">〉</span>
+                <span id="next" class="inactive">〉</span>
             </div>
             <div class="stat_box draggable">
                 <span class="stat">1,517</span>
@@ -62,9 +63,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="stat_box draggable">
-                <span class="stat">STAT</span>
-                <span class="stat_label"></span>
+            <div id="user_value" class="stat_box draggable">
+
             </div>
             <div class="notification_box" data-ss-colspan="3">
                 This is for notifications

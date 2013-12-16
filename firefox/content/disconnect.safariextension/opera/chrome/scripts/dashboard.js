@@ -34,6 +34,17 @@ $(function(){
         }
     };
 
+    var valueData = [
+        {
+            "label": "User Value",
+            "value": 1.99
+        },
+        {
+            "label": "Average Value",
+            "value": 3.00
+        }
+    ]
+
     var originalCommunityData = {
         "blockedRequests" : {
             "2013-11-30" : 63500,
@@ -55,7 +66,6 @@ $(function(){
         }
     }
 
-    /* Adds the drag and drop functionality to the boxes */
     ss_options = {
         enableResize: false,
         gutterX: 3,
@@ -67,28 +77,75 @@ $(function(){
         align: "left"
     }
 
+    /* Adds the drag and drop functionality to the boxes */
     $('#main_left').shapeshift(ss_options);
 
-    var bandwidthData = calculateBandwidth(originalData.blockedRequests)
+    var d3_bandwidth_data = massageData(calculateBandwidth(originalData.blockedRequests), true),
+        d3_blocked_requests = massageData(originalData.blockedRequests, true),
+        d3_secure_requests = massageData(originalData.hardenedRequests, true),
+        week = d3_bandwidth_data.length - 1,
+        weeks = d3_bandwidth_data.length - 1,
+        previous_arrow = $("#previous"),
+        next_arrow = $("#next");
 
 
-    createBarGraph("#blocked_requests", originalData.blockedRequests)
-    createBarGraph("#secured_requests", originalData.hardenedRequests)
-    createBarGraph("#bandwidth_saved", bandwidthData, "MB")
+    updateDateBox(moment(_.findKey(originalData.blockedRequests)), moment(_.findLastKey(originalData.blockedRequests)));
+
+    createBarGraph("#blocked_requests", d3_bandwidth_data[week])
+    createBarGraph("#secured_requests", d3_blocked_requests[week])
+    createBarGraph("#bandwidth_saved", d3_bandwidth_data[week], "MB")
+
+    createPieChart("#user_value",valueData)
+
+    previous_arrow.on("click", function(){
+        if(!$(this).hasClass("inactive")){
+            week--;
+
+            if(week ===0) {
+                $(this).addClass("inactive");
+            }
+            if(week < weeks) {
+                next_arrow.removeClass("inactive");
+            }
+            console.log("update graphs to previous week");
+
+            // Update Blocked Requests
+            updateBarGraph("#blocked_requests", d3_bandwidth_data[week],week);
+            updateBarGraph("#secured_requests", d3_blocked_requests[week],week);
+            updateBarGraph("#bandwidth_saved", d3_bandwidth_data[week],week, "MB");
+
+        }
+    })
+
+    next_arrow.on("click", function(){
+        if(!$(this).hasClass("inactive")){
+            week++;
+
+            if(week === weeks) {
+                $(this).addClass("inactive");
+            }
+            if(week > 0) {
+                previous_arrow.removeClass("inactive");
+            }
+            console.log("update graphs to previous week");
+
+            // Update Blocked Requests
+            updateBarGraph("#blocked_requests", d3_bandwidth_data[week],week);
+            updateBarGraph("#secured_requests", d3_blocked_requests[week],week);
+            updateBarGraph("#bandwidth_saved", d3_bandwidth_data[week],week, "MB");
+
+        }
+    })
 
     createCommunityChart("#community_stats", originalCommunityData)
 
 
-    function createBarGraph(element,raw_data,data_label) {
+    function createBarGraph(element,data,data_label) {
 
-        var allData = massageData(raw_data, true),
-            allData = divideIntoWeeks(allData),
-            week = allData.length-1,
-            data = allData[week],
-            data_label = data_label || false,
+        var data_label = data_label || false,
             height = 150,
             barWidth = 18,
-            barSpace = 17
+            barSpace = 17,
             width = $(element).width(),
             y = d3.scale.linear()
                   .domain([0, d3.max(data, function(d){
@@ -175,82 +232,85 @@ $(function(){
         //     })
 
         //--- Add navigation arrows
-        arrow_left = svg.append("svg:g")
-            .attr("id","left_arrow")
-            .attr("transform", "translate(10,0)")
-            .append("svg:polygon")
-            .classed("arrow", true)
-            .attr("points","7.417,8.565 0,4.282 7.417,0")
-            .on("click", function(){
-                if(!d3.select(this).classed("inactive")){
-                    week--;
-                    updateGraph(element,allData,week)
+        // arrow_left = svg.append("svg:g")
+        //     .attr("id","left_arrow")
+        //     .attr("transform", "translate(10,0)")
+        //     .append("svg:polygon")
+        //     .classed("arrow", true)
+        //     .attr("points","7.417,8.565 0,4.282 7.417,0")
+        //     .on("click", function(){
+        //         if(!d3.select(this).classed("inactive")){
+        //             week--;
+        //             updateGraph(element,allData,week)
+        //         }
+        //     })
+
+        // arrow_right = svg.append("svg:g")
+        //     .attr("id","right_arrow")
+        //     .attr("transform", "translate(" + (width - 20) + ",0)")
+        //     .append("svg:polygon")
+        //     .classed("arrow", true)
+        //     .classed("inactive",true)
+        //     .attr("points", "0,8.565 7.417,4.282 0,0")
+        //     .on("click", function(){
+        //         if(!d3.select(this).classed("inactive")){
+        //             week++;
+        //             updateGraph(element,allData,week)
+        //         }
+        //     })
+
+    }
+
+    function updateBarGraph(element,data,week,data_label) {
+        // if(set < allData.length-1) {
+        //     d3.select(element).select("#right_arrow > polygon").classed("inactive",false)
+        // }
+        // if(set > 0) {
+        //     d3.select(element).select("#left_arrow > polygon").classed("inactive",false)
+        // }
+
+        // if(set == allData.length-1) {
+        //     d3.select(element).select("#right_arrow > polygon").classed("inactive",true)
+        // }
+
+        // if(set == 0) {
+        //     d3.select(element).select("#left_arrow > polygon").classed("inactive",true)
+        // }
+
+
+        var height = $(element).height(),
+            data_label = data_label || false,
+            y = d3.scale.linear()
+              .domain([0, d3.max(data, function(d){
+                  return d.value;
+              })])
+              .range([height - 22,0])
+
+        d3.select(element).select("svg")
+            .selectAll("rect")
+            .data(data)
+            .transition()
+            .duration(1000)
+            .attr("height", function(d,e){
+                return height - 20 - y(d.value)
+             })
+            .attr("y", function(d) {
+                return y(d.value) + 20
+             })
+
+        d3.select(element).select(".values")
+            .selectAll("text")
+            .data(data)
+            .transition()
+            .duration(1000)
+            .attr("y", function(d) { return y(d.value) + 10 })
+            .attr("text-anchor", "middle")
+            .text(function(d) {
+                if(data_label) {
+                    return d.value + data_label
                 }
+                return d.value;
             })
-
-        arrow_right = svg.append("svg:g")
-            .attr("id","right_arrow")
-            .attr("transform", "translate(" + (width - 20) + ",0)")
-            .append("svg:polygon")
-            .classed("arrow", true)
-            .classed("inactive",true)
-            .attr("points", "0,8.565 7.417,4.282 0,0")
-            .on("click", function(){
-                if(!d3.select(this).classed("inactive")){
-                    week++;
-                    updateGraph(element,allData,week)
-                }
-            })
-
-        function updateGraph(element,allData,set) {
-            if(set < allData.length-1) {
-                d3.select(element).select("#right_arrow > polygon").classed("inactive",false)
-            }
-            if(set > 0) {
-                d3.select(element).select("#left_arrow > polygon").classed("inactive",false)
-            }
-
-            if(set == allData.length-1) {
-                d3.select(element).select("#right_arrow > polygon").classed("inactive",true)
-            }
-
-            if(set == 0) {
-                d3.select(element).select("#left_arrow > polygon").classed("inactive",true)
-            }
-
-            var data = allData[set],
-                y = d3.scale.linear()
-                  .domain([0, d3.max(data, function(d){
-                      return d.value;
-                  })])
-                  .range([height - 22,0])
-
-            d3.select(element).select("svg")
-                .selectAll("rect")
-                .data(data)
-                .transition()
-                .duration(1000)
-                .attr("height", function(d,e){
-                    return height - 20 - y(d.value)
-                 })
-                .attr("y", function(d) {
-                    return y(d.value) + 20
-                 })
-
-            d3.select(element).select(".values")
-                .selectAll("text")
-                .data(data)
-                .transition()
-                .duration(1000)
-                .attr("y", function(d) { return y(d.value) + 10 })
-                .attr("text-anchor", "middle")
-                .text(function(d) {
-                    if(data_label) {
-                        return d.value + data_label
-                    }
-                    return d.value;
-                })
-        }
     }
 
     function createCommunityChart(element,raw_data) {
@@ -338,6 +398,75 @@ $(function(){
         }
     }
 
+    function createPieChart(element,data){
+
+
+        var width = $(element).width(),
+            height= $(element).height(),
+            svg = d3.select(element)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height),
+            arc = d3.svg.arc(),
+            n = 1,
+            outerRadius = Math.min(width - (width/4),height - (height/4)) * .5,
+            innerRadius = outerRadius * .85,
+            pie = d3.layout.pie().sort(null).value(function(d){
+                return d.value }),
+            arc_colors = [
+                "#323743",
+                "#00ae68"
+            ]
+
+        var value_text = svg
+                    .append("svg:text")
+                    .attr("x", width/2)
+                    .attr("y", height/2)
+                    .attr("text-anchor", "middle")
+                    .classed("value_text", true)
+                    .text("$" + data[0].value);
+
+        var value_label = svg.append("text")
+                    .classed("value_label", true)
+                    .attr("x",width/2)
+                    .attr("y",height/2 + 30)
+                    .attr("text-anchor", "middle")
+                    .text(data[0].label)
+
+        svg.selectAll(".arc")
+        .data(arcs(data,data))
+        .enter().append("g")
+            .classed("arc",true)
+            .attr("transform", "translate(" + width / 2 + "," + height /2 + ")")
+        .append("path")
+            .attr("fill", function(d,i){
+                return arc_colors[i]
+            })
+            .attr("d",arc)
+            .on("mouseover", function(d,i){
+                d3.select(element).select(".value_text").text("$" + d.value.toFixed(2));
+                d3.select(element).select(".value_label").text(d.data.label);
+            })
+            .on("mouseout", function(d,i){
+                d3.select(element).select(".value_text").text("$" + data[0].value);
+                d3.select(element).select(".value_label").text(data[0].label);
+            })
+
+        function arcs(data){
+            var arcs0 = pie(data),
+                arcs1 = pie(data),
+                i = -1,
+                arc;
+            while(i++ < n){
+                arc = arcs0[i];
+                arc.innerRadius = innerRadius;
+                arc.outerRadius = outerRadius;
+                arc.next = arcs1[i];
+            }
+            return arcs0;
+        }
+    }
+
     function massageData(obj,completeWeek) {
 
         var completeWeek = completeWeek || false; // If value is true, it will make sure we have data for the complete week.
@@ -346,8 +475,6 @@ $(function(){
         var first_date = moment(_.findKey(obj)),
             last_date = moment(_.findLastKey(obj)),
             originalFormat = "YYYY-MM-DD";
-
-        updateDateBox(first_date,last_date);
 
         if(completeWeek) {
             first_date = first_date.startOf('week').format(originalFormat);
@@ -377,6 +504,10 @@ $(function(){
                 })
             }
         }
+
+        if(completeWeek) {
+            arrayOfData = divideIntoWeeks(arrayOfData);
+        }
         return arrayOfData;
     }
 
@@ -394,12 +525,16 @@ $(function(){
 
     function updateDateBox(first_day,last_day) {
         var dateString = "From <strong>";
-            dateString += first_day.format("MMMM DD, YYYY");
+            dateString += first_day.format("dddd, MMMM DD, YYYY");
             dateString += "</strong> to <strong>";
-            dateString += last_day.format("MMMM DD, YYYY");
+            dateString += last_day.format("dddd, MMMM DD, YYYY");
             dateString += "</strong>";
 
         $("#date_box span.text").html(dateString);
+    }
+
+    function updateStats(week) {
+
     }
 
     function calculateBandwidth(data){

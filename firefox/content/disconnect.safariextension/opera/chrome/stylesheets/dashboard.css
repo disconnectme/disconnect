@@ -197,10 +197,20 @@ html {
     text-align: center;
     top: 0;
     cursor: pointer;
+    opacity: 1;
+    -webkit-transition: opacity .4s ease-out;
+       -moz-transition: opacity .4s ease-out;
+        -ms-transition: opacity .4s ease-out;
+         -o-transition: opacity .4s ease-out;
+            transition: opacity .4s ease-out;
 }
 #date_box #previous {
     left: 0;
     padding-right: 8px;
+}
+#date_box #previous.inactive, #date_box #next.inactive {
+    opacity: .4;
+    cursor: default;
 }
 #date_box #next {
     right: 0;
@@ -405,6 +415,20 @@ svg .arrow {
     stroke-width: 1;
     stroke-dasharray: 5,5;
     stroke: #32d795;
+}
+
+/* -- Pie Chart -- */
+#user_value:hover {
+    background: #efefef;
+}
+.value_text {
+    font-size: 41px;
+    fill: #323743;
+}
+.value_label {
+    font-size: 14px;
+    fill: #323743;
+    font-family: 'Antenna RE';
 }
 
 /* -- Notification Box -- */
