@@ -101,6 +101,15 @@ $(function(){
         if(!$(this).hasClass("inactive")){
             week--;
 
+            console.log(d3_bandwidth_data[week])
+            console.log(d3_bandwidth_data[week][d3_bandwidth_data.length].date);
+
+
+            var first_day = moment(d3_bandwidth_data[week][0].date),
+                last_day = moment(d3_bandwidth_data[week][d3_bandwidth_data[week].length - 1].date);
+
+            updateDateBox(first_day, last_day)
+
             if(week ===0) {
                 $(this).addClass("inactive");
             }
@@ -120,6 +129,11 @@ $(function(){
     next_arrow.on("click", function(){
         if(!$(this).hasClass("inactive")){
             week++;
+
+            var first_day = moment(d3_bandwidth_data[week][0].date),
+                last_day = moment(d3_bandwidth_data[week][d3_bandwidth_data[week].length - 1].date);
+
+            updateDateBox(first_day, last_day)
 
             if(week === weeks) {
                 $(this).addClass("inactive");
