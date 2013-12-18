@@ -57,7 +57,7 @@
     <em:targetApplication>
       <!-- SeaMonkey -->
       <Description>
-        <em:id>{1CF4F3F6-67D5-11E3-B98A-E3596188709B}</em:id>
+        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
         <em:minVersion>2.0</em:minVersion>
         <em:maxVersion>2.26</em:maxVersion>
       </Description>
