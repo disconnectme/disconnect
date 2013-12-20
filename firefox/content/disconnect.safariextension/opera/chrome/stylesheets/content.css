@@ -18,10 +18,10 @@
   Brian Kennish <byoogle@gmail.com>
 */
 .disconnect-highlighted {
-  position: absolute;
-  border: thin solid #6d85b3;
-  background: #b6c2d9;
-  cursor: pointer
+  position: absolute !important;
+  border: thin solid #6d85b3 !important;
+  background: #b6c2d9 !important;
+  cursor: pointer !important
 }
 
-.disconnect-collapsed { display: none }
+.disconnect-collapsed { display: none !important }

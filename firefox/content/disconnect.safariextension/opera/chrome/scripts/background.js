@@ -309,7 +309,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 64;
+const CURRENT_BUILD = 65;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -460,7 +460,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
         options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
     else {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-      TABS.create({url: 'https://disconnect.me/d2/welcome'});
+      TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
     }
   }
 
