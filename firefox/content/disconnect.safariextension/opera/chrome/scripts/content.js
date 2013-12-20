@@ -23,6 +23,65 @@
 /* Retrieves the third-party metadata, if any, associated with a domain name. */
 function getService(domain) { return servicePointer[domain]; }
 
+/* Sets the odometer clock on Disconnect stats pages. */
+function disconnectSetTime() {
+
+  /* Converts a timestamp into a useable format. */
+  function toHHMMSS(sec) {
+    var sec_num = parseInt(sec, 10); // don't forget the second parm
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+  }
+
+  var time = document.getElementsByClassName('time')[0];
+  n = toHHMMSS(time.getAttribute("stat"));
+    n = n.split(":"),
+    minutes = n[1],
+    seconds = n[2],
+    hours = n[0],
+    s_hours = document.createElement('span'),
+    s_minutes = document.createElement('span'),
+    s_seconds = document.createElement('span');
+
+  s_hours.setAttribute("stat",hours);
+  s_hours.className = "odometer";
+  s_hours.innerHTML = 00;
+
+  s_minutes.setAttribute("stat",minutes);
+  s_minutes.className = "odometer";
+  s_minutes.innerHTML = 00;
+
+  s_seconds.setAttribute("stat", seconds);
+  s_seconds.className = "odometer";
+  s_seconds.innerHTML = 00
+
+  time.appendChild(s_hours);
+  time.innerHTML = time.innerHTML + ":";
+  time.appendChild(s_minutes);
+  time.innerHTML = time.innerHTML + ":";
+  time.appendChild(s_seconds);
+}
+
+/* Properly formats large numbers. */
+function disconnectAddCommas(nStr) {
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
+}
+
 /* The "extension" API. */
 var EXTENSION = chrome.extension;
 
@@ -84,65 +143,6 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
     });
   }, true);
 
-  function setTime() {
-    var time = document.getElementsByClassName('time')[0],
-      n = toHHMMSS(time.getAttribute("stat"));
-      n = n.split(":"),
-      minutes = n[1],
-      seconds = n[2],
-      hours = n[0],
-      s_hours = document.createElement('span'),
-      s_minutes = document.createElement('span'),
-      s_seconds = document.createElement('span');
-
-    s_hours.setAttribute("stat",hours);
-    s_hours.className = "odometer";
-    s_hours.innerHTML = 00;
-
-    s_minutes.setAttribute("stat",minutes);
-    s_minutes.className = "odometer";
-    s_minutes.innerHTML = 00;
-
-    s_seconds.setAttribute("stat", seconds);
-    s_seconds.className = "odometer";
-    s_seconds.innerHTML = 00
-
-    time.appendChild(s_hours);
-    time.innerHTML = time.innerHTML + ":";
-    time.appendChild(s_minutes);
-    time.innerHTML = time.innerHTML + ":";
-    time.appendChild(s_seconds);
-
-    function verifyTimeDigits(num){
-      return num.length > 1 ? num : '0'+num;
-    }
-
-    function toHHMMSS(sec) {
-      var sec_num = parseInt(sec, 10); // don't forget the second parm
-      var hours   = Math.floor(sec_num / 3600);
-      var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-      var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-      if (hours   < 10) {hours   = "0"+hours;}
-      if (minutes < 10) {minutes = "0"+minutes;}
-      if (seconds < 10) {seconds = "0"+seconds;}
-      var time    = hours+':'+minutes+':'+seconds;
-      return time;
-    }
-  }
-
-  function addCommas(nStr) {
-    nStr += '';
-    x = nStr.split('.');
-    x1 = x[0];
-    x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-      x1 = x1.replace(rgx, '$1' + ',' + '$2');
-    }
-    return x1 + x2;
-  }
-
   if (location.href.indexOf('disconnect.me') + 1) {
   	$(function() {
       if (location.href.indexOf('/d2/welcome') + 1) {
@@ -154,19 +154,18 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
           var timeSaved = (blocked * TRACKING_RESOURCE_TIME / 1000).toFixed(2);
           var bandwidthSaved = (blocked * TRACKING_RESOURCE_SIZE).toFixed(2);
 
-          $('#blocked').attr('stat', addCommas(blocked));
+          $('#blocked').attr('stat', disconnectAddCommas(blocked));
           $('#secured').attr('stat', secured);
           $('#time').attr('stat', timeSaved);
           $('#bandwidth').attr('stat', bandwidthSaved + "kb");
 
-          setTime();
+          DisconnectSetTime();
 
           var stats = document.getElementsByClassName('odometer');
 
           setTimeout(function(){
             for(var i=0,all=stats.length;i<all;i++) {
               var n = stats[i].getAttribute("stat");
-              console.log("STAT -> ", n)
               stats[i].innerHTML = n;
             }
           }, 1)

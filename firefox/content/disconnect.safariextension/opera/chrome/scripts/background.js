@@ -251,8 +251,8 @@ function getTotals() {
 }
 
 /* Shows the "Stats!" notification and end-of-trial page. */
-function showTryLater(){
-  options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'})
+function showTryLater() {
+  options.pwyw = JSON.stringify({date: Date.now(), bucket: 'trying'});
   BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
   BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
   BROWSER_ACTION.setBadgeText({text: 'Stats!'});
