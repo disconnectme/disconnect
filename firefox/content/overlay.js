@@ -65,22 +65,6 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
-     * Changes badge color to blocked.
-    */
-    blockBadge: function(badge) {
-      badge.removeClass(Disconnect.unblockedName);
-      badge.addClass(Disconnect.blockedName);
-    },
-
-    /**
-     * Changes badge color to unblocked.
-    */
-    unblockBadge: function(badge) {
-      badge.removeClass(Disconnect.blockedName);
-      badge.addClass(Disconnect.unblockedName);
-    },
-
-    /**
      * Refreshes the number of tracking requests.
      */
     updateBadge: function(button, badge, count, blocked, referrerUrl) {
@@ -89,8 +73,12 @@ if (typeof Disconnect == 'undefined') {
       if (!referrerUrl || currentUrl == referrerUrl) {
         count == 1 && Disconnect.clearBadge(button, badge);
         button.addClass(Disconnect.badgeName);
-        badge.val(count);
-        blocked ? Disconnect.blockBadge(badge) : Disconnect.unblockBadge(badge);
+        var unblockedName = Disconnect.unblockedName;
+        var blockedName = Disconnect.blockedName;
+        badge.
+          removeClass(blocked ? unblockedName : blockedName).
+          addClass(blocked ? blockedName : unblockedName).
+          val(count);
       }
     },
 
