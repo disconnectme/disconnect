@@ -616,8 +616,7 @@ if (!(paid()) && !(options.shownStats) &&
       options.shownStats = true;
     }
   });
-} 
-else if (deserialize(options.pwyw).bucket == 'remindme') {
+} else if (deserialize(options.pwyw).bucket == 'remindme') {
   if (Date.now() > 
         (parseInt(deserialize(options.pwyw).date) + dayMilliseconds * 2)) {
     showTryLater();
@@ -904,11 +903,11 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
       PWYW.bucket = request.bucket;
       options.pwyw = JSON.stringify(PWYW);
       sendResponse({});
-	} else if (request.getStats) {
-	  const TOTALS = getTotals();
-	  const DAYS = Math.round((Date.now() - 
-          options.firstUpdateTime)/dayMilliseconds);
-      sendResponse({totals: TOTALS, days: DAYS});
+    } else if (request.getStats) {
+      const TOTALS = getTotals();
+      const DAYS = Math.round((Date.now() - 
+            options.firstUpdateTime)/dayMilliseconds);
+        sendResponse({totals: TOTALS, days: DAYS});
     } else {
       if (SAFARI) {
         const BLOCKED = request.blocked;
