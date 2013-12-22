@@ -145,7 +145,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
 
   if (location.href.indexOf('disconnect.me') + 1) {
   	$(function() {
-      if (location.href.indexOf('/d2/welcome') + 1) {
+      if (location.href.indexOf('/d2/welcome-trial') + 1) {
         EXTENSION.sendRequest({getStats: true}, function(response) {
           var blocked = response.totals.blocked;
           var secured = response.totals.secured;
@@ -154,7 +154,7 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
           var timeSaved = (blocked * TRACKING_RESOURCE_TIME / 1000).toFixed(2);
           var bandwidthSaved = (blocked * TRACKING_RESOURCE_SIZE).toFixed(2);
 
-          $('#blockastat', disconnectAddCommas(blocked));
+          $('#blockastat', addCommas(blocked));
           $('#secured').attr('stat', secured);
           $('#time').attr('stat', timeSaved);
           $('#bandwidth').attr('stat', bandwidthSaved + "kb");
