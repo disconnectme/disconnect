@@ -24,7 +24,7 @@
 function getService(domain) { return servicePointer[domain]; }
 
 /* Sets the odometer clock on Disconnect stats pages. */
-function disconnectSetTime() {
+function setTime() {
 
   /* Converts a timestamp into a useable format. */
   function toHHMMSS(sec) {
@@ -70,7 +70,7 @@ function disconnectSetTime() {
 }
 
 /* Properly formats large numbers. */
-function disconnectAddCommas(nStr) {
+function addCommas(nStr) {
   nStr += '';
   x = nStr.split('.');
   x1 = x[0];
@@ -154,12 +154,12 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
           var timeSaved = (blocked * TRACKING_RESOURCE_TIME / 1000).toFixed(2);
           var bandwidthSaved = (blocked * TRACKING_RESOURCE_SIZE).toFixed(2);
 
-          $('#blocked').attr('stat', disconnectAddCommas(blocked));
+          $('#blockastat', disconnectAddCommas(blocked));
           $('#secured').attr('stat', secured);
           $('#time').attr('stat', timeSaved);
           $('#bandwidth').attr('stat', bandwidthSaved + "kb");
 
-          DisconnectSetTime();
+          setTime();
 
           var stats = document.getElementsByClassName('odometer');
 
