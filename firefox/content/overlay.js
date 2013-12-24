@@ -895,10 +895,7 @@ if (typeof Disconnect == 'undefined') {
       if (!previousBuild) {
         setTimeout(function() {
           toolbar.collapsed = false;
-          toolbar.insertItem(buttonName);
-          toolbar.setAttribute(currentSetName, toolbar.currentSet);
           document.persist(navbarName, 'collapsed');
-          document.persist(navbarName, currentSetName);
         }, 1000);
       }
 
@@ -918,14 +915,28 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        var currentSet = toolbar.getAttribute(currentSetName);
-        var items = currentSet.split(',');
-        var itemCount = items.length;
-        for (var i = 0; i < itemCount; i++)
-            if (items[i] == buttonName) delete items[i];
-        toolbar.setAttribute(currentSetName, items.join(','));
-        document.persist(navbarName, currentSetName);
-        toolbar.insertItem('disconnect-item');
+        var currentSet = toolbar.getAttribute(currentSetName).split(',');
+        var currentItem;
+        var defaultSet = [
+          'unified-back-forward-button',
+          'urlbar-container',
+          'reload-button',
+          'stop-button',
+          'search-container',
+          'webrtc-status-button',
+          'bookmarks-menu-button',
+          'downloads-button',
+          'home-button'
+        ];
+
+        for (var i = 0; currentItem = currentSet[i]; i++) {
+          var defaultItem = defaultSet[i];
+          if (!defaultItem || currentItem != defaultItem) break;
+        }
+
+        toolbar.insertItem(
+          'disconnect-item', document.getElementById(currentItem)
+        );
         toolbar.setAttribute(currentSetName, toolbar.currentSet);
         document.persist(navbarName, currentSetName);
       }
