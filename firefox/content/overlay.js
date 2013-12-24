@@ -878,7 +878,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 24;
+      var currentBuild = 25;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
