@@ -68,17 +68,21 @@ if (typeof Disconnect == 'undefined') {
      * Refreshes the number of tracking requests.
      */
     updateBadge: function(button, badge, count, blocked, referrerUrl) {
-      var currentUrl = gBrowser.contentWindow.location;
+      if (
+        Disconnect.preferences.getBoolPref(Disconnect.blockingIndicatedName)
+      ) {
+        var currentUrl = gBrowser.contentWindow.location;
 
-      if (!referrerUrl || currentUrl == referrerUrl) {
-        count == 1 && Disconnect.clearBadge(button, badge);
-        button.addClass(Disconnect.badgeName);
-        var unblockedName = Disconnect.unblockedName;
-        var blockedName = Disconnect.blockedName;
-        badge.
-          removeClass(blocked ? unblockedName : blockedName).
-          addClass(blocked ? blockedName : unblockedName).
-          val(count);
+        if (!referrerUrl || currentUrl == referrerUrl) {
+          count == 1 && Disconnect.clearBadge(button, badge);
+          button.addClass(Disconnect.badgeName);
+          var unblockedName = Disconnect.unblockedName;
+          var blockedName = Disconnect.blockedName;
+          badge.
+            removeClass(blocked ? unblockedName : blockedName).
+            addClass(blocked ? blockedName : unblockedName).
+            val(count);
+        }
       }
     },
 
@@ -871,6 +875,7 @@ if (typeof Disconnect == 'undefined') {
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
+      var blockingIndicatedName = this.blockingIndicatedName;
       var pwywName = 'pwyw';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
@@ -883,6 +888,7 @@ if (typeof Disconnect == 'undefined') {
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+      var blockingIndicated = preferences.getBoolPref(blockingIndicatedName);
       var toolbar = document.getElementById(navbarName);
       var date = new Date();
       var month = date.getMonth() + 1;
@@ -1101,9 +1107,13 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
-            
+      var counter =
+          document.
+            getElementsByClassName('disconnect-counter')[0].
+            getElementsByTagName('html:input')[0];
+
       os == 'WINNT' && button.add(badge).addClass('windows');
-      os == 'Linux' && button.add(badge).addClass('linux'); 
+      os == 'Linux' && button.add(badge).addClass('linux');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
@@ -1199,11 +1209,19 @@ if (typeof Disconnect == 'undefined') {
             find('.disconnect-badge')[0].
             alt = categoryNames[i];
       wifi.checked = browsingHardened;
+      counter.checked = blockingIndicated;
 
       wifi.addEventListener(clickName, function() {
         browsingHardened = !browsingHardened;
         preferences.setBoolPref(browsingHardenedName, browsingHardened);
         this.checked = browsingHardened;
+      }, false);
+
+      counter.addEventListener(clickName, function() {
+        blockingIndicated = !blockingIndicated;
+        preferences.setBoolPref(blockingIndicatedName, blockingIndicated);
+        this.checked = blockingIndicated;
+        blockingIndicated || clearBadge(button, badge);
       }, false);
 
       this.dashboard =
@@ -1607,6 +1625,7 @@ if (typeof Disconnect == 'undefined') {
       'disconnect-ix',
       'disconnect-x'
     ],
+    blockingIndicatedName: 'blockingIndicated',
     whitelistName: 'whitelist',
     blacklistName: 'blacklist',
     contentName: 'Content',

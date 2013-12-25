@@ -151,13 +151,10 @@
                   <html:input type="checkbox"/>
                 </html:td>
                 <html:td class="disconnect-wifi">Secure Wi-Fi</html:td>
-                <html:td class="disconnect-search" title="Coming soon">
-                  <html:input type="checkbox" disabled="disabled"/>
+                <html:td class="disconnect-counter">
+                  <html:input type="checkbox"/>
                 </html:td>
-                <html:td
-                  class="disconnect-search disconnect-disabled"
-                  title="Coming soon"
-                >Secure search</html:td>
+                <html:td class="disconnect-counter">Show counter</html:td>
               </html:tr>
             </html:table>
             <html:table id="disconnect-dashboard">

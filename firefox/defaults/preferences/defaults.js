@@ -33,6 +33,7 @@ pref('extensions.disconnect.blacklist', '{}');
 pref('extensions.disconnect.pwyw', '{}');
 pref('extensions.disconnect.searchHardened', false);
 pref('extensions.disconnect.browsingHardened', true);
+pref('extensions.disconnect.blockingIndicated', true);
 pref('extensions.disconnect.blockedRequests', '{}');
 pref('extensions.disconnect.hardenedRequests', '{}');
 pref('extensions.disconnect.blockingIndicated', true);
