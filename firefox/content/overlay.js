@@ -1061,8 +1061,18 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
+      if (!previousBuild || previousBuild < currentBuild) {
+        var easyjetDomain = 'easyjet.com';
+        var domainWhitelist =
+            whitelist[easyjetDomain] || (whitelist[easyjetDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
+      }
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {

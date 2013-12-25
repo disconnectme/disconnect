@@ -533,8 +533,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const EASYJET_DOMAIN = 'easyjet.com';
+  var domainWhitelist =
+      whitelist[EASYJET_DOMAIN] || (whitelist[EASYJET_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
+}
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
