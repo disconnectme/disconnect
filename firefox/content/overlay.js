@@ -78,10 +78,14 @@ if (typeof Disconnect == 'undefined') {
           button.addClass(Disconnect.badgeName);
           var unblockedName = Disconnect.unblockedName;
           var blockedName = Disconnect.blockedName;
-          badge.
-            removeClass(blocked ? unblockedName : blockedName).
-            addClass(blocked ? blockedName : unblockedName).
-            val(count);
+          var wideName = 'disconnect-wide';
+          var narrow = count < 100;
+          badge.removeClass(
+            (blocked ? unblockedName : blockedName) + ' ' + wideName
+          ).addClass(
+            (blocked ? blockedName : unblockedName) +
+                (narrow ? '' : ' ' + wideName)
+          ).val(narrow ? count : '99+');
         }
       }
     },

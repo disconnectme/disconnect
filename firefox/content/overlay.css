@@ -388,6 +388,11 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   visibility: visible
 }
 
+.disconnect-wide#disconnect-badge {
+  padding: 3px 0 1px;
+  font-size: 7px
+}
+
 #disconnect-list {
   display: block;
   margin-right: 1px;
