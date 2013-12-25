@@ -1209,13 +1209,14 @@ if (typeof Disconnect == 'undefined') {
             find('.disconnect-badge')[0].
             alt = categoryNames[i];
       wifi.checked = browsingHardened;
-      counter.checked = blockingIndicated;
 
       wifi.addEventListener(clickName, function() {
         browsingHardened = !browsingHardened;
         preferences.setBoolPref(browsingHardenedName, browsingHardened);
         this.checked = browsingHardened;
       }, false);
+
+      counter.checked = blockingIndicated;
 
       counter.addEventListener(clickName, function() {
         blockingIndicated = !blockingIndicated;
