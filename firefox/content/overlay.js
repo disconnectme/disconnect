@@ -1070,6 +1070,14 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
+        var playtvDomain = 'playtv.fr';
+        domainWhitelist =
+            whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Twitter = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
