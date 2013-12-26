@@ -309,7 +309,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 65;
+const CURRENT_BUILD = 66;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -575,6 +575,25 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
   advertisingWhitelist.services.RichRelevance = true;
 
   options.whitelist = JSON.stringify(whitelist);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
+  const EASYJET_DOMAIN = 'easyjet.com';
+  var domainWhitelist =
+      whitelist[EASYJET_DOMAIN] || (whitelist[EASYJET_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const PLAYTV_DOMAIN = 'playtv.fr';
+  domainWhitelist =
+      whitelist[PLAYTV_DOMAIN] || (whitelist[PLAYTV_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Twitter = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)

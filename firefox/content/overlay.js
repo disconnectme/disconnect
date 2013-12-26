@@ -68,17 +68,25 @@ if (typeof Disconnect == 'undefined') {
      * Refreshes the number of tracking requests.
      */
     updateBadge: function(button, badge, count, blocked, referrerUrl) {
-      var currentUrl = gBrowser.contentWindow.location;
+      if (
+        Disconnect.preferences.getBoolPref(Disconnect.blockingIndicatedName)
+      ) {
+        var currentUrl = gBrowser.contentWindow.location;
 
-      if (!referrerUrl || currentUrl == referrerUrl) {
-        count == 1 && Disconnect.clearBadge(button, badge);
-        button.addClass(Disconnect.badgeName);
-        var unblockedName = Disconnect.unblockedName;
-        var blockedName = Disconnect.blockedName;
-        badge.
-          removeClass(blocked ? unblockedName : blockedName).
-          addClass(blocked ? blockedName : unblockedName).
-          val(count);
+        if (!referrerUrl || currentUrl == referrerUrl) {
+          count == 1 && Disconnect.clearBadge(button, badge);
+          button.addClass(Disconnect.badgeName);
+          var unblockedName = Disconnect.unblockedName;
+          var blockedName = Disconnect.blockedName;
+          var wideName = 'disconnect-wide';
+          var narrow = count < 100;
+          badge.removeClass(
+            (blocked ? unblockedName : blockedName) + ' ' + wideName
+          ).addClass(
+            (blocked ? blockedName : unblockedName) +
+                (narrow ? '' : ' ' + wideName)
+          ).val(narrow ? count : '99+');
+        }
       }
     },
 
@@ -871,6 +879,7 @@ if (typeof Disconnect == 'undefined') {
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
+      var blockingIndicatedName = this.blockingIndicatedName;
       var pwywName = 'pwyw';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
@@ -878,11 +887,12 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 24;
+      var currentBuild = 25;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+      var blockingIndicated = preferences.getBoolPref(blockingIndicatedName);
       var toolbar = document.getElementById(navbarName);
       var date = new Date();
       var month = date.getMonth() + 1;
@@ -895,10 +905,7 @@ if (typeof Disconnect == 'undefined') {
       if (!previousBuild) {
         setTimeout(function() {
           toolbar.collapsed = false;
-          toolbar.insertItem(buttonName);
-          toolbar.setAttribute(currentSetName, toolbar.currentSet);
           document.persist(navbarName, 'collapsed');
-          document.persist(navbarName, currentSetName);
         }, 1000);
       }
 
@@ -918,14 +925,28 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        var currentSet = toolbar.getAttribute(currentSetName);
-        var items = currentSet.split(',');
-        var itemCount = items.length;
-        for (var i = 0; i < itemCount; i++)
-            if (items[i] == buttonName) delete items[i];
-        toolbar.setAttribute(currentSetName, items.join(','));
-        document.persist(navbarName, currentSetName);
-        toolbar.insertItem('disconnect-item');
+        var currentSet = toolbar.getAttribute(currentSetName).split(',');
+        var currentItem;
+        var defaultSet = [
+          'unified-back-forward-button',
+          'urlbar-container',
+          'reload-button',
+          'stop-button',
+          'search-container',
+          'webrtc-status-button',
+          'bookmarks-menu-button',
+          'downloads-button',
+          'home-button'
+        ];
+
+        for (var i = 0; currentItem = currentSet[i]; i++) {
+          var defaultItem = defaultSet[i];
+          if (!defaultItem || currentItem != defaultItem) break;
+        }
+
+        toolbar.insertItem(
+          'disconnect-item', document.getElementById(currentItem)
+        );
         toolbar.setAttribute(currentSetName, toolbar.currentSet);
         document.persist(navbarName, currentSetName);
       }
@@ -1044,8 +1065,26 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
+      if (!previousBuild || previousBuild < currentBuild) {
+        var easyjetDomain = 'easyjet.com';
+        var domainWhitelist =
+            whitelist[easyjetDomain] || (whitelist[easyjetDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var playtvDomain = 'playtv.fr';
+        domainWhitelist =
+            whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Twitter = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
+      }
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
@@ -1090,9 +1129,13 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-wifi')[0].
             getElementsByTagName('html:input')[0];
-            
+      var counter =
+          document.
+            getElementsByClassName('disconnect-counter')[0].
+            getElementsByTagName('html:input')[0];
+
       os == 'WINNT' && button.add(badge).addClass('windows');
-      os == 'Linux' && button.add(badge).addClass('linux'); 
+      os == 'Linux' && button.add(badge).addClass('linux');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
@@ -1193,6 +1236,15 @@ if (typeof Disconnect == 'undefined') {
         browsingHardened = !browsingHardened;
         preferences.setBoolPref(browsingHardenedName, browsingHardened);
         this.checked = browsingHardened;
+      }, false);
+
+      counter.checked = blockingIndicated;
+
+      counter.addEventListener(clickName, function() {
+        blockingIndicated = !blockingIndicated;
+        preferences.setBoolPref(blockingIndicatedName, blockingIndicated);
+        this.checked = blockingIndicated;
+        blockingIndicated || clearBadge(button, badge);
       }, false);
 
       this.dashboard =
@@ -1596,6 +1648,7 @@ if (typeof Disconnect == 'undefined') {
       'disconnect-ix',
       'disconnect-x'
     ],
+    blockingIndicatedName: 'blockingIndicated',
     whitelistName: 'whitelist',
     blacklistName: 'blacklist',
     contentName: 'Content',

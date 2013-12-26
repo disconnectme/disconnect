@@ -1429,6 +1429,14 @@ var whitelistingClicked = 0;
             append('svg:svg').
             attr('width', 198).
             attr('height', 40);
+      const PAID_BUCKETS = ['paid-cc', 'paid-paypal', 'paid-bitcoin'];
+      const PAID_BUCKET_COUNT = PAID_BUCKETS.length;
+      const BUCKET = deserialize(options.pwyw).bucket;
+      for (var i = 0; i < PAID_BUCKET_COUNT; i++)
+          if (BUCKET == PAID_BUCKETS[i]) {
+            $('#support').hide();
+            break;
+          }
 
       $('.sharing img').off('mouseenter').mouseenter(function() {
         this.src = this.src.replace(EXTENSION, HIGHLIGHTED + EXTENSION);
