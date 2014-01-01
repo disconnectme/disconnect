@@ -1065,7 +1065,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 24) {
         var easyjetDomain = 'easyjet.com';
         var domainWhitelist =
             whitelist[easyjetDomain] || (whitelist[easyjetDomain] = {});
@@ -1082,6 +1082,27 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Twitter = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var subaruDomain = 'subaru.com';
+        var domainWhitelist =
+            whitelist[subaruDomain] || (whitelist[subaruDomain] = {});
+        var analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        analyticsWhitelist.services['Mongoose Metrics'] = true;
+
+        var fordDomain = 'ford.com';
+        domainWhitelist =
+            whitelist[fordDomain] || (whitelist[fordDomain] = {});
+        advertisingWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        advertisingWhitelist.services.Adobe = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
