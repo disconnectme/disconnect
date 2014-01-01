@@ -549,6 +549,26 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Twitter = true;
   options.whitelist = JSON.stringify(whitelist);
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const SUBARU_DOMAIN = 'subaru.com';
+  var domainWhitelist =
+      whitelist[SUBARU_DOMAIN] || (whitelist[SUBARU_DOMAIN] = {});
+  var analyticsWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  analyticsWhitelist.services['Mongoose Metrics'] = true;
+
+  const FORD_DOMAIN = 'ford.com';
+  var domainWhitelist =
+      whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
+  var advertisingWhitelist =
+      domainWhitelist.Advertising ||
+          (domainWhitelist.Advertising = {whitelisted: false, services: {}});
+  advertisingWhitelist.services.Adobe = true;
+
+  options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
 }
 
