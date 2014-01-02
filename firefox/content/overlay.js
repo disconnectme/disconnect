@@ -887,7 +887,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 25;
+      var currentBuild = 26;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1065,7 +1065,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 24) {
+      if (!previousBuild || previousBuild < 25) {
         var easyjetDomain = 'easyjet.com';
         var domainWhitelist =
             whitelist[easyjetDomain] || (whitelist[easyjetDomain] = {});
@@ -1086,8 +1086,17 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < currentBuild) {
-        var subaruDomain = 'subaru.com';
+        var fordDomain = 'ford.com';
         var domainWhitelist =
+            whitelist[fordDomain] || (whitelist[fordDomain] = {});
+        var advertisingWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        advertisingWhitelist.services.Adobe = true;
+
+        var subaruDomain = 'subaru.com';
+        domainWhitelist =
             whitelist[subaruDomain] || (whitelist[subaruDomain] = {});
         var analyticsWhitelist =
             domainWhitelist.Analytics || (
@@ -1095,14 +1104,6 @@ if (typeof Disconnect == 'undefined') {
             );
         analyticsWhitelist.services['Mongoose Metrics'] = true;
 
-        var fordDomain = 'ford.com';
-        domainWhitelist =
-            whitelist[fordDomain] || (whitelist[fordDomain] = {});
-        advertisingWhitelist =
-            domainWhitelist.Advertising || (
-              domainWhitelist.Advertising = {whitelisted: false, services: {}}
-            );
-        advertisingWhitelist.services.Adobe = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
