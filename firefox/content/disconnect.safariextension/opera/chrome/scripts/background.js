@@ -265,7 +265,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 66;
+const CURRENT_BUILD = 67;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -552,21 +552,19 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  const SUBARU_DOMAIN = 'subaru.com';
-  var domainWhitelist =
-      whitelist[SUBARU_DOMAIN] || (whitelist[SUBARU_DOMAIN] = {});
-  var analyticsWhitelist =
-      domainWhitelist.Analytics ||
-          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
-  analyticsWhitelist.services['Mongoose Metrics'] = true;
-
   const FORD_DOMAIN = 'ford.com';
-  var domainWhitelist =
-      whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
+  var domainWhitelist = whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
   var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.Adobe = true;
+
+  const SUBARU_DOMAIN = 'subaru.com';
+  domainWhitelist = whitelist[SUBARU_DOMAIN] || (whitelist[SUBARU_DOMAIN] = {});
+  var analyticsWhitelist =
+      domainWhitelist.Analytics ||
+          (domainWhitelist.Analytics = {whitelisted: false, services: {}});
+  analyticsWhitelist.services['Mongoose Metrics'] = true;
 
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
