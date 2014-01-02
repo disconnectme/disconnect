@@ -1104,6 +1104,15 @@ if (typeof Disconnect == 'undefined') {
             );
         analyticsWhitelist.services['Mongoose Metrics'] = true;
 
+        var vimeoDomain = 'vimeo.com';
+        domainWhitelist =
+            whitelist[vimeoDomain] || (whitelist[vimeoDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }

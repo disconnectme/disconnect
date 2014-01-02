@@ -566,6 +566,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   analyticsWhitelist.services['Mongoose Metrics'] = true;
 
+  const VIMEO_DOMAIN = 'vimeo.com';
+  domainWhitelist = whitelist[VIMEO_DOMAIN] || (whitelist[VIMEO_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+
   options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
 }
