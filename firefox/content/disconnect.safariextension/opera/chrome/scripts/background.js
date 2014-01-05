@@ -552,8 +552,16 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const ALLOCINE_DOMAIN = 'allocine.fr';
+  var domainWhitelist =
+      whitelist[ALLOCINE_DOMAIN] || (whitelist[ALLOCINE_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Facebook = true;
+
   const FORD_DOMAIN = 'ford.com';
-  var domainWhitelist = whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
+  domainWhitelist = whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
   var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
@@ -568,7 +576,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 
   const VIMEO_DOMAIN = 'vimeo.com';
   domainWhitelist = whitelist[VIMEO_DOMAIN] || (whitelist[VIMEO_DOMAIN] = {});
-  var disconnectWhitelist =
+  disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;

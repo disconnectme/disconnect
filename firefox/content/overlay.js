@@ -1086,8 +1086,17 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < currentBuild) {
-        var fordDomain = 'ford.com';
+        var allocineDomain = 'allocine.fr';
         var domainWhitelist =
+            whitelist[allocineDomain] || (whitelist[allocineDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Facebook = true;
+
+        var fordDomain = 'ford.com';
+        domainWhitelist =
             whitelist[fordDomain] || (whitelist[fordDomain] = {});
         var advertisingWhitelist =
             domainWhitelist.Advertising || (
@@ -1107,7 +1116,7 @@ if (typeof Disconnect == 'undefined') {
         var vimeoDomain = 'vimeo.com';
         domainWhitelist =
             whitelist[vimeoDomain] || (whitelist[vimeoDomain] = {});
-        var disconnectWhitelist =
+        disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
