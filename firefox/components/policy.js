@@ -1,7 +1,7 @@
 /*
   An XPCOM component that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -35,12 +35,6 @@ Disconnect.prototype = {
   initialize: (
     Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm'),
     Components.utils['import']('resource://disconnect/state.js', Disconnect),
-    Components.
-      classes['@mozilla.org/moz/jssubscript-loader;1'].
-      getService(Components.interfaces.mozIJSSubScriptLoader).
-      loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/sjcl/sjcl.js', Disconnect
-      ),
     Components.
       classes['@mozilla.org/moz/jssubscript-loader;1'].
       getService(Components.interfaces.mozIJSSubScriptLoader).

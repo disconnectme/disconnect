@@ -1,7 +1,7 @@
 /*
   A script that determines whether a domain name belongs to a third party.
 
-  Copyright 2012, 2013 Disconnect, Inc.
+  Copyright 2012-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -27,10 +27,7 @@ function deserialize(object) {
 
 /* Formats the blacklist. */
 function processServices(data) {
-  data =
-      deserialize(
-        sjcl.decrypt('be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data) || '{}'
-      );
+  data = deserialize(data || '{}');
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -79,12 +76,15 @@ function fetchServices() {
           var updatedThisMonth =
               runtime - preferences.getCharPref('firstUpdateThisMonthTime') <
                   30 * dayMilliseconds;
-          xhr.open('GET', 'https://services.disconnect.me/disconnect.json?' + [
-            'build=' + (preferences.getIntPref('firstBuild') || ''),
-            'first_update=' + firstUpdate,
-            'updated_this_week=' + updatedThisWeek,
-            'updated_this_month=' + updatedThisMonth
-          ].join('&'));
+          xhr.open(
+            'GET',
+            'https://services.disconnect.me/disconnect-plaintext.json?' + [
+              'build=' + (preferences.getIntPref('firstBuild') || ''),
+              'first_update=' + firstUpdate,
+              'updated_this_week=' + updatedThisWeek,
+              'updated_this_month=' + updatedThisMonth
+            ].join('&')
+          );
 
           xhr.onload = function() {
             if (xhr.status == 200) {

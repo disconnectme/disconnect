@@ -25,7 +25,6 @@
       "chrome/scripts/vendor/sitename/alttlds.js",
       "chrome/scripts/vendor/sitename/tldpatch.js",
       "chrome/scripts/vendor/sitename/sitename.js",
-      "chrome/scripts/vendor/sjcl/sjcl.js",
       "chrome/scripts/data.js",
       "chrome/scripts/services.js",
       "chrome/scripts/background.js"
