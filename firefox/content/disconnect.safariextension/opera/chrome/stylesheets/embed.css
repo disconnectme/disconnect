@@ -339,29 +339,41 @@
 
 #disconnect-data { height: 44px }
 
-#disconnect-tooltips { margin-top: -66px }
+#disconnect-list #disconnect-tooltips { margin-top: -66px }
 
-#disconnect-tooltips td {
+#disconnect-list #disconnect-tooltips td {
   width: 65px;
   height: 66px
 }
 
-#disconnect-tooltips td:after {
+#disconnect-list #disconnect-tooltips td:after {
   margin-top: 1px;
   font-size: 8px
 }
 
-#disconnect-tooltips .disconnect-speed:before { margin-left: -5px }
+#disconnect-list #disconnect-tooltips .disconnect-speed:before {
+  margin-left: -5px
+}
 
-#disconnect-tooltips .disconnect-speed:after { margin-left: -27px }
+#disconnect-list #disconnect-tooltips .disconnect-speed:after {
+  margin-left: -27px
+}
 
-#disconnect-tooltips .disconnect-bandwidth:before { margin-left: -6px }
+#disconnect-list #disconnect-tooltips .disconnect-bandwidth:before {
+  margin-left: -6px
+}
 
-#disconnect-tooltips .disconnect-bandwidth:after { margin-left: -50px }
+#disconnect-list #disconnect-tooltips .disconnect-bandwidth:after {
+  margin-left: -50px
+}
 
-#disconnect-tooltips .disconnect-security:before { margin-left: -7px }
+#disconnect-list #disconnect-tooltips .disconnect-security:before {
+  margin-left: -7px
+}
 
-#disconnect-tooltips .disconnect-security:after { margin-left: -77px }
+#disconnect-list #disconnect-tooltips .disconnect-security:after {
+  margin-left: -77px
+}
 
 #disconnect-graph {
   display: none;

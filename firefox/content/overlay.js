@@ -640,31 +640,37 @@ if (typeof Disconnect == 'undefined') {
         var $ = Disconnect.$;
         var dashboardCounts = Disconnect.dashboardCounts;
 
-        $('#disconnect-tooltips .disconnect-speed').
-          attr('data-hint', function() {
-            var tabDashboard = dashboardCounts[url] || {};
-            var blockedCount = tabDashboard.blocked || 0;
-            return (
-              (blockedCount / (tabDashboard.total || 0) || 0) *
-                  Disconnect.trackingResourceTime / Disconnect.resourceTime *
-                      100
-            ).toFixed() + '% (' + (
-              blockedCount * Disconnect.trackingResourceTime / 1000
-            ).toFixed(1) + 's) faster';
-          });
+        $(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-speed')[0]
+        ).attr('data-hint', function() {
+          var tabDashboard = dashboardCounts[url] || {};
+          var blockedCount = tabDashboard.blocked || 0;
+          return (
+            (blockedCount / (tabDashboard.total || 0) || 0) *
+                Disconnect.trackingResourceTime / Disconnect.resourceTime *
+                    100
+          ).toFixed() + '% (' + (
+            blockedCount * Disconnect.trackingResourceTime / 1000
+          ).toFixed(1) + 's) faster';
+        });
 
-        $('#disconnect-tooltips .disconnect-bandwidth').
-          attr('data-hint', function() {
-            var tabDashboard = dashboardCounts[url] || {};
-            var blockedCount = tabDashboard.blocked || 0;
-            return (
-              (blockedCount / (tabDashboard.total || 0) || 0) *
-                  Disconnect.trackingResourceSize / Disconnect.resourceSize *
-                      100
-            ).toFixed() + '% (' + (
-              blockedCount * Disconnect.trackingResourceSize
-            ).toFixed() + 'K) less data';
-          });
+        $(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-bandwidth')[0]
+        ).attr('data-hint', function() {
+          var tabDashboard = dashboardCounts[url] || {};
+          var blockedCount = tabDashboard.blocked || 0;
+          return (
+            (blockedCount / (tabDashboard.total || 0) || 0) *
+                Disconnect.trackingResourceSize / Disconnect.resourceSize *
+                    100
+          ).toFixed() + '% (' + (
+            blockedCount * Disconnect.trackingResourceSize
+          ).toFixed() + 'K) less data';
+        });
       }
     },
 
@@ -688,14 +694,16 @@ if (typeof Disconnect == 'undefined') {
           attr('height', height).
           attr('fill', '#00bfff');
 
-        Disconnect.
-          $('#disconnect-tooltips .disconnect-security').
-          attr('data-hint', function() {
-            var securedCount =
-                (Disconnect.dashboardCounts[url] || {}).secured || 0;
-            return securedCount + ' secured request' +
-                (securedCount - 1 ? 's' : '');
-          });
+        Disconnect.$(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-security')[0]
+        ).attr('data-hint', function() {
+          var securedCount =
+              (Disconnect.dashboardCounts[url] || {}).secured || 0;
+          return securedCount + ' secured request' +
+              (securedCount - 1 ? 's' : '');
+        });
       }
     },
 
@@ -1203,7 +1211,7 @@ if (typeof Disconnect == 'undefined') {
         }, count * 100);
 
         updateServices(data, get(data));
-        var tabDashboard = Disconnect.dashboardCounts[data] || {};
+        var tabDashboard = (Disconnect.dashboardCounts || {})[data] || {};
         var blockedCount = tabDashboard.blocked || 0;
         var totalCount = tabDashboard.total || 0;
         var timeout = Disconnect.timeouts[data] || 0;

@@ -20,9 +20,7 @@
 
     Brian Kennish <byoogle@gmail.com>
 -->
-<?xml-stylesheet
-  href="chrome://disconnect/skin/stylesheets/vendor/hint/hint.css"
-?>
+<?xml-stylesheet href="hint.css"?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
 <overlay
