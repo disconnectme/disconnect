@@ -1,7 +1,7 @@
 #!/bin/bash
 # A script that packages Disconnect for distribution.
 #
-# Copyright 2013 Disconnect, Inc.
+# Copyright 2014 Disconnect, Inc.
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -45,6 +45,7 @@ content/disconnect.safariextension/opera/chrome/stylesheets/chrollusion/\* \
 content/disconnect.safariextension/opera/chrome/stylesheets/content.css \
 content/disconnect.safariextension/opera/chrome/stylesheets/legacy.css \
 content/disconnect.safariextension/opera/chrome/stylesheets/popup.css \
+content/disconnect.safariextension/opera/chrome/stylesheets/vendor/hint/\* \
 content/disconnect.safariextension/opera/chrome/stylesheets/vendor/tipped/\*
 cd content/disconnect.safariextension/opera
 zip -r ../../../../builds/disconnect chrome -x \*.DS_Store
