@@ -585,8 +585,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const FOSSIL_DOMAIN = 'fossil.com';
+  var domainWhitelist =
+      whitelist[FOSSIL_DOMAIN] || (whitelist[FOSSIL_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
+}
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {

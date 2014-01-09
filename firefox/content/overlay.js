@@ -1112,6 +1112,15 @@ if (typeof Disconnect == 'undefined') {
             );
         advertisingWhitelist.services.Adobe = true;
 
+        var fossilDomain = 'fossil.com';
+        domainWhitelist =
+            whitelist[fossilDomain] || (whitelist[fossilDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
         var subaruDomain = 'subaru.com';
         domainWhitelist =
             whitelist[subaruDomain] || (whitelist[subaruDomain] = {});
