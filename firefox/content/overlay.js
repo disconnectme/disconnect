@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 26;
+      var currentBuild = 27;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1082,18 +1082,10 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
-        var playtvDomain = 'playtv.fr';
-        domainWhitelist =
-            whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
-        disconnectWhitelist =
-            domainWhitelist.Disconnect || (
-              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
-            );
-        disconnectWhitelist.services.Twitter = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 26) {
         var allocineDomain = 'allocine.fr';
         var domainWhitelist =
             whitelist[allocineDomain] || (whitelist[allocineDomain] = {});
@@ -1139,6 +1131,19 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
 
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var playtvDomain = 'playtv.fr';
+        var domainWhitelist =
+            whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        disconnectWhitelist.services.Twitter = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }

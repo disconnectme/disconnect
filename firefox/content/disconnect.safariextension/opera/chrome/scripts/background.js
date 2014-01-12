@@ -541,13 +541,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const PLAYTV_DOMAIN = 'playtv.fr';
-  domainWhitelist =
-      whitelist[PLAYTV_DOMAIN] || (whitelist[PLAYTV_DOMAIN] = {});
-  disconnectWhitelist =
-      domainWhitelist.Disconnect ||
-          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
-  disconnectWhitelist.services.Twitter = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
@@ -566,6 +559,15 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.Adobe = true;
+
+  const PLAYTV_DOMAIN = 'playtv.fr';
+  domainWhitelist =
+      whitelist[PLAYTV_DOMAIN] || (whitelist[PLAYTV_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  disconnectWhitelist.services.Twitter = true;
 
   const SUBARU_DOMAIN = 'subaru.com';
   domainWhitelist = whitelist[SUBARU_DOMAIN] || (whitelist[SUBARU_DOMAIN] = {});
