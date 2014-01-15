@@ -81,10 +81,6 @@ toolbar[iconsize=small]#TabsToolbar[mode=icons]
   -moz-image-region: rect(48px, 24px, 72px, 0)
 }
 
-.linux.disconnect-badge#disconnect-button {
-  -moz-image-region: rect(24px, 24px, 48px, 0)
-}
-
 toolbar[iconsize=small] .disconnect-badge#disconnect-button {
   -moz-image-region: rect(32px, 16px, 48px, 0)
 }
@@ -111,7 +107,13 @@ toolbar[iconsize=small]#nav-bar[mode=full]
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
 .windows.disconnect-badge#disconnect-button {
-  -moz-image-region: rect(16px, 16px, 32px, 0)
+  -moz-image-region: rect(32px, 16px, 48px, 0)
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.linux.disconnect-badge#disconnect-button {
+  -moz-image-region: rect(32px, 16px, 48px, 0)
 }
 
 #PersonalToolbar[mode=icons] .disconnect-badge#disconnect-button {
@@ -151,78 +153,80 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #disconnect-button .toolbarbutton-menu-dropmarker { display: none }
 
+#nav-bar[mode=icons] .windows#disconnect-button .toolbarbutton-menu-dropmarker {
+  display: -moz-box
+}
+
 #disconnect-item vbox { width: 4px }
 
 #disconnect-badge {
-  margin: 14px 0 -3px -14px;
-  padding-right: 2px;
-  padding-left: 2px;
-  height: 12px;
+  margin: 16px 4px 0 -14px;
+  padding-right: 1px;
+  padding-left: 1px;
   text-align: center;
-  font: xx-small 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font: 7px 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: white;
   visibility: hidden
 }
 
 #navigator-toolbox[mode=icons] #toolbar-menubar #disconnect-badge {
   margin-top: 9px;
-  margin-right: -3px;
+  margin-right: 1px;
   margin-left: -11px
 }
 
 #navigator-toolbox[mode=icons] #toolbar-menubar .linux#disconnect-badge {
   margin-top: 12px;
-  margin-right: -1px;
+  margin-right: 5px;
   margin-left: -15px
 }
 
 #navigator-toolbox[mode=text] #toolbar-menubar #disconnect-badge {
   margin-top: 9px;
-  margin-right: -9px;
   margin-left: -5px
 }
 
 #navigator-toolbox[mode=text] #toolbar-menubar .linux#disconnect-badge {
-  margin-top: 9px;
-  margin-right: -9px;
+  margin-top: 13px;
   margin-left: -9px
 }
 
 #navigator-toolbox[mode=full] #toolbar-menubar #disconnect-badge {
   margin-top: 9px;
-  margin-right: 17px;
+  margin-right: 22px;
   margin-left: -32px
 }
 
 #navigator-toolbox[mode=full] #toolbar-menubar .linux#disconnect-badge {
   margin-top: 12px;
-  margin-right: 26px;
-  margin-left: -39px
+  margin-right: 33px;
+  margin-left: -43px
 }
 
 #TabsToolbar[mode=icons] #disconnect-badge { margin-top: 10px }
 
 #TabsToolbar[mode=icons] .windows#disconnect-badge {
   margin-top: 11px;
-  margin-right: -3px;
+  margin-right: 1px;
   margin-left: -11px
 }
 
 #TabsToolbar[mode=icons] .linux#disconnect-badge {
-  margin-left: -15px;
   margin-top: 11px;
+  margin-right: 5px;
+  margin-left: -15px
 }
 
 #nav-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 21px;
-  margin-right: 17px;
-  margin-left: -31px
+  margin-right: 18px;
+  margin-left: -28px
 }
 
 #nav-bar[mode=icons] .linux#disconnect-badge {
-  margin-top: 15px;
-  margin-right: 5px;
-  margin-left: -19px
+  margin-top: 24px;
+  margin-right: 8px;
+  margin-left: -18px
 }
 
 #navigator-toolbox[iconsize=small] #nav-bar[mode=icons] #disconnect-badge {
@@ -231,13 +235,14 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
-.windows#disconnect-badge { margin: 11px -3px -7px -11px }
+.windows#disconnect-badge { margin: 16px 10px -12px -20px }
 
 #navigator-toolbox[iconsize=small]
 #nav-bar[mode=icons]
 .linux#disconnect-badge {
-  margin-top: 13px;
-  margin-left: -15px
+  margin-top: 18px;
+  margin-right: 4px;
+  margin-left: -14px
 }
 
 #nav-bar[mode=text] #disconnect-badge {
@@ -251,26 +256,26 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 }
 
 #nav-bar[mode=text] .linux#disconnect-badge {
-  margin-top: 9px;
+  margin-top: 13px;
   margin-left: -7px
 }
 
 #nav-bar[mode=full] #disconnect-badge {
   margin-top: 13px;
-  margin-right: 14px;
+  margin-right: 20px;
   margin-left: -30px
 }
 
 #nav-bar[mode=full] .windows#disconnect-badge {
   margin-top: 11px;
-  margin-right: 17px;
+  margin-right: 22px;
   margin-left: -32px
 }
 
 #nav-bar[mode=full] .linux#disconnect-badge {
-  margin-top: 15px;
-  margin-right: 26px;
-  margin-left: -39px
+  margin-top: 24px;
+  margin-right: 33px;
+  margin-left: -43px
 }
 
 #navigator-toolbox[iconsize=small] #nav-bar[mode=full] .linux#disconnect-badge {
@@ -281,12 +286,13 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #PersonalToolbar[mode=icons] .windows#disconnect-badge {
   margin-top: 9px;
-  margin-right: -3px;
+  margin-right: 1px;
   margin-left: -11px
 }
 
 #PersonalToolbar[mode=icons] .linux#disconnect-badge {
   margin-top: 12px;
+  margin-right: 5px;
   margin-left: -15px
 }
 
@@ -301,46 +307,49 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 }
 
 #PersonalToolbar[mode=text] .linux#disconnect-badge {
-  margin-top: 8px;
+  margin-top: 12px;
   margin-left: -7px
 }
 
 #PersonalToolbar[mode=full] #disconnect-badge {
   margin-top: 13px;
-  margin-right: 15px;
+  margin-right: 20px;
   margin-left: -30px
 }
 
 #PersonalToolbar[mode=full] .windows#disconnect-badge {
   margin-top: 9px;
-  margin-right: 17px;
+  margin-right: 22px;
   margin-left: -32px
 }
 
 #PersonalToolbar[mode=full] .linux#disconnect-badge {
   margin-top: 12px;
-  margin-right: 26px;
-  margin-left: -39px
+  margin-right: 33px;
+  margin-left: -43px
 }
 
 #CustomizeToolbarWindow #disconnect-badge { margin-top: 33px }
 
 #CustomizeToolbarWindow .windows#disconnect-badge {
   margin-top: 32px;
-  margin-right: -3px;
+  margin-right: 1px;
   margin-left: -11px
 }
+
+#CustomizeToolbarWindow .linux#disconnect-badge { margin-top: 32px }
 
 #addon-bar[mode=icons] #disconnect-badge { margin-top: 9px }
 
 #addon-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 8px;
-  margin-right: -3px;
+  margin-right: 1px;
   margin-left: -11px
 }
 
 #addon-bar[mode=icons] .linux#disconnect-badge {
   margin-top: 11px;
+  margin-right: 5px;
   margin-left: -15px
 }
 
@@ -356,26 +365,26 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 }
 
 #addon-bar[mode=text] .linux#disconnect-badge {
-  margin-top: 9px;
+  margin-top: 13px;
   margin-left: -10px
 }
 
 #addon-bar[mode=full] #disconnect-badge {
   margin-top: 13px;
-  margin-right: 14px;
+  margin-right: 19px;
   margin-left: -29px
 }
 
 #addon-bar[mode=full] .windows#disconnect-badge {
   margin-top: 6px;
-  margin-right: 17px;
+  margin-right: 22px;
   margin-left: -32px
 }
 
 #addon-bar[mode=full] .linux#disconnect-badge {
   margin-top: 12px;
-  margin-right: 26px;
-  margin-left: -39px
+  margin-right: 33px;
+  margin-left: -43px
 }
 
 .disconnect-blocked#disconnect-badge {
@@ -389,8 +398,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 }
 
 .disconnect-wide#disconnect-badge {
-  padding: 3px 0 1px;
-  font-size: 7px
+  padding: 2px 0 1px;
+  font-size: 5px
 }
 
 #disconnect-list {
