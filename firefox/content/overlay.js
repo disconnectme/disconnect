@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 27;
+      var currentBuild = 28;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist =
           JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1134,7 +1134,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 27) {
         var playtvDomain = 'playtv.fr';
         var domainWhitelist =
             whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
@@ -1145,8 +1145,10 @@ if (typeof Disconnect == 'undefined') {
         disconnectWhitelist.services.Google = true;
         disconnectWhitelist.services.Twitter = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
-        preferences.setIntPref(buildName, currentBuild);
       }
+
+      if (!previousBuild || previousBuild < currentBuild)
+          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
