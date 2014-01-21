@@ -897,8 +897,14 @@ if (typeof Disconnect == 'undefined') {
       var imageExtension = this.imageExtension;
       var currentBuild = 28;
       var previousBuild = preferences.getIntPref(buildName);
-      var whitelist =
-          JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
+      var whitelist = preferences.getCharPref(whitelistName);
+
+      if (!whitelist) {
+        whitelist = '{}';
+        preferences.setCharPref(whitelistName, whitelist);
+      }
+
+      whitelist = JSON.parse(unwrap(whitelist));
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
       var blockingIndicated = preferences.getBoolPref(blockingIndicatedName);
       var toolbar = document.getElementById(navbarName);
