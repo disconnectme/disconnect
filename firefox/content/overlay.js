@@ -905,6 +905,8 @@ if (typeof Disconnect == 'undefined') {
       }
 
       whitelist = JSON.parse(unwrap(whitelist));
+      preferences.getCharPref(blacklistName) ||
+          preferences.setCharPref(blacklistName, '{}');
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
       var blockingIndicated = preferences.getBoolPref(blockingIndicatedName);
       var toolbar = document.getElementById(navbarName);
