@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 28;
+      var currentBuild = 29;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
 
@@ -1082,9 +1082,9 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 25) {
-        var easyjetDomain = 'easyjet.com';
+        var easyJetDomain = 'easyjet.com';
         var domainWhitelist =
-            whitelist[easyjetDomain] || (whitelist[easyjetDomain] = {});
+            whitelist[easyJetDomain] || (whitelist[easyJetDomain] = {});
         var disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
@@ -1143,15 +1143,29 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 27) {
-        var playtvDomain = 'playtv.fr';
+        var playTvDomain = 'playtv.fr';
         var domainWhitelist =
-            whitelist[playtvDomain] || (whitelist[playtvDomain] = {});
+            whitelist[playTvDomain] || (whitelist[playTvDomain] = {});
         var disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
         disconnectWhitelist.services.Twitter = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 28) {
+        var techRepublicDomain = 'techrepublic.com';
+        var domainWhitelist =
+            whitelist[techRepublicDomain] || (
+              whitelist[techRepublicDomain] = {}
+            );
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 

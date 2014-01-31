@@ -371,17 +371,18 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
-  const MEDIAFIRE_DOMAIN = 'mediafire.com';
-  (whitelist[MEDIAFIRE_DOMAIN] || (whitelist[MEDIAFIRE_DOMAIN] = {})).Facebook =
-      true;
+  const MEDIA_FIRE_DOMAIN = 'mediafire.com';
+  (whitelist[MEDIA_FIRE_DOMAIN] || (whitelist[MEDIA_FIRE_DOMAIN] = {})).
+    Facebook = true;
   const SALON_DOMAIN = 'salon.com';
   (whitelist[SALON_DOMAIN] || (whitelist[SALON_DOMAIN] = {})).Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
-  const LATIMES_DOMAIN = 'latimes.com';
-  (whitelist[LATIMES_DOMAIN] || (whitelist[LATIMES_DOMAIN] = {})).Google = true;
+  const LA_TIMES_DOMAIN = 'latimes.com';
+  (whitelist[LA_TIMES_DOMAIN] || (whitelist[LA_TIMES_DOMAIN] = {})).
+    Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
@@ -487,9 +488,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.WPP = true;
 
-  const DEVIANTART_DOMAIN = 'deviantart.com';
+  const DEVIANT_ART_DOMAIN = 'deviantart.com';
   domainWhitelist =
-      whitelist[DEVIANTART_DOMAIN] || (whitelist[DEVIANTART_DOMAIN] = {});
+      whitelist[DEVIANT_ART_DOMAIN] || (whitelist[DEVIANT_ART_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
@@ -534,9 +535,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
-  const EASYJET_DOMAIN = 'easyjet.com';
+  const EASY_JET_DOMAIN = 'easyjet.com';
   var domainWhitelist =
-      whitelist[EASYJET_DOMAIN] || (whitelist[EASYJET_DOMAIN] = {});
+      whitelist[EASY_JET_DOMAIN] || (whitelist[EASY_JET_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
@@ -560,9 +561,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.Adobe = true;
 
-  const PLAYTV_DOMAIN = 'playtv.fr';
+  const PLAY_TV_DOMAIN = 'playtv.fr';
   domainWhitelist =
-      whitelist[PLAYTV_DOMAIN] || (whitelist[PLAYTV_DOMAIN] = {});
+      whitelist[PLAY_TV_DOMAIN] || (whitelist[PLAY_TV_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
@@ -592,6 +593,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   var domainWhitelist =
       whitelist[FOSSIL_DOMAIN] || (whitelist[FOSSIL_DOMAIN] = {});
   var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const TECH_REPUBLIC_DOMAIN = 'techrepublic.com';
+  domainWhitelist =
+      whitelist[TECH_REPUBLIC_DOMAIN] || (whitelist[TECH_REPUBLIC_DOMAIN] = {});
+  disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
