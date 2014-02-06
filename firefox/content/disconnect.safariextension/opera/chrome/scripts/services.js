@@ -141,6 +141,9 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
+/* Whether or not the browser is Opera. */
+const OPERA = navigator.userAgent.indexOf('OPR') + 1;
+
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
@@ -171,7 +174,9 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-$.get('data/services.json', function(data) { processServices(data); });
+$.get((OPERA ? 'chrome/' : '') + 'data/services.json', function(data) {
+  processServices(data);
+});
 
 fetchServices();
 setInterval(fetchServices, hourMilliseconds);

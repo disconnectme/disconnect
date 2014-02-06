@@ -18,6 +18,9 @@
   ],
   "content_security_policy":
       "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [
+    "chrome/scripts/vendor/jquery/jquery-2.0.3.min.map"
+  ],
   "background": {
     "scripts": [
       "chrome/scripts/vendor/port/port.js",

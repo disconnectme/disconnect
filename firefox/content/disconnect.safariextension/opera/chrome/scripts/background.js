@@ -341,9 +341,6 @@ const GET = SITENAME.get;
 /* The Shadow Web. */
 const PLAYBACK = [];
 
-/* Whether or not the browser is Opera. */
-const OPERA = navigator.userAgent.indexOf('OPR') + 1;
-
 /* The path to the Chrome directory. */
 const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 
