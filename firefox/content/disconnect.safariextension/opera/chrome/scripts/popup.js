@@ -1413,13 +1413,23 @@ var whitelistingClicked = 0;
             options.browsingHardened = !DESERIALIZE(options.browsingHardened);
       };
 
-      const SEARCH = $('.search ' + INPUT)[0];
-      SEARCH.checked = DESERIALIZE(options.searchHardened);
-      $(SEARCH).off('click');
+      const COUNTER = $('.counter ' + INPUT)[0];
+      COUNTER.checked = DESERIALIZE(options.blockingIndicated);
+      $(COUNTER).off('click');
 
-      SEARCH.onclick = function() {
-        this.checked =
-            options.searchHardened = !DESERIALIZE(options.searchHardened);
+      COUNTER.onclick = function() {
+        const BLOCKING_INDICATED = DESERIALIZE(options.blockingIndicated);
+        this.checked = options.blockingIndicated = !BLOCKING_INDICATED;
+
+        if (BLOCKING_INDICATED) {
+          TABS.query({}, function(tabs) {
+            const TAB_COUNT = tabs.length;
+            for (var i = 0; i < TAB_COUNT; i++)
+                BACKGROUND.chrome.browserAction.setBadgeText({
+                  tabId: tabs[i].id, text: ''
+                });
+          });
+        }
       };
 
       d3.select('#data svg').remove();
