@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Disconnect",
-  "version": "5.8.0",
+  "version": "5.12.0",
   "description": "Make the web faster, more private, and more secure.",
   "icons": {"48": "chrome/images/48.png", "128": "chrome/images/128.png"},
   "permissions": [
@@ -25,7 +25,6 @@
       "chrome/scripts/vendor/sitename/alttlds.js",
       "chrome/scripts/vendor/sitename/tldpatch.js",
       "chrome/scripts/vendor/sitename/sitename.js",
-      "chrome/scripts/data.js",
       "chrome/scripts/services.js",
       "chrome/scripts/background.js"
     ]
