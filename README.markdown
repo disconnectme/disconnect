@@ -82,7 +82,7 @@ These libraries are bundled with the project and needn’t be updated manually:
 
 ## License
 
-Copyright 2010–2013 Disconnect, Inc.
+Copyright 2010–2014 Disconnect, Inc.
 
 This program is free software, excluding the brand features and third-party
 portions of the program identified in the “Exceptions” below: you can
