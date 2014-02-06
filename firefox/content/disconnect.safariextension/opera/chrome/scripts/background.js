@@ -211,9 +211,7 @@ function updateCounter(tabId, count, deactivated) {
     });
 
     setTimeout(function() {
-      BROWSER_ACTION.setBadgeText({
-        tabId: tabId, text: count ? count < 100 ? count + '' : '99+' : ''
-      });
+      BROWSER_ACTION.setBadgeText({tabId: tabId, text: (count || '') + ''});
     }, count * 50);
   }
 }
