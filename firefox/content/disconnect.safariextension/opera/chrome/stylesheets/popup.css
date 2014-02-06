@@ -282,6 +282,8 @@ td { padding: 0 }
 
 #dashboard .label { width: 66px }
 
+#support { display: none }
+
 #support a {
   display: block;
   background: #21953a url(../images/heart.png) no-repeat 23px 12px;
