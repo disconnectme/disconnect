@@ -2674,32 +2674,7 @@
   "apis.google.com": ["\\/js\\/plusone\\.js", "Disconnect"],
   "www.google.com": ["\\/uds\\/afs", "Disconnect"],
   "msg.yahoo.com": ["insider\\.msg\\.yahoo\\.com", "Advertising"]
-}, "hardeningRules": [[
-  "^http:\\/\\/(?!.*(?:books|chart\\.apis|earth|feedproxy|picasa|plus|shopping|sketchup|translate|trends|video|videos)\\.)(.*?)google\\.com\\/(?!alerts|blank\\.html|books|custom|friendconnect|local_url|newspapers|patents|reader\\/public|robots\\.txt|schemas|url)",
-  "https://$1google.com/"
-], [
-  "^http:\\/\\/(?!.*(?:apiblog|c)\\.)(.*?)youtube\\.com\\/(?!(?:api|embed)\\/|addto_ajax|crossdomain\\.xml|get_video_info|token_ajax)",
-  "https://$1youtube.com/"
-], [
-  "^http:\\/\\/(.*?)gmail\\.com\\/", "https://$1gmail.com/"
-], [
-  "^http:\\/\\/(.*?)googlemail\\.com\\/", "https://$1googlemail.com/"
-], [
-  "^http:\\/\\/(?!.*(?:static\\.ak)\\.)(.*?)facebook\\.com\\/",
-  "https://$1facebook.com/"
-], [
-  "^http:\\/\\/.*?facebook\\.de\\/", "https://de-de.facebook.com/"
-], [
-  "^http:\\/\\/.*?facebook\\.fr\\/", "https://fr-fr.facebook.com/"
-], [
-  "^http:\\/\\/(calendar|edit|legalredirect|login)\\.yahoo\\.com\\/(?!notepad)",
-  "https://$1.yahoo.com/"
-], [
-  "^http:\\/\\/(?!.*(?:blog|engineering)\\.)(.*?)twitter\\.com\\/",
-  "https://$1twitter.com/"
-], [
-  "^http:\\/\\/platform\\.linkedin\\.com\\/", "https://platform.linkedin.com/"
-]], "moreRules": [[
+}, "hardeningRules": [], "moreRules": [[
   "^https?:\\/\\/www\\.google\\.com\\/search\\?q=(.*?)&.*?sourceid=chrome&ie=.*",
   "https://proxy.disconnect.me/search?s=d2hhdGlmaWRpZHRoaXMx&q=$1"
 ], [
