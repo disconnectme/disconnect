@@ -2,7 +2,7 @@
 <!--
   An install manifest that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -28,7 +28,7 @@
     <em:type>2</em:type><!-- An extension. -->
     <em:id>2.0@disconnect.me</em:id>
     <em:name>Disconnect</em:name>
-    <em:version>3.11.0</em:version>
+    <em:version>3.12.0</em:version>
     <em:creator>Disconnect</em:creator>
     <em:developer>Brian Kennish</em:developer>
     <em:developer>Dan Kwon</em:developer>
@@ -43,7 +43,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>29.*</em:maxVersion>
+        <em:maxVersion>30.*</em:maxVersion>
       </Description>
     </em:targetApplication>
     <!-- Flock. -->

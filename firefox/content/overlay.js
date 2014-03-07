@@ -1155,22 +1155,59 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < 28) {
-        var techRepublicDomain = 'techrepublic.com';
+      if (!previousBuild || previousBuild < currentBuild) {
+        var cbsDomain = 'cbs.com';
         var domainWhitelist =
-            whitelist[techRepublicDomain] || (
-              whitelist[techRepublicDomain] = {}
-            );
+            whitelist[cbsDomain] || (whitelist[cbsDomain] = {});
         var disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
+        var cbsNewsDomain = 'cbsnews.com';
+        domainWhitelist =
+            whitelist[cbsNewsDomain] || (whitelist[cbsNewsDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var fossilDomain = 'fossil.com';
+        domainWhitelist =
+            whitelist[fossilDomain] || (whitelist[fossilDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var gamespotDomain = 'gamespot.com';
+        domainWhitelist =
+            whitelist[gamespotDomain] || (whitelist[gamespotDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var ignDomain = 'ign.com';
+        domainWhitelist = whitelist[ignDomain] || (whitelist[ignDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var techRepublicDomain = 'techrepublic.com';
+        domainWhitelist =
+            whitelist[techRepublicDomain] || (
+              whitelist[techRepublicDomain] = {}
+            );
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
       }
-
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
