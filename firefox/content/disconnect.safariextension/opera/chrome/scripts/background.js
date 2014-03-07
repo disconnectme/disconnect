@@ -212,7 +212,10 @@ function updateCounter(tabId, count, deactivated) {
 
     setTimeout(function() {
       BROWSER_ACTION.setBadgeText({
-        tabId: tabId, text: count ? count < 100 ? count + '' : '99+' : ''
+        tabId: tabId,
+        text:
+            count ? !deserialize(options.blockingCapped) || count < 100 ?
+                count + '' : '99+' : ''
       });
     }, count * 50);
   }
@@ -267,7 +270,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 67;
+const CURRENT_BUILD = 68;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -544,7 +547,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
   const ALLOCINE_DOMAIN = 'allocine.fr';
   var domainWhitelist =
       whitelist[ALLOCINE_DOMAIN] || (whitelist[ALLOCINE_DOMAIN] = {});
@@ -588,10 +591,35 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  const FOSSIL_DOMAIN = 'fossil.com';
-  var domainWhitelist =
-      whitelist[FOSSIL_DOMAIN] || (whitelist[FOSSIL_DOMAIN] = {});
+  const CBS_DOMAIN = 'cbs.com';
+  var domainWhitelist = whitelist[CBS_DOMAIN] || (whitelist[CBS_DOMAIN] = {});
   var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const CBS_NEWS_DOMAIN = 'cbsnews.com';
+  domainWhitelist =
+      whitelist[CBS_NEWS_DOMAIN] || (whitelist[CBS_NEWS_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const FOSSIL_DOMAIN = 'fossil.com';
+  domainWhitelist = whitelist[FOSSIL_DOMAIN] || (whitelist[FOSSIL_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const GAMESPOT_DOMAIN = 'gamespot.com';
+  domainWhitelist =
+      whitelist[GAMESPOT_DOMAIN] || (whitelist[GAMESPOT_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  const IGN_DOMAIN = 'ign.com';
+  domainWhitelist = whitelist[IGN_DOMAIN] || (whitelist[IGN_DOMAIN] = {});
+  disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
@@ -603,6 +631,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
+  options.blockingCapped = true;
   options.build = CURRENT_BUILD;
 }
 

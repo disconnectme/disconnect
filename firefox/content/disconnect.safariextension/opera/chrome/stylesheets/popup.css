@@ -1,7 +1,7 @@
 /*
   The style sheet for a popup that displays and drives the blocking of requests.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -216,7 +216,6 @@ td { padding: 0 }
   margin-right: auto;
   margin-left: auto;
   height: 45px;
-  text-align: center;
   cursor: default
 }
 
@@ -225,11 +224,10 @@ td { padding: 0 }
   cursor: pointer
 }
 
-#options .text { cursor: pointer }
-
-#options .whitelisting.text { width: 65px }
-
-#options .visualization.text { width: 75px }
+#options .text {
+  width: 70px;
+  cursor: pointer
+}
 
 #options input {
   -webkit-appearance: none;

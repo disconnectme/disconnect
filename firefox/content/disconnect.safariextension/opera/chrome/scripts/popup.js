@@ -1,7 +1,7 @@
 /*
   The script for a popup that displays and drives the blocking of requests.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -1396,28 +1396,11 @@ var whitelistingClicked = 0;
       const ICON = VISUALIZATION.find('img')[0];
       ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
       ICON.alt = 'Graph';
-      const WIFI = $('.wifi ' + INPUT)[0];
-      const WRAPPED_WIFI = $(WIFI);
+      const INDICATOR = $('.indicator ' + INPUT)[0];
+      INDICATOR.checked = DESERIALIZE(options.blockingIndicated);
+      $(INDICATOR).off('click');
 
-      if (SAFARI) {
-        WRAPPED_WIFI.
-          parent().next().addClass('disabled').attr('title', 'Coming soon');
-        WRAPPED_WIFI.prop('disabled', true);
-      }
-
-      WIFI.checked = !SAFARI && DESERIALIZE(options.browsingHardened);
-      WRAPPED_WIFI.off('click');
-
-      WIFI.onclick = function() {
-        this.checked =
-            options.browsingHardened = !DESERIALIZE(options.browsingHardened);
-      };
-
-      const COUNTER = $('.counter ' + INPUT)[0];
-      COUNTER.checked = DESERIALIZE(options.blockingIndicated);
-      $(COUNTER).off('click');
-
-      COUNTER.onclick = function() {
+      INDICATOR.onclick = function() {
         const BLOCKING_INDICATED = DESERIALIZE(options.blockingIndicated);
         this.checked = options.blockingIndicated = !BLOCKING_INDICATED;
 
@@ -1430,6 +1413,15 @@ var whitelistingClicked = 0;
                 });
           });
         }
+      };
+
+      const CAP = $('.cap ' + INPUT)[0];
+      CAP.checked = DESERIALIZE(options.blockingCapped);
+      $(CAP).off('click');
+
+      CAP.onclick = function() {
+        this.checked =
+            options.blockingCapped = !DESERIALIZE(options.blockingCapped);
       };
 
       d3.select('#data svg').remove();
