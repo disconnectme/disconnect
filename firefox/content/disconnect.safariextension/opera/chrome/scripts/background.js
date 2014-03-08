@@ -270,7 +270,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 68;
+const CURRENT_BUILD = 69;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -590,7 +590,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
   options.build = CURRENT_BUILD;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 68) {
   const CBS_DOMAIN = 'cbs.com';
   var domainWhitelist = whitelist[CBS_DOMAIN] || (whitelist[CBS_DOMAIN] = {});
   var disconnectWhitelist =
@@ -632,6 +632,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
   options.blockingCapped = true;
+}
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const BLOOMBERG_DOMAIN = 'bloomberg.com';
+  var domainWhitelist =
+      whitelist[BLOOMBERG_DOMAIN] || (whitelist[BLOOMBERG_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
+  options.whitelist = JSON.stringify(whitelist);
   options.build = CURRENT_BUILD;
 }
 

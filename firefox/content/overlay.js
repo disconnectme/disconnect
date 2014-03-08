@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 29;
+      var currentBuild = 30;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
 
@@ -1155,7 +1155,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 29) {
         var cbsDomain = 'cbs.com';
         var domainWhitelist =
             whitelist[cbsDomain] || (whitelist[cbsDomain] = {});
@@ -1201,6 +1201,18 @@ if (typeof Disconnect == 'undefined') {
               whitelist[techRepublicDomain] = {}
             );
         disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var bloombergDomain = 'bloomberg.com';
+        var domainWhitelist =
+            whitelist[bloombergDomain] || (whitelist[bloombergDomain] = {});
+        var disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
