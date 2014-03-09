@@ -270,7 +270,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 69;
+const CURRENT_BUILD = 70;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -634,7 +634,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 68) {
   options.blockingCapped = true;
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 69) {
   const BLOOMBERG_DOMAIN = 'bloomberg.com';
   var domainWhitelist =
       whitelist[BLOOMBERG_DOMAIN] || (whitelist[BLOOMBERG_DOMAIN] = {});
@@ -643,8 +643,10 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
   options.whitelist = JSON.stringify(whitelist);
-  options.build = CURRENT_BUILD;
 }
+
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
+    options.build = CURRENT_BUILD;
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
