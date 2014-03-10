@@ -739,7 +739,6 @@
   {"HOTWords": {"http://www.hotwords.com/": ["hotwords.com", "hotwords.es"]}},
   {"HP": {"http://www.hp.com/": ["hp.com", "optimost.com"]}},
   {"Httpool": {"http://www.httpool.com/": ["httpool.com"]}},
-  {"HubSpot": {"http://www.hubspot.com/": ["hubspot.com"]}},
   {"HUNT Mobile Ads": {"http://www.huntmads.com/": ["huntmads.com"]}},
   {"Hurra.com": {"http://www.hurra.com/": ["hurra.com"]}},
   {"I-Behavior": {"http://www.i-behavior.com/": [
@@ -2105,6 +2104,7 @@
   ]}},
   {"Gravity": {"http://www.gravity.com/": ["gravity.com", "grvcdn.com"]}},
   {"Heyzap": {"http://www.heyzap.com/": ["heyzap.com"]}},
+  {"HubSpot": {"http://www.hubspot.com/": ["hubspot.com"]}},
   {"iovation": {"http://www.iovation.com/": ["iesnare.com", "iovation.com"]}},
   {"Kaltura": {"http://corp.kaltura.com/": ["kaltura.com"]}},
   {"kikin": {"http://www.kikin.com/": ["kikin.com"]}},
