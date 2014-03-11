@@ -1413,9 +1413,6 @@
     "intellitxt.com", "picadmedia.com", "vibrantmedia.com"
   ]}},
   {"VigLink": {"http://www.viglink.com/": ["viglink.com"]}},
-  {"VINDICO": {"http://vindicogroup.com/": [
-    "vindicogroup.com", "vindicosuite.com"
-  ]}},
   {"Visible Measures": {"http://www.visiblemeasures.com/": [
     "viewablemedia.net", "visiblemeasures.com"
   ]}},
@@ -2202,6 +2199,9 @@
   ]}},
   {"Viewbix": {"http://www.viewbix.com/": ["qoof.com", "viewbix.com"]}},
   {"Vimeo": {"http://vimeo.com/": ["vimeo.com", "vimeocdn.com"]}},
+  {"VINDICO": {"http://vindicogroup.com/": [
+    "vindicogroup.com", "vindicosuite.com"
+  ]}},
   {"Visual Revenue": {"http://visualrevenue.com/": ["visualrevenue.com"]}},
   {"Voice2Page": {"http://www.voice2page.com/": ["voice2page.com"]}},
   {"WebsiteAlive": {"http://www.websitealive.com/": [
