@@ -1229,6 +1229,13 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Twitter = true;
+        var tedDomain = 'ted.com';
+        domainWhitelist = whitelist[tedDomain] || (whitelist[tedDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
