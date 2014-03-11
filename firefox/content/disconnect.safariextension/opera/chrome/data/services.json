@@ -1620,7 +1620,9 @@
   {"InboundWriter": {"http://www.inboundwriter.com/": [
     "enquisite.com", "inboundwriter.com"
   ]}},
-  {"INFOnline": {"https://www.infonline.de/": ["infonline.de", "ivwbox.de"]}},
+  {"INFOnline": {"https://www.infonline.de/": [
+    "infonline.de", "­ioam.­de", "ivwbox.de"
+  ]}},
   {"InfoStars": {"http://infostars.ru/": ["hotlog.ru", "infostars.ru"]}},
   {"Inspectlet": {"http://www.inspectlet.com/": ["inspectlet.com"]}},
   {"IntelligenceFocus": {"http://www.intelligencefocus.com/": [
