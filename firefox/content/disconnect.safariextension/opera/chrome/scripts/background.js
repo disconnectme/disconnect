@@ -270,7 +270,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 70;
+const CURRENT_BUILD = 71;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -645,8 +645,17 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 69) {
   options.whitelist = JSON.stringify(whitelist);
 }
 
-if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD)
-    options.build = CURRENT_BUILD;
+if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
+  const OBAMA_DOMAIN = 'barackobama.com';
+  var domainWhitelist =
+      whitelist[OBAMA_DOMAIN] || (whitelist[OBAMA_DOMAIN] = {});
+  var disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Twitter = true;
+  options.whitelist = JSON.stringify(whitelist);
+  options.build = CURRENT_BUILD;
+}
 
 if (options.displayMode == LEGACY_NAME) {
   $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {

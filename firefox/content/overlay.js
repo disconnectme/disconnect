@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 30;
+      var currentBuild = 31;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
 
@@ -1208,7 +1208,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 30) {
         var bloombergDomain = 'bloomberg.com';
         var domainWhitelist =
             whitelist[bloombergDomain] || (whitelist[bloombergDomain] = {});
@@ -1217,6 +1217,18 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var obamaDomain = 'barackobama.com';
+        var domainWhitelist =
+            whitelist[obamaDomain] || (whitelist[obamaDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Twitter = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
