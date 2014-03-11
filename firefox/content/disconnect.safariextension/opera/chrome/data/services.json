@@ -1413,9 +1413,6 @@
   {"Vibrant Media": {"http://www.vibrantmedia.com/": [
     "intellitxt.com", "picadmedia.com", "vibrantmedia.com"
   ]}},
-  {"Videology": {"http://www.videologygroup.com/": [
-    "tidaltv.com", "videologygroup.com"
-  ]}},
   {"VigLink": {"http://www.viglink.com/": ["viglink.com"]}},
   {"VINDICO": {"http://vindicogroup.com/": [
     "vindicogroup.com", "vindicosuite.com"
@@ -2199,6 +2196,9 @@
     "verticalacuity.com"
   ]}},
   {"VG WORT": {"http://www.vgwort.de/": ["vgwort.de"]}},
+  {"Videology": {"http://www.videologygroup.com/": [
+    "tidaltv.com", "videologygroup.com"
+  ]}},
   {"Viewbix": {"http://www.viewbix.com/": ["qoof.com", "viewbix.com"]}},
   {"Vimeo": {"http://vimeo.com/": ["vimeo.com", "vimeocdn.com"]}},
   {"Visual Revenue": {"http://visualrevenue.com/": ["visualrevenue.com"]}},
