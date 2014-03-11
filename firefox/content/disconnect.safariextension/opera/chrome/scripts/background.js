@@ -787,7 +787,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       options.displayMode != LEGACY_NAME &&
           EXTENSION.getViews({type: 'popup'})[0];
 
-  if (CHILD_SERVICE) {
+  if (CHILD_SERVICE && REQUESTED_URL.indexOf('crossdomain.xml') == -1) {
     const PARENT_SERVICE = getService(PARENT_DOMAIN);
     const CHILD_NAME = CHILD_SERVICE.name;
     const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
