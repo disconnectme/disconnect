@@ -84,7 +84,6 @@
   {"AD2ONE": {"http://www.ad2onegroup.com/": ["ad2onegroup.com"]}},
   {"Ad4Game": {"http://ad4game.com/": ["ad4game.com"]}},
   {"ad6media": {"http://www.ad6media.fr/": ["ad6media.fr"]}},
-  {"Adap.tv": {"http://adap.tv/": ["adap.tv"]}},
   {"AdaptiveAds": {"http://www.adaptiveads.com/": ["adaptiveads.com"]}},
   {"Adaptly": {"http://adaptly.com/": ["adaptly.com"]}},
   {"Adara Media": {"http://www.adaramedia.com/": [
@@ -1760,6 +1759,7 @@
 ], "Content": [
   {"33Across": {"http://33across.com/": ["tynt.com"]}},
   {"ActivEngage": {"http://www.activengage.com/": ["activengage.com"]}},
+  {"Adap.tv": {"http://adap.tv/": ["adap.tv"]}},
   {"Adobe": {"http://www.adobe.com/": ["adobe.com", "typekit.com"]}},
   {"Akamai": {"http://www.akamai.com/": [
     "abmr.net", "akamai.com", "edgesuite.net"
