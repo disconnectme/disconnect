@@ -653,6 +653,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Twitter = true;
+  const MINECRAFT_DOMAIN = 'minecraft.net';
+  domainWhitelist =
+      whitelist[MINECRAFT_DOMAIN] || (whitelist[MINECRAFT_DOMAIN] = {});
+  disconnectWhitelist =
+      domainWhitelist.Disconnect ||
+          (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
+  disconnectWhitelist.services.Google = true;
   const TED_DOMAIN = 'ted.com';
   domainWhitelist = whitelist[TED_DOMAIN] || (whitelist[TED_DOMAIN] = {});
   disconnectWhitelist =

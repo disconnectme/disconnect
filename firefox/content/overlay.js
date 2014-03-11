@@ -1229,6 +1229,14 @@ if (typeof Disconnect == 'undefined') {
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
             );
         disconnectWhitelist.services.Twitter = true;
+        var minecraftDomain = 'minecraft.net';
+        domainWhitelist =
+            whitelist[minecraftDomain] || (whitelist[minecraftDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
         var tedDomain = 'ted.com';
         domainWhitelist = whitelist[tedDomain] || (whitelist[tedDomain] = {});
         disconnectWhitelist =
