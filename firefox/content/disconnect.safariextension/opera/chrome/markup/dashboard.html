@@ -4,6 +4,7 @@
 
         <title>Disconnect Dashboard</title>
         <link rel="stylesheet" href="/stylesheets/normalize.css">
+        <link rel="stylesheet" href="/stylesheets/vendor/odometer/odometer-theme-default.css">
         <link rel="stylesheet" href="/stylesheets/dashboard.css">
 
         <script src="/scripts/vendor/jquery/jquery.min.js"></script>
@@ -13,6 +14,7 @@
 
         <script src="/scripts/vendor/moment/moment.min.js"></script>
         <script src="/scripts/vendor/lodash/lodash.min.js"></script>
+        <script src="/scripts/vendor/odometer/odometer.min.js"></script>
 
     </head>
     <body>
@@ -29,13 +31,13 @@
                 <span id="next" class="inactive">〉</span>
             </div>
             <div class="stat_box draggable">
-                <span class="stat">1,517</span>
+                <span id="total_blocked_requests" class="stat odometer">1,517</span>
                 <span class="stat_label">Blocked requests</span>
                 <div class="bar_graph" id="blocked_requests">
                 </div>
             </div>
             <div class="stat_box draggable">
-                <span class="stat">199</span>
+                <span id="total_secured_requests" class="stat odometer">199</span>
                 <span class="stat_label">Secured requests</span>
                 <div class="bar_graph" id="secured_requests"></div>
             </div>

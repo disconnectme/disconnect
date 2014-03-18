@@ -91,36 +91,46 @@ $(function(){
 
     updateDateBox(moment(_.findKey(originalData.blockedRequests)), moment(_.findLastKey(originalData.blockedRequests)));
 
-    createBarGraph("#blocked_requests", d3_bandwidth_data[week])
-    createBarGraph("#secured_requests", d3_blocked_requests[week])
+    createBarGraph("#blocked_requests", d3_blocked_requests[week])
+    createBarGraph("#secured_requests", d3_secure_requests[week])
     createBarGraph("#bandwidth_saved", d3_bandwidth_data[week], "MB")
 
     createPieChart("#user_value",valueData)
+
+    function calculateTotalRequests(data) {
+        var total_requests = 0
+        _.forEach(data, function(day){
+            total_requests += day.value
+        })
+        return total_requests;
+    }
+
 
     previous_arrow.on("click", function(){
         if(!$(this).hasClass("inactive")){
             week--;
 
-            console.log(d3_bandwidth_data[week])
-            console.log(d3_bandwidth_data[week][d3_bandwidth_data.length].date);
-
-
             var first_day = moment(d3_bandwidth_data[week][0].date),
                 last_day = moment(d3_bandwidth_data[week][d3_bandwidth_data[week].length - 1].date);
 
+
+            // Update Blocked Requests count
+
+            $("#total_blocked_requests").html(calculateTotalRequests(d3_blocked_requests[week]));
+            $("#total_secured_requests").html(calculateTotalRequests(d3_secure_requests[week]));
+
             updateDateBox(first_day, last_day)
 
-            if(week ===0) {
+            if(week === 0) {
                 $(this).addClass("inactive");
             }
             if(week < weeks) {
                 next_arrow.removeClass("inactive");
             }
-            console.log("update graphs to previous week");
 
             // Update Blocked Requests
-            updateBarGraph("#blocked_requests", d3_bandwidth_data[week],week);
-            updateBarGraph("#secured_requests", d3_blocked_requests[week],week);
+            updateBarGraph("#blocked_requests", d3_blocked_requests[week],week);
+            updateBarGraph("#secured_requests", d3_secure_requests[week],week);
             updateBarGraph("#bandwidth_saved", d3_bandwidth_data[week],week, "MB");
 
         }
@@ -141,7 +151,7 @@ $(function(){
             if(week > 0) {
                 previous_arrow.removeClass("inactive");
             }
-            console.log("update graphs to previous week");
+            // console.log("update graphs to previous week");
 
             // Update Blocked Requests
             updateBarGraph("#blocked_requests", d3_bandwidth_data[week],week);
@@ -290,7 +300,7 @@ $(function(){
         // if(set == 0) {
         //     d3.select(element).select("#left_arrow > polygon").classed("inactive",true)
         // }
-
+        // console.log("The date from the update", data)
 
         var height = $(element).height(),
             data_label = data_label || false,
@@ -407,7 +417,7 @@ $(function(){
                 })
                 .attr("r",3)
                 .on("mouseover", function(d,i){
-                    console.log(d.value);
+                    // console.log(d.value);
                 })
         }
     }
@@ -519,8 +529,11 @@ $(function(){
             }
         }
 
+        // console.log(arrayOfData)
+
         if(completeWeek) {
             arrayOfData = divideIntoWeeks(arrayOfData);
+            console.log(arrayOfData)
         }
         return arrayOfData;
     }
