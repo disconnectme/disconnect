@@ -57,7 +57,7 @@ var tour = {
     },
     {
       title: "Whitelist site",
-      content: "If a website you like visiting isn't working properly try hitting Whitelist Site, which pauses blocking on that site",
+      content: "If a website you like visiting isn't working properly try hitting Whitelist site, which pauses blocking on that site",
       target: document.querySelector("#options"),
       placement: "top",
       width: 150,
@@ -125,7 +125,7 @@ var tour_pwyw = {
     },
     {
       title: "Whitelist site",
-      content: "If a website you like visiting isn't working properly try hitting Whitelist Site, which pauses blocking on that site",
+      content: "If a website you like visiting isn't working properly try hitting Whitelist site, which pauses blocking on that site",
       target: document.querySelector("#options"),
       placement: "top",
       width: 150,
