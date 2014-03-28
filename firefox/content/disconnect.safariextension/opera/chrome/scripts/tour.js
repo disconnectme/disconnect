@@ -36,16 +36,6 @@ var tour = {
       arrowOffset: 5
     },
     {
-      title: "Content tracking unblocked",
-      content: "Blocking certain tracking requests can break a webpage, so we unblock this by default.",
-      target: document.querySelector(".category .badge"),
-      placement: "top",
-      width: 150,
-      padding: 10,
-      yOffset: 207,
-      arrowOffset: 5
-    },
-    {
       title: "Click to block or unblock",
       content: "Companies and tracking categories can be blocked of unblocked.",
       target: document.querySelector("#shortcuts"),
@@ -54,6 +44,16 @@ var tour = {
       padding: 10,
       yOffset: -10,
       arrowOffset: 78
+    },
+    {
+      title: "Content tracking unblocked",
+      content: "Blocking certain tracking requests can break a webpage, so we unblock this by default.",
+      target: document.querySelector(".category .badge"),
+      placement: "top",
+      width: 150,
+      padding: 10,
+      yOffset: 207,
+      arrowOffset: 5
     },
     {
       title: "Whitelist site",
@@ -104,16 +104,6 @@ var tour_pwyw = {
       arrowOffset: 5
     },
     {
-      title: "Content tracking unblocked",
-      content: "Blocking certain tracking requests can break a webpage, so we unblock this by default.",
-      target: document.querySelector(".category .badge"),
-      placement: "top",
-      width: 150,
-      padding: 10,
-      yOffset: 207,
-      arrowOffset: 5
-    },
-    {
       title: "Click to block or unblock",
       content: "Companies and tracking categories can be blocked of unblocked.",
       target: document.querySelector("#shortcuts"),
@@ -122,6 +112,16 @@ var tour_pwyw = {
       padding: 10,
       yOffset: -10,
       arrowOffset: 78
+    },
+    {
+      title: "Content tracking unblocked",
+      content: "Blocking certain tracking requests can break a webpage, so we unblock this by default.",
+      target: document.querySelector(".category .badge"),
+      placement: "top",
+      width: 150,
+      padding: 10,
+      yOffset: 207,
+      arrowOffset: 5
     },
     {
       title: "Whitelist site",
@@ -136,12 +136,12 @@ var tour_pwyw = {
     {
       title: "Support us",
       content: "We rely solely on your contributions, please pay what you want.",
-      target: "#logo",
-      placement: "bottom",
-      width: 180,
+      target: "#support",
+      placement: "top",
+      width: 187,
       padding: 7,
-      yOffset: 12,
-      arrowOffset: 45
+      yOffset: 15,
+      arrowOffset: 88
     }
   ]
 };
