@@ -33,7 +33,13 @@
       "scripts/background.js"
     ]
   },
-  "browser_action": {"default_title": "View and manage requests"},
+  "browser_action": {
+    "default_title": "View and manage requests",
+    "default_icon": {
+      "19": "images/19.png",
+      "38": "images/38.png"
+    }
+  },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "css": ["stylesheets/content.css"],

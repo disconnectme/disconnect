@@ -677,7 +677,6 @@ if (options.displayMode == LEGACY_NAME) {
       options.displayMode = LIST_NAME;
       options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
       downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
       BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
@@ -720,7 +719,6 @@ if (!deserialize(options.pwyw).date) {
   if (PWYW.bucket == 'later')
       options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
           // "later" was accidentally live for a bit.
-  BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
   if (deserialize(options.pwyw).bucket == 'trying') {
     $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
