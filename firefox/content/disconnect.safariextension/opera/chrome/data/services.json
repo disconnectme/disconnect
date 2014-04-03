@@ -19,7 +19,6 @@
     "destinationurl.com",
     "doubleclick.net",
     "gmail.com",
-    "google-analytics.com",
     "adwords.google.com",
     "mail.google.com",
     "plus.google.com",
@@ -516,14 +515,6 @@
   ]}},
   {"Developer Media": {"http://developermedia.com/": [
     "developermedia.com", "lqcdn.com"
-  ]}},
-  {"DG": {"http://www.dgit.com/": [
-    "dgit.com",
-    "eyeblaster.com",
-    "eyewonder.com",
-    "mdadx.com",
-    "serving-sys.com",
-    "unicast.com"
   ]}},
   {"dianomi": {"http://www.dianomi.com/": ["dianomi.com"]}},
   {"Didit": {"http://www.didit.com/": ["did-it.com", "didit.com"]}},
@@ -1834,6 +1825,14 @@
   {"DailyMe": {"http://dailyme.com/": ["dailyme.com", "newstogram.com"]}},
   {"DataSift": {"http://datasift.com/": ["datasift.com", "tweetmeme.com"]}},
   {"Disqus": {"http://disqus.com/": ["disqus.com"]}},
+  {"DG": {"http://www.dgit.com/": [
+    "dgit.com",
+    "eyeblaster.com",
+    "eyewonder.com",
+    "mdadx.com",
+    "serving-sys.com",
+    "unicast.com"
+  ]}},
   {"Echo": {"http://aboutecho.com/": [
     "aboutecho.com", "haloscan.com", "js-kit.com"
   ]}},
@@ -1857,6 +1856,7 @@
     "feedburner.com",
     "ggpht.com",
     "gmodules.com",
+    "google-analytics.com",
     "google-melange.com",
     "google.ad",
     "google.ae",
@@ -2328,7 +2328,6 @@
     "destinationurl.com",
     "doubleclick.net",
     "gmail.com",
-    "google-analytics.com",
     "adwords.google.com",
     "mail.google.com",
     "plus.google.com",
@@ -2395,6 +2394,7 @@
     "feedburner.com",
     "ggpht.com",
     "gmodules.com",
+    "google-analytics.com",
     "google-melange.com",
     "google.ad",
     "google.ae",
