@@ -24,6 +24,7 @@
   "web_accessible_resources": ["scripts/vendor/jquery/jquery-2.0.3.min.map"],
   "background": {
     "scripts": [
+      "scripts/errorhandler.js",
       "scripts/vendor/port/port.js",
       "scripts/vendor/jquery/jquery.js",
       "scripts/vendor/sitename/alttlds.js",
