@@ -694,6 +694,18 @@ if (options.displayMode == LEGACY_NAME) {
       );
     }
   });
+} else if (options.firstBuild < 72 && !options.paymentNotificationShown) {
+  $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotificationTest', function(data) {
+    if (data.goldenticket === 'true') {
+      options.promoRunning = true;
+      options.paymentNotificationDate = new Date();
+      options.showPaymentNotification = 'true'
+      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
+      BROWSER_ACTION.setPopup({popup: ''});
+    }
+  });
 }
 
 if (!deserialize(options.pwyw).date) {
@@ -1053,6 +1065,13 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    delete options.promoRunning;
+  }
+
+  if (options.showPaymentNotification == 'true') {
+    TABS.create({url: 'https://disconnect.me/notification/3'});
+    BROWSER_ACTION.setBadgeText({text: ''});
+    initializeToolbar();
     delete options.promoRunning;
   }
 
