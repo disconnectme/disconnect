@@ -263,6 +263,16 @@ function incrementCounter(tabId, service, blocked, popup) {
       }
 }
 
+function paid() {
+  const PWYW = deserialize(options.pwyw) || {};
+  const STATUS = PWYW.bucket || "";
+  if (STATUS == 'viewed' || STATUS == 'trying' || STATUS == 'pending') {
+    return false;
+  }
+  else return true;
+}
+
+
 if (SAFARI)
     for (var key in localStorage) {
       options[key] = localStorage[key];
@@ -694,7 +704,7 @@ if (options.displayMode == LEGACY_NAME) {
       );
     }
   });
-} else if (options.firstBuild < 72 && !options.paymentNotificationShown) {
+} else if (options.firstBuild < 72 && !options.paymentNotificationShown && !(paid())) {
   $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotificationTest', function(data) {
     if (data.goldenticket === 'true') {
       options.promoRunning = true;
