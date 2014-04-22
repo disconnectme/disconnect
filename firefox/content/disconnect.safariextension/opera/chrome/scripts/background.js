@@ -280,7 +280,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 71;
+const CURRENT_BUILD = 72;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -705,8 +705,8 @@ if (options.displayMode == LEGACY_NAME) {
     }
   });
 } else if (options.firstBuild < 72 && !options.paymentNotificationShown && !(paid())) {
-  $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotificationTest', function(data) {
-    if (data.goldenticket === 'true') {
+  $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotification', function(data) {
+    if (data.data === 'true') {
       options.promoRunning = true;
       options.paymentNotificationDate = new Date();
       options.showPaymentNotification = 'true'
