@@ -263,6 +263,7 @@ function incrementCounter(tabId, service, blocked, popup) {
       }
 }
 
+/* Checks to see if the user has paid. */
 function paid() {
   const PWYW = deserialize(options.pwyw) || {};
   const STATUS = PWYW.bucket || "";
@@ -272,6 +273,20 @@ function paid() {
   else return true;
 }
 
+/* Sets the badge to show the user a cream notification. */
+function setCreamBadge() {
+  options.promoRunning = true;
+  BROWSER_ACTION.setBadgeBackgroundColor({color: "#21953a"});
+  BROWSER_ACTION.setBadgeText({text: '$$$'});
+  BROWSER_ACTION.setPopup({popup: ''});
+}
+
+/* Clears a badge notification. */
+function clearBadge() {
+  if (options.promoRunning) {delete options.promoRunning;}
+  BROWSER_ACTION.setBadgeText({text: ''});
+  initializeToolbar();
+}
 
 if (SAFARI)
     for (var key in localStorage) {
@@ -424,9 +439,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
   if (PREVIOUS_BUILD || options.initialized) options.pwyw = JSON.stringify({});
   else {
     options.displayMode = LIST_NAME;
-
-    if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1)
-        options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
+    options.installDate = moment();
+    if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
+    }
+    else if (CURRENT_BUILD > 71) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
+      TABS.create({url: 'https://disconnect.me/welcome/paysomething'});
+    }
     else {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
       TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
@@ -711,11 +731,75 @@ if (options.displayMode == LEGACY_NAME) {
       options.paymentNotificationDate = new Date();
       options.showPaymentNotification = 'true'
       BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeBackgroundCoflor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
     }
   });
+}
+
+
+// Check to see if user needs to pay with cream
+if (options.firstBuild > 71) {
+  var pwyw = deserialize(options.pwyw) || {};
+  var installDate = moment(options.installDate);
+  var currentDate = moment();
+
+  if (pwyw.bucket == 'viewed-cream') {
+    if (currentDate > installDate.clone().add('days', 1)) {
+      clearBadge()
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+      TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
+    }
+  }
+  else if (pwyw.bucket == 'viewed-cream-1') {
+    if (currentDate > installDate.clone().add('days', 2)) {
+      clearBadge()
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+      TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
+    }
+  }
+  else if (pwyw.bucket == 'viewed-cream-2') {
+    clearBadge()
+    if (currentDate > installDate.clone().add('days', 3)) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
+      TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+    }
+  }
+  else if ((pwyw.bucket == 'viewed-cream-3') || (pwyw.bucket == 'viewed-cream-4')) {
+    clearBadge()
+    if (currentDate > installDate.clone().add('days', 4)) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
+      TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+    }
+  }
+
+  setInterval(function() {
+    var pwyw = deserialize(options.pwyw) || {};
+    var installDate = moment(options.installDate);
+    var currentDate = moment();
+
+    if (pwyw.bucket == 'viewed-cream') {
+      if (currentDate > installDate.clone().add('days', 1)) {
+        setCreamBadge();
+      }
+    }
+    else if (pwyw.bucket == 'viewed-cream-1') {
+      if (currentDate > installDate.clone().add('days', 2)) {
+        setCreamBadge();
+      }
+    }
+    else if (pwyw.bucket == 'viewed-cream-2') {
+      if (currentDate > installDate.clone().add('days', 3)) {
+        setCreamBadge();
+      }
+    }
+    else if (pwyw.bucket == 'viewed-cream-3' || pwyw.bucket == 'viewed-cream-4') {
+      if (currentDate > installDate.clone().add('days', 4)) {
+        setCreamBadge();
+      }
+    }
+  }, 10000);
 }
 
 if (!deserialize(options.pwyw).date) {
@@ -1091,6 +1175,25 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     initializeToolbar();
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
   }
+
+  if (PWYW.bucket == 'viewed-cream') {
+    TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+  }
+  else if (PWYW.bucket == 'viewed-cream-1') {
+    TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+  }
+  else if (PWYW.bucket == 'viewed-cream-2') {
+    TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
+  }
+  else if ((PWYW.bucket == 'viewed-cream-3') || (PWYW.bucket == 'viewed-cream-4')) {
+    TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
+  }
+
+  clearBadge();
 });
 
 /* The interface is English only for now. */

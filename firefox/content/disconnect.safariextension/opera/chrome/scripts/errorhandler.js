@@ -22,5 +22,6 @@
 
 window.onerror = function (message, filename, linenumber) {
     $.get("https://disconnect.me/error/d2/" + linenumber);
+    console.log("message: " + message + " linenumber: " + linenumber);
     return true;
 };

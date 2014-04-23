@@ -25,6 +25,7 @@
   "background": {
     "scripts": [
       "scripts/errorhandler.js",
+      "scripts/vendor/moment/moment.js",
       "scripts/vendor/port/port.js",
       "scripts/vendor/jquery/jquery.js",
       "scripts/vendor/sitename/alttlds.js",
