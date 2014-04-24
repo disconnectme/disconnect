@@ -724,53 +724,57 @@ if (options.displayMode == LEGACY_NAME) {
       );
     }
   });
-} else if (options.firstBuild < 72 && !options.paymentNotificationShown && !(paid())) {
+} else if (options.firstBuild < 72 && !options.showPaymentNotification && !(paid())) {
   $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotification', function(data) {
     if (data.data === 'true') {
       options.promoRunning = true;
       options.paymentNotificationDate = new Date();
       options.showPaymentNotification = 'true'
       BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundCoflor({color: [255, 0, 0, 255]});
+      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
       BROWSER_ACTION.setBadgeText({text: 'NEW!'});
       BROWSER_ACTION.setPopup({popup: ''});
     }
   });
 }
 
-
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
   var pwyw = deserialize(options.pwyw) || {};
   var installDate = moment(options.installDate);
   var currentDate = moment();
+  var lastShown = options.lastShown || moment();
 
   if (pwyw.bucket == 'viewed-cream') {
     if (currentDate > installDate.clone().add('days', 1)) {
-      clearBadge()
+      clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
       TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
+      options.lastShown = moment();
     }
   }
   else if (pwyw.bucket == 'viewed-cream-1') {
-    if (currentDate > installDate.clone().add('days', 2)) {
-      clearBadge()
+    if (currentDate > installDate.clone().add('days', 3)) {
+      clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
       TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
+      options.lastShown = moment();
     }
   }
   else if (pwyw.bucket == 'viewed-cream-2') {
-    clearBadge()
-    if (currentDate > installDate.clone().add('days', 3)) {
+    if (currentDate > installDate.clone().add('days', 7)) {
+      clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
       TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+      options.lastShown = moment();
     }
   }
   else if ((pwyw.bucket == 'viewed-cream-3') || (pwyw.bucket == 'viewed-cream-4')) {
-    clearBadge()
-    if (currentDate > installDate.clone().add('days', 4)) {
+    if (currentDate > lastShown.clone().add('days', 7)) {
+      clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
       TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+      options.lastShown = moment();
     }
   }
 
@@ -778,6 +782,7 @@ if (options.firstBuild > 71) {
     var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
+    var lastShown = options.lastShown || moment();
 
     if (pwyw.bucket == 'viewed-cream') {
       if (currentDate > installDate.clone().add('days', 1)) {
@@ -785,17 +790,17 @@ if (options.firstBuild > 71) {
       }
     }
     else if (pwyw.bucket == 'viewed-cream-1') {
-      if (currentDate > installDate.clone().add('days', 2)) {
-        setCreamBadge();
-      }
-    }
-    else if (pwyw.bucket == 'viewed-cream-2') {
       if (currentDate > installDate.clone().add('days', 3)) {
         setCreamBadge();
       }
     }
+    else if (pwyw.bucket == 'viewed-cream-2') {
+      if (currentDate > installDate.clone().add('days', 7)) {
+        setCreamBadge();
+      }
+    }
     else if (pwyw.bucket == 'viewed-cream-3' || pwyw.bucket == 'viewed-cream-4') {
-      if (currentDate > installDate.clone().add('days', 4)) {
+      if (currentDate > lastShown.clone().add('days', 7)) {
         setCreamBadge();
       }
     }
@@ -1164,6 +1169,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
   if (options.showPaymentNotification == 'true') {
     TABS.create({url: 'https://disconnect.me/notification/3'});
+    options.paymentNotificationShown = 'true';
     BROWSER_ACTION.setBadgeText({text: ''});
     initializeToolbar();
     delete options.promoRunning;
@@ -1179,18 +1185,22 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
   if (PWYW.bucket == 'viewed-cream') {
     TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+    options.lastShown = moment();
   }
   else if (PWYW.bucket == 'viewed-cream-1') {
     TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+    options.lastShown = moment();
   }
   else if (PWYW.bucket == 'viewed-cream-2') {
     TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
+    options.lastShown = moment();
   }
   else if ((PWYW.bucket == 'viewed-cream-3') || (PWYW.bucket == 'viewed-cream-4')) {
     TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
+    options.lastShown = moment();
   }
 
   clearBadge();
