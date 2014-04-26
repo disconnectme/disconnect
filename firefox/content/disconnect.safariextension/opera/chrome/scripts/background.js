@@ -749,7 +749,11 @@ if (options.firstBuild > 71) {
     if (currentDate > installDate.clone().add('days', 1)) {
       clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
-      TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
+      dispatchBubble(
+        'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
+        '',
+        'https://disconnect.me/welcome/paysomething-1'
+      );
       options.lastShown = moment();
     }
   }
@@ -757,7 +761,11 @@ if (options.firstBuild > 71) {
     if (currentDate > installDate.clone().add('days', 3)) {
       clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
-      TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
+      dispatchBubble(
+        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
+        '',
+        'https://disconnect.me/welcome/paysomething-2'
+      );
       options.lastShown = moment();
     }
   }
@@ -765,7 +773,11 @@ if (options.firstBuild > 71) {
     if (currentDate > installDate.clone().add('days', 7)) {
       clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
-      TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+      dispatchBubble(
+        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
+        '',
+        'https://disconnect.me/welcome/paysomething-3'
+      );
       options.lastShown = moment();
     }
   }
@@ -773,7 +785,11 @@ if (options.firstBuild > 71) {
     if (currentDate > lastShown.clone().add('days', 7)) {
       clearBadge();
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
-      TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
+      dispatchBubble(
+        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
+        '',
+        'https://disconnect.me/welcome/paysomething-3'
+      );
       options.lastShown = moment();
     }
   }
