@@ -795,6 +795,9 @@ if (options.firstBuild > 71) {
   }
 
   setInterval(function() {
+    if (!(options.installDate)) {
+      return;
+    }
     var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
@@ -1103,6 +1106,12 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
       PWYW.bucket = request.bucket;
       options.pwyw = JSON.stringify(PWYW);
       sendResponse({});
+    } 
+    else if (request.deleteTab) {
+      TABS.remove(TAB.id);
+      if (request.pingURL) {
+        $.get(request.pingURL);
+      }
     } else {
       if (SAFARI) {
         const BLOCKED = request.blocked;
