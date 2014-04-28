@@ -9,6 +9,7 @@
     "contextMenus",
     "cookies",
     "history",
+    "storage",
     "idle",
     "notifications",
     "tabs",

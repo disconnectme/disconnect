@@ -438,19 +438,26 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
   if (PREVIOUS_BUILD || options.initialized) options.pwyw = JSON.stringify({});
   else {
-    options.displayMode = LIST_NAME;
-    options.installDate = moment();
-    if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1) {
-      options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
-    }
-    else if (CURRENT_BUILD > 71) {
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
-      TABS.create({url: 'https://disconnect.me/welcome/paysomething'});
-    }
-    else {
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-      TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
-    }
+    chrome.storage.sync.get('pwyw', function(pwywData) {
+      options.displayMode = LIST_NAME;
+      options.installDate = moment();
+      if (pwywData.bucket) {
+        options.pwyw = JSON.stringify({pwywData});
+      }
+      else {
+        if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1) {
+          options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
+        }
+        else if (CURRENT_BUILD > 71) {
+          options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
+          TABS.create({url: 'https://disconnect.me/welcome/paysomething'});
+        }
+        else {
+          options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+          TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+        }
+      }
+    });
   }
 
   options.whitelist = JSON.stringify(whitelist = MIGRATED_WHITELIST);
@@ -1105,6 +1112,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
       const PWYW = deserialize(options.pwyw);
       PWYW.bucket = request.bucket;
       options.pwyw = JSON.stringify(PWYW);
+      chrome.storage.sync.set(PWYW)
       sendResponse({});
     } 
     else if (request.deleteTab) {
