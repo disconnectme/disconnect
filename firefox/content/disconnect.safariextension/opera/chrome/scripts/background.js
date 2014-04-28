@@ -192,7 +192,10 @@ function dispatchBubble(title, text, link) {
 
   notification.onclick = function() { link && TABS.create({url: link}); };
 
-  notification.show();
+  try {
+    notification.show();
+  }
+  catch(e) {}
 }
 
 /* Indicates the number of tracking requests. */
