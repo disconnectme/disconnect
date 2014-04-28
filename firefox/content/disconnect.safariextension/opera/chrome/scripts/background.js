@@ -798,10 +798,13 @@ if (options.firstBuild > 71) {
     if (!(options.installDate)) {
       return;
     }
+    if (!(options.lastShown)) {
+      options.lastShown = moment();
+    }
     var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
-    var lastShown = options.lastShown || moment();
+    var lastShown = moment(options.lastShown);
 
     if (pwyw.bucket == 'viewed-cream') {
       if (currentDate > installDate.clone().add('days', 1)) {
