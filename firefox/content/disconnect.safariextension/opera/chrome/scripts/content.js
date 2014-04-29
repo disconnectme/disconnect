@@ -89,18 +89,30 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       var CONTROL = document.getElementById('input-type');
       var BUCKET = CONTROL && CONTROL.getAttribute('value');
       BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
+
       if (location.href.indexOf('paysomething') + 1) {
-        document.getElementById('no').addEventListener('click', function(e) {
+        var remindMe = document.getElementById('no');
+        var alreadyPaid = document.getElementById('already-paid');
+        var emailed = document.getElementById('email');
+
+        remindMe && remindMe.addEventListener('click', function(e) {
           EXTENSION.sendRequest({
             deleteTab: true, 
             pingURL: "https://disconnect.me/cream/no"
           });
         }, false);
-        document.getElementById('already-paid').addEventListener('click', function(e) {
+        alreadyPaid && alreadyPaid.addEventListener('click', function(e) {
           EXTENSION.sendRequest({pwyw: true, bucket: "already-paid"});
           EXTENSION.sendRequest({
             deleteTab: true, 
             pingURL: "https://disconnect.me/cream/already-paid"
+          });
+        }, false);
+        emailed && emailed.addEventListener('click', function(e) {
+          EXTENSION.sendRequest({pwyw: true, bucket: "emailed"});
+          EXTENSION.sendRequest({
+            deleteTab: true, 
+            pingURL: "https://disconnect.me/cream/email-opened"
           });
         }, false);
       }
