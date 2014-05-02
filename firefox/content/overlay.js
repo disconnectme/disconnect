@@ -1255,7 +1255,7 @@ if (typeof Disconnect == 'undefined') {
           );
           var historyService = Components.classes["@mozilla.org/browser/nav-history-service;1"].getService(Components.interfaces.nsINavHistoryService);
           var query1 = historyService.getNewQuery();
-          query1.searchTerms = 'disconnect.me/partner/';
+          query1.searchTerms = 'disconnect/partner';
           query1.domain = 'disconnect.me';
           query1.beginTimeReference = query1.TIME_RELATIVE_NOW;
           query1.beginTime = -24 * 60 * 60 * 1000000 * 7; // 1 week ago in microseconds
