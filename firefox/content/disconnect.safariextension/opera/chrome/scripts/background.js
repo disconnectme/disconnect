@@ -441,6 +441,9 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
   if (PREVIOUS_BUILD || options.initialized) options.pwyw = JSON.stringify({});
   else {
+    options.pwyw = JSON.stringify({});
+    options.displayMode = LIST_NAME;
+    options.installDate = moment();
     var partner = false;
     TABS.query({url: "*://*.disconnect.me/*"}, function(disconnectTabs) {
       disconnectTabs.forEach(function(tab) {
@@ -450,8 +453,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
           options.referrer = partner;
         }
       });
-      options.displayMode = LIST_NAME;
-      options.installDate = moment();
       if (navigator.userAgent.indexOf('WhiteHat Aviator') + 1) {
         options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
       }
