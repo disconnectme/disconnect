@@ -746,7 +746,13 @@ if (options.firstBuild > 71) {
   var pwyw = deserialize(options.pwyw) || {};
   var installDate = moment(options.installDate);
   var currentDate = moment();
-  var lastShown = options.lastShown || moment();
+  var lastShown;
+  try {
+    lastShown = moment(options.lastShown) || moment();
+  }
+  catch(e) {
+    lastShown = moment();
+  }
 
   if (pwyw.bucket == 'viewed-cream') {
     if (currentDate > installDate.clone().add('days', 1)) {
@@ -807,8 +813,13 @@ if (options.firstBuild > 71) {
     var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
-    var lastShown = moment(options.lastShown);
-
+    var lastShown;
+    try {
+      lastShown = moment(options.lastShown) || moment();
+    }
+    catch(e) {
+      lastShown = moment();
+    }
     if (pwyw.bucket == 'viewed-cream') {
       if (currentDate > installDate.clone().add('days', 1)) {
         setCreamBadge();
@@ -832,41 +843,48 @@ if (options.firstBuild > 71) {
   }, 10000);
 }
 
-if (!deserialize(options.pwyw).date) {
-  downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
+try {
+  if (!deserialize(options.pwyw).date) {
+    downgradeServices(true);
+    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 
-  $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
-    if (data.goldenticket === 'true') {
-      options.displayMode = LIST_NAME;
-      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-      downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-} else if (deserialize(options.pwyw).bucket == 'postponed') {
-  options.displayMode = LEGACY_NAME;
-  downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
-} else {
-  const PWYW = deserialize(options.pwyw);
-  if (PWYW.bucket == 'later')
-      options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
-          // "later" was accidentally live for a bit.
-  BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-
-  if (deserialize(options.pwyw).bucket == 'trying') {
-    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+    $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
       if (data.goldenticket === 'true') {
-        options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
+        options.displayMode = LIST_NAME;
+        options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+        downgradeServices();
+        BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
         BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-        BROWSER_ACTION.setBadgeText({text: 'PSST!'});
+        BROWSER_ACTION.setBadgeText({text: 'NEW!'});
         BROWSER_ACTION.setPopup({popup: ''});
       }
     });
+  } else if (deserialize(options.pwyw).bucket == 'postponed') {
+    options.displayMode = LEGACY_NAME;
+    downgradeServices(true);
+    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
+  } else {
+    const PWYW = deserialize(options.pwyw);
+    if (PWYW.bucket == 'later')
+        options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
+            // "later" was accidentally live for a bit.
+    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+
+    if (deserialize(options.pwyw).bucket == 'trying') {
+      $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+        if (data.goldenticket === 'true') {
+          options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
+          BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+          BROWSER_ACTION.setBadgeText({text: 'PSST!'});
+          BROWSER_ACTION.setPopup({popup: ''});
+        }
+      });
+    }
+  }
+}
+catch (e) {
+  if (!(options.pwyw)) {
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 }
 
