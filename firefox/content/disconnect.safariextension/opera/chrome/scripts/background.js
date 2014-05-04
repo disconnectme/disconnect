@@ -298,7 +298,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 72;
+const CURRENT_BUILD = 73;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -741,12 +741,22 @@ if (options.displayMode == LEGACY_NAME) {
   });
 }
 
+derpd
+
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
-  var pwyw = deserialize(options.pwyw) || {};
   var installDate = moment(options.installDate);
   var currentDate = moment();
+  var pwyw;
   var lastShown;
+  try {
+    pwyw = deserialize(options.pwyw) || {};
+    var bucket = pwyw.bucket;
+  }
+  catch (e) {
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+    pwyw = deserialize(options.pwyw);
+  }
   try {
     lastShown = moment(options.lastShown) || moment();
   }
@@ -810,10 +820,18 @@ if (options.firstBuild > 71) {
     if (!(options.lastShown)) {
       options.lastShown = moment();
     }
-    var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
+    var pwyw;
     var lastShown;
+    try {
+      pwyw = deserialize(options.pwyw) || {};
+      var bucket = pwyw.bucket;
+    }
+    catch (e) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+      pwyw = deserialize(options.pwyw);
+    }
     try {
       lastShown = moment(options.lastShown) || moment();
     }
@@ -840,7 +858,7 @@ if (options.firstBuild > 71) {
         setCreamBadge();
       }
     }
-  }, 10000);
+  }, 100000);
 }
 
 try {
