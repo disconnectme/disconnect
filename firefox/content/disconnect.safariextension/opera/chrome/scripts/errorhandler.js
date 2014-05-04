@@ -21,7 +21,13 @@
 */
 
 window.onerror = function (message, filename, linenumber) {
+  console.log("message: " + message + " linenumber: " + linenumber);
+  try {
+    var filename = filename.substr(filename.lastIndexOf('/') + 1);
+    $.get("https://disconnect.me/error/d2/" + CURRENT_BUILD + "/" + linenumber + "/" + filename);
+  }
+  catch(e) {
     $.get("https://disconnect.me/error/d2/" + linenumber);
-    console.log("message: " + message + " linenumber: " + linenumber);
-    return true;
+  }
+  return true;
 };

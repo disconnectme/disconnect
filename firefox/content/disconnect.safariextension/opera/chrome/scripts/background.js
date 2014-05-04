@@ -741,8 +741,6 @@ if (options.displayMode == LEGACY_NAME) {
   });
 }
 
-derpd
-
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
   var installDate = moment(options.installDate);
