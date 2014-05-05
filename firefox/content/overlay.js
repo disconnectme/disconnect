@@ -895,7 +895,7 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 31;
+      var currentBuild = 32;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
 
@@ -1220,7 +1220,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 31) {
         var obamaDomain = 'barackobama.com';
         var domainWhitelist =
             whitelist[obamaDomain] || (whitelist[obamaDomain] = {});
@@ -1239,6 +1239,31 @@ if (typeof Disconnect == 'undefined') {
         disconnectWhitelist.services.Google = true;
         var tedDomain = 'ted.com';
         domainWhitelist = whitelist[tedDomain] || (whitelist[tedDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var dailyMailDomain = 'dailymail.co.uk';
+        var domainWhitelist =
+            whitelist[dailyMailDomain] || (whitelist[dailyMailDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        analyticsWhitelist.services.comScore = true;
+        var telegraphDomain = 'telegraph.co.uk';
+        domainWhitelist =
+            whitelist[telegraphDomain] || (whitelist[telegraphDomain] = {});
         disconnectWhitelist =
             domainWhitelist.Disconnect || (
               domainWhitelist.Disconnect = {whitelisted: false, services: {}}
