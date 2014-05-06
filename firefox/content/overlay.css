@@ -300,6 +300,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: -15px
 }
 
+#PersonalToolbar[mode=icons] .aurora #disconnect-badge { margin-top: 6px }
+
 #PersonalToolbar[mode=text] #disconnect-badge {
   margin-top: 3px;
   margin-left: 3px
