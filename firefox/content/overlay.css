@@ -183,6 +183,12 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: -15px
 }
 
+#navigator-toolbox #toolbar-menubar .aurora #disconnect-badge {
+  margin-top: 7px;
+  margin-right: 0;
+  margin-left: -10px
+}
+
 #navigator-toolbox[mode=text] #toolbar-menubar #disconnect-badge {
   margin-top: 9px;
   margin-left: -5px
@@ -221,6 +227,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #TabsToolbar[mode=icons] .aurora #disconnect-badge { margin-top: 8px }
 
+#TabsToolbar[mode=icons] .aurora .windows#disconnect-badge { margin-top: 10px }
+
 #nav-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 21px;
   margin-right: 18px;
@@ -232,6 +240,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-right: 8px;
   margin-left: -18px
 }
+
+#nav-bar[mode=icons] .aurora .windows#disconnect-badge { margin-top: 19px }
 
 #navigator-toolbox[iconsize=small] #nav-bar[mode=icons] #disconnect-badge {
   margin-top: 9px
