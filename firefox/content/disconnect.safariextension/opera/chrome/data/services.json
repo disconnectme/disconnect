@@ -517,14 +517,6 @@
   {"Developer Media": {"http://developermedia.com/": [
     "developermedia.com", "lqcdn.com"
   ]}},
-  {"DG": {"http://www.dgit.com/": [
-    "dgit.com",
-    "eyeblaster.com",
-    "eyewonder.com",
-    "mdadx.com",
-    "serving-sys.com",
-    "unicast.com"
-  ]}},
   {"dianomi": {"http://www.dianomi.com/": ["dianomi.com"]}},
   {"Didit": {"http://www.didit.com/": ["did-it.com", "didit.com"]}},
   {"Digital River": {"http://www.digitalriver.com/": [
@@ -1833,6 +1825,14 @@
   {"Conviva": {"http://www.conviva.com/": ["conviva.com"]}},
   {"DailyMe": {"http://dailyme.com/": ["dailyme.com", "newstogram.com"]}},
   {"DataSift": {"http://datasift.com/": ["datasift.com", "tweetmeme.com"]}},
+  {"DG": {"http://www.dgit.com/": [
+    "dgit.com",
+    "eyeblaster.com",
+    "eyewonder.com",
+    "mdadx.com",
+    "serving-sys.com",
+    "unicast.com"
+  ]}},
   {"Disqus": {"http://disqus.com/": ["disqus.com"]}},
   {"Echo": {"http://aboutecho.com/": [
     "aboutecho.com", "haloscan.com", "js-kit.com"
