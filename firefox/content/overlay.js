@@ -884,6 +884,7 @@ if (typeof Disconnect == 'undefined') {
       var buildName = 'build';
       var firstBuildName = 'firstBuild';
       var navbarName = 'nav-bar';
+      var itemName = 'disconnect-item';
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
@@ -898,6 +899,7 @@ if (typeof Disconnect == 'undefined') {
       var currentBuild = 32;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
+      var aurora = navigator.userAgent.split('Firefox/', 2)[1] >= 29;
 
       if (!whitelist) {
         whitelist = '{}';
@@ -941,30 +943,34 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        var currentSet = toolbar.getAttribute(currentSetName).split(',');
-        var currentItem;
-        var defaultSet = [
-          'unified-back-forward-button',
-          'urlbar-container',
-          'reload-button',
-          'stop-button',
-          'search-container',
-          'webrtc-status-button',
-          'bookmarks-menu-button',
-          'downloads-button',
-          'home-button'
-        ];
+        if (aurora) {
+          toolbar.insertItem(itemName);
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
+        } else {
+          var currentSet = toolbar.getAttribute(currentSetName).split(',');
+          var currentItem;
+          var defaultSet = [
+            'unified-back-forward-button',
+            'urlbar-container',
+            'reload-button',
+            'stop-button',
+            'search-container',
+            'webrtc-status-button',
+            'bookmarks-menu-button',
+            'downloads-button',
+            'home-button'
+          ];
 
-        for (var i = 0; currentItem = currentSet[i]; i++) {
-          var defaultItem = defaultSet[i];
-          if (!defaultItem || currentItem != defaultItem) break;
+          for (var i = 0; currentItem = currentSet[i]; i++) {
+            var defaultItem = defaultSet[i];
+            if (!defaultItem || currentItem != defaultItem) break;
+          }
+
+          toolbar.insertItem(itemName, document.getElementById(currentItem));
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
         }
-
-        toolbar.insertItem(
-          'disconnect-item', document.getElementById(currentItem)
-        );
-        toolbar.setAttribute(currentSetName, toolbar.currentSet);
-        document.persist(navbarName, currentSetName);
       }
 
       whitelist = JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1322,8 +1328,7 @@ if (typeof Disconnect == 'undefined') {
             getElementsByTagName('html:input')[0];
       if (os == 'WINNT') button.add(badge).addClass('windows');
       else if (os == 'Linux') button.add(badge).addClass('linux');
-      navigator.userAgent.split('Firefox/', 2)[1] >= 29 &&
-          button.parent().addClass('aurora');
+      aurora && button.parent().addClass('aurora');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
