@@ -1320,9 +1320,10 @@ if (typeof Disconnect == 'undefined') {
           document.
             getElementsByClassName('disconnect-counter')[0].
             getElementsByTagName('html:input')[0];
-
-      os == 'WINNT' && button.add(badge).addClass('windows');
-      os == 'Linux' && button.add(badge).addClass('linux');
+      if (os == 'WINNT') button.add(badge).addClass('windows');
+      else if (os == 'Linux') button.add(badge).addClass('linux');
+      navigator.userAgent.split('Firefox/', 2)[1] >= 29 &&
+          button.parent().addClass('aurora');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);

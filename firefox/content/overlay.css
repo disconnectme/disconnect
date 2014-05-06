@@ -2,7 +2,7 @@
   An overlay style sheet that makes the web faster, more private, and more
   secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -159,6 +159,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #disconnect-item vbox { width: 4px }
 
+.aurora#disconnect-item vbox { margin-top: 4px }
+
 #disconnect-badge {
   margin: 16px 4px 0 -14px;
   padding-right: 1px;
@@ -216,6 +218,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-right: 5px;
   margin-left: -15px
 }
+
+#TabsToolbar[mode=icons] .aurora #disconnect-badge { margin-top: 8px }
 
 #nav-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 21px;
