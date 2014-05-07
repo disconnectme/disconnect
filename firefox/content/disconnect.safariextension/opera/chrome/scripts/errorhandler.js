@@ -1,5 +1,5 @@
 /*
-  A script that catches errors and reports them to Disconnect servers.
+  A script that catches errors and reports them to Disconnect.
 
   Copyright 2010-2014 Disconnect, Inc.
 
@@ -20,14 +20,31 @@
     Eason Goodale <eason.goodale@gmail.com>
 */
 
-window.onerror = function (message, filename, linenumber) {
-  console.log("message: " + message + " linenumber: " + linenumber);
+function pingURL(url) {
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.open('GET', url);
+  httpRequest.send();
+}
+
+function errorReport(message, filename, linenumber) {
+  var version = 'unknown'
+  if (!linenumber) linenumber = 'unknown'
+  if (!message) message = 'unknown'
+
   try {
+    version = chrome.runtime.getManifest().version;
+    console.log('message: ' + message + ' linenumber: ' + linenumber);
     var filename = filename.substr(filename.lastIndexOf('/') + 1);
-    $.get("https://disconnect.me/error/d2/" + CURRENT_BUILD + "/" + linenumber + "/" + filename);
+    filename = filename.slice(0, -3)
+    message = message.split(' ').join('+');
+    pingURL('https://disconnect.me/error/d2/' + version + '/' + filename + '/' + linenumber + "/" + message);
+    console.log('https://disconnect.me/error/d2/' + version + '/' + filename + '/' + linenumber)
   }
   catch(e) {
-    $.get("https://disconnect.me/error/d2/" + linenumber);
+    console.log('message: ' + message + ' linenumber: ' + linenumber);
+    pingURL('https://disconnect.me/error/d2/' + version + '/' + linenumber);
   }
   return true;
 };
+
+window.onerror = errorReport;
