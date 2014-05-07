@@ -718,44 +718,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-if (options.displayMode == LEGACY_NAME) {
-  $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
-    if (data.goldenticket === 'true') {
-      options.promoRunning = true;
-      options.displayMode = LIST_NAME;
-      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-      downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-} else if (options.firstBuild < 62 && !options.ecpaShown) {
-  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
-    if (data.goldenticket === 'true') {
-      options.ecpaShown = true;
-      dispatchBubble(
-        'Help reform US privacy law',
-        'Click to join Disconnect in supporting a petition to improve digital privacy.',
-        'https://disconnect.me/ecpa'
-      );
-    }
-  });
-} else if (options.firstBuild < 72 && !options.showPaymentNotification && !(paid())) {
-  $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotification', function(data) {
-    if (data.data === 'true') {
-      options.promoRunning = true;
-      options.paymentNotificationDate = new Date();
-      options.showPaymentNotification = 'true'
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-}
-
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
   var pwyw = deserialize(options.pwyw) || {};
