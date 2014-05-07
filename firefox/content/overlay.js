@@ -1253,12 +1253,41 @@ if (typeof Disconnect == 'undefined') {
           preferences.setCharPref(
             pwywName, JSON.stringify({date: date, bucket: 'trying'})
           );
-          var tab =
-              Components.
-                classes['@mozilla.org/appshell/window-mediator;1'].
-                getService(Components.interfaces.nsIWindowMediator).
-                getMostRecentWindow('navigator:browser').
-                gBrowser.addTab('https://disconnect.me/desktop/welcome');
+          var historyService = Components.classes["@mozilla.org/browser/nav-history-service;1"].getService(Components.interfaces.nsINavHistoryService);
+          var query1 = historyService.getNewQuery();
+          query1.searchTerms = 'disconnect/partner';
+          query1.domain = 'disconnect.me';
+          query1.beginTimeReference = query1.TIME_RELATIVE_NOW;
+          query1.beginTime = -24 * 60 * 60 * 1000000 * 7; // 1 week ago in microseconds
+          query1.endTimeReference = query1.TIME_RELATIVE_NOW;
+          query1.endTime = 0; // now
+          var historyOptions = historyService.getNewQueryOptions();
+          var result = historyService.executeQueries([query1], 1, historyOptions);
+
+          var cont = result.root;
+          cont.containerOpen = true;
+          var partner = false;
+          for (var i = 0; i < cont.childCount; i ++) {
+            var node = cont.getChild(i);
+            var url = node.uri;
+            partner = url.substr(url.lastIndexOf('/') + 1);
+            //dump("\n" + partner + "\n");
+          }
+          cont.containerOpen = false;
+          var tab;
+          if (partner) {
+            tab = Components.classes['@mozilla.org/appshell/window-mediator;1'].
+              getService(Components.interfaces.nsIWindowMediator).
+              getMostRecentWindow('navigator:browser').
+              gBrowser.addTab('https://disconnect.me/d2/partner/' + partner);
+            preferences.setCharPref('partner', partner);
+          }
+          else {
+            tab = Components.classes['@mozilla.org/appshell/window-mediator;1'].
+              getService(Components.interfaces.nsIWindowMediator).
+              getMostRecentWindow('navigator:browser').
+              gBrowser.addTab('https://disconnect.me/desktop/welcome');
+          }
 
           gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
             this.removeEventListener('load', arguments.callee, true);
