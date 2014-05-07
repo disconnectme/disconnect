@@ -26,6 +26,7 @@
     "plusone.google.com",
     "voice.google.com",
     "wave.google.com",
+    "keep.google.com",
     "googleadservices.com",
     "googlemail.com",
     "googlesyndication.com",
@@ -1285,7 +1286,7 @@
   {"Tatto Media": {"http://tattomedia.com/": [
     "quicknoodles.com", "tattomedia.com"
   ]}},
-  {"Targetix": {"http://targetix.net/": ["targetix.net"]}}, 
+  {"Targetix": {"http://targetix.net/": ["targetix.net"]}},
   {"Teadma": {"http://www.teadma.com/": ["teadma.com"]}},
   {"Technorati": {"http://technorati.com/": [
     "technorati.com", "technoratimedia.com"
@@ -1485,7 +1486,7 @@
     "yldmgrimg.net"
   ]}},
   {"Yandex": {"http://www.yandex.com/": [
-    "web-visor.com", "moikrug.ru", "yandex.com", "yandex.ru", "yandex.st", 
+    "web-visor.com", "moikrug.ru", "yandex.com", "yandex.ru", "yandex.st",
     "yandex.ua", "yandex.com.tr", "yandex.by"
   ]}},
   {"Ybrant Digital": {"http://www.ybrantdigital.com/": [
