@@ -1837,7 +1837,7 @@
   {"Echo": {"http://aboutecho.com/": [
     "aboutecho.com", "haloscan.com", "js-kit.com"
   ]}},
-  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net"]}},
+  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net", "instagram.com"]}},
   {"Flattr": {"http://flattr.com/": ["flattr.com"]}},
   {"FreeWheel": {"http://www.freewheel.tv/": ["freewheel.tv", "fwmrm.net"]}},
   {"Get Satisfaction": {"https://getsatisfaction.com/": [
