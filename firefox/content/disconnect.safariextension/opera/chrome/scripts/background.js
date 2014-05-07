@@ -764,51 +764,27 @@ if (options.firstBuild > 71) {
   var lastShown = options.lastShown || moment();
 
   if (pwyw.bucket == 'viewed-cream') {
-    if (currentDate > installDate.clone().add('days', 1)) {
-      clearBadge();
+    if (currentDate > installDate.clone().add('days', 3)) {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+      options.lastShown = moment();
+      clearBadge();
       dispatchBubble(
         'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
         '',
         'https://disconnect.me/welcome/paysomething-1'
       );
-      options.lastShown = moment();
     }
   }
   else if (pwyw.bucket == 'viewed-cream-1') {
-    if (currentDate > installDate.clone().add('days', 3)) {
-      clearBadge();
+    if (currentDate > installDate.clone().add('days', 10)) {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+      options.lastShown = moment();
+      clearBadge();
       dispatchBubble(
         'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
         '',
         'https://disconnect.me/welcome/paysomething-2'
       );
-      options.lastShown = moment();
-    }
-  }
-  else if (pwyw.bucket == 'viewed-cream-2') {
-    if (currentDate > installDate.clone().add('days', 7)) {
-      clearBadge();
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
-      dispatchBubble(
-        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-3'
-      );
-      options.lastShown = moment();
-    }
-  }
-  else if ((pwyw.bucket == 'viewed-cream-3') || (pwyw.bucket == 'viewed-cream-4')) {
-    if (currentDate > lastShown.clone().add('days', 7)) {
-      clearBadge();
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
-      dispatchBubble(
-        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-3'
-      );
-      options.lastShown = moment();
     }
   }
 
@@ -839,22 +815,12 @@ if (options.firstBuild > 71) {
     }
 
     if (pwyw.bucket == 'viewed-cream') {
-      if (currentDate > installDate.clone().add('days', 1)) {
-        setCreamBadge();
-      }
-    }
-    else if (pwyw.bucket == 'viewed-cream-1') {
       if (currentDate > installDate.clone().add('days', 3)) {
         setCreamBadge();
       }
     }
-    else if (pwyw.bucket == 'viewed-cream-2') {
-      if (currentDate > installDate.clone().add('days', 7)) {
-        setCreamBadge();
-      }
-    }
-    else if (pwyw.bucket == 'viewed-cream-3' || pwyw.bucket == 'viewed-cream-4') {
-      if (currentDate > lastShown.clone().add('days', 7)) {
+    else if (pwyw.bucket == 'viewed-cream-1') {
+      if (currentDate > installDate.clone().add('days', 10)) {
         setCreamBadge();
       }
     }
