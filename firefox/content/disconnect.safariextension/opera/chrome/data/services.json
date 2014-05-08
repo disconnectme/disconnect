@@ -26,6 +26,7 @@
     "plusone.google.com",
     "voice.google.com",
     "wave.google.com",
+    "keep.google.com",
     "googleadservices.com",
     "googlemail.com",
     "googlesyndication.com",
@@ -1277,7 +1278,7 @@
   {"Tatto Media": {"http://tattomedia.com/": [
     "quicknoodles.com", "tattomedia.com"
   ]}},
-  {"Targetix": {"http://targetix.net/": ["targetix.net"]}}, 
+  {"Targetix": {"http://targetix.net/": ["targetix.net"]}},
   {"Teadma": {"http://www.teadma.com/": ["teadma.com"]}},
   {"Technorati": {"http://technorati.com/": [
     "technorati.com", "technoratimedia.com"
@@ -1477,7 +1478,7 @@
     "yldmgrimg.net"
   ]}},
   {"Yandex": {"http://www.yandex.com/": [
-    "web-visor.com", "moikrug.ru", "yandex.com", "yandex.ru", "yandex.st", 
+    "web-visor.com", "moikrug.ru", "yandex.com", "yandex.ru", "yandex.st",
     "yandex.ua", "yandex.com.tr", "yandex.by"
   ]}},
   {"Ybrant Digital": {"http://www.ybrantdigital.com/": [
@@ -1837,7 +1838,7 @@
   {"Echo": {"http://aboutecho.com/": [
     "aboutecho.com", "haloscan.com", "js-kit.com"
   ]}},
-  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net"]}},
+  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net", "instagram.com"]}},
   {"Flattr": {"http://flattr.com/": ["flattr.com"]}},
   {"FreeWheel": {"http://www.freewheel.tv/": ["freewheel.tv", "fwmrm.net"]}},
   {"Get Satisfaction": {"https://getsatisfaction.com/": [

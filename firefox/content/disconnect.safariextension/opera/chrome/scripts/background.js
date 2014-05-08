@@ -298,7 +298,7 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 72;
+const CURRENT_BUILD = 74;
 
 /* The previous build number. */
 const PREVIOUS_BUILD = options.build;
@@ -441,7 +441,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 
   if (PREVIOUS_BUILD || options.initialized) options.pwyw = JSON.stringify({});
   else {
-    options.pwyw = JSON.stringify({});
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
     options.displayMode = LIST_NAME;
     options.installDate = moment();
     var partner = false;
@@ -457,7 +457,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
         options.pwyw = JSON.stringify({date: date, bucket: 'trying'});
       }
       else if (partner) {
-        options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
         TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
       }
       else if (CURRENT_BUILD > 71) {
@@ -718,44 +718,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-if (options.displayMode == LEGACY_NAME) {
-  $.getJSON('https://goldenticket.disconnect.me/d2', function(data) {
-    if (data.goldenticket === 'true') {
-      options.promoRunning = true;
-      options.displayMode = LIST_NAME;
-      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-      downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-} else if (options.firstBuild < 62 && !options.ecpaShown) {
-  $.getJSON('https://goldenticket.disconnect.me/ecpa', function(data) {
-    if (data.goldenticket === 'true') {
-      options.ecpaShown = true;
-      dispatchBubble(
-        'Help reform US privacy law',
-        'Click to join Disconnect in supporting a petition to improve digital privacy.',
-        'https://disconnect.me/ecpa'
-      );
-    }
-  });
-} else if (options.firstBuild < 72 && !options.showPaymentNotification && !(paid())) {
-  $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=paymentNotification', function(data) {
-    if (data.data === 'true') {
-      options.promoRunning = true;
-      options.paymentNotificationDate = new Date();
-      options.showPaymentNotification = 'true'
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-}
-
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
   var pwyw = deserialize(options.pwyw) || {};
@@ -764,51 +726,27 @@ if (options.firstBuild > 71) {
   var lastShown = options.lastShown || moment();
 
   if (pwyw.bucket == 'viewed-cream') {
-    if (currentDate > installDate.clone().add('days', 1)) {
-      clearBadge();
+    if (currentDate > installDate.clone().add('days', 3)) {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+      options.lastShown = moment();
+      clearBadge();
       dispatchBubble(
         'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
         '',
         'https://disconnect.me/welcome/paysomething-1'
       );
-      options.lastShown = moment();
     }
   }
   else if (pwyw.bucket == 'viewed-cream-1') {
-    if (currentDate > installDate.clone().add('days', 3)) {
-      clearBadge();
+    if (currentDate > installDate.clone().add('days', 10)) {
       options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+      options.lastShown = moment();
+      clearBadge();
       dispatchBubble(
         'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
         '',
         'https://disconnect.me/welcome/paysomething-2'
       );
-      options.lastShown = moment();
-    }
-  }
-  else if (pwyw.bucket == 'viewed-cream-2') {
-    if (currentDate > installDate.clone().add('days', 7)) {
-      clearBadge();
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
-      dispatchBubble(
-        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-3'
-      );
-      options.lastShown = moment();
-    }
-  }
-  else if ((pwyw.bucket == 'viewed-cream-3') || (pwyw.bucket == 'viewed-cream-4')) {
-    if (currentDate > lastShown.clone().add('days', 7)) {
-      clearBadge();
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
-      dispatchBubble(
-        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-3'
-      );
-      options.lastShown = moment();
     }
   }
 
@@ -819,75 +757,80 @@ if (options.firstBuild > 71) {
     if (!(options.lastShown)) {
       options.lastShown = moment();
     }
-    var pwyw = deserialize(options.pwyw) || {};
     var installDate = moment(options.installDate);
     var currentDate = moment();
-    var lastShown; 
+    var pwyw;
+    var lastShown;
     try {
-      moment(options.lastShown);
+      pwyw = deserialize(options.pwyw) || {};
+      var bucket = pwyw.bucket;
+    }
+    catch (e) {
+      options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+      pwyw = deserialize(options.pwyw);
+    }
+    try {
+      lastShown = moment(options.lastShown) || moment();
     }
     catch(e) {
       lastShown = moment();
     }
 
     if (pwyw.bucket == 'viewed-cream') {
-      if (currentDate > installDate.clone().add('days', 1)) {
-        setCreamBadge();
-      }
-    }
-    else if (pwyw.bucket == 'viewed-cream-1') {
       if (currentDate > installDate.clone().add('days', 3)) {
         setCreamBadge();
       }
     }
-    else if (pwyw.bucket == 'viewed-cream-2') {
-      if (currentDate > installDate.clone().add('days', 7)) {
+    else if (pwyw.bucket == 'viewed-cream-1') {
+      if (currentDate > installDate.clone().add('days', 10)) {
         setCreamBadge();
       }
     }
-    else if (pwyw.bucket == 'viewed-cream-3' || pwyw.bucket == 'viewed-cream-4') {
-      if (currentDate > lastShown.clone().add('days', 7)) {
-        setCreamBadge();
-      }
-    }
-  }, 10000);
+  }, 100000);
 }
 
-if (!deserialize(options.pwyw).date) {
-  downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
+try {
+  if (!deserialize(options.pwyw).date) {
+    downgradeServices(true);
+    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
 
-  $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
-    if (data.goldenticket === 'true') {
-      options.displayMode = LIST_NAME;
-      options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-      downgradeServices();
-      BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-      BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-      BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-      BROWSER_ACTION.setPopup({popup: ''});
-    }
-  });
-} else if (deserialize(options.pwyw).bucket == 'postponed') {
-  options.displayMode = LEGACY_NAME;
-  downgradeServices(true);
-  BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
-} else {
-  const PWYW = deserialize(options.pwyw);
-  if (PWYW.bucket == 'later')
-      options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
-          // "later" was accidentally live for a bit.
-  BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-
-  if (deserialize(options.pwyw).bucket == 'trying') {
-    $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+    $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
       if (data.goldenticket === 'true') {
-        options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
+        options.displayMode = LIST_NAME;
+        options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
+        downgradeServices();
+        BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
         BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-        BROWSER_ACTION.setBadgeText({text: 'PSST!'});
+        BROWSER_ACTION.setBadgeText({text: 'NEW!'});
         BROWSER_ACTION.setPopup({popup: ''});
       }
     });
+  } else if (deserialize(options.pwyw).bucket == 'postponed') {
+    options.displayMode = LEGACY_NAME;
+    downgradeServices(true);
+    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
+  } else {
+    const PWYW = deserialize(options.pwyw);
+    if (PWYW.bucket == 'later')
+        options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
+            // "later" was accidentally live for a bit.
+    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
+
+    if (deserialize(options.pwyw).bucket == 'trying') {
+      $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
+        if (data.goldenticket === 'true') {
+          options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
+          BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
+          BROWSER_ACTION.setBadgeText({text: 'PSST!'});
+          BROWSER_ACTION.setPopup({popup: ''});
+        }
+      });
+    }
+  }
+}
+catch (e) {
+  if (!(options.pwyw)) {
+    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 }
 
