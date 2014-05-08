@@ -30,7 +30,7 @@ var EXTENSION = chrome.extension;
 var servicePointer;
 
 /* Traps and selectively cancels a request and messages such. */
-EXTENSION.sendRequest({initialized: true}, function(response) {
+SAFARI && EXTENSION.sendRequest({initialized: true}, function(response) {
   servicePointer = response.servicePointer;
   var GET = (new Sitename(response.tlds)).get;
   var PARENT_DOMAIN = response.domain;
@@ -83,39 +83,39 @@ EXTENSION.sendRequest({initialized: true}, function(response) {
       type: (TARGET.nodeName || '').toLowerCase()
     });
   }, true);
-
-  if (location.href.indexOf('disconnect.me') + 1) {
-    $(function() {
-      var CONTROL = document.getElementById('input-type');
-      var BUCKET = CONTROL && CONTROL.getAttribute('value');
-      BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
-
-      if (location.href.indexOf('paysomething') + 1) {
-        var remindMe = document.getElementById('no');
-        var alreadyPaid = document.getElementById('already-paid');
-        var emailed = document.getElementById('email');
-
-        remindMe && remindMe.addEventListener('click', function(e) {
-          EXTENSION.sendRequest({
-            deleteTab: true, 
-            pingURL: "https://disconnect.me/cream/no"
-          });
-        }, false);
-        alreadyPaid && alreadyPaid.addEventListener('click', function(e) {
-          EXTENSION.sendRequest({pwyw: true, bucket: "already-paid"});
-          EXTENSION.sendRequest({
-            deleteTab: true, 
-            pingURL: "https://disconnect.me/cream/already-paid"
-          });
-        }, false);
-        emailed && emailed.addEventListener('click', function(e) {
-          EXTENSION.sendRequest({pwyw: true, bucket: "emailed"});
-          EXTENSION.sendRequest({
-            deleteTab: true, 
-            pingURL: "https://disconnect.me/cream/email-opened"
-          });
-        }, false);
-      }
-    });
-  }
 });
+
+if (location.href.indexOf('disconnect.me') + 1) {
+  $(function() {
+    var CONTROL = document.getElementById('input-type');
+    var BUCKET = CONTROL && CONTROL.getAttribute('value');
+    BUCKET && EXTENSION.sendRequest({pwyw: true, bucket: BUCKET});
+
+    if (location.href.indexOf('paysomething') + 1) {
+      var remindMe = document.getElementById('no');
+      var alreadyPaid = document.getElementById('already-paid');
+      var emailed = document.getElementById('email');
+
+      remindMe && remindMe.addEventListener('click', function(e) {
+        EXTENSION.sendRequest({
+          deleteTab: true, 
+          pingURL: "https://disconnect.me/cream/no"
+        });
+      }, false);
+      alreadyPaid && alreadyPaid.addEventListener('click', function(e) {
+        EXTENSION.sendRequest({pwyw: true, bucket: "already-paid"});
+        EXTENSION.sendRequest({
+          deleteTab: true, 
+          pingURL: "https://disconnect.me/cream/already-paid"
+        });
+      }, false);
+      emailed && emailed.addEventListener('click', function(e) {
+        EXTENSION.sendRequest({pwyw: true, bucket: "emailed"});
+        EXTENSION.sendRequest({
+          deleteTab: true, 
+          pingURL: "https://disconnect.me/cream/email-opened"
+        });
+      }, false);
+    }
+  });
+}
