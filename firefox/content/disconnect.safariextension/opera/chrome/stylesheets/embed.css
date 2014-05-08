@@ -258,31 +258,23 @@
 #disconnect-options {
   margin-right: auto;
   margin-left: auto;
-  height: 45px;
-  text-align: center;
+  height: 36px;
   font-size: 8px;
   cursor: default
 }
 
+#disconnect-options td { cursor: pointer }
+
 #disconnect-options .disconnect-badge {
   width: 25px;
-  cursor: pointer
+  text-align: center
 }
 
-#disconnect-options .disconnect-badge.disconnect-disabled { cursor: default }
-
-#disconnect-options .disconnect-text { cursor: pointer }
-
-#disconnect-options .disconnect-whitelisting.disconnect-text { width: 65px }
-
-#disconnect-options .disconnect-visualization.disconnect-badge { opacity: .5 }
-
-#disconnect-options .disconnect-visualization.disconnect-text { width: 75px }
-
-#disconnect-options .disconnect-text.disconnect-disabled {
-  color: #ccc;
-  cursor: default
+#disconnect-options .disconnect-whitelisting.disconnect-badge {
+  padding-top: 2px
 }
+
+#disconnect-options .disconnect-text { width: 65px }
 
 #disconnect-options input {
   -webkit-appearance: none;

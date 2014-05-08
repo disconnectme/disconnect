@@ -1318,10 +1318,6 @@ if (typeof Disconnect == 'undefined') {
           shortcutSurface.getElementsByClassName('disconnect-shortcut')[0];
       var categorySurface = $(document.getElementById('disconnect-categories'));
       var categoryTemplate = categorySurface.children();
-      var wifi =
-          document.
-            getElementsByClassName('disconnect-wifi')[0].
-            getElementsByTagName('html:input')[0];
       var counter =
           document.
             getElementsByClassName('disconnect-counter')[0].
@@ -1423,14 +1419,6 @@ if (typeof Disconnect == 'undefined') {
             appendTo(categorySurface).
             find('.disconnect-badge')[0].
             alt = categoryNames[i];
-      wifi.checked = browsingHardened;
-
-      wifi.addEventListener(clickName, function() {
-        browsingHardened = !browsingHardened;
-        preferences.setBoolPref(browsingHardenedName, browsingHardened);
-        this.checked = browsingHardened;
-      }, false);
-
       counter.checked = blockingIndicated;
 
       counter.addEventListener(clickName, function() {
@@ -1548,7 +1536,7 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
-          $('#disconnect-list').height(335);
+          $('#disconnect-list').height(326);
 
           $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
@@ -1773,13 +1761,13 @@ if (typeof Disconnect == 'undefined') {
                         serviceContainer.find('.disconnect-service').length - 1,
                         10
                       );
-                  $('#disconnect-list').height(serviceCount * 20 + 335);
+                  $('#disconnect-list').height(serviceCount * 20 + 326);
                   activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#disconnect-list').height() == 335;
+                var collapsed = $('#disconnect-list').height() == 326;
                 var serviceCount =
                     Math.min(
                       serviceContainer.find('.disconnect-service').length - 1,
@@ -1788,7 +1776,7 @@ if (typeof Disconnect == 'undefined') {
 
                 setTimeout(function() {
                   $('#disconnect-list').height(function() {
-                    return collapsed ? serviceCount * 20 + 335 : 335;
+                    return collapsed ? serviceCount * 20 + 326 : 326;
                   });
                 }, collapsed ? 0 : 200);
 
