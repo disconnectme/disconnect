@@ -23,6 +23,8 @@
   ],
   "background": {
     "scripts": [
+      "chrome/scripts/errorhandler.js",
+      "chrome/scripts/vendor/moment/moment.js",
       "chrome/scripts/vendor/port/port.js",
       "chrome/scripts/vendor/jquery/jquery.js",
       "chrome/scripts/vendor/sitename/alttlds.js",
