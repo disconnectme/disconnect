@@ -161,7 +161,7 @@ function initializeToolbar() {
 
   if (SAFARI) {
     DETAILS.width = 148;
-    DETAILS.height = 217;
+    DETAILS.height = 356;
   }
 
   BROWSER_ACTION.setPopup(DETAILS);
@@ -181,6 +181,7 @@ function getCount(tabRequests) {
 
 /* Creates an HTML5 Growl notification. */
 function dispatchBubble(title, text, link) {
+  if (!(window.Notification)) return
   var link = link || false;
   var notification =
       new Notification(title, {
@@ -445,7 +446,26 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
     options.displayMode = LIST_NAME;
     options.installDate = moment();
     var partner = false;
-    TABS.query({url: "*://*.disconnect.me/*"}, function(disconnectTabs) {
+    if (SAFARI) {
+      safari.application.browserWindows.forEach(function(windowObject) {
+        windowObject.tabs.forEach(function(tab) {
+          var url = tab.url;
+          if (url && url.indexOf('disconnect.me/disconnect/partner') + 1) {
+            partner = url.substr(url.lastIndexOf('/') + 1);
+            options.referrer = partner;
+          }
+        });
+      });
+      if (partner) {
+        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
+        TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
+      }
+      else {
+        options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
+        TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+      }
+    }
+    else TABS.query({url: "*://*.disconnect.me/*"}, function(disconnectTabs) {
       disconnectTabs.forEach(function(tab) {
         url = tab.url;
         if (tab.url.indexOf('partner') + 1) {

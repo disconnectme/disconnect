@@ -41,12 +41,12 @@
   font-weight: normal
 }
 
-html { height: 306px }
+html { height: 356px }
 
 body {
   margin: 0;
   background: white;
-  height: 306px;
+  height: 356px;
   font-family: 'Antenna RE', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   -webkit-user-select: none
