@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Disconnect",
-  "version": "5.17.1",
+  "version": "5.17.2",
   "description": "Make the web faster, more private, and more secure.",
   "icons": {"48": "chrome/images/48.png", "128": "chrome/images/128.png"},
   "permissions": [
