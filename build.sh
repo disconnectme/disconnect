@@ -36,9 +36,11 @@ content/disconnect.safariextension/opera/chrome/scripts/chrollusion/graphrunner.
 content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index-embed.js \
 content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index.js \
 content/disconnect.safariextension/opera/chrome/scripts/content.js \
+content/disconnect.safariextension/opera/chrome/scripts/errorhandler.js \
 content/disconnect.safariextension/opera/chrome/scripts/popup.js \
 content/disconnect.safariextension/opera/chrome/scripts/services.js \
 content/disconnect.safariextension/opera/chrome/scripts/share.js \
+content/disconnect.safariextension/opera/chrome/scripts/vendor/moment/\* \
 content/disconnect.safariextension/opera/chrome/scripts/vendor/port/\* \
 content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped/\* \
 content/disconnect.safariextension/opera/chrome/stylesheets/chrollusion/\* \
