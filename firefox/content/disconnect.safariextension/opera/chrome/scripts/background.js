@@ -834,6 +834,26 @@ catch (e) {
   }
 }
 
+// Check site for new notification
+$.getJSON('https://disconnect.me/current-notification', function(notificationJSON) {
+  try {
+    if (notificationJSON.running && !(options[notificationJSON.test])) {
+      if (notificationJSON.type === 'growl') {
+        options[notificationJSON.test] = moment();
+        dispatchBubble(
+          notificationJSON.growlText.main,
+          notificationJSON.growlText.secondary,
+          notificationJSON.pageToOpen
+        );
+      }
+    }
+  }
+  catch(e) {
+    var version = chrome.runtime.getManifest().version || 'unknown';
+    pingURL('https://disconnect.me/error/d2/' + version + '/notification/' + linenumber)
+  }
+});
+
 if (
   (deserialize(options.pwyw) || {}).bucket == 'pending' ||
       deserialize(options.promoRunning)
