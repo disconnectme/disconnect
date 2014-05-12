@@ -271,6 +271,15 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: -14px
 }
 
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.aurora
+.windows#disconnect-badge {
+  margin-top: 19px;
+  margin-right: 18px;
+  margin-left: -28px
+}
+
 #nav-bar[mode=text] #disconnect-badge {
   margin-top: 3px;
   margin-left: 3px
