@@ -849,8 +849,7 @@ $.getJSON('https://disconnect.me/current-notification', function(notificationJSO
     }
   }
   catch(e) {
-    var version = chrome.runtime.getManifest().version || 'unknown';
-    pingURL('https://disconnect.me/error/d2/' + version + '/notification/' + linenumber)
+    pingURL('https://disconnect.me/error/d2/notificationError')
   }
 });
 
