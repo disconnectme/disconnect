@@ -745,29 +745,34 @@ if (options.firstBuild > 71) {
   var currentDate = moment();
   var lastShown = options.lastShown || moment();
 
-  if (pwyw.bucket == 'viewed-cream') {
-    if (currentDate > installDate.clone().add('days', 3)) {
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
-      options.lastShown = moment();
-      clearBadge();
-      dispatchBubble(
-        'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-1'
-      );
+  try {
+    if (pwyw.bucket == 'viewed-cream') {
+      if (currentDate > installDate.clone().add('days', 3)) {
+        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+        options.lastShown = moment();
+        clearBadge();
+        dispatchBubble(
+          'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
+          '',
+          'https://disconnect.me/welcome/paysomething-1'
+        );
+      }
+    }
+    else if (pwyw.bucket == 'viewed-cream-1') {
+      if (currentDate > installDate.clone().add('days', 10)) {
+        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+        options.lastShown = moment();
+        clearBadge();
+        dispatchBubble(
+          'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
+          '',
+          'https://disconnect.me/welcome/paysomething-2'
+        );
+      }
     }
   }
-  else if (pwyw.bucket == 'viewed-cream-1') {
-    if (currentDate > installDate.clone().add('days', 10)) {
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
-      options.lastShown = moment();
-      clearBadge();
-      dispatchBubble(
-        'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-        '',
-        'https://disconnect.me/welcome/paysomething-2'
-      );
-    }
+  catch(e) {
+    pingURL('https://disconnect.me/error/d2/creamGrowlError');
   }
 
   setInterval(function() {
