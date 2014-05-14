@@ -796,15 +796,20 @@ if (options.firstBuild > 71) {
       lastShown = moment();
     }
 
-    if (pwyw.bucket == 'viewed-cream') {
-      if (currentDate > installDate.clone().add('days', 3)) {
-        setCreamBadge();
+    try {
+      if (pwyw.bucket == 'viewed-cream') {
+        if (currentDate > installDate.clone().add('days', 3)) {
+          setCreamBadge();
+        }
+      }
+      else if (pwyw.bucket == 'viewed-cream-1') {
+        if (currentDate > installDate.clone().add('days', 10)) {
+          setCreamBadge();
+        }
       }
     }
-    else if (pwyw.bucket == 'viewed-cream-1') {
-      if (currentDate > installDate.clone().add('days', 10)) {
-        setCreamBadge();
-      }
+    catch(e) {
+      pingURL('https://disconnect.me/error/d2/creamBadgeError');
     }
   }, 100000);
 }
