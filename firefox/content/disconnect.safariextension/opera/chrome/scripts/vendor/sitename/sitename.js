@@ -88,7 +88,17 @@ function Sitename(tlds) {
     initialized = true;
   } else tlds = {};
 
-  reload && $.get(tldList, function(data) { parseTldList(data); });
+  reload && $.get(tldList, function(data) {
+    if (data) {
+      parseTldList(data);
+    }
+    else {
+      pingURL('https://disconnect.me/error/d2/sitenameDataFalse');
+      if (!(localStorage.tlds)) {
+        pingURL('https://disconnect.me/error/d2/noTLDS');
+      }
+    }
+  });
 
   return this;
 }
