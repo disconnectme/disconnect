@@ -35,6 +35,27 @@ function editSettings(state) {
   SUGGEST_ENABLED.set({value: state});
 }
 
+/* Check Disconnect for a new notification */
+function checkForNotification() {
+  $.getJSON('https://disconnect.me/current-notification', function(notificationJSON) {
+    try {
+      if (notificationJSON.running && !(options[notificationJSON.test])) {
+        if (notificationJSON.type === 'growl') {
+          options[notificationJSON.test] = moment();
+          dispatchBubble(
+            notificationJSON.growlText.main,
+            notificationJSON.growlText.secondary,
+            notificationJSON.pageToOpen
+          );
+        }
+      }
+    }
+    catch(e) {
+      console.log(e);
+    }
+  });
+}
+
 /* Rewrites a generic cookie with specific domains and paths. */
 function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
   const MINIMIZE = Math.min;
@@ -846,15 +867,15 @@ try {
             // "later" was accidentally live for a bit.
     BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
-    if (deserialize(options.pwyw).bucket == 'trying') {
-      $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
-        if (data.goldenticket === 'true') {
-          options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
-          BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-          BROWSER_ACTION.setBadgeText({text: 'PSST!'});
-          BROWSER_ACTION.setPopup({popup: ''});
-        }
-      });
+    if (!(options.serverNotification)) {
+      if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
+        $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=serverNotification', function(data) {
+          if (data.data == 'true') {
+            options.serverNotification = true;
+            checkForNotification();
+          }
+        });
+      }
     }
   }
 }
@@ -862,6 +883,10 @@ catch (e) {
   if (!(options.pwyw)) {
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
+}
+
+if (options.serverNotification) {
+  checkForNotification();
 }
 
 if (
