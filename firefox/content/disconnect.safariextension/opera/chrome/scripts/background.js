@@ -773,8 +773,8 @@ if (options.firstBuild > 71) {
         options.lastShown = moment();
         clearBadge();
         dispatchBubble(
-          'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
-          '',
+          'Just a quick reminder that Disconnect is pay-what-you-want software.',
+          '1 of 2',
           'https://disconnect.me/welcome/paysomething-1'
         );
       }
@@ -785,8 +785,8 @@ if (options.firstBuild > 71) {
         options.lastShown = moment();
         clearBadge();
         dispatchBubble(
-          'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-          '',
+          'We hope you’re enjoying Disconnect!  We rely on your support.',
+          '2 of 2',
           'https://disconnect.me/welcome/paysomething-2'
         );
       }
