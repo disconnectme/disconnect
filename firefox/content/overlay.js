@@ -884,6 +884,7 @@ if (typeof Disconnect == 'undefined') {
       var buildName = 'build';
       var firstBuildName = 'firstBuild';
       var navbarName = 'nav-bar';
+      var itemName = 'disconnect-item';
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
@@ -895,9 +896,10 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 31;
+      var currentBuild = 32;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
+      var aurora = navigator.userAgent.split('Firefox/', 2)[1] >= 29;
 
       if (!whitelist) {
         whitelist = '{}';
@@ -941,30 +943,34 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        var currentSet = toolbar.getAttribute(currentSetName).split(',');
-        var currentItem;
-        var defaultSet = [
-          'unified-back-forward-button',
-          'urlbar-container',
-          'reload-button',
-          'stop-button',
-          'search-container',
-          'webrtc-status-button',
-          'bookmarks-menu-button',
-          'downloads-button',
-          'home-button'
-        ];
+        if (aurora) {
+          toolbar.insertItem(itemName);
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
+        } else {
+          var currentSet = toolbar.getAttribute(currentSetName).split(',');
+          var currentItem;
+          var defaultSet = [
+            'unified-back-forward-button',
+            'urlbar-container',
+            'reload-button',
+            'stop-button',
+            'search-container',
+            'webrtc-status-button',
+            'bookmarks-menu-button',
+            'downloads-button',
+            'home-button'
+          ];
 
-        for (var i = 0; currentItem = currentSet[i]; i++) {
-          var defaultItem = defaultSet[i];
-          if (!defaultItem || currentItem != defaultItem) break;
+          for (var i = 0; currentItem = currentSet[i]; i++) {
+            var defaultItem = defaultSet[i];
+            if (!defaultItem || currentItem != defaultItem) break;
+          }
+
+          toolbar.insertItem(itemName, document.getElementById(currentItem));
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
         }
-
-        toolbar.insertItem(
-          'disconnect-item', document.getElementById(currentItem)
-        );
-        toolbar.setAttribute(currentSetName, toolbar.currentSet);
-        document.persist(navbarName, currentSetName);
       }
 
       whitelist = JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1220,7 +1226,7 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild) {
+      if (!previousBuild || previousBuild < 31) {
         var obamaDomain = 'barackobama.com';
         var domainWhitelist =
             whitelist[obamaDomain] || (whitelist[obamaDomain] = {});
@@ -1245,6 +1251,31 @@ if (typeof Disconnect == 'undefined') {
             );
         disconnectWhitelist.services.Google = true;
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var dailyMailDomain = 'dailymail.co.uk';
+        var domainWhitelist =
+            whitelist[dailyMailDomain] || (whitelist[dailyMailDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        analyticsWhitelist.services.comScore = true;
+        var telegraphDomain = 'telegraph.co.uk';
+        domainWhitelist =
+            whitelist[telegraphDomain] || (whitelist[telegraphDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
         preferences.setIntPref(buildName, currentBuild);
       }
 
@@ -1253,41 +1284,12 @@ if (typeof Disconnect == 'undefined') {
           preferences.setCharPref(
             pwywName, JSON.stringify({date: date, bucket: 'trying'})
           );
-          var historyService = Components.classes["@mozilla.org/browser/nav-history-service;1"].getService(Components.interfaces.nsINavHistoryService);
-          var query1 = historyService.getNewQuery();
-          query1.searchTerms = 'disconnect/partner';
-          query1.domain = 'disconnect.me';
-          query1.beginTimeReference = query1.TIME_RELATIVE_NOW;
-          query1.beginTime = -24 * 60 * 60 * 1000000 * 7; // 1 week ago in microseconds
-          query1.endTimeReference = query1.TIME_RELATIVE_NOW;
-          query1.endTime = 0; // now
-          var historyOptions = historyService.getNewQueryOptions();
-          var result = historyService.executeQueries([query1], 1, historyOptions);
-
-          var cont = result.root;
-          cont.containerOpen = true;
-          var partner = false;
-          for (var i = 0; i < cont.childCount; i ++) {
-            var node = cont.getChild(i);
-            var url = node.uri;
-            partner = url.substr(url.lastIndexOf('/') + 1);
-            //dump("\n" + partner + "\n");
-          }
-          cont.containerOpen = false;
-          var tab;
-          if (partner) {
-            tab = Components.classes['@mozilla.org/appshell/window-mediator;1'].
-              getService(Components.interfaces.nsIWindowMediator).
-              getMostRecentWindow('navigator:browser').
-              gBrowser.addTab('https://disconnect.me/d2/partner/' + partner);
-            preferences.setCharPref('partner', partner);
-          }
-          else {
-            tab = Components.classes['@mozilla.org/appshell/window-mediator;1'].
-              getService(Components.interfaces.nsIWindowMediator).
-              getMostRecentWindow('navigator:browser').
-              gBrowser.addTab('https://disconnect.me/desktop/welcome');
-          }
+          var tab =
+              Components.
+                classes['@mozilla.org/appshell/window-mediator;1'].
+                getService(Components.interfaces.nsIWindowMediator).
+                getMostRecentWindow('navigator:browser').
+                gBrowser.addTab('https://disconnect.me/desktop/welcome');
 
           gBrowser.getBrowserForTab(tab).addEventListener('load', function() {
             this.removeEventListener('load', arguments.callee, true);
@@ -1316,17 +1318,13 @@ if (typeof Disconnect == 'undefined') {
           shortcutSurface.getElementsByClassName('disconnect-shortcut')[0];
       var categorySurface = $(document.getElementById('disconnect-categories'));
       var categoryTemplate = categorySurface.children();
-      var wifi =
-          document.
-            getElementsByClassName('disconnect-wifi')[0].
-            getElementsByTagName('html:input')[0];
       var counter =
           document.
             getElementsByClassName('disconnect-counter')[0].
             getElementsByTagName('html:input')[0];
-
-      os == 'WINNT' && button.add(badge).addClass('windows');
-      os == 'Linux' && button.add(badge).addClass('linux');
+      if (os == 'WINNT') button.add(badge).addClass('windows');
+      else if (os == 'Linux') button.add(badge).addClass('linux');
+      aurora && button.parent().addClass('aurora');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
@@ -1421,14 +1419,6 @@ if (typeof Disconnect == 'undefined') {
             appendTo(categorySurface).
             find('.disconnect-badge')[0].
             alt = categoryNames[i];
-      wifi.checked = browsingHardened;
-
-      wifi.addEventListener(clickName, function() {
-        browsingHardened = !browsingHardened;
-        preferences.setBoolPref(browsingHardenedName, browsingHardened);
-        this.checked = browsingHardened;
-      }, false);
-
       counter.checked = blockingIndicated;
 
       counter.addEventListener(clickName, function() {
@@ -1546,7 +1536,7 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
-          $('#disconnect-list').height(335);
+          $('#disconnect-list').height(326);
 
           $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
@@ -1771,13 +1761,13 @@ if (typeof Disconnect == 'undefined') {
                         serviceContainer.find('.disconnect-service').length - 1,
                         10
                       );
-                  $('#disconnect-list').height(serviceCount * 20 + 335);
+                  $('#disconnect-list').height(serviceCount * 20 + 326);
                   activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#disconnect-list').height() == 335;
+                var collapsed = $('#disconnect-list').height() == 326;
                 var serviceCount =
                     Math.min(
                       serviceContainer.find('.disconnect-service').length - 1,
@@ -1786,7 +1776,7 @@ if (typeof Disconnect == 'undefined') {
 
                 setTimeout(function() {
                   $('#disconnect-list').height(function() {
-                    return collapsed ? serviceCount * 20 + 335 : 335;
+                    return collapsed ? serviceCount * 20 + 326 : 326;
                   });
                 }, collapsed ? 0 : 200);
 
