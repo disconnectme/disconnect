@@ -38,12 +38,12 @@ function errorReport(message, filename, linenumber) {
     var filename = filename.substr(filename.lastIndexOf('/') + 1);
     filename = filename.slice(0, -3)
     message = message.split(' ').join('+');
-    pingURL('https://disconnect.me/error/d2/' + firstBuild + '/' + version + '/' + filename + '/' + linenumber + "/" + message);
-    console.log('https://disconnect.me/error/d2/' + firstBuild + '/' + version + '/' + filename + '/' + linenumber)
+    pingURL('https://disconnect.me/error/d2/' + version + '/' + filename + '/' + linenumber + '/' + message + '/' + firstBuild);
+    console.log('https://disconnect.me/error/d2/' + version + '/' + filename + '/' + linenumber)
   }
   catch(e) {
     console.log('message: ' + message + ' linenumber: ' + linenumber);
-    pingURL('https://disconnect.me/error/d2/' + firstBuild + version + '/' + linenumber);
+    pingURL('https://disconnect.me/error/d2/caughtError/' + version + '/' + linenumber);
   }
   return true;
 };
