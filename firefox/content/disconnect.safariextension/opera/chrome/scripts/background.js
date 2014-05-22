@@ -298,14 +298,6 @@ function paid() {
   else return true;
 }
 
-/* Sets the badge to show the user a cream notification. */
-function setCreamBadge() {
-  options.promoRunning = true;
-  BROWSER_ACTION.setBadgeBackgroundColor({color: "#21953a"});
-  BROWSER_ACTION.setBadgeText({text: '$$$'});
-  BROWSER_ACTION.setPopup({popup: ''});
-}
-
 /* Clears a badge notification. */
 function clearBadge() {
   if (options.promoRunning) {delete options.promoRunning;}
@@ -761,81 +753,40 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
 
 // Check to see if user needs to pay with cream
 if (options.firstBuild > 71) {
-  var pwyw = deserialize(options.pwyw) || {};
-  var installDate = moment(options.installDate);
-  var currentDate = moment();
-  var lastShown = options.lastShown || moment();
-
-  try {
-    if (pwyw.bucket == 'viewed-cream') {
-      if (currentDate > installDate.clone().add('days', 3)) {
-        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
-        options.lastShown = moment();
-        clearBadge();
-        dispatchBubble(
-          'Just a quick reminder that Disconnect is pay-what-you-want software.',
-          '1 of 2',
-          'https://disconnect.me/welcome/paysomething-1'
-        );
-      }
-    }
-    else if (pwyw.bucket == 'viewed-cream-1') {
-      if (currentDate > installDate.clone().add('days', 10)) {
-        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
-        options.lastShown = moment();
-        clearBadge();
-        dispatchBubble(
-          'We hope you’re enjoying Disconnect!  We rely on your support.',
-          '2 of 2',
-          'https://disconnect.me/welcome/paysomething-2'
-        );
-      }
-    }
-  }
-  catch(e) {
-    pingURL('https://disconnect.me/error/d2/creamGrowlError');
-  }
-
   setInterval(function() {
-    if (!(options.installDate)) {
-      return;
-    }
-    if (!(options.lastShown)) {
-      options.lastShown = moment();
-    }
-    var installDate = moment(options.installDate);
-    var currentDate = moment();
-    var pwyw;
-    var lastShown;
     try {
-      pwyw = deserialize(options.pwyw) || {};
-      var bucket = pwyw.bucket;
-    }
-    catch (e) {
-      options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-      pwyw = deserialize(options.pwyw);
-    }
-    try {
-      lastShown = moment(options.lastShown) || moment();
-    }
-    catch(e) {
-      lastShown = moment();
-    }
+      var pwyw = deserialize(options.pwyw) || {};
+      var installDate = moment(options.installDate);
+      var currentDate = moment();
+      var lastShown = options.lastShown || moment();
 
-    try {
       if (pwyw.bucket == 'viewed-cream') {
         if (currentDate > installDate.clone().add('days', 3)) {
-          setCreamBadge();
+          options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
+          options.lastShown = moment();
+          clearBadge();
+          dispatchBubble(
+            'Just a quick reminder that Disconnect is pay-what-you-want software.',
+            '1 of 2',
+            'https://disconnect.me/welcome/paysomething-1'
+          );
         }
       }
       else if (pwyw.bucket == 'viewed-cream-1') {
-        if (currentDate > installDate.clone().add('days', 10)) {
-          setCreamBadge();
+        if (currentDate > moment(lastShown).clone().add('days', 7)) {
+          options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
+          options.lastShown = moment();
+          clearBadge();
+          dispatchBubble(
+            'We hope you’re enjoying Disconnect!  We rely on your support.',
+            '2 of 2',
+            'https://disconnect.me/welcome/paysomething-2'
+          );
         }
       }
     }
     catch(e) {
-      pingURL('https://disconnect.me/error/d2/creamBadgeError');
+      pingURL('https://disconnect.me/error/d2/creamGrowlError');
     }
   }, 100000);
 }
