@@ -133,26 +133,12 @@
                 <html:td class="disconnect-whitelisting disconnect-text">
                   Whitelist site
                 </html:td>
-                <html:td
-                  class="disconnect-visualization disconnect-badge disconnect-disabled"
-                  title="Coming soon"
-                >
-                  <html:img src="chrome://disconnect/skin/images/1/1.png"/>
-                </html:td>
-                <html:td
-                  class="disconnect-visualization disconnect-text disconnect-disabled"
-                  title="Coming soon"
-                >Visualize page</html:td>
-              </html:tr>
-              <html:tr>
-                <html:td class="disconnect-wifi">
+                <html:td class="disconnect-counter disconnect-badge">
                   <html:input type="checkbox"/>
                 </html:td>
-                <html:td class="disconnect-wifi">Secure Wi-Fi</html:td>
-                <html:td class="disconnect-counter">
-                  <html:input type="checkbox"/>
+                <html:td class="disconnect-counter disconnect-text">
+                  Show counter
                 </html:td>
-                <html:td class="disconnect-counter">Show counter</html:td>
               </html:tr>
             </html:table>
             <html:table id="disconnect-dashboard">

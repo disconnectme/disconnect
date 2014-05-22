@@ -2,7 +2,7 @@
   An overlay style sheet that makes the web faster, more private, and more
   secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -159,6 +159,8 @@ toolbar[iconsize=small]#addon-bar[mode=full]
 
 #disconnect-item vbox { width: 4px }
 
+.aurora#disconnect-item vbox { margin-top: 4px }
+
 #disconnect-badge {
   margin: 16px 4px 0 -14px;
   padding-right: 1px;
@@ -179,6 +181,12 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-top: 12px;
   margin-right: 5px;
   margin-left: -15px
+}
+
+#navigator-toolbox #toolbar-menubar .aurora #disconnect-badge {
+  margin-top: 7px;
+  margin-right: 0;
+  margin-left: -10px
 }
 
 #navigator-toolbox[mode=text] #toolbar-menubar #disconnect-badge {
@@ -217,6 +225,16 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-left: -15px
 }
 
+#TabsToolbar[mode=icons] .aurora #disconnect-badge { margin-top: 8px }
+
+#TabsToolbar[mode=icons] .aurora .windows#disconnect-badge { margin-top: 10px }
+
+#TabsToolbar[mode=icons] .aurora .linux#disconnect-badge {
+  margin-top: 15px;
+  margin-right: 4px;
+  margin-left: -14px
+}
+
 #nav-bar[mode=icons] .windows#disconnect-badge {
   margin-top: 21px;
   margin-right: 18px;
@@ -227,6 +245,14 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-top: 24px;
   margin-right: 8px;
   margin-left: -18px
+}
+
+#nav-bar[mode=icons] .aurora .windows#disconnect-badge { margin-top: 19px }
+
+#nav-bar[mode=icons] .aurora .linux#disconnect-badge {
+  margin-top: 11px;
+  margin-right: 5px;
+  margin-left: -15px
 }
 
 #navigator-toolbox[iconsize=small] #nav-bar[mode=icons] #disconnect-badge {
@@ -243,6 +269,15 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-top: 18px;
   margin-right: 4px;
   margin-left: -14px
+}
+
+#navigator-toolbox[iconsize=small]
+#nav-bar[mode=icons]
+.aurora
+.windows#disconnect-badge {
+  margin-top: 19px;
+  margin-right: 18px;
+  margin-left: -28px
 }
 
 #nav-bar[mode=text] #disconnect-badge {
@@ -294,6 +329,14 @@ toolbar[iconsize=small]#addon-bar[mode=full]
   margin-top: 12px;
   margin-right: 5px;
   margin-left: -15px
+}
+
+#PersonalToolbar[mode=icons] .aurora #disconnect-badge { margin-top: 6px }
+
+#PersonalToolbar[mode=icons] .aurora .linux#disconnect-badge {
+  margin-top: 9px;
+  margin-right: 4px;
+  margin-left: -14px
 }
 
 #PersonalToolbar[mode=text] #disconnect-badge {

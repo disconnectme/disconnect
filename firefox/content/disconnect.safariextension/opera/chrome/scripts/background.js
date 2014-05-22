@@ -35,6 +35,27 @@ function editSettings(state) {
   SUGGEST_ENABLED.set({value: state});
 }
 
+/* Check Disconnect for a new notification */
+function checkForNotification() {
+  $.getJSON('https://disconnect.me/current-notification', function(notificationJSON) {
+    try {
+      if (notificationJSON.running && !(options[notificationJSON.test])) {
+        if (notificationJSON.type === 'growl') {
+          options[notificationJSON.test] = moment();
+          dispatchBubble(
+            notificationJSON.growlText.main,
+            notificationJSON.growlText.secondary,
+            notificationJSON.pageToOpen
+          );
+        }
+      }
+    }
+    catch(e) {
+      console.log(e);
+    }
+  });
+}
+
 /* Rewrites a generic cookie with specific domains and paths. */
 function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
   const MINIMIZE = Math.min;
@@ -752,8 +773,8 @@ if (options.firstBuild > 71) {
         options.lastShown = moment();
         clearBadge();
         dispatchBubble(
-          'Just a quick reminder that Disconnect is pay-what-you-want software.  Please make a payment today!',
-          '',
+          'Just a quick reminder that Disconnect is pay-what-you-want software.',
+          '1 of 2',
           'https://disconnect.me/welcome/paysomething-1'
         );
       }
@@ -764,8 +785,8 @@ if (options.firstBuild > 71) {
         options.lastShown = moment();
         clearBadge();
         dispatchBubble(
-          'We hope you’re enjoying Disconnect!  We rely on your support.  Please make a payment today!',
-          '',
+          'We hope you’re enjoying Disconnect!  We rely on your support.',
+          '2 of 2',
           'https://disconnect.me/welcome/paysomething-2'
         );
       }
@@ -846,15 +867,15 @@ try {
             // "later" was accidentally live for a bit.
     BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
-    if (deserialize(options.pwyw).bucket == 'trying') {
-      $.getJSON('https://goldenticket.disconnect.me/trying', function(data) {
-        if (data.goldenticket === 'true') {
-          options.pwyw = JSON.stringify({date: date, bucket: 'pending-trial'});
-          BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-          BROWSER_ACTION.setBadgeText({text: 'PSST!'});
-          BROWSER_ACTION.setPopup({popup: ''});
-        }
-      });
+    if (!(options.serverNotification)) {
+      if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
+        $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=serverNotification', function(data) {
+          if (data.data == 'true') {
+            options.serverNotification = true;
+            checkForNotification();
+          }
+        });
+      }
     }
   }
 }
@@ -864,24 +885,9 @@ catch (e) {
   }
 }
 
-// Check site for new notification
-$.getJSON('https://disconnect.me/current-notification', function(notificationJSON) {
-  try {
-    if (notificationJSON.running && !(options[notificationJSON.test])) {
-      if (notificationJSON.type === 'growl') {
-        options[notificationJSON.test] = moment();
-        dispatchBubble(
-          notificationJSON.growlText.main,
-          notificationJSON.growlText.secondary,
-          notificationJSON.pageToOpen
-        );
-      }
-    }
-  }
-  catch(e) {
-    pingURL('https://disconnect.me/error/d2/notificationError')
-  }
-});
+if (options.serverNotification) {
+  checkForNotification();
+}
 
 if (
   (deserialize(options.pwyw) || {}).bucket == 'pending' ||
