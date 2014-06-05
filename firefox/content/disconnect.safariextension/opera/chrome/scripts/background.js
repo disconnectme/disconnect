@@ -37,16 +37,20 @@ function editSettings(state) {
 
 /* Check Disconnect for a new notification */
 function checkForNotification() {
-  $.getJSON('https://disconnect.me/current-notification', function(notificationJSON) {
+  $.getJSON('https://s3.amazonaws.com/disconnect-notifications/d2/chrome.json', function(notificationJSON) {
     try {
-      if (notificationJSON.running && !(options[notificationJSON.test])) {
+      console.log(notificationJSON);
+      var notifications = deserialize(options.notifications) || {};
+      if (notificationJSON.running && !(notifications[notificationJSON.currentName])) {
         if (notificationJSON.type === 'growl') {
-          options[notificationJSON.test] = moment();
+          notifications[notificationJSON.currentName] = moment();
+          options.notifications = JSON.stringify(notifications);
           dispatchBubble(
             notificationJSON.growlText.main,
             notificationJSON.growlText.secondary,
             notificationJSON.pageToOpen
           );
+          $.get(notificationJSON.pingBack)
         }
       }
     }
@@ -817,27 +821,19 @@ try {
         options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
             // "later" was accidentally live for a bit.
     BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-
-    if (!(options.serverNotification)) {
-      if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
-        $.getJSON('https://goldenticket.disconnect.me/goldenticket/ticket/fetch?product=serverNotification', function(data) {
-          if (data.data == 'true') {
-            options.serverNotification = true;
-            checkForNotification();
-          }
-        });
-      }
-    }
   }
 }
 catch (e) {
+  console.log(e);
   if (!(options.pwyw)) {
     options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
   }
 }
 
-if (options.serverNotification) {
-  checkForNotification();
+if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
+  setInterval(function() {
+    checkForNotification();
+  }, 100000);
 }
 
 if (
