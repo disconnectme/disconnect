@@ -415,7 +415,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 26) options.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
   delete options.settingsEditable;
-  options.browsingHardened = true;
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
@@ -889,8 +888,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
   const CHILD_SERVICE = getService(CHILD_DOMAIN);
   const PARENT_DOMAIN = DOMAINS[TAB_ID];
-  var hardenedUrl;
-  var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
   var blockedCount;
@@ -919,10 +916,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
           || PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
     ) { // The request is allowed: the topmost frame has the same origin.
       if (REDIRECT_SAFE) {
-        hardenedUrl = harden(REQUESTED_URL);
-        hardened = hardenedUrl.hardened;
-        hardenedUrl = hardenedUrl.url;
-        if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
+        //console.log("redirect safe 1")
       }
     } else if (
       (CONTENT && CATEGORY_WHITELIST.whitelisted != false ||
@@ -932,11 +926,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                       {})[CHILD_CATEGORY] || {})[CHILD_NAME]
     ) { // The request is allowed: the category or service is whitelisted.
       if (REDIRECT_SAFE) {
-        hardenedUrl = harden(REQUESTED_URL);
-        hardened = hardenedUrl.hardened;
-        hardenedUrl = hardenedUrl.url;
-        if (hardened) blockingResponse = {redirectUrl: hardenedUrl};
-        else whitelisted = true;
+        //console.log("redirect safe 2")
+        whitelisted = true;
       }
     } else {
       blockingResponse = {
@@ -959,16 +950,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   REQUESTED_URL != REDIRECTS[TAB_ID] && delete REQUESTS[TAB_ID];
   delete REDIRECTS[TAB_ID];
   var securedCount;
-
-  if (hardened) {
-    REQUESTS[TAB_ID] = REQUESTED_URL;
-    REDIRECTS[TAB_ID] = hardenedUrl;
-    securedCount = ++TAB_DASHBOARD.secured;
-    const HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
-    HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
-        HARDENED_REQUESTS[date] = 1;
-    options.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
-  }
 
   // The Collusion data structure.
   if (!(CHILD_DOMAIN in LOG))

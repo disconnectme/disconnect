@@ -113,29 +113,6 @@ function recategorize(domain, url) {
   return category;
 }
 
-/* Rewrites a URL, if insecure. */
-function harden(url) {
-  var rules = [];
-  if (deserialize(options.searchHardened)) rules = rules.concat(moreRules);
-  if (deserialize(options.browsingHardened))
-      rules = rules.concat(hardeningRules);
-  var ruleCount = rules.length;
-  var hardenedUrl = url;
-  var hardened;
-
-  for (var i = 0; i < ruleCount; i++) {
-    var rule = rules[i];
-    hardenedUrl = url.replace(RegExp(rule[0]), rule[1]);
-
-    if (hardenedUrl != url) {
-      hardened = true;
-      break;
-    }
-  }
-
-  return {url: hardenedUrl, hardened: hardened};
-}
-
 /* Hot-swaps the blacklists. */
 function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
