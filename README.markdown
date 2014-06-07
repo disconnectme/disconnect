@@ -4,7 +4,7 @@
 faster, more private, and more secure.
 
 ![Disconnect](collateral/disconnect/d2-faster-transparent.png)  
-Disconnect has been named one of the
+The extension has been named one of the
 [100 best innovations of the year](http://www.popsci.com/bown/2013/category/software)
 by Popular Science and one of the
 [20 best Chrome extensions](http://lifehacker.com/lifehacker-pack-for-chrome-2013-our-list-of-the-best-e-880863393)
@@ -13,7 +13,7 @@ and
 by Lifehacker.
 
 You might fancy [watching a demo](https://www.youtube.com/watch?v=Lvem1Z66C7Q)
-or [trying the extension](https://disconnect.me/).
+or [trying Disconnect for yourself](https://disconnect.me/).
 
 ## Dev HOWTO
 
@@ -76,7 +76,6 @@ git clone git@github.com:[username]/disconnect.git
 These libraries are bundled with the project and needn’t be updated manually:
 
 * [jQuery](https://github.com/jquery/jquery)
-* [SJCL](https://github.com/bitwiseshiftleft/sjcl)
 * [D3.js](https://github.com/mbostock/d3)
 * [port.js](https://github.com/disconnectme/port)
 * [sitename.js](https://github.com/disconnectme/sitename)
