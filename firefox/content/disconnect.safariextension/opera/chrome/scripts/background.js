@@ -37,27 +37,29 @@ function editSettings(state) {
 
 /* Check Disconnect for a new notification */
 function checkForNotification() {
-  $.getJSON('https://s3.amazonaws.com/disconnect-notifications/d2/chrome.json', function(notificationJSON) {
-    try {
-      console.log(notificationJSON);
-      var notifications = deserialize(options.notifications) || {};
-      if (notificationJSON.running && !(notifications[notificationJSON.currentName])) {
-        if (notificationJSON.type === 'growl') {
-          notifications[notificationJSON.currentName] = moment();
-          options.notifications = JSON.stringify(notifications);
-          dispatchBubble(
-            notificationJSON.growlText.main,
-            notificationJSON.growlText.secondary,
-            notificationJSON.pageToOpen
-          );
-          $.get(notificationJSON.pingBack)
+  if (!options.notificationsDisabled) {
+    $.getJSON('https://s3.amazonaws.com/disconnect-notifications/d2/chrome.json', function(notificationJSON) {
+      try {
+        console.log(notificationJSON);
+        var notifications = deserialize(options.notifications) || {};
+        if (notificationJSON.running && !(notifications[notificationJSON.currentName])) {
+          if (notificationJSON.type === 'growl') {
+            notifications[notificationJSON.currentName] = moment();
+            options.notifications = JSON.stringify(notifications);
+            dispatchBubble(
+              notificationJSON.growlText.main,
+              notificationJSON.growlText.secondary,
+              notificationJSON.pageToOpen
+            );
+            $.get(notificationJSON.pingBack)
+          }
         }
       }
-    }
-    catch(e) {
-      console.log(e);
-    }
-  });
+      catch(e) {
+        console.log(e);
+      }
+    });
+  }
 }
 
 /* Rewrites a generic cookie with specific domains and paths. */

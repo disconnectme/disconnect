@@ -5,35 +5,35 @@
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="notifications">
     Opt out of Disconnect's notifications
   </label>
 </div>
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="stats">
     Improve Disconnect's service by providing anonymous statistics about trackers
   </label>
 </div>
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="content-block">
     Block content by default (Not recommended! This will break sites.)
   </label>
 </div>
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="surrogates">
     Inject Surrogate scripts (beta!)
   </label>
 </div>
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="indicator">
     Show Counter
   </label>
 </div>
@@ -41,21 +41,21 @@
 
 <div>
   <label>
-    <input type="checkbox" id="like">
+    <input type="checkbox" id="cap">
     Cap Counter
   </label>
 </div>
 
 <div>
   <label>
-    <input type="text" name="lastname">
+    <input type="text" name="lastname" id="report">
     Report a tracker
   </label>
 </div>
 
 <div>
   Select language: (Coming soon!)
-  <select id="color">
+  <select id="language">
    <option value="English">English</option>
    <option value="French">French</option>
    <option value="German">German</option>
@@ -68,6 +68,7 @@
 <div id="status"></div>
 <button id="save">Save</button>
 
-<script src="options.js"></script>
+<script src="../scripts/vendor/jquery/jquery.js"></script>
+<script src="../scripts/settings.js"></script>
 </body>
 </html>
