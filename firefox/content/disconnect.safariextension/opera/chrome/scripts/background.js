@@ -910,6 +910,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     const CATEGORY_WHITELIST =
         ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||
             {})[CHILD_CATEGORY] || {};
+    const CONTENTBLOCKED = JSON.parse(options.blockContent);
 
     if (
       TAB_ID == -1 || PARENT || !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN
@@ -919,7 +920,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         //console.log("redirect safe 1")
       }
     } else if (
-      (CONTENT && CATEGORY_WHITELIST.whitelisted != false ||
+      ( (CONTENT && CATEGORY_WHITELIST.whitelisted != false && !CONTENTBLOCKED) ||
           CATEGORY_WHITELIST.whitelisted ||
               (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
                   !(((deserialize(options.blacklist) || {})[PARENT_DOMAIN] ||

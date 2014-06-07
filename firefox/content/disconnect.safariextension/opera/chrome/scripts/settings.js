@@ -48,4 +48,13 @@ $(function() {
         options.surrogatesEnabled = !DESERIALIZE(options.surrogatesEnabled);
   };
 
+  const BLOCKCONTENT = $('#content-block ' + INPUT)[0];
+  BLOCKCONTENT.checked = DESERIALIZE(options.blockContent);
+  $(BLOCKCONTENT).off('click');
+
+  BLOCKCONTENT.onclick = function() {
+    this.checked =
+        options.blockContent = !DESERIALIZE(options.blockContent);
+  };
+
 });

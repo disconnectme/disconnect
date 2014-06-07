@@ -255,10 +255,11 @@ function handleCategory(
       LOCAL_SITE_WHITELIST[name] ||
           (LOCAL_SITE_WHITELIST[name] = {whitelisted: CONTENT, services: {}});
   const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+  const CONTENTBLOCKED = JSON.parse(options.blockContent);
   var whitelisted = CATEGORY_WHITELIST.whitelisted;
   whitelisted =
       CATEGORY_WHITELIST.whitelisted =
-          !(whitelisted || CONTENT && whitelisted !== false);
+          !(whitelisted || (CONTENT && CATEGORY_WHITELIST.whitelisted != false && !CONTENTBLOCKED));
   const BLACKLIST = DESERIALIZE(options.blacklist) || {};
   const LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
@@ -369,12 +370,13 @@ function updateCategory(
             const CATEGORY_BLACKLIST =
                 SITE_BLACKLIST[categoryName] ||
                     (SITE_BLACKLIST[categoryName] = {});
+            const CONTENTBLOCKED = JSON.parse(options.blockContent);
             this.checked =
                 SERVICE_WHITELIST[serviceName] =
                     !(CATEGORY_BLACKLIST[serviceName] =
                         WHITELISTED ||
-                            CONTENT && LOCAL_CATEGORY_WHITELIST.whitelisted &&
-                                WHITELISTED !== false);
+                            (CONTENT && WHITELISTED !== false && 
+                                CATEGORY_WHITELIST.whitelisted != false && !CONTENTBLOCKED));
             options.whitelist = JSON.stringify(WHITELIST);
             options.blacklist = JSON.stringify(BLACKLIST);
             TABS.reload(ID);
@@ -443,10 +445,11 @@ function clearServices(id) {
         var wrappedControl = $(control);
         var wrappedBadge = wrappedControl.find('.badge');
         var wrappedText = wrappedControl.find('.text');
+        const CONTENTBLOCKED = JSON.parse(options.blockContent);
         renderCategory(
           name,
           name.toLowerCase(),
-          !(whitelisted || name == CONTENT_NAME && whitelisted !== false),
+          !(whitelisted || (name == CONTENT_NAME && !CONTENTBLOCKED && whitelisted !== false)),
           0,
           control,
           wrappedControl,
@@ -1180,8 +1183,12 @@ var whitelistingClicked = 0;
           var textCount = wrappedText.find('.count');
           var categoryWhitelist = SITE_WHITELIST[name] || {};
           var whitelisted = categoryWhitelist.whitelisted;
+          const CONTENTBLOCKED = JSON.parse(options.blockContent);
+          console.log(options.blockContent)
+          console.log("should be true " + !CONTENTBLOCKED)
+          console.log("should be true " + (name == CONTENT_NAME && !CONTENTBLOCKED && whitelisted !== false))
           whitelisted =
-              whitelisted || name == CONTENT_NAME && whitelisted !== false;
+              whitelisted || (name == CONTENT_NAME && !CONTENTBLOCKED && whitelisted !== false);
           var categoryBlacklist = SITE_BLACKLIST[name] || {};
 
           for (var serviceName in categoryRequests) {
@@ -1203,6 +1210,7 @@ var whitelistingClicked = 0;
                           {whitelisted: CONTENT, services: {}});
               const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
               const WHITELISTED = SERVICE_WHITELIST[serviceName];
+              const CONTENTBLOCKED = JSON.parse(options.blockContent);
               const BLACKLIST = DESERIALIZE(options.blacklist) || {};
               const LOCAL_SITE_BLACKLIST =
                   BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
@@ -1213,8 +1221,9 @@ var whitelistingClicked = 0;
                   SERVICE_WHITELIST[serviceName] =
                       !(CATEGORY_BLACKLIST[serviceName] =
                           WHITELISTED ||
-                              CONTENT && CATEGORY_WHITELIST.whitelisted &&
-                                  WHITELISTED !== false);
+                              CONTENT && !CONTENTBLOCKED && 
+                                  CATEGORY_WHITELIST.whitelisted &&
+                                      WHITELISTED !== false);
               options.whitelist = JSON.stringify(WHITELIST);
               options.blacklist = JSON.stringify(BLACKLIST);
               TABS.reload(ID);
