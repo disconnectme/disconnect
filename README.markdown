@@ -20,9 +20,9 @@ or [trying the extension](https://disconnect.me/).
 0. Fork this repository.
 1. Switch to your working directory of choice.
 2. Clone the development repo:
-```
-git clone git@github.com:[username]/disconnect.git
-```
+    ```
+    git clone git@github.com:[username]/disconnect.git
+    ```
 
 ### In Chrome
 
