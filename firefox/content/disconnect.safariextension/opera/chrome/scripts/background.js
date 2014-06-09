@@ -755,46 +755,6 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-// Check to see if user needs to pay with cream
-if (options.firstBuild > 71) {
-  setInterval(function() {
-    try {
-      var pwyw = deserialize(options.pwyw) || {};
-      var installDate = moment(options.installDate);
-      var currentDate = moment();
-      var lastShown = options.lastShown || moment();
-
-      if (pwyw.bucket == 'viewed-cream') {
-        if (currentDate > installDate.clone().add('days', 3)) {
-          options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
-          options.lastShown = moment();
-          clearBadge();
-          dispatchBubble(
-            'Just a quick reminder that Disconnect is pay-what-you-want software.',
-            '1 of 2',
-            'https://disconnect.me/welcome/paysomething-1'
-          );
-        }
-      }
-      else if (pwyw.bucket == 'viewed-cream-1') {
-        if (currentDate > moment(lastShown).clone().add('days', 7)) {
-          options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
-          options.lastShown = moment();
-          clearBadge();
-          dispatchBubble(
-            'We hope you’re enjoying Disconnect!  We rely on your support.',
-            '2 of 2',
-            'https://disconnect.me/welcome/paysomething-2'
-          );
-        }
-      }
-    }
-    catch(e) {
-      pingURL('https://disconnect.me/error/d2/creamGrowlError');
-    }
-  }, 100000);
-}
-
 try {
   if (!deserialize(options.pwyw).date) {
     downgradeServices(true);
