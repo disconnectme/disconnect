@@ -8,7 +8,6 @@
     "facebook.net",
     "facebookofsex.com",
     "fb.com",
-    "fbcdn.net",
     "friendfeed.com"
   ]}},
   {"Google": {"http://www.google.com/": [
@@ -1838,7 +1837,7 @@
   {"Echo": {"http://aboutecho.com/": [
     "aboutecho.com", "haloscan.com", "js-kit.com"
   ]}},
-  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net", "instagram.com"]}},
+  {"Facebook": {"http://www.facebook.com/": ["akamaihd.net", "instagram.com", "fbcdn.net"]}},
   {"Flattr": {"http://flattr.com/": ["flattr.com"]}},
   {"FreeWheel": {"http://www.freewheel.tv/": ["freewheel.tv", "fwmrm.net"]}},
   {"Get Satisfaction": {"https://getsatisfaction.com/": [

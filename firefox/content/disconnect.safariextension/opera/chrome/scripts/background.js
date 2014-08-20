@@ -37,7 +37,7 @@ function editSettings(state) {
 
 /* Check Disconnect for a new notification */
 function checkForNotification() {
-  $.getJSON('https://s3.amazonaws.com/disconnect-notifications/d2/chrome.json', function(notificationJSON) {
+  $.getJSON('https://disconnect.me/currentNotification', function(notificationJSON) {
     try {
       console.log(notificationJSON);
       var notifications = deserialize(options.notifications) || {};
@@ -793,7 +793,7 @@ catch (e) {
 if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
   setInterval(function() {
     checkForNotification();
-  }, 100000);
+  }, 10000000);
 }
 
 if (
