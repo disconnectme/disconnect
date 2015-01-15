@@ -278,7 +278,14 @@ td { padding: 0 }
   font-size: 7px
 }
 
-#dashboard .label { width: 66px }
+#dashboard .label { 
+  width: 66px;
+  padding-left: 30px; 
+}
+
+#dashboard .label:last-child {
+  padding-left: 2px;
+}
 
 #support a {
   display: block;

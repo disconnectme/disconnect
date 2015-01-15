@@ -587,7 +587,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
     dashboard.
       insert('svg:rect', '.control.speed').
       attr('class', 'subtotal speed').
-      attr('x', 29).
+      attr('x', 59).
       attr('y', 38 - SPEED_HEIGHT).
       attr('width', 8).
       attr('height', SPEED_HEIGHT).
@@ -596,7 +596,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
     dashboard.
       insert('svg:rect', '.control.bandwidth').
       attr('class', 'subtotal bandwidth').
-      attr('x', 95).
+      attr('x', 127).
       attr('y', 38 - BANDWIDTH_HEIGHT).
       attr('width', 8).
       attr('height', BANDWIDTH_HEIGHT).
@@ -605,20 +605,20 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
 }
 
 /* Outputs a secured request. */
-function renderSecuredRequest(id, securedCount, totalCount) {
-  if (id == tabId) {
-    d3.select('.subtotal.security').remove();
-    const HEIGHT = Math.round((securedCount / totalCount || 0) * 35);
-    dashboard.
-      insert('svg:rect', '.control.security').
-      attr('class', 'subtotal security').
-      attr('x', 161).
-      attr('y', 38 - HEIGHT).
-      attr('width', 8).
-      attr('height', HEIGHT).
-      attr('fill', '#00bfff');
-  }
-}
+// function renderSecuredRequest(id, securedCount, totalCount) {
+//   if (id == tabId) {
+//     d3.select('.subtotal.security').remove();
+//     const HEIGHT = Math.round((securedCount / totalCount || 0) * 35);
+//     // dashboard.
+//     //   insert('svg:rect', '.control.security').
+//     //   attr('class', 'subtotal security').
+//     //   attr('x', 161).
+//     //   attr('y', 38 - HEIGHT).
+//     //   attr('width', 8).
+//     //   attr('height', HEIGHT).
+//     //   attr('fill', '#00bfff');
+//   }
+// }
 
 /* Outputs total, blocked, and secured requests. */
 function renderGraphs() {
@@ -626,7 +626,7 @@ function renderGraphs() {
   dashboard.
     append('svg:rect').
     attr('class', 'control speed').
-    attr('x', 10).
+    attr('x', 40).
     attr('y', 0).
     attr('width', 46).
     attr('height', 40).
@@ -658,7 +658,7 @@ function renderGraphs() {
   dashboard.
     append('svg:rect').
     attr('class', 'control bandwidth').
-    attr('x', 76).
+    attr('x', 107).
     attr('y', 0).
     attr('width', 46).
     attr('height', 40).
@@ -686,33 +686,33 @@ function renderGraphs() {
     fadeOut: 400
   });
 
-  d3.select('.control.security').remove();
-  dashboard.
-    append('svg:rect').
-    attr('class', 'control security').
-    attr('x', 142).
-    attr('y', 0).
-    attr('width', 46).
-    attr('height', 40).
-    attr('fill', 'transparent');
-  Tipped.remove('.control.security');
-  $('#' + LIST).append($($('.sharing.security')[0]).clone(true));
+  // // d3.select('.control.security').remove();
+  // // dashboard.
+  // //   append('svg:rect').
+  // //   attr('class', 'control security').
+  // //   attr('x', 142).
+  // //   attr('y', 0).
+  // //   attr('width', 46).
+  // //   attr('height', 40).
+  // //   attr('fill', 'transparent');
+  // // Tipped.remove('.control.security');
+  // // $('#' + LIST).append($($('.sharing.security')[0]).clone(true));
 
-  Tipped.create('.control.security', $('.sharing.security')[0], {
-    skin: 'tiny',
-    offset: {x: 23},
-    shadow: {opacity: .1},
-    stem: {spacing: 0},
-    background: {color: '#333', opacity: .9},
-    onShow: function() {
-      const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
-      $('.sharing.security .text').text(
-        SECURED_COUNT + ' secured' + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
-      );
-    },
-    fadeIn: 400,
-    fadeOut: 400
-  });
+  // Tipped.create('.control.security', $('.sharing.security')[0], {
+  //   skin: 'tiny',
+  //   offset: {x: 23},
+  //   shadow: {opacity: .1},
+  //   stem: {spacing: 0},
+  //   background: {color: '#333', opacity: .9},
+  //   onShow: function() {
+  //     const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+  //     $('.sharing.security .text').text(
+  //       SECURED_COUNT + ' secured' + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
+  //     );
+  //   },
+  //   fadeIn: 400,
+  //   fadeOut: 400
+  // });
 
   const TAB_DASHBOARD = DASHBOARD[tabId] || {};
   const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
@@ -734,7 +734,7 @@ function renderGraphs() {
         dashboard.
           insert('svg:rect', '.subtotal.speed').
           attr('class', 'total speed').
-          attr('x', 28).
+          attr('x', 58).
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
@@ -743,20 +743,20 @@ function renderGraphs() {
         dashboard.
           insert('svg:rect', '.subtotal.bandwidth').
           attr('class', 'total bandwidth').
-          attr('x', 94).
+          attr('x', 126).
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
           attr('fill', '#ff7f00');
-        d3.select('.total.security').remove();
-        dashboard.
-          insert('svg:rect', '.subtotal.security').
-          attr('class', 'total security').
-          attr('x', 160).
-          attr('y', Y).
-          attr('width', 10).
-          attr('height', HEIGHT).
-          attr('fill', '#007fff');
+        // d3.select('.total.security').remove();
+        // dashboard.
+        //   insert('svg:rect', '.subtotal.security').
+        //   attr('class', 'total security').
+        //   attr('x', 160).
+        //   attr('y', Y).
+        //   attr('width', 10).
+        //   attr('height', HEIGHT).
+        //   attr('fill', '#007fff');
       }
 
       if (index > 15) {
@@ -773,11 +773,11 @@ function renderGraphs() {
           DUMMY_COUNT,
           WEIGHTED
         );
-        renderSecuredRequest(
-          tabId,
-          Math.min(SECURED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION,
-          DUMMY_COUNT
-        );
+        // renderSecuredRequest(
+        //   tabId,
+        //   Math.min(SECURED_COUNT + DEFAULT_COUNT, DUMMY_COUNT) * FRACTION,
+        //   DUMMY_COUNT
+        // );
       }
 
       if (timeout) timeout = (ITERATIONS - index - 1) * 25;
