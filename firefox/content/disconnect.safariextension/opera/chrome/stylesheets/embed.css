@@ -325,8 +325,15 @@
 }
 
 #disconnect-dashboard .disconnect-label {
-  width: 66px;
-  height: 16px
+ width: 10px;
+ height: 16px;
+ padding-left: 31px;
+ padding-right: 0px;
+}
+
+#disconnect-dashboard .disconnect-label:last-child {
+ padding-left: 0px;
+ padding-right: 22px;
 }
 
 #disconnect-data { height: 44px }
@@ -334,9 +341,16 @@
 #disconnect-list #disconnect-tooltips { margin-top: -66px }
 
 #disconnect-list #disconnect-tooltips td {
-  width: 65px;
-  height: 66px
+  width: 25px;
+  height: 66px;
+  padding-left: 90px
 }
+
+#disconnect-list #disconnect-tooltips td:last-child {
+ padding-left: 0px;
+ padding-right: 2px;
+}
+
 
 #disconnect-list #disconnect-tooltips td:after {
   margin-top: 1px;
@@ -348,7 +362,7 @@
 }
 
 #disconnect-list #disconnect-tooltips .disconnect-speed:after {
-  margin-left: -27px
+  margin-left: -5px
 }
 
 #disconnect-list #disconnect-tooltips .disconnect-bandwidth:before {

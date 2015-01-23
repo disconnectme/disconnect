@@ -623,7 +623,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
           insert('svg:rect', '.disconnect-control.disconnect-speed').
           attr('class', 'disconnect-subtotal disconnect-speed').
-          attr('x', 29).
+          attr('x', 59).
           attr('y', 38 - speedHeight).
           attr('width', 8).
           attr('height', speedHeight).
@@ -632,7 +632,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
           insert('svg:rect', '.disconnect-control.disconnect-bandwidth').
           attr('class', 'disconnect-subtotal disconnect-bandwidth').
-          attr('x', 95).
+          attr('x', 127).
           attr('y', 38 - bandwidthHeight).
           attr('width', 8).
           attr('height', bandwidthHeight).
@@ -678,6 +678,7 @@ if (typeof Disconnect == 'undefined') {
      * Outputs a secured request.
      */
     renderSecuredRequest: function(url, securedCount, totalCount) {
+      /*
       if (gBrowser.contentWindow.location == url) {
         Disconnect.
           d3.
@@ -705,6 +706,7 @@ if (typeof Disconnect == 'undefined') {
               (securedCount - 1 ? 's' : '');
         });
       }
+      */
     },
 
     /**
@@ -742,7 +744,7 @@ if (typeof Disconnect == 'undefined') {
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-speed').
               attr('class', 'disconnect-total disconnect-speed').
-              attr('x', 28).
+              attr('x', 58).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
@@ -751,11 +753,12 @@ if (typeof Disconnect == 'undefined') {
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-bandwidth').
               attr('class', 'disconnect-total disconnect-bandwidth').
-              attr('x', 94).
+              attr('x', 126).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
               attr('fill', '#ff7f00');
+            /*
             d3.select('.disconnect-total.disconnect-security').remove();
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-security').
@@ -765,6 +768,7 @@ if (typeof Disconnect == 'undefined') {
               attr('width', 10).
               attr('height', height).
               attr('fill', '#007fff');
+            */
           }
 
           if (index > 15) {
@@ -899,7 +903,15 @@ if (typeof Disconnect == 'undefined') {
       var currentBuild = 32;
       var previousBuild = preferences.getIntPref(buildName);
       var whitelist = preferences.getCharPref(whitelistName);
-      var aurora = navigator.userAgent.split('Firefox/', 2)[1] >= 29;
+      var modernFirefox;
+
+      try {
+        Components.utils.import("resource:///modules/CustomizableUI.jsm");
+        modernFirefox = true;
+      }
+      catch (e) {
+        modernFirefox = false;
+      }
 
       if (!whitelist) {
         whitelist = '{}';
@@ -943,7 +955,7 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        if (aurora) {
+        if (modernFirefox) {
           toolbar.insertItem(itemName);
           toolbar.setAttribute(currentSetName, toolbar.currentSet);
           document.persist(navbarName, currentSetName);
@@ -1324,7 +1336,7 @@ if (typeof Disconnect == 'undefined') {
             getElementsByTagName('html:input')[0];
       if (os == 'WINNT') button.add(badge).addClass('windows');
       else if (os == 'Linux') button.add(badge).addClass('linux');
-      aurora && button.parent().addClass('aurora');
+      modernFirefox && button.parent().addClass('aurora');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
@@ -1439,7 +1451,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
         append('svg:rect').
         attr('class', 'disconnect-control disconnect-speed').
-        attr('x', 10).
+        attr('x', 58).
         attr('y', 0).
         attr('width', 46).
         attr('height', 40).
@@ -1448,11 +1460,12 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
         append('svg:rect').
         attr('class', 'disconnect-control disconnect-bandwidth').
-        attr('x', 76).
+        attr('x', 127).
         attr('y', 0).
         attr('width', 46).
         attr('height', 40).
         attr('fill', 'transparent');
+      /*
       this.
         dashboard.
         append('svg:rect').
@@ -1462,7 +1475,7 @@ if (typeof Disconnect == 'undefined') {
         attr('width', 46).
         attr('height', 40).
         attr('fill', 'transparent');
-
+      */
       document.getElementById('disconnect-popup').addEventListener(
         'popupshowing', function() {
           var url = gBrowser.contentWindow.location;

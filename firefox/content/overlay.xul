@@ -154,9 +154,11 @@
                       <html:td class="disconnect-label">
                         Bandwidth saved
                       </html:td>
+                      <!-- 
                       <html:td class="disconnect-label">
                         Requests secured
                       </html:td>
+                      -->
                     </html:tr>
                     <html:tr>
                       <html:td colspan="3" id="disconnect-data"></html:td>
@@ -172,9 +174,6 @@
                 ></html:td>
                 <html:td
                   class="disconnect-bandwidth hint--top hint--rounded hint--bounce"
-                ></html:td>
-                <html:td
-                  class="disconnect-security hint--top hint--rounded hint--bounce"
                 ></html:td>
               </html:tr>
             </html:table>
