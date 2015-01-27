@@ -19,35 +19,40 @@
 #
 #   Eason Goodale <eason.goodale@gmail.com>
 #   Brian Kennish <byoogle@gmail.com>
-cd builds
+
+cd ./builds
 rm disconnect.xpi disconnect.zip
+
 cd ../firefox
+cp -r ./content/disconnect.safariextension/opera/chrome/ ./content/disconnect/
+
+rm ./content/disconnect/images/legacy/\* \
+./content/disconnect/manifest.json \
+./content/disconnect/markup/\* \
+./content/disconnect/scripts/background.js \
+./content/disconnect/scripts/chrollusion/graphrunner.js \
+./content/disconnect/scripts/chrollusion/index-embed.js \
+./content/disconnect/scripts/chrollusion/index.js \
+./content/disconnect/scripts/content.js \
+./content/disconnect/scripts/errorhandler.js \
+./content/disconnect/scripts/popup.js \
+./content/disconnect/scripts/services.js \
+./content/disconnect/scripts/share.js \
+./content/disconnect/scripts/vendor/moment/\* \
+./content/disconnect/scripts/vendor/port/\* \
+./content/disconnect/scripts/vendor/tipped/\* \
+./content/disconnect/stylesheets/chrollusion/\* \
+./content/disconnect/stylesheets/content.css \
+./content/disconnect/stylesheets/legacy.css \
+./content/disconnect/stylesheets/popup.css \
+./content/disconnect/stylesheets/vendor/hint/\* \
+./content/disconnect/stylesheets/vendor/tipped/\*
+
 zip -r ../builds/disconnect.xpi * -x \*.DS_Store \
-content/disconnect.safariextension/Icon-32.png \
-content/disconnect.safariextension/Icon-48.png \
-content/disconnect.safariextension/Icon.png \
-content/disconnect.safariextension/Info.plist \
-content/disconnect.safariextension/opera/manifest.json \
-content/disconnect.safariextension/opera/chrome/images/legacy/\* \
-content/disconnect.safariextension/opera/chrome/manifest.json \
-content/disconnect.safariextension/opera/chrome/markup/\* \
-content/disconnect.safariextension/opera/chrome/scripts/background.js \
-content/disconnect.safariextension/opera/chrome/scripts/chrollusion/graphrunner.js \
-content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index-embed.js \
-content/disconnect.safariextension/opera/chrome/scripts/chrollusion/index.js \
-content/disconnect.safariextension/opera/chrome/scripts/content.js \
-content/disconnect.safariextension/opera/chrome/scripts/errorhandler.js \
-content/disconnect.safariextension/opera/chrome/scripts/popup.js \
-content/disconnect.safariextension/opera/chrome/scripts/services.js \
-content/disconnect.safariextension/opera/chrome/scripts/share.js \
-content/disconnect.safariextension/opera/chrome/scripts/vendor/moment/\* \
-content/disconnect.safariextension/opera/chrome/scripts/vendor/port/\* \
-content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped/\* \
-content/disconnect.safariextension/opera/chrome/stylesheets/chrollusion/\* \
-content/disconnect.safariextension/opera/chrome/stylesheets/content.css \
-content/disconnect.safariextension/opera/chrome/stylesheets/legacy.css \
-content/disconnect.safariextension/opera/chrome/stylesheets/popup.css \
-content/disconnect.safariextension/opera/chrome/stylesheets/vendor/hint/\* \
-content/disconnect.safariextension/opera/chrome/stylesheets/vendor/tipped/\*
+content/disconnect.safariextension/**\* \
+content/disconnect.safariextension/
+
+rm -rf ./content/disconnect/
+
 cd content/disconnect.safariextension/opera
 zip -r ../../../../builds/disconnect chrome -x \*.DS_Store
