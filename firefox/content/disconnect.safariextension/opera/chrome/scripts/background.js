@@ -1013,20 +1013,23 @@ SAFARI && safari.application.addEventListener(
   }, true
 );
 
-// Tells other extensions if D2 is installed
-chrome.runtime.onMessageExternal.addListener(
-  function(request, sender, sendResponse) {
-    try {
-      if (request.checkExtension && request.sourceExtension) {
-        sendResponse({product: "d2"});
-        $.get('https://disconnect.me/pingBack/' + request.sourceExtension)
+
+if (!SAFARI) {
+  // Tells other extensions if D2 is installed
+  chrome.runtime.onMessageExternal.addListener(
+    function(request, sender, sendResponse) {
+      try {
+        if (request.checkExtension && request.sourceExtension) {
+          sendResponse({product: "d2"});
+          $.get('https://disconnect.me/pingBack/' + request.sourceExtension)
+        }
+      }
+      catch(e) {
+        console.log(e);
       }
     }
-    catch(e) {
-      console.log(e);
-    }
-  }
-);
+  );
+}
 
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
