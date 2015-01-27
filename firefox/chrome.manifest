@@ -28,6 +28,6 @@ category content-policy @disconnect.me/d2;1 @disconnect.me/d2;1
 
 # The overlay.
 content disconnect content/
-skin disconnect default content/disconnect.safariextension/opera/chrome/
+skin disconnect default content/disconnect/
 overlay chrome://browser/content/browser.xul chrome://disconnect/content/overlay.xul
 style chrome://global/content/customizeToolbar.xul chrome://disconnect/content/overlay.css
