@@ -174,7 +174,7 @@ var moreRules = [];
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-$.get((OPERA ? 'chrome/' : '') + 'data/services.json', function(data) {
+$.get((OPERA ? 'chrome/' : '') + '../data/services.json', function(data) {
   processServices(data);
 });
 

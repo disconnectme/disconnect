@@ -52,8 +52,7 @@ SAFARI && EXTENSION.sendRequest({initialized: true}, function(response) {
       var CONTENT = CHILD_CATEGORY == 'Content';
       var CATEGORY_WHITELIST = WHITELIST[CHILD_CATEGORY] || {};
 
-      if (
-        !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
+      if (!PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
             PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
       ) { // The request is allowed: the topmost frame has the same origin.
         // No-op.
@@ -63,8 +62,10 @@ SAFARI && EXTENSION.sendRequest({initialized: true}, function(response) {
                 (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
                     !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]
       ) { // The request is allowed: the category or service is whitelisted.
+        console.log("request is allowed");
         whitelisted = true;
       } else { // The request is denied.
+          console.log("request is denied", event);
         if (SAFARI) {
           event.preventDefault();
           blocked = true;

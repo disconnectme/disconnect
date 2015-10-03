@@ -41,7 +41,10 @@
   font-weight: normal
 }
 
-html { height: 356px }
+html {
+  height: 356px;
+  overflow-x: hidden;
+}
 
 body {
   margin: 0;
@@ -118,6 +121,10 @@ td { padding: 0 }
   width: 24px;
   height: 24px;
   color: white
+}
+
+.categories {
+    overflow: hidden;
 }
 
 .category {
