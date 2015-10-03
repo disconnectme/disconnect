@@ -1066,7 +1066,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
         var popup =
             options.displayMode != LEGACY_NAME &&
                 EXTENSION.getViews({type: 'popup'})[0];
-        if (BLOCKED)
+        if (BLOCKED|| WHITELISTED)
             incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
         var blockedCount;
 
