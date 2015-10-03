@@ -266,7 +266,6 @@ function safelyUpdateCounter(tabId, count, deactivated) {
 
 /* Tallies and indicates the number of tracking requests. */
 function incrementCounter(tabId, service, blocked, popup) {
-  console.log("incrementing counter");
   const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
   const CATEGORY = service.category;
   const CATEGORY_REQUESTS =

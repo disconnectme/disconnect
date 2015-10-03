@@ -572,7 +572,6 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
         Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
     const BANDWIDTH_HEIGHT =
         Math.round(HEIGHT * (weighted ? 1 : SIZE_CONSTANT));
-    console.log(dashboard);
     dashboard.
       insert('svg:rect', '.control.speed').
       attr('class', 'subtotal speed').
@@ -582,7 +581,6 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
       attr('height', SPEED_HEIGHT).
       attr('fill', '#ff7f00');
     d3.select('.subtotal.bandwidth').remove();
-    console.log(dashboard);
     dashboard.
       insert('svg:rect', '.control.bandwidth').
       attr('class', 'subtotal bandwidth').

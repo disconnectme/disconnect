@@ -62,10 +62,8 @@ SAFARI && EXTENSION.sendRequest({initialized: true}, function(response) {
                 (CATEGORY_WHITELIST.services || {})[CHILD_NAME]) &&
                     !(BLACKLIST[CHILD_CATEGORY] || {})[CHILD_NAME]
       ) { // The request is allowed: the category or service is whitelisted.
-        console.log("request is allowed");
         whitelisted = true;
       } else { // The request is denied.
-          console.log("request is denied", event);
         if (SAFARI) {
           event.preventDefault();
           blocked = true;

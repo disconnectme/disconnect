@@ -317,7 +317,6 @@ function updateCategory(
   const CATEGORY_SURFACE = $('#categories');
   const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
         serviceTemplate = CATEGORY_TEMPLATE.find('.service');
-        console.log("setting servicetemplate");
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     const TAB = tabs[0];
     const DOMAIN = domain = GET(TAB.url);
@@ -937,7 +936,6 @@ var whitelistingClicked = 0;
   SAFARI ? 'popover' : 'load', function() {
     var displayMode = options.displayMode;
     const VIEWPORT = $('html').add('body');
-    console.log("DM", displayMode);
     if (!displayMode || displayMode == LEGACY) {
       VIEWPORT.height(SAFARI ? 217 : 230);
       const WRAPPED_THEME = $('#' + LEGACY);
@@ -1163,7 +1161,6 @@ var whitelistingClicked = 0;
         const SITE_BLACKLIST =
             (DESERIALIZE(options.blacklist) || {})[DOMAIN] || {};
         serviceTemplate = CATEGORY_TEMPLATE.find('.service');
-        console.log("setting servicetemplate");
 
         for (i = 0; i < CATEGORY_COUNT; i++) {
           var name = CATEGORIES[i];
