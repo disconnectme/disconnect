@@ -314,6 +314,9 @@ function handleCategory(
 function updateCategory(
   id, categoryName, categoryCount, serviceName, serviceUrl, serviceCount
 ) {
+  const CATEGORY_SURFACE = $('#categories');
+  const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
+        serviceTemplate = CATEGORY_TEMPLATE.find('.service');
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     const TAB = tabs[0];
     const DOMAIN = domain = GET(TAB.url);
@@ -578,7 +581,7 @@ function animateVisualization(icon, callback) {
 
 /* Outputs a blocked request. */
 function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
-  if (id == tabId) {
+  if (id == tabId && dashboard) {
     d3.select('.subtotal.speed').remove();
     const HEIGHT = (blockedCount / totalCount || 0) * 35;
     const SPEED_HEIGHT = Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
@@ -933,7 +936,6 @@ var whitelistingClicked = 0;
   SAFARI ? 'popover' : 'load', function() {
     var displayMode = options.displayMode;
     const VIEWPORT = $('html').add('body');
-
     if (!displayMode || displayMode == LEGACY) {
       VIEWPORT.height(SAFARI ? 217 : 230);
       const WRAPPED_THEME = $('#' + LEGACY);

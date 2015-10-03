@@ -361,7 +361,7 @@ const EXTENSION = chrome.extension;
 const TABS = chrome.tabs;
 
 /* The "privacy" API. */
-if (false) const PRIVACY = chrome.privacy.services;
+if (false) var PRIVACY = chrome.privacy.services;
 
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
@@ -370,10 +370,10 @@ const COOKIES = chrome.cookies;
 const BROWSER_ACTION = chrome.browserAction;
 
 /* The "instantEnabled" property. */
-if (false) const INSTANT_ENABLED = PRIVACY.instantEnabled;
+if (false) var INSTANT_ENABLED = PRIVACY.instantEnabled;
 
 /* The "searchSuggestEnabled" property. */
-if (false) const SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
+if (false) var SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
 
 /* The experimental value of the "levelOfControl" property. */
 const EDITABLE = 'controllable_by_this_extension';
@@ -1066,7 +1066,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
         var popup =
             options.displayMode != LEGACY_NAME &&
                 EXTENSION.getViews({type: 'popup'})[0];
-        if (BLOCKED || WHITELISTED)
+        if (BLOCKED|| WHITELISTED)
             incrementCounter(TAB_ID, request.childService, !WHITELISTED, popup);
         var blockedCount;
 

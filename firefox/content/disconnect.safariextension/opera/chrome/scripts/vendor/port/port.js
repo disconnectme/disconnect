@@ -107,6 +107,12 @@ if (SAFARI) {
 
   // Replace the 'chrome' object with a Safari adapter.
   chrome = {
+    runtime: {
+      // Unsupported API in Safari
+      onMessageExternal: {
+        addListener: function() {}
+      }
+    },
     extension: {
       getBackgroundPage: function() {
         return safari.extension.globalPage.contentWindow;

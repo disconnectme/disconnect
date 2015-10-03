@@ -52,8 +52,7 @@ SAFARI && EXTENSION.sendRequest({initialized: true}, function(response) {
       var CONTENT = CHILD_CATEGORY == 'Content';
       var CATEGORY_WHITELIST = WHITELIST[CHILD_CATEGORY] || {};
 
-      if (
-        !PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
+      if (!PARENT_DOMAIN || CHILD_DOMAIN == PARENT_DOMAIN ||
             PARENT_SERVICE && CHILD_NAME == PARENT_SERVICE.name
       ) { // The request is allowed: the topmost frame has the same origin.
         // No-op.
