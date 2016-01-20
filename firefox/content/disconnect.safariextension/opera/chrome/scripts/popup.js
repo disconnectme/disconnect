@@ -33,7 +33,7 @@ function renderShortcut(
   animation,
   callback
 ) {
-  const COUNT =
+  var COUNT =
       animation > 1 || whitelistingClicked && whitelistingClicked-- ? 21 :
           animation;
 
@@ -97,14 +97,14 @@ function handleShortcut(
   text
 ) {
   wrappedControl.off('click');
-  const WHITELIST = DESERIALIZE(options.whitelist) || {};
-  const LOCAL_SITE_WHITELIST =
+  var WHITELIST = DESERIALIZE(options.whitelist) || {};
+  var LOCAL_SITE_WHITELIST =
       WHITELIST[domain] || (WHITELIST[domain] = {});
-  const DISCONNECT_WHITELIST =
+  var DISCONNECT_WHITELIST =
       LOCAL_SITE_WHITELIST.Disconnect ||
           (LOCAL_SITE_WHITELIST.Disconnect =
               {whitelisted: false, services: {}});
-  const LOCAL_SHORTCUT_WHITELIST =
+  var LOCAL_SHORTCUT_WHITELIST =
       DISCONNECT_WHITELIST.services ||
           (DISCONNECT_WHITELIST.services = {});
   renderShortcut(
@@ -140,7 +140,7 @@ function handleShortcut(
 function updateShortcut(id, name, count) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
     if (id == tabs[0].id) {
-      const DISCONNECT_LIVE =
+      var DISCONNECT_LIVE =
           LIVE_REQUESTS.Disconnect || (LIVE_REQUESTS.Disconnect = {});
       DISCONNECT_LIVE[name] === undefined && (DISCONNECT_LIVE[name] = 0);
 
@@ -167,14 +167,14 @@ function renderCategory(
   animation,
   callback
 ) {
-  const CONTENT = name == CONTENT_NAME;
-  const COUNT =
+  var CONTENT = name == CONTENT_NAME;
+  var COUNT =
       animation > 1 ||
           whitelistingClicked && whitelistingClicked-- && !(
             CONTENT &&
                 $('.whitelisting').filter('.text').text() == 'Whitelist site'
           ) ? 21 : animation;
-  const WRAPPED_BADGE = $(badge);
+  var WRAPPED_BADGE = $(badge);
 
   if (blocked) {
     wrappedControl.removeClass(DEACTIVATED);
@@ -247,22 +247,22 @@ function handleCategory(
   serviceSurface
 ) {
   $(badge).off('click');
-  const WHITELIST = DESERIALIZE(options.whitelist) || {};
-  const LOCAL_SITE_WHITELIST =
+  var WHITELIST = DESERIALIZE(options.whitelist) || {};
+  var LOCAL_SITE_WHITELIST =
       WHITELIST[domain] || (WHITELIST[domain] = {});
-  const CONTENT = name == CONTENT_NAME;
-  const CATEGORY_WHITELIST =
+  var CONTENT = name == CONTENT_NAME;
+  var CATEGORY_WHITELIST =
       LOCAL_SITE_WHITELIST[name] ||
           (LOCAL_SITE_WHITELIST[name] = {whitelisted: CONTENT, services: {}});
-  const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+  var SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
   var whitelisted = CATEGORY_WHITELIST.whitelisted;
   whitelisted =
       CATEGORY_WHITELIST.whitelisted =
           !(whitelisted || CONTENT && whitelisted !== false);
-  const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-  const LOCAL_SITE_BLACKLIST =
+  var BLACKLIST = DESERIALIZE(options.blacklist) || {};
+  var LOCAL_SITE_BLACKLIST =
       BLACKLIST[domain] || (BLACKLIST[domain] = {});
-  const CATEGORY_BLACKLIST =
+  var CATEGORY_BLACKLIST =
       LOCAL_SITE_BLACKLIST[name] || (LOCAL_SITE_BLACKLIST[name] = {});
   for (var serviceName in SERVICE_WHITELIST)
       SERVICE_WHITELIST[serviceName] = whitelisted;
@@ -315,21 +315,21 @@ function updateCategory(
   id, categoryName, categoryCount, serviceName, serviceUrl, serviceCount
 ) {
   TABS.query({currentWindow: true, active: true}, function(tabs) {
-    const TAB = tabs[0];
-    const DOMAIN = domain = GET(TAB.url);
-    const ID = tabId = TAB.id;
+    var TAB = tabs[0];
+    var DOMAIN = domain = GET(TAB.url);
+    var ID = tabId = TAB.id;
 
     if (id == ID) {
-      const CATEGORY_LIVE =
+      var CATEGORY_LIVE =
           LIVE_REQUESTS[categoryName] || (LIVE_REQUESTS[categoryName] = {});
       CATEGORY_LIVE[serviceName] === undefined &&
           (CATEGORY_LIVE[serviceName] = 0);
-      const INDEX = CATEGORIES.indexOf(categoryName) + 1;
+      var INDEX = CATEGORIES.indexOf(categoryName) + 1;
 
       setTimeout(function() {
         $($('.category .count')[INDEX]).
           text(categoryCount + REQUEST + (categoryCount - 1 ? 's' : ''));
-        const CONTROL = $($('.services')[INDEX]);
+        var CONTROL = $($('.services')[INDEX]);
         var serviceControl =
             CONTROL.find('.service:contains(' + serviceName + ')');
 
@@ -339,11 +339,11 @@ function updateCategory(
               text(serviceCount + REQUEST + (serviceCount - 1 ? 's' : ''));
         else {
           serviceControl = serviceTemplate.clone(true);
-          const CHECKBOX = serviceControl.find(INPUT)[0];
-          const CATEGORY_WHITELIST =
+          var CHECKBOX = serviceControl.find(INPUT)[0];
+          var CATEGORY_WHITELIST =
               ((DESERIALIZE(options.whitelist) || {})[DOMAIN] ||
                   {})[categoryName] || {};
-          const WHITELISTED = CATEGORY_WHITELIST.whitelisted;
+          var WHITELISTED = CATEGORY_WHITELIST.whitelisted;
           CHECKBOX.checked = !(
             WHITELISTED || categoryName == CONTENT_NAME && WHITELISTED !== false
           ) && !(CATEGORY_WHITELIST.services || {})[serviceName] ||
@@ -352,21 +352,21 @@ function updateCategory(
           $(CHECKBOX).off('click');
 
           CHECKBOX.onclick = function(categoryName, serviceName) {
-            const WHITELIST = DESERIALIZE(options.whitelist) || {};
-            const SITE_WHITELIST =
+            var WHITELIST = DESERIALIZE(options.whitelist) || {};
+            var SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const CONTENT = categoryName == CONTENT_NAME;
-            const LOCAL_CATEGORY_WHITELIST =
+            var CONTENT = categoryName == CONTENT_NAME;
+            var LOCAL_CATEGORY_WHITELIST =
                 SITE_WHITELIST[categoryName] ||
                     (SITE_WHITELIST[categoryName] = {
                       whitelisted: CONTENT, services: {}
                     });
-            const SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
-            const WHITELISTED = SERVICE_WHITELIST[serviceName];
-            const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-            const SITE_BLACKLIST =
+            var SERVICE_WHITELIST = LOCAL_CATEGORY_WHITELIST.services;
+            var WHITELISTED = SERVICE_WHITELIST[serviceName];
+            var BLACKLIST = DESERIALIZE(options.blacklist) || {};
+            var SITE_BLACKLIST =
                 BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-            const CATEGORY_BLACKLIST =
+            var CATEGORY_BLACKLIST =
                 SITE_BLACKLIST[categoryName] ||
                     (SITE_BLACKLIST[categoryName] = {});
             this.checked =
@@ -380,7 +380,7 @@ function updateCategory(
             TABS.reload(ID);
           }.bind(null, categoryName, serviceName);
 
-          const LINK = serviceControl.find('a')[0];
+          var LINK = serviceControl.find('a')[0];
           LINK.title += serviceName;
           LINK.href = serviceUrl;
           $(LINK).text(serviceName);
@@ -460,15 +460,15 @@ function clearServices(id) {
         );
       }
 
-      const WRAPPED_BUTTON = $('.category .action img[src*=7]');
-      const BUTTON = WRAPPED_BUTTON[0];
-      const ACTION = WRAPPED_BUTTON.parent();
+      var WRAPPED_BUTTON = $('.category .action img[src*=7]');
+      var BUTTON = WRAPPED_BUTTON[0];
+      var ACTION = WRAPPED_BUTTON.parent();
       BUTTON && animateAction(
         ACTION[0],
         BUTTON,
         ACTION.prev().find('.name').text().toLowerCase()
       );
-      const CONTROL = $('.services');
+      var CONTROL = $('.services');
       CONTROL.find('div:visible').slideUp('fast');
 
       setTimeout(function() {
@@ -484,7 +484,7 @@ function clearServices(id) {
 
 /* Plays an expanding or collapsing animation. */
 function animateAction(action, button, name) {
-  const COLLAPSED = button.src.indexOf(1 + HIGHLIGHTED) + 1;
+  var COLLAPSED = button.src.indexOf(1 + HIGHLIGHTED) + 1;
 
   if (COLLAPSED) {
     action.title = COLLAPSE + ' ' + name;
@@ -522,10 +522,10 @@ function animateAction(action, button, name) {
 
 /* Outputs the global blocking state. */
 function renderWhitelisting(siteWhitelist) {
-  const SERVICE_WHITELIST = (siteWhitelist.Disconnect || {}).services || {};
-  const WHITELISTING = $('.whitelisting');
-  const WHITELISTING_ICON = WHITELISTING.find('img')[0];
-  const WHITELISTING_TEXT = WHITELISTING.filter('.text');
+  var SERVICE_WHITELIST = (siteWhitelist.Disconnect || {}).services || {};
+  var WHITELISTING = $('.whitelisting');
+  var WHITELISTING_ICON = WHITELISTING.find('img')[0];
+  var WHITELISTING_TEXT = WHITELISTING.filter('.text');
 
   if (
     SERVICE_WHITELIST.Facebook && SERVICE_WHITELIST.Google &&
@@ -567,7 +567,7 @@ function animateVisualization(icon, callback) {
       setTimeout(function(scene, index) {
         icon.src = IMAGES + scene + '/' + (index + 2) + EXTENSION;
       }, i * FRAME_LENGTH, currentScene, i);
-  const PREVIOUS_SCENE = currentScene;
+  var PREVIOUS_SCENE = currentScene;
   currentScene = getScene();
   SCENES.push(PREVIOUS_SCENE);
   for (i = 0; i < FRAME_COUNT; i++)
@@ -581,10 +581,10 @@ function animateVisualization(icon, callback) {
 function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
   if (id == tabId) {
     d3.select('.subtotal.speed').remove();
-    const HEIGHT = (blockedCount / totalCount || 0) * 35;
-    const SPEED_HEIGHT = Math.round(HEIGHT * (weighted ? 1 : TIME_CONSTANT));
-    const BANDWIDTH_HEIGHT =
-        Math.round(HEIGHT * (weighted ? 1 : SIZE_CONSTANT));
+    var HEIGHT = (blockedCount / totalCount || 0) * 35;
+    var SPEED_HEIGHT = Math.round(HEIGHT * (weighted ? 1 : TIME_varANT));
+    var BANDWIDTH_HEIGHT =
+        Math.round(HEIGHT * (weighted ? 1 : SIZE_varANT));
     dashboard.
       insert('svg:rect', '.control.speed').
       attr('class', 'subtotal speed').
@@ -609,7 +609,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
 // function renderSecuredRequest(id, securedCount, totalCount) {
 //   if (id == tabId) {
 //     d3.select('.subtotal.security').remove();
-//     const HEIGHT = Math.round((securedCount / totalCount || 0) * 35);
+//     var HEIGHT = Math.round((securedCount / totalCount || 0) * 35);
 //     // dashboard.
 //     //   insert('svg:rect', '.control.security').
 //     //   attr('class', 'subtotal security').
@@ -642,11 +642,11 @@ function renderGraphs() {
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
     onShow: function() {
-      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
       $('.sharing.speed .text').text((
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT * 100
       ).toFixed() + '% (' + (
         BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
       ).toFixed(1) + 's) faster');
@@ -674,11 +674,11 @@ function renderGraphs() {
     stem: {spacing: 0},
     background: {color: '#333', opacity: .9},
     onShow: function() {
-      const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+      var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
       $('.sharing.bandwidth .text').text((
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100
+        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_varANT * 100
       ).toFixed() + '% (' + (
         BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
       ).toFixed() + 'K) less data');
@@ -706,7 +706,7 @@ function renderGraphs() {
   //   stem: {spacing: 0},
   //   background: {color: '#333', opacity: .9},
   //   onShow: function() {
-  //     const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+  //     var SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
   //     $('.sharing.security .text').text(
   //       SECURED_COUNT + ' secured' + REQUEST + (SECURED_COUNT - 1 ? 's' : '')
   //     );
@@ -715,23 +715,23 @@ function renderGraphs() {
   //   fadeOut: 400
   // });
 
-  const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-  const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-  const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-  const SECURED_COUNT = TAB_DASHBOARD.secured || 0;
-  const ITERATIONS = Math.round(Math.max(
-    (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT,
+  var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+  var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+  var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+  var SECURED_COUNT = TAB_DASHBOARD.secured || 0;
+  var ITERATIONS = Math.round(Math.max(
+    (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT,
     SECURED_COUNT / TOTAL_COUNT || 0
   ) * 13) + 23;
-  const DUMMY_COUNT = TOTAL_COUNT || 1;
-  const WEIGHTED = ITERATIONS == 23;
+  var DUMMY_COUNT = TOTAL_COUNT || 1;
+  var WEIGHTED = ITERATIONS == 23;
 
   for (var i = 1; i < ITERATIONS; i++) {
     setTimeout(function(index, delay) {
       if (index < 21) {
         d3.select('.total.speed').remove();
-        const HEIGHT = (index > 19 ? 19 - index % 19 : index) * 2;
-        const Y = 38 - HEIGHT;
+        var HEIGHT = (index > 19 ? 19 - index % 19 : index) * 2;
+        var Y = 38 - HEIGHT;
         dashboard.
           insert('svg:rect', '.subtotal.speed').
           attr('class', 'total speed').
@@ -761,10 +761,10 @@ function renderGraphs() {
       }
 
       if (index > 15) {
-        const DEFAULT_COUNT = DUMMY_COUNT * .28;
-        const OFFSET_INDEX = index - 15;
-        const MODULUS = ITERATIONS - 17;
-        const FRACTION = (
+        var DEFAULT_COUNT = DUMMY_COUNT * .28;
+        var OFFSET_INDEX = index - 15;
+        var MODULUS = ITERATIONS - 17;
+        var FRACTION = (
           OFFSET_INDEX > MODULUS ? MODULUS - OFFSET_INDEX % MODULUS :
               OFFSET_INDEX
         ) / (ITERATIONS - 18);
@@ -797,7 +797,7 @@ function updateSupportText() {
 
 /* Restricts the whitelist animation to 1x per mouseover. */
 function handleWhitelisting() {
-  const TARGET = $('.' + this.className.split(' ', 1));
+  var TARGET = $('.' + this.className.split(' ', 1));
   TARGET.off('mouseenter');
 
   animateWhitelisting(TARGET.find('img')[0], function() {
@@ -807,7 +807,7 @@ function handleWhitelisting() {
 
 /* Restricts the visualization animation to 1x per mouseover. */
 function handleVisualization() {
-  const TARGET = $('.' + this.className.split(' ', 1));
+  var TARGET = $('.' + this.className.split(' ', 1));
   TARGET.off('mouseenter');
 
   animateVisualization(TARGET.find('img')[0], function() {
@@ -816,112 +816,112 @@ function handleVisualization() {
 }
 
 /* The background window. */
-const BACKGROUND = chrome.extension.getBackgroundPage();
+var BACKGROUND = chrome.extension.getBackgroundPage();
 
 /* The domain getter. */
-const GET = BACKGROUND.GET;
+var GET = BACKGROUND.GET;
 
 /* The object deserializer. */
-const DESERIALIZE = BACKGROUND.deserialize;
+var DESERIALIZE = BACKGROUND.deserialize;
 
 /* The major third parties. */
-const SHORTCUTS = ['Facebook', 'Google', 'Twitter'];
+var SHORTCUTS = ['Facebook', 'Google', 'Twitter'];
 
 /* The number of major third parties. */
-const SHORTCUT_COUNT = SHORTCUTS.length;
+var SHORTCUT_COUNT = SHORTCUTS.length;
 
 /* The other types of third parties. */
-const CATEGORIES = ['Advertising', 'Analytics', 'Social', 'Content'];
+var CATEGORIES = ['Advertising', 'Analytics', 'Social', 'Content'];
 
 /* The number of other types of third parties. */
-const CATEGORY_COUNT = CATEGORIES.length;
+var CATEGORY_COUNT = CATEGORIES.length;
 
 /* The third parties. */
-const SERVICES = ['Facebook', 'Google', 'LinkedIn', 'Twitter', 'Yahoo'];
+var SERVICES = ['Facebook', 'Google', 'LinkedIn', 'Twitter', 'Yahoo'];
 
 /* The number of third parties. */
-const SERVICE_COUNT = SERVICES.length;
+var SERVICE_COUNT = SERVICES.length;
 
 /* The "tabs" API. */
-const TABS = BACKGROUND.TABS;
+var TABS = BACKGROUND.TABS;
 
 /* The content key. */
-const CONTENT_NAME = BACKGROUND.CONTENT_NAME;
+var CONTENT_NAME = BACKGROUND.CONTENT_NAME;
 
 /* The list keyword. */
-const LIST = 'list';
+var LIST = 'list';
 
 /* The graph keyword. */
-const GRAPH = 'graph';
+var GRAPH = 'graph';
 
 /* The legacy keyword. */
-const LEGACY = 'legacy';
+var LEGACY = 'legacy';
 
 /* The deactivated keyword. */
-const DEACTIVATED = 'deactivated';
+var DEACTIVATED = 'deactivated';
 
 /* The highlighted keyword. */
-const HIGHLIGHTED = '-highlighted';
+var HIGHLIGHTED = '-highlighted';
 
 /* The expand keyword. */
-const EXPAND = 'Expand';
+var EXPAND = 'Expand';
 
 /* The collapse keyword. */
-const COLLAPSE = 'Collapse';
+var COLLAPSE = 'Collapse';
 
 /* The recommended keyword. */
-const RECOMMENDED = 'recommended';
+var RECOMMENDED = 'recommended';
 
 /* The request keyword. */
-const REQUEST = ' request';
+var REQUEST = ' request';
 
 /* The input keyword. */
-const INPUT = 'input';
+var INPUT = 'input';
 
 /* The blocking command. */
-const BLOCK = 'Block ';
+var BLOCK = 'Block ';
 
 /* The unblocking command. */
-const UNBLOCK = 'Unblock ';
+var UNBLOCK = 'Unblock ';
 
 /* The image directory. */
-const IMAGES = '../images/';
+var IMAGES = '../images/';
 
 /* The image extension. */
-const EXTENSION = '.png';
+var EXTENSION = '.png';
 
 /* The animation sequences. */
-const SCENES = [1, 2, 3, 4, 5];
+var SCENES = [1, 2, 3, 4, 5];
 
 /* The number of animation cells. */
-const FRAME_COUNT = 7;
+var FRAME_COUNT = 7;
 
 /* The duration of animation cells. */
-const FRAME_LENGTH = 100;
+var FRAME_LENGTH = 100;
 
 /* The number of request updates. */
-const LIVE_REQUESTS = {};
+var LIVE_REQUESTS = {};
 
 /* The number of total, blocked, and secured requests per tab. */
-const DASHBOARD = BACKGROUND.DASHBOARD;
+var DASHBOARD = BACKGROUND.DASHBOARD;
 
 /* The mean load time of a tracking resource in milliseconds. */
-const TRACKING_RESOURCE_TIME = 72.6141083689391;
+var TRACKING_RESOURCE_TIME = 72.6141083689391;
 
 /* The mean load time of a resource in milliseconds. */
-const RESOURCE_TIME = 55.787731003361;
+var RESOURCE_TIME = 55.787731003361;
 
 /* The ratio of mean load times. */
-const TIME_CONSTANT = TRACKING_RESOURCE_TIME / RESOURCE_TIME;
+var TIME_varANT = TRACKING_RESOURCE_TIME / RESOURCE_TIME;
 
 /* The mean file size of a tracking resource in kilobytes. */
-const TRACKING_RESOURCE_SIZE = 8.51145760261889;
+var TRACKING_RESOURCE_SIZE = 8.51145760261889;
 
 /* The mean file size of a resource in kilobytes. */
-const RESOURCE_SIZE = 10.4957370842049;
+var RESOURCE_SIZE = 10.4957370842049;
 
 /* The ratio of mean file sizes. */
-const SIZE_CONSTANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
+var SIZE_varANT = TRACKING_RESOURCE_SIZE / RESOURCE_SIZE;
 
 /* The service scaffolding. */
 var serviceTemplate;
@@ -942,25 +942,25 @@ var whitelistingClicked = 0;
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
     var displayMode = options.displayMode;
-    const VIEWPORT = $('html').add('body');
+    var VIEWPORT = $('html').add('body');
 
     if (!displayMode || displayMode == LEGACY) {
       VIEWPORT.height(SAFARI ? 217 : 230);
-      const WRAPPED_THEME = $('#' + LEGACY);
+      var WRAPPED_THEME = $('#' + LEGACY);
       WRAPPED_THEME.show();
-      const THEME = WRAPPED_THEME[0];
+      var THEME = WRAPPED_THEME[0];
 
       TABS.query({currentWindow: true, active: true}, function(tabs) {
-        const TAB = tabs[0];
-        const ID = TAB.id;
-        const CATEGORY_REQUESTS =
+        var TAB = tabs[0];
+        var ID = TAB.id;
+        var CATEGORY_REQUESTS =
             (BACKGROUND.REQUEST_COUNTS[ID] || {}).Disconnect || {};
-        const SURFACE = THEME.getElementsByTagName('tbody')[0];
-        const TEMPLATE = SURFACE.getElementsByTagName('tr')[0];
+        var SURFACE = THEME.getElementsByTagName('tbody')[0];
+        var TEMPLATE = SURFACE.getElementsByTagName('tr')[0];
         var expiredControl;
         while (expiredControl = TEMPLATE.nextSibling)
             SURFACE.removeChild(expiredControl);
-        const DOMAIN = GET(TAB.url);
+        var DOMAIN = GET(TAB.url);
 
         for (var i = 0; i < SERVICE_COUNT; i++) {
           var name = SERVICES[i];
@@ -991,10 +991,10 @@ var whitelistingClicked = 0;
           control.onclick = function(
             name, lowercaseName, requestCount, control, badge, text
           ) {
-            const WHITELIST = DESERIALIZE(options.whitelist) || {};
-            const SITE_WHITELIST =
+            var WHITELIST = DESERIALIZE(options.whitelist) || {};
+            var SITE_WHITELIST =
                 WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-            const DISCONNECT_WHITELIST =
+            var DISCONNECT_WHITELIST =
                 SITE_WHITELIST.Disconnect ||
                     (SITE_WHITELIST.Disconnect =
                         {whitelisted: false, services: {}});
@@ -1019,9 +1019,9 @@ var whitelistingClicked = 0;
       SAFARI && $('#minioptions').hide();
 
       if (DESERIALIZE(options.searchHardenable)) {
-        const LEGACY_SEARCH = THEME.getElementsByClassName('search')[0];
+        var LEGACY_SEARCH = THEME.getElementsByClassName('search')[0];
         LEGACY_SEARCH.className = 'shown';
-        const SEARCHBOX = LEGACY_SEARCH.getElementsByTagName('input')[0];
+        var SEARCHBOX = LEGACY_SEARCH.getElementsByTagName('input')[0];
         SEARCHBOX.checked = DESERIALIZE(options.searchHardened);
         $(SEARCHBOX).off('click');
 
@@ -1031,7 +1031,7 @@ var whitelistingClicked = 0;
         };
       }
 
-      const WIFIBOX =
+      var WIFIBOX =
           THEME.
             getElementsByClassName('wifi')[0].
             getElementsByTagName('input')[0];
@@ -1043,8 +1043,8 @@ var whitelistingClicked = 0;
             options.browsingHardened = !DESERIALIZE(options.browsingHardened);
       };
 
-      const LINKS = THEME.getElementsByTagName('a');
-      const LINK_COUNT = LINKS.length;
+      var LINKS = THEME.getElementsByTagName('a');
+      var LINK_COUNT = LINKS.length;
 
       for (var i = 0; i < LINK_COUNT; i++) {
         $(LINKS[i]).off('click');
@@ -1075,7 +1075,7 @@ var whitelistingClicked = 0;
         stem: {spacing: -1},
         background: {color: '#333', opacity: .9},
         onShow: function() {
-          const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+          var BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
           $('.sharing.disconnect .text').text(
             BLOCKED_COUNT + ' blocked' + REQUEST +
                 (BLOCKED_COUNT - 1 ? 's' : '')
@@ -1088,18 +1088,18 @@ var whitelistingClicked = 0;
       var activeServices = $();
 
       TABS.query({currentWindow: true, active: true}, function(tabs) {
-        const TAB = tabs[0];
-        const DOMAIN = domain = GET(TAB.url);
-        const ID = tabId = TAB.id;
-        const TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
-        const DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
-        const SHORTCUT_SURFACE =
+        var TAB = tabs[0];
+        var DOMAIN = domain = GET(TAB.url);
+        var ID = tabId = TAB.id;
+        var TAB_REQUESTS = BACKGROUND.REQUEST_COUNTS[ID] || {};
+        var DISCONNECT_REQUESTS = TAB_REQUESTS.Disconnect || {};
+        var SHORTCUT_SURFACE =
             document.getElementById('shortcuts').getElementsByTagName('td')[0];
-        const SHORTCUT_TEMPLATE =
+        var SHORTCUT_TEMPLATE =
             SHORTCUT_SURFACE.getElementsByClassName('shortcut')[0];
-        const SITE_WHITELIST =
+        var SITE_WHITELIST =
             (DESERIALIZE(options.whitelist) || {})[DOMAIN] || {};
-        const SHORTCUT_WHITELIST =
+        var SHORTCUT_WHITELIST =
             (SITE_WHITELIST.Disconnect || {}).services || {};
         var expiredShortcuts;
         while (expiredShortcuts = SHORTCUT_TEMPLATE.nextSibling)
@@ -1163,10 +1163,10 @@ var whitelistingClicked = 0;
           ));
         }
 
-        const CATEGORY_SURFACE = $('#categories');
+        var CATEGORY_SURFACE = $('#categories');
         CATEGORY_SURFACE.children().slice(3).remove();
-        const CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
-        const SITE_BLACKLIST =
+        var CATEGORY_TEMPLATE = CATEGORY_SURFACE.children();
+        var SITE_BLACKLIST =
             (DESERIALIZE(options.blacklist) || {})[DOMAIN] || {};
         serviceTemplate = CATEGORY_TEMPLATE.find('.service');
 
@@ -1203,20 +1203,20 @@ var whitelistingClicked = 0;
             $(checkbox).off('click');
 
             checkbox.onclick = function(name, serviceName) {
-              const WHITELIST = DESERIALIZE(options.whitelist) || {};
-              const LOCAL_SITE_WHITELIST =
+              var WHITELIST = DESERIALIZE(options.whitelist) || {};
+              var LOCAL_SITE_WHITELIST =
                   WHITELIST[DOMAIN] || (WHITELIST[DOMAIN] = {});
-              const CONTENT = name == CONTENT_NAME;
-              const CATEGORY_WHITELIST =
+              var CONTENT = name == CONTENT_NAME;
+              var CATEGORY_WHITELIST =
                   LOCAL_SITE_WHITELIST[name] ||
                       (LOCAL_SITE_WHITELIST[name] =
                           {whitelisted: CONTENT, services: {}});
-              const SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
-              const WHITELISTED = SERVICE_WHITELIST[serviceName];
-              const BLACKLIST = DESERIALIZE(options.blacklist) || {};
-              const LOCAL_SITE_BLACKLIST =
+              var SERVICE_WHITELIST = CATEGORY_WHITELIST.services;
+              var WHITELISTED = SERVICE_WHITELIST[serviceName];
+              var BLACKLIST = DESERIALIZE(options.blacklist) || {};
+              var LOCAL_SITE_BLACKLIST =
                   BLACKLIST[DOMAIN] || (BLACKLIST[DOMAIN] = {});
-              const CATEGORY_BLACKLIST =
+              var CATEGORY_BLACKLIST =
                   LOCAL_SITE_BLACKLIST[name] ||
                       (LOCAL_SITE_BLACKLIST[name] = {});
               this.checked =
@@ -1321,7 +1321,7 @@ var whitelistingClicked = 0;
             }.bind(null, button)).
             off('click').
             click(function(serviceContainer, action, button, name) {
-              const EXPANDED_SERVICES = activeServices.filter(':visible');
+              var EXPANDED_SERVICES = activeServices.filter(':visible');
               if (
                 EXPANDED_SERVICES.length && serviceContainer != activeServices
               ) {
@@ -1348,10 +1348,10 @@ var whitelistingClicked = 0;
           CATEGORY_SURFACE.append(categoryControls);
         }
 
-        const WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
-        const WHITELISTING = WHITELISTING_ELEMENTS.control;
-        const WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
-        const WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
+        var WHITELISTING_ELEMENTS = renderWhitelisting(SITE_WHITELIST);
+        var WHITELISTING = WHITELISTING_ELEMENTS.control;
+        var WHITELISTING_ICON = WHITELISTING_ELEMENTS.icon;
+        var WHITELISTING_TEXT = WHITELISTING_ELEMENTS.text;
         WHITELISTING.off('mouseenter').mouseenter(handleWhitelisting);
 
         WHITELISTING.off('click').click(function() {
@@ -1366,7 +1366,7 @@ var whitelistingClicked = 0;
           }
         });
 
-        const HEIGHT = $(window).height();
+        var HEIGHT = $(window).height();
         SAFARI ? safari.self.height = HEIGHT : VIEWPORT.height(HEIGHT);
       });
 
@@ -1377,14 +1377,14 @@ var whitelistingClicked = 0;
 
       updateSupportText();
 
-      const VISUALIZATION = $('.visualization');
+      var VISUALIZATION = $('.visualization');
       VISUALIZATION.off('mouseenter').mouseenter(handleVisualization);
 
       VISUALIZATION.off('click').click(function() {
         options.displayMode = GRAPH;
 
         $('#' + LIST).fadeOut('fast', function() {
-          const BUTTON =
+          var BUTTON =
               activeServices.
                 parent().
                 parent().
@@ -1405,20 +1405,20 @@ var whitelistingClicked = 0;
         });
       });
 
-      const ICON = VISUALIZATION.find('img')[0];
+      var ICON = VISUALIZATION.find('img')[0];
       ICON.src = IMAGES + currentScene + '/1' + EXTENSION;
       ICON.alt = 'Graph';
-      const INDICATOR = $('.indicator ' + INPUT)[0];
+      var INDICATOR = $('.indicator ' + INPUT)[0];
       INDICATOR.checked = DESERIALIZE(options.blockingIndicated);
       $(INDICATOR).off('click');
 
       INDICATOR.onclick = function() {
-        const BLOCKING_INDICATED = DESERIALIZE(options.blockingIndicated);
+        var BLOCKING_INDICATED = DESERIALIZE(options.blockingIndicated);
         this.checked = options.blockingIndicated = !BLOCKING_INDICATED;
 
         if (BLOCKING_INDICATED) {
           TABS.query({}, function(tabs) {
-            const TAB_COUNT = tabs.length;
+            var TAB_COUNT = tabs.length;
             for (var i = 0; i < TAB_COUNT; i++)
                 BACKGROUND.chrome.browserAction.setBadgeText({
                   tabId: tabs[i].id, text: ''
@@ -1427,7 +1427,7 @@ var whitelistingClicked = 0;
         }
       };
 
-      const CAP = $('.cap ' + INPUT)[0];
+      var CAP = $('.cap ' + INPUT)[0];
       CAP.checked = DESERIALIZE(options.blockingCapped);
       $(CAP).off('click');
 
@@ -1443,9 +1443,9 @@ var whitelistingClicked = 0;
             append('svg:svg').
             attr('width', 198).
             attr('height', 40);
-      const PAID_BUCKETS = ['paid-cc', 'paid-paypal', 'paid-bitcoin', 'premium'];
-      const PAID_BUCKET_COUNT = PAID_BUCKETS.length;
-      const BUCKET = deserialize(options.pwyw).bucket;
+      var PAID_BUCKETS = ['paid-cc', 'paid-paypal', 'paid-bitcoin', 'premium'];
+      var PAID_BUCKET_COUNT = PAID_BUCKETS.length;
+      var BUCKET = deserialize(options.pwyw).bucket;
       for (var i = 0; i < PAID_BUCKET_COUNT; i++)
           if (BUCKET == PAID_BUCKETS[i]) {
             $('#support').hide();
@@ -1460,8 +1460,8 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[0]).off('click').click(function() {
-        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-        const URL =
+        var BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+        var URL =
             'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 blocks '
                 + BLOCKED_COUNT + ' tracking request' +
                     (BLOCKED_COUNT - 1 ? 's' : '') + ' on ' + domain +
@@ -1472,8 +1472,8 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[1]).off('click').click(function() {
-        const BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-        const URL =
+        var BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
+        var URL =
             'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 blocks '
                 + BLOCKED_COUNT + ' tracking request' +
                     (BLOCKED_COUNT - 1 ? 's' : '') + ' on ' + domain + ':';
@@ -1483,13 +1483,13 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[2]).off('click').click(function() {
-        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-        const URL =
+        var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        var URL =
             'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 makes '
                 + domain + ' ' +
-                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100).
+                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT * 100).
                       toFixed() +
                         '%25 (' +
                             (BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000).
@@ -1501,13 +1501,13 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[3]).off('click').click(function() {
-        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-        const URL =
+        var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        var URL =
             'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 makes '
                 + domain + ' ' +
-                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_CONSTANT * 100).
+                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT * 100).
                       toFixed() +
                         '%25 (' +
                             (BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000).
@@ -1519,13 +1519,13 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[4]).off('click').click(function() {
-        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-        const URL =
+        var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        var URL =
             'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 makes '
                 + domain + ' use ' +
-                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100).
+                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_varANT * 100).
                       toFixed() +
                         '%25 (' + (BLOCKED_COUNT * TRACKING_RESOURCE_SIZE).
                           toFixed() +
@@ -1536,13 +1536,13 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[5]).off('click').click(function() {
-        const TAB_DASHBOARD = DASHBOARD[tabId] || {};
-        const BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-        const TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-        const URL =
+        var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+        var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+        var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+        var URL =
             'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 makes '
                 + domain + ' use ' +
-                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_CONSTANT * 100).
+                    ((BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_varANT * 100).
                       toFixed() +
                         '%25 (' +
                             (BLOCKED_COUNT * TRACKING_RESOURCE_SIZE).toFixed() +
@@ -1553,8 +1553,8 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[6]).off('click').click(function() {
-        const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
-        const URL =
+        var SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+        var URL =
             'https://www.facebook.com/sharer.php?s=100&p[images][0]=https://disconnect.me/images/thumbnail.png&p[title]=Make the web fast, private, %26 secure&p[url]=https://disconnect.me/&p[summary]=Disconnect 2 secures '
                 + SECURED_COUNT + ' vulnerable request' +
                     (SECURED_COUNT - 1 ? 's' : '') + ' on ' + domain +
@@ -1565,8 +1565,8 @@ var whitelistingClicked = 0;
       });
 
       $($('.sharing a')[7]).off('click').click(function() {
-        const SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
-        const URL =
+        var SECURED_COUNT = (DASHBOARD[tabId] || {}).secured || 0;
+        var URL =
             'https://twitter.com/share?url=https://disconnect.me/&text=%23disconnect2 secures '
                 + SECURED_COUNT + ' vulnerable request' +
                     (SECURED_COUNT - 1 ? 's' : '') + ' on ' + domain + ':';

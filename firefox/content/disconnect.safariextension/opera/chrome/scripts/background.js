@@ -23,7 +23,7 @@
 
 /* Populates an array of a given length with a default value. */
 function initializeArray(length, defaultValue) {
-  const ARRAY = [];
+  var ARRAY = [];
   for (var i = 0; i < length; i++) ARRAY[i] = defaultValue;
   return ARRAY;
 }
@@ -87,12 +87,12 @@ function checkPremium(callback) {
 
 /* Rewrites a generic cookie with specific domains and paths. */
 function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
-  const MINIMIZE = Math.min;
-  const SUBDOMAIN_COUNT = MINIMIZE(subdomains.length, 20);
+  var MINIMIZE = Math.min;
+  var SUBDOMAIN_COUNT = MINIMIZE(subdomains.length, 20);
       // Chrome won't persist more than 22 domains because of cookie limits.
   delete cookie.hostOnly;
   delete cookie.session;
-  const DOMAIN = cookie.domain;
+  var DOMAIN = cookie.domain;
 
   for (var i = 0; i < SUBDOMAIN_COUNT; i++) {
     var subdomain = subdomains[i];
@@ -101,7 +101,7 @@ function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
     COOKIES.set(cookie);
   }
 
-  const PATH_COUNT = MINIMIZE(paths.length, 10);
+  var PATH_COUNT = MINIMIZE(paths.length, 10);
       // Chrome won't persist more than 11 paths.
   cookie.domain = DOMAIN;
 
@@ -118,16 +118,16 @@ function mapCookie(cookie, storeId, url, domain, subdomains, paths) {
 /* Rewrites a batch of generic cookies with specific domains and paths. */
 function mapCookies(url, service) {
   COOKIES.getAllCookieStores(function(cookieStores) {
-    const STORE_COUNT = cookieStores.length;
-    const DOMAIN = '.' + service[1][0];
-    const SUBDOMAINS = service[2];
-    const PATHS = service[3];
+    var STORE_COUNT = cookieStores.length;
+    var DOMAIN = '.' + service[1][0];
+    var SUBDOMAINS = service[2];
+    var PATHS = service[3];
 
     for (var i = 0; i < STORE_COUNT; i++) {
       var storeId = cookieStores[i].id;
 
       COOKIES.getAll({url: url, storeId: storeId}, function(cookies) {
-        const COOKIE_COUNT = cookies.length;
+        var COOKIE_COUNT = cookies.length;
         for (var j = 0; j < COOKIE_COUNT; j++)
             mapCookie(cookies[j], storeId, url, DOMAIN, SUBDOMAINS, PATHS);
       });
@@ -137,11 +137,11 @@ function mapCookies(url, service) {
 
 /* Erases a batch of cookies. */
 function deleteCookies(url, domain, path, storeId, name) {
-  const DETAILS = {url: url, storeId: storeId};
+  var DETAILS = {url: url, storeId: storeId};
   if (name) DETAILS.name = name;
 
   COOKIES.getAll(DETAILS, function(cookies) {
-    const COOKIE_COUNT = cookies.length;
+    var COOKIE_COUNT = cookies.length;
 
     for (var i = 0; i < COOKIE_COUNT; i++) {
       var cookie = cookies[i];
@@ -156,12 +156,12 @@ function deleteCookies(url, domain, path, storeId, name) {
 /* Rewrites a batch of specific cookies with a generic domain and path. */
 function reduceCookies(url, service, name) {
   COOKIES.getAllCookieStores(function(cookieStores) {
-    const STORE_COUNT = cookieStores.length;
-    const SUBDOMAINS = service[2];
-    const SUBDOMAIN_COUNT = SUBDOMAINS.length;
-    const DOMAIN = '.' + service[1][0];
-    const PATHS = service[3];
-    const PATH_COUNT = PATHS.length;
+    var STORE_COUNT = cookieStores.length;
+    var SUBDOMAINS = service[2];
+    var SUBDOMAIN_COUNT = SUBDOMAINS.length;
+    var DOMAIN = '.' + service[1][0];
+    var PATHS = service[3];
+    var PATH_COUNT = PATHS.length;
 
     for (var i = 0; i < STORE_COUNT; i++) {
       var storeId = cookieStores[i].id;
@@ -173,7 +173,7 @@ function reduceCookies(url, service, name) {
 
         if (!name && !j) {
           COOKIES.getAll({url: mappedUrl, storeId: storeId}, function(cookies) {
-            const COOKIE_COUNT = cookies.length;
+            var COOKIE_COUNT = cookies.length;
 
             for (var i = 0; i < COOKIE_COUNT; i++) {
               var details = cookies[i];
@@ -207,7 +207,7 @@ function initializeToolbar() {
         options.displayMode == LEGACY_NAME ? [85, 144, 210, 255] :
             [0, 186, 77, 255]
   });
-  const DETAILS = {popup: PATH + 'markup/popup.html'};
+  var DETAILS = {popup: PATH + 'markup/popup.html'};
 
   if (SAFARI) {
     DETAILS.width = 148;
@@ -278,7 +278,7 @@ function updateCounter(tabId, count, deactivated) {
 /* Indicates the number of tracking requests, if the tab is rendered. */
 function safelyUpdateCounter(tabId, count, deactivated) {
   TABS.query({}, function(tabs) {
-    const TAB_COUNT = tabs.length;
+    var TAB_COUNT = tabs.length;
 
     for (var i = 0; i < TAB_COUNT; i++) {
       if (tabId == tabs[i].id) {
@@ -291,16 +291,16 @@ function safelyUpdateCounter(tabId, count, deactivated) {
 
 /* Tallies and indicates the number of tracking requests. */
 function incrementCounter(tabId, service, blocked, popup) {
-  const TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
-  const CATEGORY = service.category;
-  const CATEGORY_REQUESTS =
+  var TAB_REQUESTS = REQUEST_COUNTS[tabId] || (REQUEST_COUNTS[tabId] = {});
+  var CATEGORY = service.category;
+  var CATEGORY_REQUESTS =
       TAB_REQUESTS[CATEGORY] || (TAB_REQUESTS[CATEGORY] = {});
-  const SERVICE = service.name;
-  const SERVICE_URL = service.url;
-  const SERVICE_REQUESTS =
+  var SERVICE = service.name;
+  var SERVICE_URL = service.url;
+  var SERVICE_REQUESTS =
       CATEGORY_REQUESTS[SERVICE] ||
           (CATEGORY_REQUESTS[SERVICE] = {url: SERVICE_URL, count: 0});
-  const SERVICE_COUNT = ++SERVICE_REQUESTS.count;
+  var SERVICE_COUNT = ++SERVICE_REQUESTS.count;
   safelyUpdateCounter(tabId, getCount(TAB_REQUESTS), !blocked);
 
   if (popup)
@@ -310,7 +310,7 @@ function incrementCounter(tabId, service, blocked, popup) {
         var categoryCount = 0;
         for (var name in CATEGORY_REQUESTS)
             categoryCount += CATEGORY_REQUESTS[name].count;
-        const UPDATE_CATEGORY = popup.updateCategory;
+        var UPDATE_CATEGORY = popup.updateCategory;
         UPDATE_CATEGORY && UPDATE_CATEGORY(
           tabId, CATEGORY, categoryCount, SERVICE, SERVICE_URL, SERVICE_COUNT
         );
@@ -319,8 +319,8 @@ function incrementCounter(tabId, service, blocked, popup) {
 
 /* Checks to see if the user has paid. */
 function paid() {
-  const PWYW = deserialize(options.pwyw) || {};
-  const STATUS = PWYW.bucket || "";
+  var PWYW = deserialize(options.pwyw) || {};
+  var STATUS = PWYW.bucket || "";
   if (STATUS == 'viewed' || STATUS == 'trying' || STATUS == 'pending') {
     return false;
   }
@@ -341,76 +341,76 @@ if (SAFARI)
     }
 
 /* The current build number. */
-const CURRENT_BUILD = 78;
+var CURRENT_BUILD = 78;
 
 /* The previous build number. */
-const PREVIOUS_BUILD = options.build;
+var PREVIOUS_BUILD = options.build;
 
 /* The domain name of the tabs. */
-const DOMAINS = {};
+var DOMAINS = {};
 
 /* The blacklisted services per domain name. */
-const BLACKLIST = deserialize(options.blacklist) || {};
+var BLACKLIST = deserialize(options.blacklist) || {};
 
 /* The previous requested URL of the tabs. */
-const REQUESTS = {};
+var REQUESTS = {};
 
 /* The previous redirected URL of the tabs. */
-const REDIRECTS = {};
+var REDIRECTS = {};
 
 /* The number of tracking requests per tab, overall and by third party. */
-const REQUEST_COUNTS = {};
+var REQUEST_COUNTS = {};
 
 /* The number of total, blocked, and secured requests per tab. */
-const DASHBOARD = {};
+var DASHBOARD = {};
 
 /* The Collusion data structure. */
-const LOG = {};
+var LOG = {};
 
 /* The content key. */
-const CONTENT_NAME = 'Content';
+var CONTENT_NAME = 'Content';
 
 /* The list value. */
-const LIST_NAME = 'list';
+var LIST_NAME = 'list';
 
 /* The graph value. */
-const GRAPH_NAME = 'graph';
+var GRAPH_NAME = 'graph';
 
 /* The legacy value. */
-const LEGACY_NAME = 'legacy';
+var LEGACY_NAME = 'legacy';
 
 /* The "extension" API. */
-const EXTENSION = chrome.extension;
+var EXTENSION = chrome.extension;
 
 /* The "tabs" API. */
-const TABS = chrome.tabs;
+var TABS = chrome.tabs;
 
 /* The "cookies" API. */
-const COOKIES = chrome.cookies;
+var COOKIES = chrome.cookies;
 
 /* The "browserAction" API. */
-const BROWSER_ACTION = chrome.browserAction;
+var BROWSER_ACTION = chrome.browserAction;
 
 /* The experimental value of the "levelOfControl" property. */
-const EDITABLE = 'controllable_by_this_extension';
+var EDITABLE = 'controllable_by_this_extension';
 
 /* The domain object. */
-const SITENAME = new Sitename;
+var SITENAME = new Sitename;
 
 /* The domain initialization. */
-const IS_INITIALIZED = SITENAME.isInitialized;
+var IS_INITIALIZED = SITENAME.isInitialized;
 
 /* The domain getter. */
-const GET = SITENAME.get;
+var GET = SITENAME.get;
 
 /* The Shadow Web. */
-const PLAYBACK = [];
+var PLAYBACK = [];
 
 /* The path to the Chrome directory. */
-const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
+var PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 
 /* The pixel width and height of the toolbar icon. */
-const SIZE = SAFARI ? 32 : 19;
+var SIZE = SAFARI ? 32 : 19;
 
 /* Records whether or not the desktop app is installed. */
 var isPremium = options.premium || false;
@@ -438,16 +438,16 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 31) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 35) {
-  const MEDIA_FIRE_DOMAIN = 'mediafire.com';
+  var MEDIA_FIRE_DOMAIN = 'mediafire.com';
   (whitelist[MEDIA_FIRE_DOMAIN] || (whitelist[MEDIA_FIRE_DOMAIN] = {})).
     Facebook = true;
-  const SALON_DOMAIN = 'salon.com';
+  var SALON_DOMAIN = 'salon.com';
   (whitelist[SALON_DOMAIN] || (whitelist[SALON_DOMAIN] = {})).Google = true;
   options.whitelist = JSON.stringify(whitelist);
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 38) {
-  const LA_TIMES_DOMAIN = 'latimes.com';
+  var LA_TIMES_DOMAIN = 'latimes.com';
   (whitelist[LA_TIMES_DOMAIN] || (whitelist[LA_TIMES_DOMAIN] = {})).
     Google = true;
   options.whitelist = JSON.stringify(whitelist);
@@ -464,7 +464,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 41) delete options.blogOpened;
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 42) options.blogOpened = true;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
-  const MIGRATED_WHITELIST = {};
+  var MIGRATED_WHITELIST = {};
 
   for (var domain in whitelist) {
     var siteWhitelist =
@@ -534,7 +534,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 44) {
-  const FEEDLY_DOMAIN = 'feedly.com';
+  var FEEDLY_DOMAIN = 'feedly.com';
   var domainWhitelist =
       whitelist[FEEDLY_DOMAIN] || (whitelist[FEEDLY_DOMAIN] = {});
   var disconnectWhitelist =
@@ -557,14 +557,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 54) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
-  const FRESH_DIRECT_DOMAIN = 'freshdirect.com';
+  var FRESH_DIRECT_DOMAIN = 'freshdirect.com';
   var domainWhitelist =
       whitelist[FRESH_DIRECT_DOMAIN] || (whitelist[FRESH_DIRECT_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const NEW_YORKER_DOMAIN = 'newyorker.com';
+  var NEW_YORKER_DOMAIN = 'newyorker.com';
   domainWhitelist =
       whitelist[NEW_YORKER_DOMAIN] || (whitelist[NEW_YORKER_DOMAIN] = {});
   disconnectWhitelist =
@@ -577,7 +577,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 57) {
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 59) options.firstBuild = CURRENT_BUILD;
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
-  const HM_DOMAIN = 'hm.com';
+  var HM_DOMAIN = 'hm.com';
   var domainWhitelist = whitelist[HM_DOMAIN] || (whitelist[HM_DOMAIN] = {});
   var analyticsWhitelist =
       domainWhitelist.Analytics ||
@@ -587,14 +587,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 60) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
-  const CVS_DOMAIN = 'cvs.com';
+  var CVS_DOMAIN = 'cvs.com';
   var domainWhitelist = whitelist[CVS_DOMAIN] || (whitelist[CVS_DOMAIN] = {});
   var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.WPP = true;
 
-  const DEVIANT_ART_DOMAIN = 'deviantart.com';
+  var DEVIANT_ART_DOMAIN = 'deviantart.com';
   domainWhitelist =
       whitelist[DEVIANT_ART_DOMAIN] || (whitelist[DEVIANT_ART_DOMAIN] = {});
   var disconnectWhitelist =
@@ -602,14 +602,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
 
-  const MACYS_DOMAIN = 'macys.com';
+  var MACYS_DOMAIN = 'macys.com';
   domainWhitelist = whitelist[MACYS_DOMAIN] || (whitelist[MACYS_DOMAIN] = {});
   var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   analyticsWhitelist.services.IBM = true;
 
-  const NORDSTROM_DOMAIN = 'nordstrom.com';
+  var NORDSTROM_DOMAIN = 'nordstrom.com';
   domainWhitelist =
       whitelist[NORDSTROM_DOMAIN] || (whitelist[NORDSTROM_DOMAIN] = {});
   analyticsWhitelist =
@@ -617,7 +617,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   analyticsWhitelist.services.IBM = true;
 
-  const SLIDESHARE_DOMAIN = 'slideshare.net';
+  var SLIDESHARE_DOMAIN = 'slideshare.net';
   domainWhitelist =
       whitelist[SLIDESHARE_DOMAIN] || (whitelist[SLIDESHARE_DOMAIN] = {});
   disconnectWhitelist =
@@ -629,7 +629,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
           (domainWhitelist.Social = {whitelisted: false, services: {}});
   socialWhitelist.services.LinkedIn = true;
 
-  const TARGET_DOMAIN = 'target.com';
+  var TARGET_DOMAIN = 'target.com';
   domainWhitelist = whitelist[TARGET_DOMAIN] || (whitelist[TARGET_DOMAIN] = {});
   advertisingWhitelist =
       domainWhitelist.Advertising ||
@@ -641,7 +641,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 63) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
-  const EASY_JET_DOMAIN = 'easyjet.com';
+  var EASY_JET_DOMAIN = 'easyjet.com';
   var domainWhitelist =
       whitelist[EASY_JET_DOMAIN] || (whitelist[EASY_JET_DOMAIN] = {});
   var disconnectWhitelist =
@@ -652,7 +652,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 65) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
-  const ALLOCINE_DOMAIN = 'allocine.fr';
+  var ALLOCINE_DOMAIN = 'allocine.fr';
   var domainWhitelist =
       whitelist[ALLOCINE_DOMAIN] || (whitelist[ALLOCINE_DOMAIN] = {});
   var disconnectWhitelist =
@@ -660,14 +660,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Facebook = true;
 
-  const FORD_DOMAIN = 'ford.com';
+  var FORD_DOMAIN = 'ford.com';
   domainWhitelist = whitelist[FORD_DOMAIN] || (whitelist[FORD_DOMAIN] = {});
   var advertisingWhitelist =
       domainWhitelist.Advertising ||
           (domainWhitelist.Advertising = {whitelisted: false, services: {}});
   advertisingWhitelist.services.Adobe = true;
 
-  const PLAY_TV_DOMAIN = 'playtv.fr';
+  var PLAY_TV_DOMAIN = 'playtv.fr';
   domainWhitelist =
       whitelist[PLAY_TV_DOMAIN] || (whitelist[PLAY_TV_DOMAIN] = {});
   disconnectWhitelist =
@@ -676,14 +676,14 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
   disconnectWhitelist.services.Google = true;
   disconnectWhitelist.services.Twitter = true;
 
-  const SUBARU_DOMAIN = 'subaru.com';
+  var SUBARU_DOMAIN = 'subaru.com';
   domainWhitelist = whitelist[SUBARU_DOMAIN] || (whitelist[SUBARU_DOMAIN] = {});
   var analyticsWhitelist =
       domainWhitelist.Analytics ||
           (domainWhitelist.Analytics = {whitelisted: false, services: {}});
   analyticsWhitelist.services['Mongoose Metrics'] = true;
 
-  const VIMEO_DOMAIN = 'vimeo.com';
+  var VIMEO_DOMAIN = 'vimeo.com';
   domainWhitelist = whitelist[VIMEO_DOMAIN] || (whitelist[VIMEO_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
@@ -695,39 +695,39 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 67) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 68) {
-  const CBS_DOMAIN = 'cbs.com';
+  var CBS_DOMAIN = 'cbs.com';
   var domainWhitelist = whitelist[CBS_DOMAIN] || (whitelist[CBS_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const CBS_NEWS_DOMAIN = 'cbsnews.com';
+  var CBS_NEWS_DOMAIN = 'cbsnews.com';
   domainWhitelist =
       whitelist[CBS_NEWS_DOMAIN] || (whitelist[CBS_NEWS_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const FOSSIL_DOMAIN = 'fossil.com';
+  var FOSSIL_DOMAIN = 'fossil.com';
   domainWhitelist = whitelist[FOSSIL_DOMAIN] || (whitelist[FOSSIL_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const GAMESPOT_DOMAIN = 'gamespot.com';
+  var GAMESPOT_DOMAIN = 'gamespot.com';
   domainWhitelist =
       whitelist[GAMESPOT_DOMAIN] || (whitelist[GAMESPOT_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const IGN_DOMAIN = 'ign.com';
+  var IGN_DOMAIN = 'ign.com';
   domainWhitelist = whitelist[IGN_DOMAIN] || (whitelist[IGN_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const TECH_REPUBLIC_DOMAIN = 'techrepublic.com';
+  var TECH_REPUBLIC_DOMAIN = 'techrepublic.com';
   domainWhitelist =
       whitelist[TECH_REPUBLIC_DOMAIN] || (whitelist[TECH_REPUBLIC_DOMAIN] = {});
   disconnectWhitelist =
@@ -739,7 +739,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 68) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 69) {
-  const BLOOMBERG_DOMAIN = 'bloomberg.com';
+  var BLOOMBERG_DOMAIN = 'bloomberg.com';
   var domainWhitelist =
       whitelist[BLOOMBERG_DOMAIN] || (whitelist[BLOOMBERG_DOMAIN] = {});
   var disconnectWhitelist =
@@ -750,21 +750,21 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 69) {
 }
 
 if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
-  const OBAMA_DOMAIN = 'barackobama.com';
+  var OBAMA_DOMAIN = 'barackobama.com';
   var domainWhitelist =
       whitelist[OBAMA_DOMAIN] || (whitelist[OBAMA_DOMAIN] = {});
   var disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Twitter = true;
-  const MINECRAFT_DOMAIN = 'minecraft.net';
+  var MINECRAFT_DOMAIN = 'minecraft.net';
   domainWhitelist =
       whitelist[MINECRAFT_DOMAIN] || (whitelist[MINECRAFT_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
           (domainWhitelist.Disconnect = {whitelisted: false, services: {}});
   disconnectWhitelist.services.Google = true;
-  const TED_DOMAIN = 'ted.com';
+  var TED_DOMAIN = 'ted.com';
   domainWhitelist = whitelist[TED_DOMAIN] || (whitelist[TED_DOMAIN] = {});
   disconnectWhitelist =
       domainWhitelist.Disconnect ||
@@ -795,7 +795,7 @@ try {
     downgradeServices(true);
     BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
   } else {
-    const PWYW = deserialize(options.pwyw);
+    var PWYW = deserialize(options.pwyw);
     if (PWYW.bucket == 'later')
         options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
             // "later" was accidentally live for a bit.
@@ -828,16 +828,16 @@ options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
     options.sidebarCollapsed--; // An experimental "semisticky" bit.
 
 /* Prepopulates the store of tab domain names. */
-const ID = setInterval(function() {
+var ID = setInterval(function() {
   if (IS_INITIALIZED()) {
     clearInterval(ID);
-    const TLDS = deserialize(options.tlds);
+    var TLDS = deserialize(options.tlds);
     TLDS['google.com'] = true;
     TLDS['yahoo.com'] = true;
     options.tlds = JSON.stringify(TLDS);
 
     TABS.query({}, function(tabs) {
-      const TAB_COUNT = tabs.length;
+      var TAB_COUNT = tabs.length;
 
       for (var i = 0; i < TAB_COUNT; i++) {
         var tab = tabs[i];
@@ -849,41 +849,41 @@ const ID = setInterval(function() {
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-  const TAB_ID = details.tabId;
-  const TYPE = details.type;
-  const PARENT = TYPE == 'main_frame';
-  const REQUESTED_URL = details.url;
-  const CHILD_DOMAIN = GET(REQUESTED_URL);
+  var TAB_ID = details.tabId;
+  var TYPE = details.type;
+  var PARENT = TYPE == 'main_frame';
+  var REQUESTED_URL = details.url;
+  var CHILD_DOMAIN = GET(REQUESTED_URL);
 
   if (PARENT) {
     DOMAINS[TAB_ID] = CHILD_DOMAIN;
     if (!startTime) startTime = new Date();
   }
 
-  const CHILD_SERVICE = getService(CHILD_DOMAIN);
-  const PARENT_DOMAIN = DOMAINS[TAB_ID];
+  var CHILD_SERVICE = getService(CHILD_DOMAIN);
+  var PARENT_DOMAIN = DOMAINS[TAB_ID];
   var hardenedUrl;
   var hardened;
   var blockingResponse = {cancel: false};
   var whitelisted;
   var blockedCount;
-  const TAB_DASHBOARD =
+  var TAB_DASHBOARD =
       DASHBOARD[TAB_ID] ||
           (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
-  const TOTAL_COUNT = ++TAB_DASHBOARD.total;
-  const POPUP =
+  var TOTAL_COUNT = ++TAB_DASHBOARD.total;
+  var POPUP =
       options.displayMode != LEGACY_NAME &&
           EXTENSION.getViews({type: 'popup'})[0];
 
   if (CHILD_SERVICE) {
-    const PARENT_SERVICE = getService(PARENT_DOMAIN);
-    const CHILD_NAME = CHILD_SERVICE.name;
-    const REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
-    const CHILD_CATEGORY =
+    var PARENT_SERVICE = getService(PARENT_DOMAIN);
+    var CHILD_NAME = CHILD_SERVICE.name;
+    var REDIRECT_SAFE = REQUESTED_URL != REQUESTS[TAB_ID];
+    var CHILD_CATEGORY =
         CHILD_SERVICE.category =
             recategorize(CHILD_DOMAIN, REQUESTED_URL) || CHILD_SERVICE.category;
-    const CONTENT = CHILD_CATEGORY == CONTENT_NAME;
-    const CATEGORY_WHITELIST =
+    var CONTENT = CHILD_CATEGORY == CONTENT_NAME;
+    var CATEGORY_WHITELIST =
         ((deserialize(options.whitelist) || {})[PARENT_DOMAIN] ||
             {})[CHILD_CATEGORY] || {};
 
@@ -919,7 +919,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
                     : 'about:blank'
       };
       blockedCount = ++TAB_DASHBOARD.blocked;
-      const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
+      var BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
       options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
@@ -940,7 +940,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     REQUESTS[TAB_ID] = REQUESTED_URL;
     REDIRECTS[TAB_ID] = hardenedUrl;
     securedCount = ++TAB_DASHBOARD.secured;
-    const HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
+    var HARDENED_REQUESTS = deserialize(options.hardenedRequests) || {};
     HARDENED_REQUESTS[date] ? HARDENED_REQUESTS[date]++ :
         HARDENED_REQUESTS[date] = 1;
     options.hardenedRequests = JSON.stringify(HARDENED_REQUESTS);
@@ -952,17 +952,17 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   if (!(PARENT_DOMAIN in LOG))
       LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
   LOG[PARENT_DOMAIN].visited = true;
-  const REFERRERS = LOG[CHILD_DOMAIN].referrers;
-  const ELAPSED_TIME = new Date() - startTime;
+  var REFERRERS = LOG[CHILD_DOMAIN].referrers;
+  var ELAPSED_TIME = new Date() - startTime;
   if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
       REFERRERS[PARENT_DOMAIN] = {
         host: PARENT_DOMAIN,
         types: [ELAPSED_TIME]
       };
-  const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+  var PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
 
   if (PARENT_REFERRERS) {
-    const TYPES = PARENT_REFERRERS.types;
+    var TYPES = PARENT_REFERRERS.types;
     TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
   }
 
@@ -977,10 +977,10 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
   // A live update.
   if (POPUP)
       if (options.displayMode == GRAPH_NAME) {
-        const GRAPH = POPUP.graph;
+        var GRAPH = POPUP.graph;
         GRAPH && GRAPH.update(LOG);
       } else {
-        const TIMEOUT = POPUP.timeout;
+        var TIMEOUT = POPUP.timeout;
 
         blockedCount && setTimeout(function() {
           POPUP.renderBlockedRequest(
@@ -1004,11 +1004,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 /* Resets the number of tracking requests and services for a tab. */
 !OPERA && chrome.webNavigation.onCommitted.addListener(function(details) {
   if (!details.frameId) {
-    const TAB_ID = details.tabId;
+    var TAB_ID = details.tabId;
     delete REQUEST_COUNTS[TAB_ID];
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
-    const POPUP =
+    var POPUP =
         options.displayMode != LEGACY_NAME &&
             EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
@@ -1018,7 +1018,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 /* Resets the number of tracking requests and services for a tab. */
 SAFARI && safari.application.addEventListener(
   'beforeNavigate', function(event) {
-    const TAB_ID = event.target.id;
+    var TAB_ID = event.target.id;
     delete REQUEST_COUNTS[TAB_ID];
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
@@ -1049,17 +1049,17 @@ if (!SAFARI) {
 
 /* Builds a block list or adds to the number of blocked requests. */
 EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
-  const TAB = sender.tab;
+  var TAB = sender.tab;
 
   if (TAB) {
-    const TAB_ID = TAB.id;
-    const TAB_DASHBOARD =
+    var TAB_ID = TAB.id;
+    var TAB_DASHBOARD =
         DASHBOARD[TAB_ID] ||
             (DASHBOARD[TAB_ID] = {total: 0, blocked: 0, secured: 0});
-    const TOTAL_COUNT = ++TAB_DASHBOARD.total;
+    var TOTAL_COUNT = ++TAB_DASHBOARD.total;
 
     if (request.initialized) {
-      const DOMAIN = GET(TAB.url);
+      var DOMAIN = GET(TAB.url);
       sendResponse({
         servicePointer: servicePointer,
         tlds: SITENAME.getTlds(),
@@ -1068,7 +1068,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
         blacklist: (deserialize(options.blacklist) || {})[DOMAIN] || {}
       });
     } else if (request.pwyw) {
-      const PWYW = deserialize(options.pwyw);
+      var PWYW = deserialize(options.pwyw);
       PWYW.bucket = request.bucket;
       options.pwyw = JSON.stringify(PWYW);
       sendResponse({});
@@ -1080,8 +1080,8 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
       }
     } else {
       if (SAFARI) {
-        const BLOCKED = request.blocked;
-        const WHITELISTED = request.whitelisted;
+        var BLOCKED = request.blocked;
+        var WHITELISTED = request.whitelisted;
         var popup =
             options.displayMode != LEGACY_NAME &&
                 EXTENSION.getViews({type: 'popup'})[0];
@@ -1091,45 +1091,45 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
         if (BLOCKED) {
           blockedCount = ++TAB_DASHBOARD.blocked;
-          const BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
+          var BLOCKED_REQUESTS = deserialize(options.blockedRequests) || {};
           BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
               BLOCKED_REQUESTS[date] = 1;
           options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
         }
 
         // The Collusion data structure.
-        const CHILD_DOMAIN = request.childDomain;
+        var CHILD_DOMAIN = request.childDomain;
         if (!(CHILD_DOMAIN in LOG))
             LOG[CHILD_DOMAIN] = {
               host: CHILD_DOMAIN, referrers: {}, visited: false
             };
-        const PARENT_DOMAIN = request.parentDomain;
+        var PARENT_DOMAIN = request.parentDomain;
         if (!(PARENT_DOMAIN in LOG))
             LOG[PARENT_DOMAIN] = {host: PARENT_DOMAIN, referrers: {}};
         LOG[PARENT_DOMAIN].visited = true;
-        const REFERRERS = LOG[CHILD_DOMAIN].referrers;
+        var REFERRERS = LOG[CHILD_DOMAIN].referrers;
         if (!startTime) startTime = new Date();
-        const ELAPSED_TIME = new Date() - startTime;
+        var ELAPSED_TIME = new Date() - startTime;
         if (CHILD_DOMAIN != PARENT_DOMAIN && !(PARENT_DOMAIN in REFERRERS))
             REFERRERS[PARENT_DOMAIN] = {
               host: PARENT_DOMAIN,
               types: [ELAPSED_TIME]
             };
-        const PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
+        var PARENT_REFERRERS = REFERRERS[PARENT_DOMAIN];
 
         if (PARENT_REFERRERS) {
-          const TYPES = PARENT_REFERRERS.types;
-          const TYPE = request.type;
+          var TYPES = PARENT_REFERRERS.types;
+          var TYPE = request.type;
           TYPES.indexOf(TYPE) == -1 && TYPES.push(TYPE);
         }
 
         // A live update.
         if (popup)
             if (options.displayMode == GRAPH_NAME) {
-              const GRAPH = popup.graph;
+              var GRAPH = popup.graph;
               GRAPH && GRAPH.update(LOG);
             } else {
-              const TIMEOUT = popup.timeout;
+              var TIMEOUT = popup.timeout;
 
               blockedCount && setTimeout(function() {
                 popup.renderBlockedRequest(
@@ -1148,7 +1148,7 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-  const PWYW = deserialize(options.pwyw) || {};
+  var PWYW = deserialize(options.pwyw) || {};
 
   if (PWYW.bucket == 'pending') {
     TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
