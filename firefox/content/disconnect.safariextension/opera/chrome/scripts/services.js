@@ -171,10 +171,26 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
+/* Whether or not the browser is Safari */
+var SAFARI = (typeof safari !== "undefined")
+
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-$.get((OPERA ? 'chrome/' : '') + 'data/services.json', function(data) {
+/* The built-in services.json path. */
+var servicesPath = ''
+
+if (OPERA) {
+  servicesPath = 'chrome/' + 'data/services.json'
+}
+else if (SAFARI) {
+ servicesPath = '../' + 'data/services.json' 
+}
+else {
+  servicesPath = 'data/services.json' 
+}
+
+$.get(servicesPath, function(data) {
   processServices(data);
 });
 

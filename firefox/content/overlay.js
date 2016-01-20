@@ -835,13 +835,7 @@ if (typeof Disconnect == 'undefined') {
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js', this
       );
       loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.js', this
-      );
-      loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js', this
-      );
-      loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js', this
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.js', this, "UTF-8"
       );
       loader.loadSubScript('chrome://disconnect/content/debug.js', this);
       this.$ = jQuery.noConflict(true);

@@ -28,13 +28,6 @@ function initializeArray(length, defaultValue) {
   return ARRAY;
 }
 
-/* Toggles the search preferences. */
-function editSettings(state) {
-  state = !!state;
-  INSTANT_ENABLED.set({value: state});
-  SUGGEST_ENABLED.set({value: state});
-}
-
 /* Check Disconnect for a new notification */
 function checkForNotification() {
   $.getJSON('https://disconnect.me/currentNotification', function(notificationJSON) {
@@ -58,6 +51,38 @@ function checkForNotification() {
       console.log(e);
     }
   });
+}
+
+/* Check Disconnect for the support text */
+function checkSupportText() {
+  if (!isPremium) {
+    $.getJSON('https://disconnect.me/currentSupportText', function(supportJSON) {
+      try {
+        console.log(supportJSON);
+        options.supportText = supportJSON.text;
+        options.supportLink = supportJSON.link;
+      }
+      catch(e) {
+        console.log(e);
+      }
+    });
+  }
+}
+
+/* Checks to see if Disconnect Premium is installed */
+function checkPremium(callback) {
+  $.getJSON('http://127.0.0.1:6419/', function(premiumJSON) {
+    if (premiumJSON.premium) {
+      options.premium = true;
+      isPremium = true;
+      console.log( "premium on");
+      options.pwyw = JSON.stringify({date: date, bucket: 'premium'});
+      if (callback) callback(true);
+    }
+  }).fail(function() {
+    console.log( "premium not on");
+    if (callback) callback(false);
+  })
 }
 
 /* Rewrites a generic cookie with specific domains and paths. */
@@ -360,20 +385,11 @@ const EXTENSION = chrome.extension;
 /* The "tabs" API. */
 const TABS = chrome.tabs;
 
-/* The "privacy" API. */
-if (false) const PRIVACY = chrome.privacy.services;
-
 /* The "cookies" API. */
 const COOKIES = chrome.cookies;
 
 /* The "browserAction" API. */
 const BROWSER_ACTION = chrome.browserAction;
-
-/* The "instantEnabled" property. */
-if (false) const INSTANT_ENABLED = PRIVACY.instantEnabled;
-
-/* The "searchSuggestEnabled" property. */
-if (false) const SUGGEST_ENABLED = PRIVACY.searchSuggestEnabled;
 
 /* The experimental value of the "levelOfControl" property. */
 const EDITABLE = 'controllable_by_this_extension';
@@ -395,6 +411,9 @@ const PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 
 /* The pixel width and height of the toolbar icon. */
 const SIZE = SAFARI ? 32 : 19;
+
+/* Records whether or not the desktop app is installed. */
+var isPremium = options.premium || false;
 
 /* The whitelisted services per domain name. */
 var whitelist = deserialize(options.whitelist) || {};
@@ -497,13 +516,13 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
         TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
       }
-      else if (CURRENT_BUILD > 71) {
-        options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
-        TABS.create({url: 'https://disconnect.me/welcome/paysomething'});
-      }
       else {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-        TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+        checkPremium(function(premium) {
+          if (!premium) {
+            TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+          }
+        })
       }
     });
   }
@@ -790,9 +809,13 @@ catch (e) {
   }
 }
 
+checkSupportText();
+
+checkPremium();
+
 if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
   setInterval(function() {
-    checkForNotification();
+    if (!SAFARI) checkForNotification();
   }, 10000000);
 }
 
@@ -823,16 +846,6 @@ const ID = setInterval(function() {
     });
   }
 }, 100);
-
-/* Tests the writability of the search preferences. */
-false && INSTANT_ENABLED.get({}, function(details) {
-  details.levelOfControl == EDITABLE &&
-      SUGGEST_ENABLED.get({}, function(details) {
-        if (details.levelOfControl == EDITABLE) options.settingsEditable = true;
-        deserialize(options.settingsEditable) &&
-            deserialize(options.searchHardened) && editSettings();
-      });
-});
 
 /* Traps and selectively cancels or redirects a request. */
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
@@ -910,6 +923,9 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
       options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
+      if (isPremium) {
+        $.post('http://127.0.0.1:6419', JSON.stringify({"site": PARENT_DOMAIN, "tracker": CHILD_DOMAIN}))
+      }
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
@@ -1006,7 +1022,7 @@ SAFARI && safari.application.addEventListener(
     delete REQUEST_COUNTS[TAB_ID];
     delete DASHBOARD[TAB_ID];
     safelyUpdateCounter(TAB_ID, 0);
-    const POPUP =
+    window.POPUP =
         options.displayMode != LEGACY_NAME &&
             EXTENSION.getViews({type: 'popup'})[0];
     POPUP && POPUP.clearServices(TAB_ID);
@@ -1180,6 +1196,16 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
 
   clearBadge();
 });
+
+if (!SAFARI && !OPERA) {
+  if (chrome) {
+    if (chrome.runtime) {
+      if (chrome.runtime.setUninstallURL) {
+        chrome.runtime.setUninstallURL('https://disconnect.me/extension/uninstall');
+      }
+    }
+  }
+}
 
 /* The interface is English only for now. */
 if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHardenable)) {

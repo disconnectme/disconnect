@@ -217,7 +217,7 @@ function renderGraph() {
 
           if (SAFARI) {
             safari.self.width = 200;
-            safari.self.height = 306;
+            safari.self.height = 356;
           }
 
           var previousScene = currentScene;

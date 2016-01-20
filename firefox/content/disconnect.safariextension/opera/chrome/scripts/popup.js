@@ -420,6 +420,7 @@ function clearServices(id) {
 
       for (var i = 0; i < SHORTCUT_COUNT; i++) {
         var name = SHORTCUTS[i];
+        console.log(name, i)
         var control = $('.shortcut')[i + 1];
         renderShortcut(
           name,
@@ -782,6 +783,15 @@ function renderGraphs() {
 
       if (timeout) timeout = (ITERATIONS - index - 1) * 25;
     }, i * 25, i);
+  }
+}
+
+function updateSupportText() {
+  if (options.supportText && options.supportLink) {
+    console.log('support text!', options.supportText)
+    supportButton = $('#support > tbody > tr > td > a');
+    supportButton.text(options.supportText)
+    supportButton.attr("href", options.supportLink)
   }
 }
 
@@ -1365,6 +1375,8 @@ var whitelistingClicked = 0;
         return false;
       });
 
+      updateSupportText();
+
       const VISUALIZATION = $('.visualization');
       VISUALIZATION.off('mouseenter').mouseenter(handleVisualization);
 
@@ -1431,12 +1443,13 @@ var whitelistingClicked = 0;
             append('svg:svg').
             attr('width', 198).
             attr('height', 40);
-      const PAID_BUCKETS = ['paid-cc', 'paid-paypal', 'paid-bitcoin'];
+      const PAID_BUCKETS = ['paid-cc', 'paid-paypal', 'paid-bitcoin', 'premium'];
       const PAID_BUCKET_COUNT = PAID_BUCKETS.length;
       const BUCKET = deserialize(options.pwyw).bucket;
       for (var i = 0; i < PAID_BUCKET_COUNT; i++)
           if (BUCKET == PAID_BUCKETS[i]) {
             $('#support').hide();
+            $('html').height('324');
             break;
           }
 
