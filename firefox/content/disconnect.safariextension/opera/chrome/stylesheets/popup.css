@@ -93,7 +93,7 @@ td { padding: 0 }
 #navbar .text a:last-child { display: none }
 
 #shortcuts {
-  background: #2b2b2b;
+  background: #3C4554;
   width: 200px;
   height: 45px;
   text-align: center
@@ -110,7 +110,7 @@ td { padding: 0 }
 
 .shortcut:first-child { display: none }
 
-.shortcut td { background: #1c7045 }
+.shortcut td { background: #3B8C6D }
 
 .shortcut.deactivated td { background: #4f4f4f }
 
@@ -278,9 +278,11 @@ td { padding: 0 }
   font-size: 7px
 }
 
-#dashboard .label { 
+#dashboard .label {
   width: 66px;
-  padding-left: 30px; 
+  padding-left: 30px;
+  color: #fff;
+  padding-top: 6px;
 }
 
 #dashboard .label:last-child {
@@ -304,7 +306,7 @@ td { padding: 0 }
           transition: background-color .4s ease
 }
 
-#support a:hover { background-color: #24a33f }
+#support a:hover { background-color: #47A57F }
 
 .sharing {
   display: none;
