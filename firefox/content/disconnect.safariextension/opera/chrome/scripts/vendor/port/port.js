@@ -27,7 +27,15 @@ SAFARI = (typeof safari !== "undefined");
 LEGACY_SAFARI = SAFARI && (navigator.appVersion.match(/\sSafari\/(\d+)\./) || [null,0])[1] < 534;
 
 // "localStorage" gets cleared too often in Safari to rely on.
-options = SAFARI ? safari.extension.settings : localStorage;
+if (SAFARI) {
+  options = safari.extension.settings;
+} else {
+  try {
+    options = localStorage;
+  } catch(e) {
+    options = {}; // fallback if localStorage is unavailable
+  }
+}
 
 if (SAFARI) {
 

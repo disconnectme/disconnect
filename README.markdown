@@ -76,7 +76,7 @@ These libraries are bundled with the project and needn’t be updated manually:
 * [jQuery](https://github.com/jquery/jquery)
 * [SJCL](https://github.com/bitwiseshiftleft/sjcl)
 * [D3.js](https://github.com/mbostock/d3)
-* [port.js](https://github.com/disconnectme/port)
+* [port.js](https://github.com/oldestlivingboy/port)
 * [sitename.js](https://github.com/disconnectme/sitename)
 * [favicon.js](https://github.com/disconnectme/favicon)
 
