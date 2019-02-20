@@ -592,7 +592,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
       attr('y', 38 - SPEED_HEIGHT).
       attr('width', 8).
       attr('height', SPEED_HEIGHT).
-      attr('fill', '#47A57F');
+      attr('fill', '#ff7f00');
     d3.select('.subtotal.bandwidth').remove();
     dashboard.
       insert('svg:rect', '.control.bandwidth').
@@ -601,7 +601,7 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
       attr('y', 38 - BANDWIDTH_HEIGHT).
       attr('width', 8).
       attr('height', BANDWIDTH_HEIGHT).
-      attr('fill', '#3B8C6D');
+      attr('fill', '#ffbf3f');
   }
 }
 
@@ -739,7 +739,7 @@ function renderGraphs() {
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
-          attr('fill', '#333846');
+          attr('fill', '#ff3f00');
         d3.select('.total.bandwidth').remove();
         dashboard.
           insert('svg:rect', '.subtotal.bandwidth').
@@ -748,7 +748,7 @@ function renderGraphs() {
           attr('y', Y).
           attr('width', 10).
           attr('height', HEIGHT).
-          attr('fill', '#333846');
+          attr('fill', '#ff7f00');
         // d3.select('.total.security').remove();
         // dashboard.
         //   insert('svg:rect', '.subtotal.security').
