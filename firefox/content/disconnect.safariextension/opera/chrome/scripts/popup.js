@@ -696,7 +696,7 @@ function renderGraphs() {
   // Tipped.remove('.control.speed');
   $('#' + LIST).append($($('.sharing.speed')[0]).clone(true));
 
-  new Tipped2().create('.control.speed','speed', { left: '61px', top: '279px'})
+  new Tipped2().create('.control.speed','speed', { left: '60px', top: '279px'})
 
   d3.select('.control.bandwidth').remove();
   dashboard.
