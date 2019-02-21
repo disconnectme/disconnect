@@ -621,6 +621,67 @@ function renderBlockedRequest(id, blockedCount, totalCount, weighted) {
 //   }
 // }
 
+class Tipped2 {
+
+  constructor() {
+    this.fadeOutInteval = undefined;
+    this.tooltip_template = '<div class="tooltip type"><div class="tooltiptext">Test</div></div>'
+    this.tooltip = undefined;
+  }
+
+  appendTemplate(type){
+    $('body').append(this.tooltip_template.replace("type",type))
+  }
+
+  create(element, type, options) {
+    var that = this;
+    this.appendTemplate(type)
+    this.tooltip = $('.tooltip.'+type)
+
+    this.tooltip.mouseenter(function(){
+      if(that.fadeOutInteval != undefined) clearTimeout(that.fadeOutInteval)
+    }).mouseleave(fadeTooltipOut)
+    
+    $(element).mouseenter(function(){
+
+      if(that.fadeOutInteval != undefined) clearTimeout(that.fadeOutInteval)
+
+      var TAB_DASHBOARD = DASHBOARD[tabId] || {};
+      var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
+      var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
+
+      if(type == 'speed') {
+        $(that.tooltip).find('.tooltiptext').text((
+          (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT * 100
+        ).toFixed() + '% (' + (
+          BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
+        ).toFixed(1) + 's) faster');
+      } else if(type == 'bandwidth') {
+        $(that.tooltip).find('.tooltiptext').text((
+          (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_varANT * 100
+        ).toFixed() + '% (' + (
+          BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
+        ).toFixed() + 'K) less data');
+      }
+
+      that.tooltip.addClass('active');
+
+      that.tooltip.css({
+        "left": options.left || 0,
+        "top": options.top || 0
+      })
+      
+    }).mouseleave(fadeTooltipOut)
+
+    function fadeTooltipOut(){
+      that.fadeOutInteval = setTimeout(function(){
+        that.tooltip.removeClass('active')
+      }, 200)
+    }
+  }
+}
+
+
 /* Outputs total, blocked, and secured requests. */
 function renderGraphs() {
   d3.select('.control.speed').remove();
@@ -632,28 +693,10 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
-  Tipped.remove('.control.speed');
+  // Tipped.remove('.control.speed');
   $('#' + LIST).append($($('.sharing.speed')[0]).clone(true));
 
-  Tipped.create('.control.speed', $('.sharing.speed')[0], {
-    skin: 'tiny',
-    offset: {x: 23},
-    shadow: {opacity: .1},
-    stem: {spacing: 0},
-    background: {color: '#333', opacity: .9},
-    onShow: function() {
-      var TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-      $('.sharing.speed .text').text((
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * TIME_varANT * 100
-      ).toFixed() + '% (' + (
-        BLOCKED_COUNT * TRACKING_RESOURCE_TIME / 1000
-      ).toFixed(1) + 's) faster');
-    },
-    fadeIn: 400,
-    fadeOut: 400
-  });
+  new Tipped2().create('.control.speed','speed', { left: '61px', top: '279px'})
 
   d3.select('.control.bandwidth').remove();
   dashboard.
@@ -664,28 +707,10 @@ function renderGraphs() {
     attr('width', 46).
     attr('height', 40).
     attr('fill', 'transparent');
-  Tipped.remove('.control.bandwidth');
+  // Tipped.remove('.control.bandwidth');
   $('#' + LIST).append($($('.sharing.bandwidth')[0]).clone(true));
 
-  Tipped.create('.control.bandwidth', $('.sharing.bandwidth')[0], {
-    skin: 'tiny',
-    offset: {x: 23},
-    shadow: {opacity: .1},
-    stem: {spacing: 0},
-    background: {color: '#333', opacity: .9},
-    onShow: function() {
-      var TAB_DASHBOARD = DASHBOARD[tabId] || {};
-      var BLOCKED_COUNT = TAB_DASHBOARD.blocked || 0;
-      var TOTAL_COUNT = TAB_DASHBOARD.total || 0;
-      $('.sharing.bandwidth .text').text((
-        (BLOCKED_COUNT / TOTAL_COUNT || 0) * SIZE_varANT * 100
-      ).toFixed() + '% (' + (
-        BLOCKED_COUNT * TRACKING_RESOURCE_SIZE
-      ).toFixed() + 'K) less data');
-    },
-    fadeIn: 400,
-    fadeOut: 400
-  });
+  new Tipped2().create('.control.bandwidth', 'bandwidth', { left: '137px', top: '279px'});
 
   // // d3.select('.control.security').remove();
   // // dashboard.
@@ -1066,24 +1091,7 @@ var whitelistingClicked = 0;
         this.src = this.src.replace(HIGHLIGHTED + EXTENSION, EXTENSION);
       });
 
-      Tipped.remove('#navbar span');
       $('#' + LIST).append($($('.sharing.disconnect')[0]).clone(true));
-
-      Tipped.create('#navbar span', $('.sharing.disconnect')[0], {
-        skin: 'tiny',
-        shadow: {color: '#fff', opacity: .1},
-        stem: {spacing: -1},
-        background: {color: '#333', opacity: .9},
-        onShow: function() {
-          var BLOCKED_COUNT = (DASHBOARD[tabId] || {}).blocked || 0;
-          $('.sharing.disconnect .text').text(
-            BLOCKED_COUNT + ' blocked' + REQUEST +
-                (BLOCKED_COUNT - 1 ? 's' : '')
-          );
-        },
-        fadeIn: 400,
-        fadeOut: 400
-      });
 
       var activeServices = $();
 
