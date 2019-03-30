@@ -98,22 +98,19 @@ if (location.href.indexOf('disconnect.me') + 1) {
 
       remindMe && remindMe.addEventListener('click', function(e) {
         EXTENSION.sendRequest({
-          deleteTab: true, 
-          pingURL: "https://disconnect.me/cream/no"
+          deleteTab: true
         });
       }, false);
       alreadyPaid && alreadyPaid.addEventListener('click', function(e) {
         EXTENSION.sendRequest({pwyw: true, bucket: "already-paid"});
         EXTENSION.sendRequest({
-          deleteTab: true, 
-          pingURL: "https://disconnect.me/cream/already-paid"
+          deleteTab: true
         });
       }, false);
       emailed && emailed.addEventListener('click', function(e) {
         EXTENSION.sendRequest({pwyw: true, bucket: "emailed"});
         EXTENSION.sendRequest({
-          deleteTab: true, 
-          pingURL: "https://disconnect.me/cream/email-opened"
+          deleteTab: true
         });
       }, false);
     }

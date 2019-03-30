@@ -190,7 +190,7 @@ else {
   servicesPath = 'data/services.json' 
 }
 
-$.get(servicesPath, function(data) {
+$.getJSON(servicesPath, function(data) {
   processServices(data);
 });
 

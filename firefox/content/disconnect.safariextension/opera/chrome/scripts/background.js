@@ -28,61 +28,9 @@ function initializeArray(length, defaultValue) {
   return ARRAY;
 }
 
-/* Check Disconnect for a new notification */
-function checkForNotification() {
-  $.getJSON('https://disconnect.me/currentNotification', function(notificationJSON) {
-    try {
-      console.log(notificationJSON);
-      var notifications = deserialize(options.notifications) || {};
-      if (notificationJSON.running && !(notifications[notificationJSON.currentName])) {
-        if (notificationJSON.type === 'growl') {
-          notifications[notificationJSON.currentName] = moment();
-          options.notifications = JSON.stringify(notifications);
-          dispatchBubble(
-            notificationJSON.growlText.main,
-            notificationJSON.growlText.secondary,
-            notificationJSON.pageToOpen
-          );
-          $.get(notificationJSON.pingBack)
-        }
-      }
-    }
-    catch(e) {
-      console.log(e);
-    }
-  });
-}
-
-/* Check Disconnect for the support text */
-function checkSupportText() {
-  if (!isPremium) {
-    $.getJSON('https://disconnect.me/currentSupportText', function(supportJSON) {
-      try {
-        console.log(supportJSON);
-        options.supportText = supportJSON.text;
-        options.supportLink = supportJSON.link;
-      }
-      catch(e) {
-        console.log(e);
-      }
-    });
-  }
-}
-
 /* Checks to see if Disconnect Premium is installed */
 function checkPremium(callback) {
-  $.getJSON('http://127.0.0.1:6419/', function(premiumJSON) {
-    if (premiumJSON.premium) {
-      options.premium = true;
-      isPremium = true;
-      console.log( "premium on");
-      options.pwyw = JSON.stringify({date: date, bucket: 'premium'});
-      if (callback) callback(true);
-    }
-  }).fail(function() {
-    console.log( "premium not on");
-    if (callback) callback(false);
-  })
+  if (callback) callback(false);
 }
 
 /* Rewrites a generic cookie with specific domains and paths. */
@@ -413,7 +361,7 @@ var PATH = SAFARI ? 'opera/chrome/' : OPERA ? 'chrome/' : '';
 var SIZE = SAFARI ? 32 : 19;
 
 /* Records whether or not the desktop app is installed. */
-var isPremium = options.premium || false;
+var isPremium = false;
 
 /* The whitelisted services per domain name. */
 var whitelist = deserialize(options.whitelist) || {};
@@ -809,15 +757,8 @@ catch (e) {
   }
 }
 
-checkSupportText();
-
 checkPremium();
 
-if (!(options.installDate) || (moment(options.installDate) < moment().subtract('days', 15))) {
-  setInterval(function() {
-    if (!SAFARI) checkForNotification();
-  }, 10000000);
-}
 
 if (
   (deserialize(options.pwyw) || {}).bucket == 'pending' ||
@@ -923,9 +864,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
       BLOCKED_REQUESTS[date] ? BLOCKED_REQUESTS[date]++ :
           BLOCKED_REQUESTS[date] = 1;
       options.blockedRequests = JSON.stringify(BLOCKED_REQUESTS);
-      if (isPremium) {
-        $.post('http://127.0.0.1:6419', JSON.stringify({"site": PARENT_DOMAIN, "tracker": CHILD_DOMAIN}))
-      }
     } // The request is denied.
 
     if (blockingResponse.redirectUrl || whitelisted)
@@ -1037,7 +975,6 @@ if (!SAFARI) {
       try {
         if (request.checkExtension && request.sourceExtension) {
           sendResponse({product: "d2"});
-          $.get('https://disconnect.me/pingBack/' + request.sourceExtension)
         }
       }
       catch(e) {
@@ -1048,7 +985,7 @@ if (!SAFARI) {
 }
 
 /* Builds a block list or adds to the number of blocked requests. */
-EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var TAB = sender.tab;
 
   if (TAB) {
@@ -1075,9 +1012,6 @@ EXTENSION.onRequest.addListener(function(request, sender, sendResponse) {
     } 
     else if (request.deleteTab) {
       TABS.remove(TAB.id);
-      if (request.pingURL) {
-        $.get(request.pingURL);
-      }
     } else {
       if (SAFARI) {
         var BLOCKED = request.blocked;

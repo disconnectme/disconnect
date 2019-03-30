@@ -34,7 +34,6 @@ rm ./content/disconnect/images/legacy/\* \
 ./content/disconnect/scripts/chrollusion/index-embed.js \
 ./content/disconnect/scripts/chrollusion/index.js \
 ./content/disconnect/scripts/content.js \
-./content/disconnect/scripts/errorhandler.js \
 ./content/disconnect/scripts/popup.js \
 ./content/disconnect/scripts/services.js \
 ./content/disconnect/scripts/share.js \

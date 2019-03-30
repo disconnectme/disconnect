@@ -21,7 +21,6 @@
   "web_accessible_resources": [],
   "background": {
     "scripts": [
-      "chrome/scripts/errorhandler.js",
       "chrome/scripts/vendor/moment/moment.js",
       "chrome/scripts/vendor/port/port.js",
       "chrome/scripts/vendor/jquery/jquery.js",
