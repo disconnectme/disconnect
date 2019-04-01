@@ -442,11 +442,11 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
       });
       if (partner) {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
-        TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
+        //TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
       }
       else {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-        TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+        //TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
       }
     }
     else TABS.query({url: "*://*.disconnect.me/*"}, function(disconnectTabs) {
@@ -462,15 +462,15 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < 43) {
       }
       else if (partner) {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream'});
-        TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
+        //TABS.create({url: 'https://disconnect.me/d2/partner/' + partner});
       }
       else {
         options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-        checkPremium(function(premium) {
-          if (!premium) {
-            TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
-          }
-        })
+        // checkPremium(function(premium) {
+        //   if (!premium) {
+        //     TABS.create({url: 'https://disconnect.me/disconnect/welcome'});
+        //   }
+        // })
       }
     });
   }
@@ -722,40 +722,7 @@ if (!PREVIOUS_BUILD || PREVIOUS_BUILD < CURRENT_BUILD) {
   options.build = CURRENT_BUILD;
 }
 
-try {
-  if (!deserialize(options.pwyw).date) {
-    downgradeServices(true);
-    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
-
-    $.getJSON('https://goldenticket.disconnect.me/existing', function(data) {
-      if (data.goldenticket === 'true') {
-        options.displayMode = LIST_NAME;
-        options.pwyw = JSON.stringify({date: date, bucket: 'pending'});
-        downgradeServices();
-        BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-        BROWSER_ACTION.setBadgeBackgroundColor({color: [255, 0, 0, 255]});
-        BROWSER_ACTION.setBadgeText({text: 'NEW!'});
-        BROWSER_ACTION.setPopup({popup: ''});
-      }
-    });
-  } else if (deserialize(options.pwyw).bucket == 'postponed') {
-    options.displayMode = LEGACY_NAME;
-    downgradeServices(true);
-    BROWSER_ACTION.setIcon({path: PATH + 'images/legacy/' + SIZE + '.png'});
-  } else {
-    var PWYW = deserialize(options.pwyw);
-    if (PWYW.bucket == 'later')
-        options.pwyw = JSON.stringify({date: PWYW.date, bucket: 'trying'});
-            // "later" was accidentally live for a bit.
-    BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
-  }
-}
-catch (e) {
-  console.log(e);
-  if (!(options.pwyw)) {
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-  }
-}
+BROWSER_ACTION.setIcon({path: PATH + 'images/' + SIZE + '.png'});
 
 checkPremium();
 
@@ -984,6 +951,16 @@ if (!SAFARI) {
   );
 }
 
+chrome.runtime.onInstalled.addListener(function(details){
+  if(details.reason == "install"){
+      console.log("first install");
+      TABS.create({url: 'https://disconnect.me/mobileupgrade'});
+
+  }else if(details.reason == "update"){
+
+  }
+});
+
 /* Builds a block list or adds to the number of blocked requests. */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var TAB = sender.tab;
@@ -1082,52 +1059,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 /* Loads the blog promo. */
 !SAFARI && BROWSER_ACTION.onClicked.addListener(function() {
-  var PWYW = deserialize(options.pwyw) || {};
-
-  if (PWYW.bucket == 'pending') {
-    TABS.create({url: 'https://disconnect.me/disconnect/upgrade'});
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed'});
-    delete options.promoRunning;
-  }
-
-  if (options.showPaymentNotification == 'true') {
-    TABS.create({url: 'https://disconnect.me/notification/3'});
-    options.paymentNotificationShown = 'true';
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    delete options.promoRunning;
-  }
-
-  if (PWYW.bucket == 'pending-trial') {
-    TABS.create({url: 'https://disconnect.me/d2/welcome-trial'});
-    BROWSER_ACTION.setBadgeText({text: ''});
-    initializeToolbar();
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-trial'});
-  }
-
-  if (PWYW.bucket == 'viewed-cream') {
-    TABS.create({url: 'https://disconnect.me/welcome/paysomething-1'});
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-1'});
-    options.lastShown = moment();
-  }
-  else if (PWYW.bucket == 'viewed-cream-1') {
-    TABS.create({url: 'https://disconnect.me/welcome/paysomething-2'});
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-2'});
-    options.lastShown = moment();
-  }
-  else if (PWYW.bucket == 'viewed-cream-2') {
-    TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-3'});
-    options.lastShown = moment();
-  }
-  else if ((PWYW.bucket == 'viewed-cream-3') || (PWYW.bucket == 'viewed-cream-4')) {
-    TABS.create({url: 'https://disconnect.me/welcome/paysomething-3'});
-    options.pwyw = JSON.stringify({date: date, bucket: 'viewed-cream-4'});
-    options.lastShown = moment();
-  }
-
   clearBadge();
 });
 
@@ -1139,23 +1070,4 @@ if (!SAFARI && !OPERA) {
       }
     }
   }
-}
-
-/* The interface is English only for now. */
-if (deserialize(options.searchDepersonalized) && !deserialize(options.searchHardenable)) {
-	chrome.cookies.getAll({url:'https://google.com', name:'PREF'}, function() {
-		if (arguments[0] && arguments[0][0] && arguments[0][0].value && /LD=en/.test(arguments[0][0].value)) {
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET", "https://disconnect.me/test/sample", true);
-			xhr.onreadystatechange = function() {
-			  if (xhr.readyState == 4 && xhr.status == 200) {
-					if (xhr.responseText == 'activate') {
-						options.searchHardenable = true;
-            options.searchHardened = true;
-					}
-			  }
-			}
-			xhr.send();
-		}
-	});
 }
