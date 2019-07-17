@@ -67,6 +67,7 @@ function fetchServices() {
   var index = 1;
   var requestCount = 1;
   var nextRequest = 1;
+  var options = options || localStorage
 
   if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
       var id = setInterval(function() {

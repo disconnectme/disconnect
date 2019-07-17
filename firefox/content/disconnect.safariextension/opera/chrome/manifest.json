@@ -1,15 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Disconnect",
-  "version": "5.18.27",
+  "version": "5.19.2",
   "description": "Make the web faster, more private, and more secure.",
   "icons": {"48": "images/48.png", "128": "images/128.png"},
   "permissions": [
-    "contextMenus",
     "cookies",
-    "history",
-    "idle",
-    "notifications",
     "tabs",
     "unlimitedStorage",
     "webNavigation",
@@ -18,13 +14,10 @@
     "http://*/*",
     "https://*/*"
   ],
-  "content_security_policy":
-      "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [],
   "background": {
     "scripts": [
       "scripts/vendor/moment/moment.js",
-      "scripts/vendor/port/port.js",
       "scripts/vendor/jquery/jquery.js",
       "scripts/vendor/sitename/alttlds.js",
       "scripts/vendor/sitename/tldpatch.js",
@@ -38,7 +31,6 @@
     "matches": ["http://*/*", "https://*/*"],
     "css": ["stylesheets/content.css"],
     "js": [
-      "scripts/vendor/port/port.js",
       "scripts/vendor/jquery/jquery.js",
       "scripts/vendor/sitename/alttlds.js",
       "scripts/vendor/sitename/tldpatch.js",

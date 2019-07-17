@@ -20,7 +20,7 @@
 
     Brian Kennish <byoogle@gmail.com>
 */
-
+var options = options || localStorage
 /* Populates an array of a given length with a default value. */
 function initializeArray(length, defaultValue) {
   var ARRAY = [];
@@ -739,7 +739,7 @@ options.displayMode == GRAPH_NAME && parseInt(options.sidebarCollapsed, 10) &&
 var ID = setInterval(function() {
   if (IS_INITIALIZED()) {
     clearInterval(ID);
-    var TLDS = deserialize(options.tlds);
+    var TLDS = deserialize(options.tlds || "{}");
     TLDS['google.com'] = true;
     TLDS['yahoo.com'] = true;
     options.tlds = JSON.stringify(TLDS);

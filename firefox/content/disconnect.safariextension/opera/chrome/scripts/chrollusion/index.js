@@ -1,3 +1,4 @@
+var options = options || localStorage
 /* Toggles the blocking state globally. */
 function whitelistSite() {
   whitelist = deserialize(options.whitelist) || {};

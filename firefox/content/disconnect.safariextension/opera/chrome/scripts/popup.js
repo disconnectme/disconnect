@@ -963,6 +963,8 @@ var timeout = 1600;
 /* Whether or not the whitelist button was clicked. */
 var whitelistingClicked = 0;
 
+var SAFARI = false;
+
 /* Paints the UI. */
 (SAFARI ? safari.application : window).addEventListener(
   SAFARI ? 'popover' : 'load', function() {
