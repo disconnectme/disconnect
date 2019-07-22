@@ -137,7 +137,7 @@ var GraphRunner = (function(jQuery, d3) {
           });
         setDomainLink(info.find("a.domain"), d);
         info.find("h2.domain").prepend(img);
-        img.error(function() { img.remove(); });
+        img.onError = function() { img.remove() }
         $("#domain-infos").append(info);
       }
       else {
