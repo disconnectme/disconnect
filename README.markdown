@@ -3,7 +3,7 @@
 [Disconnect](https://disconnect.me/) is a browser extension that makes the web
 faster, more private, and more secure.
 
-![Disconnect](https://raw.github.com/disconnectme/disconnect/master/collateral/disconnect/d2-faster-transparent.png)  
+![Disconnect](collateral/disconnect/d2-faster-transparent.png)  
 Disconnect has been named one of the
 [100 best innovations of the year](http://www.popsci.com/bown/2013/category/software)
 by Popular Science and one of the
@@ -82,7 +82,7 @@ These libraries are bundled with the project and needn’t be updated manually:
 
 ## License
 
-Copyright 2010–2013 Disconnect, Inc.
+Copyright 2010–2019 Disconnect, Inc.
 
 This program is free software, excluding the brand features and third-party
 portions of the program identified in the “Exceptions” below: you can
@@ -112,7 +112,3 @@ are subject to their own license terms as set forth below:
   contact [WebType](http://www.webtype.com/) with any questions. Antenna RE can
   be removed and will be replaced with a system font.
 
-* [Tipped](https://github.com/disconnectme/disconnect/tree/master/firefox/content/disconnect.safariextension/opera/chrome/scripts/vendor/tipped)
-  provides tooltips and is subject to the terms and conditions of the
-  [Tipped License](http://projects.nickstakenburg.com/tipped/license). Tipped
-  can be replaced with a library such as [jQuery UI](http://jqueryui.com/).

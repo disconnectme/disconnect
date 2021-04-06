@@ -51,8 +51,7 @@ function Sitename(tlds) {
   };
 
   var version = '1.5.0';
-  var tldList =
-      'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
+  var tldList = 'https://publicsuffix.org/list/effective_tld_names.dat';
   var initialized = false;
   var anchor = document.createElement('a');
   var reload = !tlds;
@@ -88,7 +87,11 @@ function Sitename(tlds) {
     initialized = true;
   } else tlds = {};
 
-  reload && $.get(tldList, function(data) { parseTldList(data); });
+  reload && $.get(tldList, function(data) {
+    if (data) {
+      parseTldList(data);
+    }
+  });
 
   return this;
 }

@@ -2,7 +2,7 @@
 <!--
   Overlay markup that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -20,9 +20,7 @@
 
     Brian Kennish <byoogle@gmail.com>
 -->
-<?xml-stylesheet
-  href="chrome://disconnect/skin/stylesheets/vendor/hint/hint.css"
-?>
+<?xml-stylesheet href="hint.css"?>
 <?xml-stylesheet href="chrome://disconnect/skin/stylesheets/embed.css"?>
 <?xml-stylesheet href="overlay.css"?>
 <overlay
@@ -58,11 +56,11 @@
                   <html:a
                     title="Get help"
                     target="_blank"
-                    href="https://disconnect.me/desktop/help"
-                  >Help</html:a><html:a
+                    href="https://disconnect.me/disconnect/help"
+                  >Issues</html:a><html:a
                     title="Give props"
                     target="_blank"
-                    href="https://addons.mozilla.org/en-US/firefox/addon/disconnect/"
+                    href="https://addons.mozilla.org/en-US/firefox/addon/disconnect/#reviews"
                   >Props</html:a>
                 </html:td>
               </html:tr>
@@ -135,29 +133,12 @@
                 <html:td class="disconnect-whitelisting disconnect-text">
                   Whitelist site
                 </html:td>
-                <html:td
-                  class="disconnect-visualization disconnect-badge disconnect-disabled"
-                  title="Coming soon"
-                >
-                  <html:img src="chrome://disconnect/skin/images/1/1.png"/>
-                </html:td>
-                <html:td
-                  class="disconnect-visualization disconnect-text disconnect-disabled"
-                  title="Coming soon"
-                >Visualize page</html:td>
-              </html:tr>
-              <html:tr>
-                <html:td class="disconnect-wifi">
+                <html:td class="disconnect-counter disconnect-badge">
                   <html:input type="checkbox"/>
                 </html:td>
-                <html:td class="disconnect-wifi">Secure Wi-Fi</html:td>
-                <html:td class="disconnect-search" title="Coming soon">
-                  <html:input type="checkbox" disabled="disabled"/>
+                <html:td class="disconnect-counter disconnect-text">
+                  Show counter
                 </html:td>
-                <html:td
-                  class="disconnect-search disconnect-disabled"
-                  title="Coming soon"
-                >Secure search</html:td>
               </html:tr>
             </html:table>
             <html:table id="disconnect-dashboard">
@@ -173,9 +154,11 @@
                       <html:td class="disconnect-label">
                         Bandwidth saved
                       </html:td>
+                      <!-- 
                       <html:td class="disconnect-label">
                         Requests secured
                       </html:td>
+                      -->
                     </html:tr>
                     <html:tr>
                       <html:td colspan="3" id="disconnect-data"></html:td>
@@ -191,9 +174,6 @@
                 ></html:td>
                 <html:td
                   class="disconnect-bandwidth hint--top hint--rounded hint--bounce"
-                ></html:td>
-                <html:td
-                  class="disconnect-security hint--top hint--rounded hint--bounce"
                 ></html:td>
               </html:tr>
             </html:table>

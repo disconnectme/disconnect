@@ -177,6 +177,10 @@ h2.domain img.tracker {
   text-decoration: line-through;
 }
 
+#disable-wifi {
+  display: none;
+}
+
 ul {
   padding-left: 20px;
 }

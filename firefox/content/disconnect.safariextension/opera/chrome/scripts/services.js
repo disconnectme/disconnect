@@ -1,7 +1,7 @@
 /*
   A script that determines whether a domain name belongs to a third party.
 
-  Copyright 2012, 2013 Disconnect, Inc.
+  Copyright 2012-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -28,9 +28,7 @@ function deserialize(object) {
 
 /* Formats the blacklist. */
 function processServices(data) {
-  data = deserialize(sjcl.decrypt(
-    'be1ba0b3-ccd4-45b1-ac47-6760849ac1d4', data
-  ));
+  data = deserialize(data);
   var categories = data.categories;
 
   for (var categoryName in categories) {
@@ -69,6 +67,7 @@ function fetchServices() {
   var index = 1;
   var requestCount = 1;
   var nextRequest = 1;
+  var options = options || localStorage
 
   if (Date.now() - (options.lastUpdateTime || 0) >= dayMilliseconds)
       var id = setInterval(function() {
@@ -82,7 +81,7 @@ function fetchServices() {
               runtime - (options.firstUpdateThisMonthTime || 0) <
                   30 * dayMilliseconds;
 
-          $.get('https://services.disconnect.me/disconnect.json?' + [
+          $.get('https://services.disconnect.me/disconnect-plaintext.json?' + [
             'build=' + (options.firstBuild || ''),
             'first_update=' + firstUpdate,
             'updated_this_week=' + updatedThisWeek,
@@ -143,6 +142,9 @@ function downgradeServices(downgraded) {
   servicePointer = downgraded ? evenMoreServices : moreServices;
 }
 
+/* Whether or not the browser is Opera. */
+const OPERA = navigator.userAgent.indexOf('OPR') + 1;
+
 /* The number of milliseconds in a second. */
 var secondMilliseconds = 1000;
 
@@ -170,10 +172,28 @@ var hardeningRules = [];
 /* The rest of the matching regexes and replacement strings. */
 var moreRules = [];
 
+/* Whether or not the browser is Safari */
+var SAFARI = (typeof safari !== "undefined")
+
 /* The active categories et al. */
 var servicePointer = moreServices;
 
-$.get('data/services.json', function(data) { processServices(data); });
+/* The built-in services.json path. */
+var servicesPath = ''
+
+if (OPERA) {
+  servicesPath = 'chrome/' + 'data/services.json'
+}
+else if (SAFARI) {
+ servicesPath = '../' + 'data/services.json' 
+}
+else {
+  servicesPath = 'data/services.json' 
+}
+
+$.getJSON(servicesPath, function(data) {
+  processServices(data);
+});
 
 fetchServices();
 setInterval(fetchServices, hourMilliseconds);

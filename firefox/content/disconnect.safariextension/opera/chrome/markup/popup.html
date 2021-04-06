@@ -1,7 +1,7 @@
 <!--
   The markup for a popup that displays and drives the blocking of requests.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -20,13 +20,10 @@
     Brian Kennish <byoogle@gmail.com>
 -->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="../stylesheets/vendor/tipped/tipped.css">
 <link rel="stylesheet" href="../stylesheets/chrollusion/index.css">
 <link rel="stylesheet" href="../stylesheets/legacy.css">
 <link rel="stylesheet" href="../stylesheets/popup.css">
-<script src="../scripts/vendor/port/port.js"></script>
 <script src="../scripts/vendor/jquery/jquery.js"></script>
-<script src="../scripts/vendor/tipped/tipped.js"></script>
 <script src="../scripts/vendor/d3/d3.js"></script>
 <script src="../scripts/vendor/d3/d3.layout.js"></script>
 <script src="../scripts/vendor/d3/d3.geom.js"></script>
@@ -50,8 +47,8 @@
         <a
           title="Get help"
           target="_blank"
-          href="https://disconnect.me/d2/help"
-        >Help</a><span title="Share Disconnect">Share</span><a
+          href="https://disconnect.me/disconnect/help"
+        >Help</a><a
           title="Pay what you want"
           target="_blank"
           href="https://disconnect.me/pwyw"
@@ -117,12 +114,10 @@
       <td class="visualization text">Visualize page</td>
     </tr>
     <tr>
-      <td class="wifi"><input type="checkbox"></td>
-      <td class="wifi">Secure Wi-Fi</td>
-      <td class="search" title="Coming soon">
-        <input type="checkbox" disabled>
-      </td>
-      <td class="search disabled" title="Coming soon">Secure search</td>
+      <td class="indicator"><input type="checkbox"></td>
+      <td class="indicator">Show counter</td>
+      <td class="cap"><input type="checkbox"></td>
+      <td class="cap">Cap counter</td>
     </tr>
   </table>
   <table id="dashboard">
@@ -136,7 +131,7 @@
               saved
             </td>
             <td class="label">Bandwidth saved</td>
-            <td class="label">Requests secured</td>
+            <!-- <td class="label">Requests secured</td> -->
           </tr>
           <tr>
             <td colspan="3" id="data"></td>
@@ -148,7 +143,7 @@
   <table id="support">
     <tr>
       <td>
-        <a href="https://www.disconnect.me/support">Support Disconnect</a>
+        <a href="https://www.disconnect.me/support">Upgrade to Premium</a>
       </td>
     </tr>
   </table>

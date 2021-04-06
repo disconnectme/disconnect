@@ -137,7 +137,7 @@ var GraphRunner = (function(jQuery, d3) {
           });
         setDomainLink(info.find("a.domain"), d);
         info.find("h2.domain").prepend(img);
-        img.error(function() { img.remove(); });
+        img.onError = function() { img.remove() }
         $("#domain-infos").append(info);
       }
       else {
@@ -301,7 +301,8 @@ var GraphRunner = (function(jQuery, d3) {
           })
           .on("click", function(d) {
             var trackerInfo = d.trackerInfo;
-            if (trackerInfo) {
+            var parentService = d.parentService;
+            if (trackerInfo && !(parentService && trackerInfo.name == parentService.name)) {
               var domain = d.name;
               var className = domain.replace(/\./g, '-dot-');
               var header = $("#domain-infos ." + className + " h2.domain:first > a.tracker");
@@ -464,14 +465,15 @@ var GraphRunner = (function(jQuery, d3) {
       var links = [];
       var domainIds = {};
 
-      function getNodeId(domain) {
-        var name = domain.name;
+      function getNodeId(d) {
+        var name = d.name;
         if (!(name in domainIds)) {
           domainIds[name] = nodes.length;
           nodes.push({
             name: name,
-            host: domain.host,
-            trackerInfo: getService(name)
+            host: d.host,
+            trackerInfo: getService(name),
+            parentService: getService(domain)
           });
         }
         return domainIds[name];

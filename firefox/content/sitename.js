@@ -45,7 +45,7 @@ function Sitename() {
 
   var version = '1.4.0';
   var tldList =
-      'https://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1';
+      'https://publicsuffix.org/list/effective_tld_names.dat;
   var altTldList =
     'chrome://disconnect/skin/scripts/vendor/sitename/data/effective_tld_names.dat';
   var tldPatch =

@@ -1,7 +1,7 @@
 /*
   An overlay script that makes the web faster, more private, and more secure.
 
-  Copyright 2010-2013 Disconnect, Inc.
+  Copyright 2010-2014 Disconnect, Inc.
 
   This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -66,32 +66,28 @@ if (typeof Disconnect == 'undefined') {
     },
 
     /**
-     * Changes badge color to blocked.
-    */
-    blockBadge: function(badge) {
-      badge.removeClass(Disconnect.unblockedName);
-      badge.addClass(Disconnect.blockedName);
-    },
-
-    /**
-     * Changes badge color to unblocked.
-    */
-    unblockBadge: function(badge) {
-      badge.removeClass(Disconnect.blockedName);
-      badge.addClass(Disconnect.unblockedName);
-    },
-
-    /**
      * Refreshes the number of tracking requests.
      */
     updateBadge: function(button, badge, count, blocked, referrerUrl) {
-      var currentUrl = gBrowser.contentWindow.location;
+      if (
+        Disconnect.preferences.getBoolPref(Disconnect.blockingIndicatedName)
+      ) {
+        var currentUrl = gBrowser.contentWindow.location;
 
-      if (!referrerUrl || currentUrl == referrerUrl) {
-        count == 1 && Disconnect.clearBadge(button, badge);
-        button.addClass(Disconnect.badgeName);
-        badge.val(count);
-        blocked ? Disconnect.blockBadge(badge) : Disconnect.unblockBadge(badge);
+        if (!referrerUrl || currentUrl == referrerUrl) {
+          count == 1 && Disconnect.clearBadge(button, badge);
+          button.addClass(Disconnect.badgeName);
+          var unblockedName = Disconnect.unblockedName;
+          var blockedName = Disconnect.blockedName;
+          var wideName = 'disconnect-wide';
+          var narrow = count < 100;
+          badge.removeClass(
+            (blocked ? unblockedName : blockedName) + ' ' + wideName
+          ).addClass(
+            (blocked ? blockedName : unblockedName) +
+                (narrow ? '' : ' ' + wideName)
+          ).val(narrow ? count : '99+');
+        }
       }
     },
 
@@ -628,7 +624,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
           insert('svg:rect', '.disconnect-control.disconnect-speed').
           attr('class', 'disconnect-subtotal disconnect-speed').
-          attr('x', 29).
+          attr('x', 59).
           attr('y', 38 - speedHeight).
           attr('width', 8).
           attr('height', speedHeight).
@@ -637,7 +633,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
           insert('svg:rect', '.disconnect-control.disconnect-bandwidth').
           attr('class', 'disconnect-subtotal disconnect-bandwidth').
-          attr('x', 95).
+          attr('x', 127).
           attr('y', 38 - bandwidthHeight).
           attr('width', 8).
           attr('height', bandwidthHeight).
@@ -645,31 +641,37 @@ if (typeof Disconnect == 'undefined') {
         var $ = Disconnect.$;
         var dashboardCounts = Disconnect.dashboardCounts;
 
-        $('#disconnect-tooltips .disconnect-speed').
-          attr('data-hint', function() {
-            var tabDashboard = dashboardCounts[url] || {};
-            var blockedCount = tabDashboard.blocked || 0;
-            return (
-              (blockedCount / (tabDashboard.total || 0) || 0) *
-                  Disconnect.trackingResourceTime / Disconnect.resourceTime *
-                      100
-            ).toFixed() + '% (' + (
-              blockedCount * Disconnect.trackingResourceTime / 1000
-            ).toFixed(1) + 's) faster';
-          });
+        $(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-speed')[0]
+        ).attr('data-hint', function() {
+          var tabDashboard = dashboardCounts[url] || {};
+          var blockedCount = tabDashboard.blocked || 0;
+          return (
+            (blockedCount / (tabDashboard.total || 0) || 0) *
+                Disconnect.trackingResourceTime / Disconnect.resourceTime *
+                    100
+          ).toFixed() + '% (' + (
+            blockedCount * Disconnect.trackingResourceTime / 1000
+          ).toFixed(1) + 's) faster';
+        });
 
-        $('#disconnect-tooltips .disconnect-bandwidth').
-          attr('data-hint', function() {
-            var tabDashboard = dashboardCounts[url] || {};
-            var blockedCount = tabDashboard.blocked || 0;
-            return (
-              (blockedCount / (tabDashboard.total || 0) || 0) *
-                  Disconnect.trackingResourceSize / Disconnect.resourceSize *
-                      100
-            ).toFixed() + '% (' + (
-              blockedCount * Disconnect.trackingResourceSize
-            ).toFixed() + 'K) less data';
-          });
+        $(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-bandwidth')[0]
+        ).attr('data-hint', function() {
+          var tabDashboard = dashboardCounts[url] || {};
+          var blockedCount = tabDashboard.blocked || 0;
+          return (
+            (blockedCount / (tabDashboard.total || 0) || 0) *
+                Disconnect.trackingResourceSize / Disconnect.resourceSize *
+                    100
+          ).toFixed() + '% (' + (
+            blockedCount * Disconnect.trackingResourceSize
+          ).toFixed() + 'K) less data';
+        });
       }
     },
 
@@ -677,6 +679,7 @@ if (typeof Disconnect == 'undefined') {
      * Outputs a secured request.
      */
     renderSecuredRequest: function(url, securedCount, totalCount) {
+      /*
       if (gBrowser.contentWindow.location == url) {
         Disconnect.
           d3.
@@ -693,15 +696,18 @@ if (typeof Disconnect == 'undefined') {
           attr('height', height).
           attr('fill', '#00bfff');
 
-        Disconnect.
-          $('#disconnect-tooltips .disconnect-security').
-          attr('data-hint', function() {
-            var securedCount =
-                (Disconnect.dashboardCounts[url] || {}).secured || 0;
-            return securedCount + ' secured request' +
-                (securedCount - 1 ? 's' : '');
-          });
+        Disconnect.$(
+          document.
+            getElementById('disconnect-tooltips').
+            getElementsByClassName('disconnect-security')[0]
+        ).attr('data-hint', function() {
+          var securedCount =
+              (Disconnect.dashboardCounts[url] || {}).secured || 0;
+          return securedCount + ' secured request' +
+              (securedCount - 1 ? 's' : '');
+        });
       }
+      */
     },
 
     /**
@@ -739,7 +745,7 @@ if (typeof Disconnect == 'undefined') {
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-speed').
               attr('class', 'disconnect-total disconnect-speed').
-              attr('x', 28).
+              attr('x', 58).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
@@ -748,11 +754,12 @@ if (typeof Disconnect == 'undefined') {
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-bandwidth').
               attr('class', 'disconnect-total disconnect-bandwidth').
-              attr('x', 94).
+              attr('x', 126).
               attr('y', y).
               attr('width', 10).
               attr('height', height).
               attr('fill', '#ff7f00');
+            /*
             d3.select('.disconnect-total.disconnect-security').remove();
             dashboard.
               insert('svg:rect', '.disconnect-subtotal.disconnect-security').
@@ -762,6 +769,7 @@ if (typeof Disconnect == 'undefined') {
               attr('width', 10).
               attr('height', height).
               attr('fill', '#007fff');
+            */
           }
 
           if (index > 15) {
@@ -828,13 +836,7 @@ if (typeof Disconnect == 'undefined') {
         'chrome://disconnect/skin/scripts/vendor/jquery/jquery.js', this
       );
       loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.js', this
-      );
-      loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.layout.js', this
-      );
-      loader.loadSubScript(
-        'chrome://disconnect/skin/scripts/vendor/d3/d3.geom.js', this
+        'chrome://disconnect/skin/scripts/vendor/d3/d3.js', this, "UTF-8"
       );
       loader.loadSubScript('chrome://disconnect/content/debug.js', this);
       this.$ = jQuery.noConflict(true);
@@ -881,9 +883,11 @@ if (typeof Disconnect == 'undefined') {
       var buildName = 'build';
       var firstBuildName = 'firstBuild';
       var navbarName = 'nav-bar';
+      var itemName = 'disconnect-item';
       var currentSetName = 'currentset';
       var buttonName = 'disconnect-button';
       var browsingHardenedName = 'browsingHardened';
+      var blockingIndicatedName = this.blockingIndicatedName;
       var pwywName = 'pwyw';
       var whitelistName = this.whitelistName;
       var blacklistName = this.blacklistName;
@@ -891,11 +895,29 @@ if (typeof Disconnect == 'undefined') {
       var highlightedName = this.highlightedName;
       var clickName = this.clickName;
       var imageExtension = this.imageExtension;
-      var currentBuild = 24;
+      var currentBuild = 32;
       var previousBuild = preferences.getIntPref(buildName);
-      var whitelist =
-          JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
+      var whitelist = preferences.getCharPref(whitelistName);
+      var modernFirefox;
+
+      try {
+        Components.utils.import("resource:///modules/CustomizableUI.jsm");
+        modernFirefox = true;
+      }
+      catch (e) {
+        modernFirefox = false;
+      }
+
+      if (!whitelist) {
+        whitelist = '{}';
+        preferences.setCharPref(whitelistName, whitelist);
+      }
+
+      whitelist = JSON.parse(unwrap(whitelist));
+      preferences.getCharPref(blacklistName) ||
+          preferences.setCharPref(blacklistName, '{}');
       var browsingHardened = preferences.getBoolPref(browsingHardenedName);
+      var blockingIndicated = preferences.getBoolPref(blockingIndicatedName);
       var toolbar = document.getElementById(navbarName);
       var date = new Date();
       var month = date.getMonth() + 1;
@@ -908,10 +930,7 @@ if (typeof Disconnect == 'undefined') {
       if (!previousBuild) {
         setTimeout(function() {
           toolbar.collapsed = false;
-          toolbar.insertItem(buttonName);
-          toolbar.setAttribute(currentSetName, toolbar.currentSet);
           document.persist(navbarName, 'collapsed');
-          document.persist(navbarName, currentSetName);
         }, 1000);
       }
 
@@ -931,16 +950,34 @@ if (typeof Disconnect == 'undefined') {
       }
 
       if (!previousBuild || previousBuild < 3) {
-        var currentSet = toolbar.getAttribute(currentSetName);
-        var items = currentSet.split(',');
-        var itemCount = items.length;
-        for (var i = 0; i < itemCount; i++)
-            if (items[i] == buttonName) delete items[i];
-        toolbar.setAttribute(currentSetName, items.join(','));
-        document.persist(navbarName, currentSetName);
-        toolbar.insertItem('disconnect-item');
-        toolbar.setAttribute(currentSetName, toolbar.currentSet);
-        document.persist(navbarName, currentSetName);
+        if (modernFirefox) {
+          toolbar.insertItem(itemName);
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
+        } else {
+          var currentSet = toolbar.getAttribute(currentSetName).split(',');
+          var currentItem;
+          var defaultSet = [
+            'unified-back-forward-button',
+            'urlbar-container',
+            'reload-button',
+            'stop-button',
+            'search-container',
+            'webrtc-status-button',
+            'bookmarks-menu-button',
+            'downloads-button',
+            'home-button'
+          ];
+
+          for (var i = 0; currentItem = currentSet[i]; i++) {
+            var defaultItem = defaultSet[i];
+            if (!defaultItem || currentItem != defaultItem) break;
+          }
+
+          toolbar.insertItem(itemName, document.getElementById(currentItem));
+          toolbar.setAttribute(currentSetName, toolbar.currentSet);
+          document.persist(navbarName, currentSetName);
+        }
       }
 
       whitelist = JSON.parse(unwrap(preferences.getCharPref(whitelistName)));
@@ -1057,8 +1094,197 @@ if (typeof Disconnect == 'undefined') {
         preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
       }
 
-      if (!previousBuild || previousBuild < currentBuild)
-          preferences.setIntPref(buildName, currentBuild);
+      if (!previousBuild || previousBuild < 25) {
+        var easyJetDomain = 'easyjet.com';
+        var domainWhitelist =
+            whitelist[easyJetDomain] || (whitelist[easyJetDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 26) {
+        var allocineDomain = 'allocine.fr';
+        var domainWhitelist =
+            whitelist[allocineDomain] || (whitelist[allocineDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Facebook = true;
+
+        var fordDomain = 'ford.com';
+        domainWhitelist =
+            whitelist[fordDomain] || (whitelist[fordDomain] = {});
+        var advertisingWhitelist =
+            domainWhitelist.Advertising || (
+              domainWhitelist.Advertising = {whitelisted: false, services: {}}
+            );
+        advertisingWhitelist.services.Adobe = true;
+
+        var fossilDomain = 'fossil.com';
+        domainWhitelist =
+            whitelist[fossilDomain] || (whitelist[fossilDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
+        var subaruDomain = 'subaru.com';
+        domainWhitelist =
+            whitelist[subaruDomain] || (whitelist[subaruDomain] = {});
+        var analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        analyticsWhitelist.services['Mongoose Metrics'] = true;
+
+        var vimeoDomain = 'vimeo.com';
+        domainWhitelist =
+            whitelist[vimeoDomain] || (whitelist[vimeoDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 27) {
+        var playTvDomain = 'playtv.fr';
+        var domainWhitelist =
+            whitelist[playTvDomain] || (whitelist[playTvDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        disconnectWhitelist.services.Twitter = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 29) {
+        var cbsDomain = 'cbs.com';
+        var domainWhitelist =
+            whitelist[cbsDomain] || (whitelist[cbsDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var cbsNewsDomain = 'cbsnews.com';
+        domainWhitelist =
+            whitelist[cbsNewsDomain] || (whitelist[cbsNewsDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var fossilDomain = 'fossil.com';
+        domainWhitelist =
+            whitelist[fossilDomain] || (whitelist[fossilDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var gamespotDomain = 'gamespot.com';
+        domainWhitelist =
+            whitelist[gamespotDomain] || (whitelist[gamespotDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var ignDomain = 'ign.com';
+        domainWhitelist = whitelist[ignDomain] || (whitelist[ignDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var techRepublicDomain = 'techrepublic.com';
+        domainWhitelist =
+            whitelist[techRepublicDomain] || (
+              whitelist[techRepublicDomain] = {}
+            );
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 30) {
+        var bloombergDomain = 'bloomberg.com';
+        var domainWhitelist =
+            whitelist[bloombergDomain] || (whitelist[bloombergDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < 31) {
+        var obamaDomain = 'barackobama.com';
+        var domainWhitelist =
+            whitelist[obamaDomain] || (whitelist[obamaDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Twitter = true;
+        var minecraftDomain = 'minecraft.net';
+        domainWhitelist =
+            whitelist[minecraftDomain] || (whitelist[minecraftDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var tedDomain = 'ted.com';
+        domainWhitelist = whitelist[tedDomain] || (whitelist[tedDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+      }
+
+      if (!previousBuild || previousBuild < currentBuild) {
+        var dailyMailDomain = 'dailymail.co.uk';
+        var domainWhitelist =
+            whitelist[dailyMailDomain] || (whitelist[dailyMailDomain] = {});
+        var disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        var analyticsWhitelist =
+            domainWhitelist.Analytics || (
+              domainWhitelist.Analytics = {whitelisted: false, services: {}}
+            );
+        analyticsWhitelist.services.comScore = true;
+        var telegraphDomain = 'telegraph.co.uk';
+        domainWhitelist =
+            whitelist[telegraphDomain] || (whitelist[telegraphDomain] = {});
+        disconnectWhitelist =
+            domainWhitelist.Disconnect || (
+              domainWhitelist.Disconnect = {whitelisted: false, services: {}}
+            );
+        disconnectWhitelist.services.Google = true;
+        preferences.setCharPref(whitelistName, JSON.stringify(whitelist));
+        preferences.setIntPref(buildName, currentBuild);
+      }
 
       setTimeout(function() {
         if (!JSON.parse(unwrap(preferences.getCharPref(pwywName))).date) {
@@ -1099,13 +1325,13 @@ if (typeof Disconnect == 'undefined') {
           shortcutSurface.getElementsByClassName('disconnect-shortcut')[0];
       var categorySurface = $(document.getElementById('disconnect-categories'));
       var categoryTemplate = categorySurface.children();
-      var wifi =
+      var counter =
           document.
-            getElementsByClassName('disconnect-wifi')[0].
+            getElementsByClassName('disconnect-counter')[0].
             getElementsByTagName('html:input')[0];
-            
-      os == 'WINNT' && button.add(badge).addClass('windows');
-      os == 'Linux' && button.add(badge).addClass('linux'); 
+      if (os == 'WINNT') button.add(badge).addClass('windows');
+      else if (os == 'Linux') button.add(badge).addClass('linux');
+      modernFirefox && button.parent().addClass('aurora');
 
       tabs.addEventListener('TabOpen', function() {
         clearBadge(button, badge);
@@ -1133,7 +1359,7 @@ if (typeof Disconnect == 'undefined') {
         }, count * 100);
 
         updateServices(data, get(data));
-        var tabDashboard = Disconnect.dashboardCounts[data] || {};
+        var tabDashboard = (Disconnect.dashboardCounts || {})[data] || {};
         var blockedCount = tabDashboard.blocked || 0;
         var totalCount = tabDashboard.total || 0;
         var timeout = Disconnect.timeouts[data] || 0;
@@ -1200,12 +1426,13 @@ if (typeof Disconnect == 'undefined') {
             appendTo(categorySurface).
             find('.disconnect-badge')[0].
             alt = categoryNames[i];
-      wifi.checked = browsingHardened;
+      counter.checked = blockingIndicated;
 
-      wifi.addEventListener(clickName, function() {
-        browsingHardened = !browsingHardened;
-        preferences.setBoolPref(browsingHardenedName, browsingHardened);
-        this.checked = browsingHardened;
+      counter.addEventListener(clickName, function() {
+        blockingIndicated = !blockingIndicated;
+        preferences.setBoolPref(blockingIndicatedName, blockingIndicated);
+        this.checked = blockingIndicated;
+        blockingIndicated || clearBadge(button, badge);
       }, false);
 
       this.dashboard =
@@ -1219,7 +1446,7 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
         append('svg:rect').
         attr('class', 'disconnect-control disconnect-speed').
-        attr('x', 10).
+        attr('x', 58).
         attr('y', 0).
         attr('width', 46).
         attr('height', 40).
@@ -1228,11 +1455,12 @@ if (typeof Disconnect == 'undefined') {
         dashboard.
         append('svg:rect').
         attr('class', 'disconnect-control disconnect-bandwidth').
-        attr('x', 76).
+        attr('x', 127).
         attr('y', 0).
         attr('width', 46).
         attr('height', 40).
         attr('fill', 'transparent');
+      /*
       this.
         dashboard.
         append('svg:rect').
@@ -1242,7 +1470,7 @@ if (typeof Disconnect == 'undefined') {
         attr('width', 46).
         attr('height', 40).
         attr('fill', 'transparent');
-
+      */
       document.getElementById('disconnect-popup').addEventListener(
         'popupshowing', function() {
           var url = gBrowser.contentWindow.location;
@@ -1316,7 +1544,7 @@ if (typeof Disconnect == 'undefined') {
               );
           });
 
-          $('#disconnect-list').height(335);
+          $('#disconnect-list').height(326);
 
           $('.disconnect-category .disconnect-action').each(function() {
             $(this.getElementsByTagName('html:img')).css('top', -28);
@@ -1541,13 +1769,13 @@ if (typeof Disconnect == 'undefined') {
                         serviceContainer.find('.disconnect-service').length - 1,
                         10
                       );
-                  $('#disconnect-list').height(serviceCount * 20 + 335);
+                  $('#disconnect-list').height(serviceCount * 20 + 326);
                   activeServices =
                       serviceContainer.addClass(categoryClasses[serviceCount]);
                 }, 200);
               } else {
                 animateAction(action, button, name);
-                var collapsed = $('#disconnect-list').height() == 335;
+                var collapsed = $('#disconnect-list').height() == 326;
                 var serviceCount =
                     Math.min(
                       serviceContainer.find('.disconnect-service').length - 1,
@@ -1556,7 +1784,7 @@ if (typeof Disconnect == 'undefined') {
 
                 setTimeout(function() {
                   $('#disconnect-list').height(function() {
-                    return collapsed ? serviceCount * 20 + 335 : 335;
+                    return collapsed ? serviceCount * 20 + 326 : 326;
                   });
                 }, collapsed ? 0 : 200);
 
@@ -1609,6 +1837,7 @@ if (typeof Disconnect == 'undefined') {
       'disconnect-ix',
       'disconnect-x'
     ],
+    blockingIndicatedName: 'blockingIndicated',
     whitelistName: 'whitelist',
     blacklistName: 'blacklist',
     contentName: 'Content',
