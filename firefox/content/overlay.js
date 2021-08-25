@@ -50,6 +50,7 @@ if (typeof Disconnect == 'undefined') {
           blocked = blocked && service.blocked;
         }
       }
+      if (count > 100) count = '99+';
 
       return {count: count, blocked: blocked};
     },
